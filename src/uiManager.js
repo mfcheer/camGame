@@ -5,6 +5,7 @@
  * 3. 简短取景校准提示、常驻退出与首个泡泡动态伸手示范（留白避让、淡入与单次触碰淡出）
  * 4. 摄像头异常明确友好中文提示、重试与独立模拟模式入口（彻底隐藏校准弹层）
  * 5. 暂停、音效开关、起飞庆祝后家长选择
+ * 6. 连击 Combo 呼吸彩虹微光浪圈与浮动连击徽章 (不挡人脸)
  */
 export class UIManager {
   constructor(handlers = {}) {
@@ -72,7 +73,12 @@ export class UIManager {
       handGuide: document.getElementById('hand-guide-anim'),
       countdownOverlay: document.getElementById('countdown-overlay'),
       countdownNumber: document.getElementById('countdown-number'),
-      countdownTip: document.querySelector('.countdown-tip')
+      countdownTip: document.querySelector('.countdown-tip'),
+
+      // 连击光浪与徽章
+      comboWave: document.getElementById('combo-rainbow-wave'),
+      comboBadge: document.getElementById('combo-badge'),
+      comboCountNum: document.getElementById('combo-count-num')
     };
   }
 
@@ -139,6 +145,7 @@ export class UIManager {
     // 恢复
     this.dom.btnResume.addEventListener('click', () => {
       this.hidePause();
+      if (this.handlers.onTogglePause) this.handlers.onTogglePause(false);
       if (this.handlers.onResume) this.handlers.onResume();
     });
 
@@ -148,13 +155,15 @@ export class UIManager {
       if (this.handlers.onRestart) this.handlers.onRestart();
     });
 
-    // 在暂停时切换单人/双人
-    this.dom.btnSwitchModeInPause.addEventListener('click', () => {
-      const nextMode = this.currentMode === 'single' ? 'coop' : 'single';
-      this.setModeSelection(nextMode);
-      if (this.handlers.onSelectMode) this.handlers.onSelectMode(nextMode);
-      this.dom.btnSwitchModeInPause.textContent = nextMode === 'single' ? '切换为亲子双人模式' : '切换为单人模式';
-    });
+    // 在暂停菜单中切换模式
+    if (this.dom.btnSwitchModeInPause) {
+      this.dom.btnSwitchModeInPause.addEventListener('click', () => {
+        const targetMode = this.currentMode === 'single' ? 'coop' : 'single';
+        this.setModeSelection(targetMode);
+        if (this.handlers.onSelectMode) this.handlers.onSelectMode(targetMode);
+        this.updatePauseSwitchButtonText();
+      });
+    }
 
     // 退出回首页
     this.dom.btnExit.addEventListener('click', () => {
@@ -162,14 +171,13 @@ export class UIManager {
       if (this.handlers.onExit) this.handlers.onExit();
     });
 
-    // 错误重试与回退模拟 (确保隐藏校准遮罩)
+    // 错误重试与降级
     this.dom.btnRetryCamera.addEventListener('click', () => {
       this.hideError();
       if (this.handlers.onRetryCamera) this.handlers.onRetryCamera();
     });
     this.dom.btnErrorUseDemo.addEventListener('click', () => {
       this.hideError();
-      this.hideCalibration();
       if (this.handlers.onEnableDemo) this.handlers.onEnableDemo(this.currentMode);
     });
 
@@ -228,6 +236,7 @@ export class UIManager {
     this.dom.pauseModal.classList.add('hidden');
     this.dom.victoryModal.classList.add('hidden');
     this.hideCountdownOverlay();
+    this.hideCombo();
     this.dom.demoModeBanner.classList.add('hidden');
     this.showHandGuide(false);
     this.hasDismissedGuide = false;
@@ -241,6 +250,7 @@ export class UIManager {
 
   showCalibration() {
     this.dom.calibrationScreen.classList.remove('hidden');
+    this.hideCombo();
   }
 
   hideCalibration() {
@@ -297,12 +307,14 @@ export class UIManager {
 
   hideHUD() {
     this.dom.hud.classList.add('hidden');
+    this.hideCombo();
   }
 
   showPause() {
     this.isPaused = true;
     this.dom.pauseModal.classList.remove('hidden');
     this.showHandGuide(false);
+    this.hideCombo();
   }
 
   hidePause() {
@@ -323,6 +335,7 @@ export class UIManager {
     }
     this.dom.errorMsg.textContent = friendly;
     this.dom.errorModal.classList.remove('hidden');
+    this.hideCombo();
   }
 
   hideError() {
@@ -339,6 +352,7 @@ export class UIManager {
   showVictory() {
     this.dom.victoryModal.classList.remove('hidden');
     this.showHandGuide(false);
+    this.hideCombo();
   }
 
   hideVictory() {
@@ -407,6 +421,42 @@ export class UIManager {
   dismissHandGuidePermanently() {
     this.hasDismissedGuide = true;
     this.showHandGuide(false);
+  }
+
+  // 连击彩虹微光浪圈与徽章更新 (不挡人脸)
+  updateCombo(comboCount) {
+    if (!this.dom.comboWave || !this.dom.comboBadge) return;
+    if (comboCount >= 2) {
+      this.dom.comboWave.classList.remove('hidden');
+      this.dom.comboBadge.classList.remove('hidden');
+      if (this.dom.comboCountNum) {
+        this.dom.comboCountNum.textContent = String(comboCount);
+      }
+      this.dom.comboBadge.style.animation = 'none';
+      void this.dom.comboBadge.offsetHeight;
+      this.dom.comboBadge.style.animation = 'comboBounce 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+
+      this.dom.comboWave.classList.remove('combo-tier-1', 'combo-tier-2', 'combo-tier-3');
+      if (comboCount >= 6) {
+        this.dom.comboWave.classList.add('combo-tier-3');
+      } else if (comboCount >= 4) {
+        this.dom.comboWave.classList.add('combo-tier-2');
+      } else {
+        this.dom.comboWave.classList.add('combo-tier-1');
+      }
+    } else {
+      this.hideCombo();
+    }
+  }
+
+  hideCombo() {
+    if (this.dom.comboWave) {
+      this.dom.comboWave.classList.add('hidden');
+      this.dom.comboWave.classList.remove('combo-tier-1', 'combo-tier-2', 'combo-tier-3');
+    }
+    if (this.dom.comboBadge) {
+      this.dom.comboBadge.classList.add('hidden');
+    }
   }
 
   // 更新 5 个圆点进度指示

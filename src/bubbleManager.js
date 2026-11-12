@@ -51,6 +51,12 @@ export class BubbleManager {
 
     this.createHandIndicators();
     this.contrastSampler=new PointerContrastSampler(null);
+
+    // 连击 Combo 系统 (1.5s 连续戳破，最高 7+ 连击)
+    this.comboCount = 0;
+    this.lastPopTime = 0;
+    this.comboTimeoutMs = 1500;
+    this.onComboChange = null;
   }
 
   // 创建手部彩色光晕 (暖金 #FFE394、浅蓝 #8DDAFF，光核 10~14px，外晕 28~36px，透明度约 0.75)
@@ -589,8 +595,21 @@ export class BubbleManager {
     const burstColor = this.activeBubble.colorHex;
     this.lastPopPosition = burstWorldPos.clone();
 
-    // 1. 播放破裂音效
-    this.audio.playPop();
+    const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+    if (this.lastPopTime && (now - this.lastPopTime <= this.comboTimeoutMs)) {
+      this.comboCount = Math.min(8, this.comboCount + 1);
+    } else {
+      this.comboCount = 1;
+    }
+    this.lastPopTime = now;
+    if (typeof this.onComboChange === "function") {
+      this.onComboChange(this.comboCount);
+    }
+
+    // 1. 播放破裂音效 (带连击音阶步步爬升)
+    if (this.audio && typeof this.audio.playPop === "function") {
+      this.audio.playPop(this.comboCount);
+    }
 
     // 2. 触发手晕 160ms 命中闪圈至 ~82px
     this.handFlashTimer = 0.160;
@@ -832,6 +851,17 @@ export class BubbleManager {
   update(deltaSeconds, timeSeconds) {
     const dt = Math.min(deltaSeconds, 0.06);
 
+    // 连击超时检查 (超过 1.5s 平滑重置)
+    if (this.comboCount > 0 && this.lastPopTime) {
+      const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+      if (now - this.lastPopTime > this.comboTimeoutMs) {
+        this.comboCount = 0;
+        if (typeof this.onComboChange === "function") {
+          this.onComboChange(0);
+        }
+      }
+    }
+
     this.contrastSampler?.update(dt);
     this.handsAgeSeconds=this.pointerSimulation?0:this.handsAgeSeconds+dt;
     for(let i=this.popRings.length-1;i>=0;i--){const ring=this.popRings[i];ring.elapsed+=dt;const t=Math.min(1,ring.elapsed/.34);ring.mesh.scale.setScalar(1+t*.55);ring.mesh.material.opacity=(1-t)*.85;if(t>=1){this.scene.remove(ring.mesh);ring.mesh.geometry.dispose();ring.mesh.material.dispose();this.popRings.splice(i,1);}}
@@ -1015,6 +1045,7 @@ export class BubbleManager {
 
   // 重置与清理所有泡泡及粒子
   clear() {
+    this.resetCombo();
     this.pointerSimulation=false;
     for(const ring of this.popRings){this.scene.remove(ring.mesh);ring.mesh.geometry.dispose();ring.mesh.material.dispose();}this.popRings=[];
     this.handsAgeSeconds=Infinity;
@@ -1052,5 +1083,17 @@ export class BubbleManager {
     if (this.balloon && this.balloon.setBubbleTarget) {
       this.balloon.setBubbleTarget(null);
     }
+  }
+
+  resetCombo() {
+    this.comboCount = 0;
+    this.lastPopTime = 0;
+    if (typeof this.onComboChange === "function") {
+      this.onComboChange(0);
+    }
+  }
+
+  getComboCount() {
+    return this.comboCount;
   }
 }

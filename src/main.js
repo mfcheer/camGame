@@ -84,6 +84,11 @@ export class Game {
       );
     }
 
+    this.comboCount = 0;
+    if (this.bubbleManager) {
+      this.bubbleManager.onComboChange = (combo) => this.handleComboChange(combo);
+    }
+
     this.bubbleManager?.contrastSampler && (this.bubbleManager.contrastSampler.video=this.videoElement);
     this.poseDetector = new PoseDetector(this.videoElement, {
       maxNumPoses: 2
@@ -123,6 +128,11 @@ export class Game {
       this.lastFrameTime = performance.now();
       this.renderLoop();
     }
+  }
+
+  handleComboChange(combo) {
+    this.comboCount = combo;
+    this.uiManager?.updateCombo?.(combo);
   }
 
   setupPoseCallbacks() {
@@ -439,7 +449,11 @@ export class Game {
     if (this.rescueAnimal) this.rescueAnimal.reset();
     this.bubbleManager.clear();
 
+    this.comboCount = 0;
+    this.uiManager?.hideCombo?.();
     this.sceneManager?.randomizeStage?.();
+    this.audioManager?.setBGMStage?.(this.sceneManager?.stageId);
+    this.audioManager?.startBGM?.(this.sceneManager?.stageId || "forest");
     // 生成第 1 个泡泡
     this.bubbleManager.spawnNext(this.collectedCount, true);
 
@@ -486,6 +500,7 @@ export class Game {
       this.balloon?.setEnergy(current);
       this.rescueAnimal?.setEnergy(current);
       this.audioManager.playEnergyCharge(current);
+      this.audioManager.playAnimalSound?.(this.activeAnimalId || this.rescueAnimal?.animalId || "bunny", "energy");
       if (current >= this.targetCount) this.handleVictory();
     };
     const projectile = this.bubbleManager.energyProjectiles?.at(-1);
@@ -511,8 +526,13 @@ export class Game {
       this.uiManager.setPoseLostAlert(false);
     }
 
+    this.bubbleManager?.resetCombo?.();
+    this.comboCount = 0;
+    this.uiManager?.hideCombo?.();
+
     // 播放欢庆音效与小动物大逃亡飞奔动画
     this.audioManager.playCelebration();
+    this.audioManager.playAnimalSound?.(this.activeAnimalId || this.rescueAnimal?.animalId || "bunny", "escape");
     if (this.balloon) this.balloon.startTakeoff();
     if (this.rescueAnimal) this.rescueAnimal.startEscape();
 
@@ -581,13 +601,17 @@ export class Game {
       this.prePauseState = this.state;
       this.state = 'PAUSED';
       this.cancelAutoCountdown();
+      this.audioManager?.pauseBGM?.();
+      this.bubbleManager?.resetCombo?.();
+      this.comboCount = 0;
+      this.uiManager?.hideCombo?.();
 
       // 仅在手动暂停时真正停止检测循环；柔性等待保持帧检测以便人站回时瞬间自动恢复
       if (!this.isSoftWaiting && this.poseDetector && this.poseDetector.pause) {
         this.poseDetector.pause();
       }
       if (this.rescueAnimal) {
-        this.rescueAnimal.setPaused(true);
+        this.rescueAnimal.setPaused?.(true);
       }
       if (this.bubbleManager) {
         if (this.bubbleManager.hideHandIndicators) {
@@ -615,12 +639,13 @@ export class Game {
     this.noPoseDetectedTime = 0;
     this.isSoftWaiting = false;
     this.coopLostDuration = 0;
-    this.poseDetector.resume();
+    this.poseDetector?.resume?.();
+    this.audioManager?.resumeBGM?.();
     if (this.uiManager && this.uiManager.setPoseLostAlert) {
       this.uiManager.setPoseLostAlert(false);
     }
     if (this.rescueAnimal) {
-      this.rescueAnimal.setPaused(false);
+      this.rescueAnimal.setPaused?.(false);
     }
 
     // 恢复为庆祝状态：按剩余有效时长恢复计时器
@@ -665,9 +690,14 @@ export class Game {
     if (this.balloon) this.balloon.reset();
     if (this.rescueAnimal) this.rescueAnimal.reset();
     this.bubbleManager.clear();
+    this.comboCount = 0;
+    this.uiManager?.hideCombo?.();
     this.state = 'PLAYING';
     this.prePauseState = 'PLAYING';
     this.poseDetector.resume();
+    this.sceneManager?.randomizeStage?.();
+    this.audioManager?.setBGMStage?.(this.sceneManager?.stageId);
+    this.audioManager?.startBGM?.(this.sceneManager?.stageId || "forest");
     this.bubbleManager.spawnNext(0, true);
   }
 
@@ -713,6 +743,10 @@ export class Game {
     this.isSoftWaiting = false;
     this.coopLostDuration = 0;
 
+    this.audioManager?.stopBGM?.();
+    this.bubbleManager?.resetCombo?.();
+    this.comboCount = 0;
+    this.uiManager?.hideCombo?.();
     this.state = 'START';
     this.prePauseState = 'START';
     this.collectedCount = 0;
@@ -858,7 +892,7 @@ export class Game {
     };
     return JSON.stringify({
       coordinates:'screen pixels; origin top-left; x right, y down',
-      mode:this.state, demo:this.isDemoMode, score:this.collectedCount, target:this.targetCount, animalId:this.activeAnimalId,stage:this.sceneManager?.stageId,stageName:this.sceneManager?.stageName, tracking:this.poseDetector?.metrics,autoNext:this.autoNextDeadline?Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)):null,celebrationDecorations:this.celebrationAccessories?.slots.filter(s=>s.prop.visible).map(s=>s.prop.name),
+      mode:this.state, demo:this.isDemoMode, score:this.collectedCount, target:this.targetCount, combo:this.bubbleManager?.comboCount||this.comboCount||0, animalId:this.activeAnimalId,stage:this.sceneManager?.stageId,stageName:this.sceneManager?.stageName,bgmStage:this.audioManager?.currentStageId||this.sceneManager?.stageId||"forest", tracking:this.poseDetector?.metrics,autoNext:this.autoNextDeadline?Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)):null,celebrationDecorations:this.celebrationAccessories?.slots.filter(s=>s.prop.visible).map(s=>s.prop.name),
       bubble:bubble ? {...screen(bubble.group.position), protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
       animal:animal ? {state:animal.state,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,
       energyInFlight:this.bubbleManager?.energyProjectiles.length || 0
