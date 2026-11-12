@@ -132,6 +132,7 @@ export class Game {
 
   handleComboChange(combo) {
     this.comboCount = combo;
+    this.rescueAnimal?.reactToCombo?.(combo);
     this.uiManager?.updateCombo?.(combo);
   }
 
@@ -860,6 +861,7 @@ export class Game {
     if (this.state !== 'PAUSED') {
       this.gameTime = (this.gameTime || 0) + deltaSeconds;
       this.balloon?.update(deltaSeconds, this.gameTime);
+      this.rescueAnimal?.setAnticipation?.(this.state==='PLAYING'&&!!this.bubbleManager?.isNearHand);
       this.rescueAnimal?.update(deltaSeconds, this.gameTime);
       this.bubbleManager?.update(deltaSeconds, this.gameTime);
       if(this.state==='PLAYING' && this.bubbleManager?.handsAgeSeconds<.18 && this.bubbleManager.checkHandCollisions(this.bubbleManager.latestTrackedPlayers))this.onBubblePopped();
@@ -894,7 +896,7 @@ export class Game {
       coordinates:'screen pixels; origin top-left; x right, y down',
       mode:this.state, demo:this.isDemoMode, score:this.collectedCount, target:this.targetCount, combo:this.bubbleManager?.comboCount||this.comboCount||0, animalId:this.activeAnimalId,stage:this.sceneManager?.stageId,stageName:this.sceneManager?.stageName,bgmStage:this.audioManager?.currentStageId||this.sceneManager?.stageId||"forest", tracking:this.poseDetector?.metrics,autoNext:this.autoNextDeadline?Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)):null,celebrationDecorations:this.celebrationAccessories?.slots.filter(s=>s.prop.visible).map(s=>s.prop.name),
       bubble:bubble ? {...screen(bubble.group.position), protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
-      animal:animal ? {state:animal.state,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,
+      animal:animal ? {state:animal.state,emotion:animal.emotion,reaction:animal.reactionVariant,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,
       energyInFlight:this.bubbleManager?.energyProjectiles.length || 0
     });
   }

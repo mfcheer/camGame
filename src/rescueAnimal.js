@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import {assetUrl} from './assetUrl.js';
+import {createExpressionRig,resetExpressionRig,updateExpressionRig} from './animalExpressions.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createRabbitModel, getRabbitRig } from './rabbitModel.js';
 import { createCatModel } from './catModel.js';
@@ -36,7 +38,7 @@ export class RescueAnimal {
     if(reset){this.reset();if(typeof window!=='undefined')this.updateLayout(window.innerWidth,window.innerHeight,this.camera);}
     if(typeof window!=='undefined'&&typeof window.fetch==='function') {
       this.assetStatus='loading';
-      new GLTFLoader().load(`/models/${this.profile.asset}.glb`,gltf=>{
+      new GLTFLoader().load(assetUrl(`models/${this.profile.asset}.glb`),gltf=>{
         if(request!==this.assetRequest){gltf.scene.traverse(o=>{if(o.isMesh){o.geometry.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}});return;}
         this.installModel(gltf.scene);this.assetStatus='glb';
       },undefined,error=>{if(request===this.assetRequest){this.assetStatus='fallback';console.warn('Animal GLB unavailable; using native rig.',error.message);}});
@@ -51,6 +53,7 @@ export class RescueAnimal {
     }
     this.model=model;model.rotation.y=-.16;this.animalGroup.add(model);
     Object.assign(this,getRabbitRig(model));
+    this.expressionRig=createExpressionRig(model,this.animalId);this.emotion='content';
     this.furMaterials=new Set();model.traverse(o=>{
       if(o.isMesh){o.castShadow=true;o.receiveShadow=true;for(const m of Array.isArray(o.material)?o.material:[o.material])this.furMaterials.add(m);}
     });
@@ -115,7 +118,7 @@ export class RescueAnimal {
   setEnergy(score) {
     this.energyLevel=score;
     for(let i=0;i<this.ropeCoils.length;i++)if(score>=Math.ceil((i+1)*this.targetEnergy/5)&&!this.ropeCoils[i].loosened)Object.assign(this.ropeCoils[i],{loosened:true,falling:true,fallTimer:0});
-    this.hopTimer=.70;this.reactionTimer=1.15;
+    this.hopTimer=.70;this.reactionTimer=1.15;this.reactionVariant=(score-1)%3;this.glyphTimer=.95;
     this.onEnergyReceived?.(score);
   }
   startEscape() {
@@ -133,11 +136,16 @@ export class RescueAnimal {
   spawnRopeBreakParticles(){if(!this.reducedMotion)for(let i=0;i<12;i++)this.spawnParticle(this.getTargetPosition());}
   spawnRunDust(pos){if(!this.reducedMotion)this.spawnParticle(pos,true);}
   setPaused(paused){this.isPaused=paused;}
+  setAnticipation(active){this.anticipating=!!active;}
+  reactToCombo(count){if(count<2||this.state!=='TRAPPED')return;this.reactionTimer=1.15;this.reactionVariant=1;this.glyphTimer=.95;}
   setOpacity(alpha) {
     for(const mat of this.furMaterials){mat.transparent=alpha<1;mat.opacity=alpha;mat.depthWrite=alpha>.5;}
   }
   reset() {
     this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;this.reactionTimer=0;
+    this.anticipating=false;this.reactionVariant=0;this.glyphTimer=0;this.emotion='content';resetExpressionRig(this.expressionRig);
+    if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.y=.048;}
+    for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=true;}
     this.currentX=this.startX;this.currentY=this.groundY;
     this.group.visible=true;this.animalGroup.visible=true;this.postGroup.visible=true;this.ropesGroup.visible=true;this.setOpacity(1);
     this.animalGroup.position.set(this.startX,this.groundY,.06);this.animalGroup.rotation.set(0,0,0);this.animalGroup.scale.setScalar(this.modelScale);
@@ -189,7 +197,7 @@ export class RescueAnimal {
     // Blend a seated silhouette into a four-footed trot without reskinning the rabbit hop.
     this.bodyMesh.rotation.x=1.2*blend;this.bodyMesh.position.set(0,.42-.03*blend,.08*blend);
     this.headGroup.position.set(0,.91-.30*blend,.045+.38*blend);
-    for(const arm of [this.leftArm,this.rightArm]){arm.position.y=.52-.15*blend;arm.position.z=.13+.23*blend;}
+    for(const arm of [this.leftArm,this.rightArm]){arm.position.y=.52-.04*blend;arm.position.z=.13+.23*blend;}
     this.leftLeg.position.z=this.rightLeg.position.z=-.02-.23*blend;
     this.tailGroup.position.set(.25,.23+.12*blend,-.15-.18*blend);
   }
@@ -212,7 +220,8 @@ export class RescueAnimal {
   update(dt,timeSeconds) {
     if(this.isPaused)return;
     this.idleTime+=dt;this.blinkTimer+=dt;
-    this.eyesGroup.scale.y=this.blinkTimer>3.1&&this.blinkTimer<3.24?.08:1;
+    this.isBlinking=this.blinkTimer>3.1&&this.blinkTimer<3.24;
+    this.eyesGroup.scale.y=this.isBlinking?.08:1;
     if(this.blinkTimer>3.6)this.blinkTimer=0;
     for(let i=this.particles.length-1;i>=0;i--) {
       const p=this.particles[i];p.mesh.position.addScaledVector(p.velocity,dt);p.velocity.y-=dt*.95;p.life-=dt;
@@ -224,6 +233,8 @@ export class RescueAnimal {
       if(t>=1){c.falling=false;c.group.visible=false;}
     }
     let jump=0;
+    // Every pose starts from a fresh pitch; additive reactions must not accumulate over frames.
+    this.headGroup.rotation.x=0;
     if(this.state==='TRAPPED') {
       this.animalGroup.rotation.y=.15+Math.sin(this.idleTime*.85)*.07;
       this.animalGroup.rotation.z=this.reducedMotion?0:Math.sin(this.idleTime*1.7)*.013;
@@ -319,7 +330,7 @@ export class RescueAnimal {
       if(swimming){this.animalGroup.rotation.x=Math.sin(this.idleTime*3.5)*.035;this.headGroup.rotation.z=Math.sin(this.idleTime*3.5+.7)*.05;}
       for(const [name,sign]of [['Whisker_L',-1],['Whisker_R',1]]){const whisker=this.model.getObjectByName(name);if(whisker)whisker.rotation.y=sign*Math.sin(this.idleTime*2.7)*amplitude*2;}
     }
-    this.updateExpression(dt);
+    this.updateExpression(dt);updateExpressionRig(this,dt);
     this.currentY=this.animalGroup.position.y;
     if(this.contactShadow){this.contactShadow.position.set(this.currentX,this.groundY+.014,.09);this.contactShadow.scale.setScalar(this.modelScale*(1+jump*.5));if(this.state!=='ESCAPED')this.contactShadow.visible=true;}
   }

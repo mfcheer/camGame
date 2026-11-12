@@ -666,3 +666,7 @@ html, body {
   60% { transform: translateX(-50%) scale(1.22); opacity: 1; }
   100% { transform: translateX(-50%) scale(1.0); opacity: 1; }
 }
+
+@media(prefers-reduced-motion:reduce){.combo-rainbow-wave{animation:none!important;transition:opacity .15s}.combo-badge{animation:none!important;transition:none}}
+
+.app-logo{width:40px;height:40px;vertical-align:middle;border-radius:10px;margin-right:10px;box-shadow:0 3px 10px #477e6220}

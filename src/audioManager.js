@@ -110,6 +110,10 @@ export class AudioManager {
   }
 
   _syncMuteState() {
+    if (!this.isMuted && this.isBGMPlaying && !this.isBGMPaused) {
+      this.init();
+      if (this.ctx && !this.bgmInterval) this._startBGMSequencer();
+    }
     if (this.bgmGainNode && this.ctx && typeof this.ctx.currentTime === 'number') {
       try {
         const now = this.ctx.currentTime;

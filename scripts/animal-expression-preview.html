@@ -1,0 +1,16 @@
+<!doctype html><meta charset="utf-8"><style>body{margin:0;background:#edf2e8}canvas{display:block}</style>
+<script type="module">
+import * as THREE from 'three';
+import {RescueAnimal} from '/src/rescueAnimal.js';
+const query=new URLSearchParams(location.search),id=query.get('animal')||'cat',phase=query.get('phase')||'react';
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});renderer.setSize(384,420);renderer.setPixelRatio(1);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;document.body.append(renderer.domElement);
+const scene=new THREE.Scene();scene.add(new THREE.HemisphereLight(0xe5f6ff,0xb7a483,1.9));const key=new THREE.DirectionalLight(0xffefd6,2.6);key.position.set(-3,6,5);scene.add(key);const fill=new THREE.DirectionalLight(0xffffff,.6);fill.position.set(4,1,3);scene.add(fill);
+const camera=new THREE.PerspectiveCamera(40,384/420,.1,100);camera.position.z=7.5;
+const animal=new RescueAnimal(scene,camera,id);
+while(animal.assetStatus!=='glb')await new Promise(requestAnimationFrame);
+const model=animal.model;model.removeFromParent();scene.add(model);scene.remove(animal.group);
+const bounds=new THREE.Box3().setFromObject(model),center=bounds.getCenter(new THREE.Vector3()),size=bounds.getSize(new THREE.Vector3());
+if(phase==='react'){animal.setEnergy(Number(query.get('score')||2));for(let i=0;i<23;i++)animal.update(1/60,i/60);}
+if(phase==='curious'){animal.setAnticipation(true);animal.setPlayerFocus([{face:{x:.7,y:.3}}]);animal.update(.016,.016);}
+model.rotation.y=.13;camera.position.set(center.x,center.y+.06,center.z+Math.max(size.x,size.y)*1.9);camera.lookAt(center);renderer.render(scene,camera);window.previewEmotion=animal.emotion;window.previewReady=true;
+</script>

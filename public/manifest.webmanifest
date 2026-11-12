@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "彩虹小队 · 森林大解救",
+  "short_name": "彩虹小队",
+  "description": "伸出食指，戳破彩虹泡泡，解救六位动物朋友。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#eafbf1",
+  "theme_color": "#78b7a1",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

@@ -1,3 +1,5 @@
+import {assetUrl} from './assetUrl.js';
+
 /**
  * 游戏核心配置
  * 预留多关卡、多动物及不同泡泡目标数量配置入口
@@ -77,8 +79,8 @@ export const GAME_CONFIG = {
 
   // 人体姿态识别配置
   vision: {
-    modelAssetPath: '/models/pose_landmarker_lite.task',
-    wasmLoaderPath: '/wasm',
+    modelAssetPath: assetUrl('models/pose_landmarker_lite.task'),
+    wasmLoaderPath: assetUrl('wasm'),
     minPoseDetectionConfidence: 0.5,
     minPosePresenceConfidence: 0.5,
     minTrackingConfidence: 0.5,

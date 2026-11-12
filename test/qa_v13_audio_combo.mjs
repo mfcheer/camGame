@@ -233,9 +233,10 @@ check('BubbleManager 1.5 秒连续戳破连击递增与超时重置', () => {
   bm.popBubble(0.5, 0.5);
   assert.equal(bm.getComboCount(), 3, '连续戳破 combo 应增至 3');
 
-  // 超过 1.5 秒 (1600ms) 触发 update
-  bm.lastPopTime = performance.now() - 1600;
-  bm.update(0.016, 0);
+  // 冷却不扣时；下一颗泡泡保护结束后，耗尽1.5秒可操作窗口。
+  bm.update(0.016, 0);assert.equal(bm.getComboCount(),3);
+  bm.createBubble(3);bm.activeBubble.spawnElapsed=.4;
+  for(let i=0;i<27;i++)bm.update(.06,i*.06);
   assert.equal(bm.getComboCount(), 0, '超时 1.5s 后 update 应平滑重置 combo 为 0');
   assert.equal(comboHistory[comboHistory.length - 1], 0, '应派发 0 通知 UI 淡出');
 });

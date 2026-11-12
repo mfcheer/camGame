@@ -1,3 +1,4 @@
+import {assetUrl} from './assetUrl.js';
 import { FilesetResolver, PoseLandmarker, HandLandmarker } from '@mediapipe/tasks-vision';
 import { GAME_CONFIG } from './config.js';
 import { HandAssociator, mapVideoPoint } from './handTracking.js';
@@ -296,7 +297,7 @@ export class PoseDetector {
 
   async initHands(vision, delegate) {
     this.handLandmarker = await HandLandmarker.createFromOptions(vision, {
-      baseOptions:{modelAssetPath:'/models/hand_landmarker.task',delegate},runningMode:'VIDEO',
+      baseOptions:{modelAssetPath:assetUrl('models/hand_landmarker.task'),delegate},runningMode:'VIDEO',
       numHands:this.playerMode==='coop'?4:2,minHandDetectionConfidence:.5,minHandPresenceConfidence:.5,minTrackingConfidence:.5
     });
     this.useDedicatedHands = true;
@@ -304,7 +305,7 @@ export class PoseDetector {
 
   initWorker() {
     return new Promise((resolve,reject)=>{
-      const worker=new Worker('/tracking-worker.js');this.worker=worker;
+      const worker=new Worker(assetUrl('tracking-worker.js'));this.worker=worker;
       let initialized=false,frameErrors=0;
       const timeout=setTimeout(()=>fail(new Error('Tracking engine timed out')),20000);
       const fail=error=>{

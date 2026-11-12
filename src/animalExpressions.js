@@ -1,0 +1,86 @@
+import * as THREE from 'three';
+const FACE={
+ bunny:{width:.043,depth:.028,top:1.90,colour:0xe69891},
+ cat:{width:.067,depth:.036,top:1.44,colour:0xe9b575},
+ frog:{width:.075,depth:.087,top:1.10,colour:0xa4c88a},
+ dog:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},
+ dragon:{width:.052,depth:.044,top:1.50,colour:0x97cbbb},
+ goldenDragon:{width:.048,depth:.046,top:1.63,colour:0xeac166}
+};
+function stroke(parent,points,r,material){const path=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const m=new THREE.Mesh(new THREE.TubeGeometry(path,18,r,6,false),material);parent.add(m);return m;}
+function heart(){const s=new THREE.Shape();s.moveTo(0,-.035);s.bezierCurveTo(-.11,.03,-.055,.10,0,.055);s.bezierCurveTo(.055,.10,.11,.03,0,-.035);return new THREE.ShapeGeometry(s,16);}
+function star(){const s=new THREE.Shape();for(let i=0;i<10;i++){const a=i*Math.PI/5+Math.PI/2,r=i%2?.025:.055;i?s.lineTo(Math.cos(a)*r,Math.sin(a)*r):s.moveTo(Math.cos(a)*r,Math.sin(a)*r);}s.closePath();return new THREE.ShapeGeometry(s);}
+
+// Install once for each newly loaded GLB. Nodes are local, so reset/pause use the animal clock.
+export function createExpressionRig(model,id){
+ const profile=FACE[id]||FACE.bunny,head=model.getObjectByName('Head');
+ const root=new THREE.Group();root.name='Expression_Rig';head.add(root);
+ const eyelid=new THREE.MeshStandardMaterial({color:0x4a3c32,roughness:.9});
+ const smileEyes=[];const pupils=[];
+ for(const side of ['L','R']){
+  const eye=model.getObjectByName('Eye_'+side),smile=new THREE.Group();smile.name='Smile_Eye_'+side;smile.position.copy(eye.position);smile.rotation.copy(eye.rotation);root.add(smile);smile.visible=false;
+  const w=profile.width,z=profile.depth;
+  stroke(smile,[[-w,-.004,z],[-w*.5,.017,z+.002],[0,.024,z+.003],[w*.5,.017,z+.002],[w,-.004,z]],.0045,eyelid);
+  smileEyes.push({eye,smile});
+  eye.traverse(o=>{if(o.name==='Pupil'){pupils.push({node:o,base:o.position.clone()});}});
+ }
+ const effects=new THREE.Group();effects.name='Reaction_Glyphs';effects.position.set(0,profile.top,.10);model.add(effects);effects.visible=false;
+ const glyphs=[];
+ for(let i=0;i<3;i++){
+  const material=new THREE.MeshBasicMaterial({color:i===1?0xe8bf6d:profile.colour,side:THREE.DoubleSide,transparent:true,opacity:0,depthWrite:false});
+  const m=new THREE.Mesh(i===1?star():heart(),material);effects.add(m);glyphs.push(m);
+ }
+ // A frog's vocal sac is a separate, subtle expression rather than a generic mammal tongue.
+ let sac=null;
+ if(id==='frog'){
+  sac=new THREE.Mesh(new THREE.SphereGeometry(1,20,14),new THREE.MeshStandardMaterial({color:0xd4d99a,roughness:.9}));sac.name='Vocal_Sac';sac.position.set(0,-.19,.16);head.add(sac);sac.scale.set(.09,.025,.045);
+ }
+ return {profile,root,smileEyes,pupils,effects,glyphs,sac};
+}
+
+export function resetExpressionRig(rig){
+ if(!rig)return;for(const {eye,smile}of rig.smileEyes){eye.visible=true;eye.scale.set(1,1,1);smile.visible=false;}
+ for(const {node,base}of rig.pupils)node.position.copy(base);
+ rig.effects.visible=false;for(const m of rig.glyphs)m.material.opacity=0;
+ if(rig.sac)rig.sac.scale.set(.09,.025,.045);
+}
+
+export function updateExpressionRig(animal,dt){
+ const rig=animal.expressionRig;if(!rig)return;
+ const t=animal.idleTime,reaction=animal.reactionTimer||0,variant=animal.reactionVariant||0;
+ const greeting=animal.state==='WAVING'||animal.state==='CHEERING';
+ const happy=reaction>.10||greeting,curious=!happy&&animal.anticipating;
+ animal.emotion=greeting?'grateful':happy?(variant===1?'delighted':'happy'):curious?'curious':'content';
+ // Slow blink for cats; puppy wink; other friends use upturned smiling eyelids.
+ const smileWindow=greeting||(reaction<1.02&&reaction>.42);
+ const closeBoth=happy&&(animal.animalId!=='cat'||reaction<1.05)&&!(animal.animalId==='dog'&&variant===1);
+ for(let i=0;i<rig.smileEyes.length;i++){
+  const {eye,smile}=rig.smileEyes[i];const close=happy&&smileWindow&&(closeBoth||(animal.animalId==='dog'&&variant===1&&i===1));
+  eye.visible=!close;smile.visible=close;eye.scale.y=curious?1.12:happy&&!close?.90:1;
+ }
+ if(animal.happyTongue&&animal.animalId==='dog'){animal.happyTongue.rotation.z=happy?Math.sin(t*5)*.10:0;animal.happyTongue.scale.y=.048*(happy?1+Math.sin(t*7)*.08:1);}
+ const focus=animal.playerFocus||{x:.5,y:.32};
+ const lookX=THREE.MathUtils.clamp((focus.x-.5)*.022,-.012,.012),lookY=THREE.MathUtils.clamp((.4-focus.y)*.025,-.01,.01);
+ for(const {node,base}of rig.pupils){node.position.x=base.x+lookX;node.position.y=base.y+lookY;}
+ const glyphLife=animal.glyphTimer||0;animal.glyphTimer=Math.max(0,glyphLife-dt);rig.effects.visible=glyphLife>0&&!animal.reducedMotion;
+ if(rig.effects.visible){const p=1-glyphLife/.95;for(let i=0;i<rig.glyphs.length;i++){const m=rig.glyphs[i];m.position.set((i-1)*.14,.05+p*.18+Math.sin(i*2)*.025,0);m.rotation.z=Math.sin(t*3+i)*.12;m.scale.setScalar(.65+Math.sin(Math.min(1,p*4)*Math.PI/2)*.35);m.material.opacity=Math.min(1,p*7)*(1-p)*.85;}}
+ if(rig.sac){const inflate=happy?Math.sin(Math.min(1,(1.15-reaction)/.7)*Math.PI)*.5+.5:0;rig.sac.scale.set(.09+inflate*.045,.025+inflate*.055,.045+inflate*.03);}
+ if(animal.state!=='TRAPPED')return;
+ const amount=happy?Math.sin(Math.max(0,1.15-reaction)*Math.PI):0;
+ const motion=animal.reducedMotion?.25:1;
+ if(curious){animal.headGroup.rotation.x-=.035;animal.headGroup.rotation.z+=Math.sin(t*2)*.025;}
+ if(animal.animalId==='cat'&&!happy)animal.tailGroup.rotation.y=Math.sin(t*1.4)*.065*motion;
+ if(happy){
+  switch(animal.animalId){
+   case 'cat':
+    animal.leftEarGroup.rotation.z=.12-amount*.10;animal.rightEarGroup.rotation.z=-.12+amount*.07;
+    animal.tailGroup.rotation.y=Math.sin(t*3.5)*.20*motion;
+    if(variant===1){animal.leftArm.rotation.x=-amount*.30;animal.rightArm.rotation.x=-amount*.30;animal.headGroup.rotation.z-=amount*.08;}break;
+   case 'bunny':animal.leftEarGroup.rotation.z=.13+amount*.16*motion;animal.rightEarGroup.rotation.z=-.13-amount*.08*motion;animal.headGroup.rotation.z+=amount*(variant===1?-.13:.08)*motion;break;
+   case 'dog':animal.headGroup.rotation.z+=amount*(variant===1?-.19:.14)*motion;animal.leftEarGroup.rotation.x+=amount*.10*motion;animal.rightEarGroup.rotation.x-=amount*.14*motion;break;
+   case 'frog':animal.leftArm.rotation.z-=amount*.12*motion;animal.rightArm.rotation.z+=amount*.12*motion;break;
+   case 'dragon':animal.headGroup.rotation.z+=amount*.10*motion;animal.tailGroup.rotation.z+=amount*.12*motion;break;
+   case 'goldenDragon':animal.headGroup.rotation.x-=amount*.08*motion;break;
+  }
+ }
+}

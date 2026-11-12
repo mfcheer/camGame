@@ -4,6 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>彩虹小队 - 亲子体感解救小动物</title>
+  <meta name="description" content="伸出食指，戳破彩虹泡泡，解救六位动物朋友。支持单人和亲子合作，摄像头识别在本地设备完成。" />
+  <meta name="theme-color" content="#78b7a1" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="彩虹小队 · 森林大解救" />
+  <meta property="og:description" content="和家人一起伸手戳泡泡，解救六位可爱的动物朋友。" />
+  <meta property="og:image" content="https://mfcheer.github.io/camGame/icons/icon-512.png" />
+  <link rel="icon" type="image/svg+xml" href="%BASE_URL%icons/app-icon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%icons/icon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="%BASE_URL%icons/apple-touch-icon.png" />
+  <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
   <link rel="stylesheet" href="./src/style.css" />
 </head>
 <body>
@@ -74,29 +84,29 @@
     <!-- 1. 开始欢迎屏幕 -->
     <div id="start-screen" class="modal-overlay">
       <div class="card start-card">
-        <h1>🌈 彩虹小队 · 森林大解救</h1>
+        <h1><img class="app-logo" src="%BASE_URL%icons/icon-192.png" alt="" aria-hidden="true" />彩虹小队 · 森林大解救</h1>
         <p id="animal-brief">选一位森林朋友，用食指送给它彩虹能量。</p>
         <div class="animal-picker" role="group" aria-label="选择动物">
           <button class="animal-choice selected" data-animal="bunny" aria-pressed="true">
-            <img src="/models/bunny-preview.png" alt="小白兔萌萌" /><strong>小兔 萌萌</strong><span>5 泡泡 · 轻松</span>
+            <img src="%BASE_URL%models/bunny-preview.png" alt="小白兔萌萌" /><strong>小兔 萌萌</strong><span>5 泡泡 · 轻松</span>
           </button>
           <button class="animal-choice" data-animal="cat" aria-pressed="false">
-            <img src="/models/cat-preview.png" alt="橘猫橘子" /><strong>橘猫 橘子</strong><span>8 泡泡 · 耐心</span>
+            <img src="%BASE_URL%models/cat-preview.png" alt="橘猫橘子" /><strong>橘猫 橘子</strong><span>8 泡泡 · 耐心</span>
           </button>
           <button class="animal-choice" data-animal="frog" aria-pressed="false">
-            <img src="/models/frog-preview.png" alt="小青蛙呱呱" /><strong>青蛙 呱呱</strong><span>6 泡泡 · 池塘</span>
+            <img src="%BASE_URL%models/frog-preview.png" alt="小青蛙呱呱" /><strong>青蛙 呱呱</strong><span>6 泡泡 · 池塘</span>
           </button>
           <button class="animal-choice" data-animal="dog" aria-pressed="false">
-            <img src="/models/dog-preview.png" alt="小狗旺旺" /><strong>小狗 旺旺</strong><span>10 泡泡 · 活力</span>
+            <img src="%BASE_URL%models/dog-preview.png" alt="小狗旺旺" /><strong>小狗 旺旺</strong><span>10 泡泡 · 活力</span>
           </button>
           <button class="animal-choice" data-animal="dragon" aria-pressed="false">
-            <img src="/models/dragon-preview.png" alt="飞龙翼翼" /><strong>飞龙 翼翼</strong><span>12 泡泡 · 奇遇</span>
+            <img src="%BASE_URL%models/dragon-preview.png" alt="飞龙翼翼" /><strong>飞龙 翼翼</strong><span>12 泡泡 · 奇遇</span>
           </button>
           <button class="animal-choice" data-animal="goldenDragon" aria-pressed="false">
-            <img src="/models/goldenDragon-preview.png" alt="金龙小金" /><strong>金龙 小金</strong><span>9 泡泡 · 祥云</span>
+            <img src="%BASE_URL%models/goldenDragon-preview.png" alt="金龙小金" /><strong>金龙 小金</strong><span>9 泡泡 · 祥云</span>
           </button>
           <button class="animal-choice random-choice" data-animal="random" aria-pressed="false">
-            <div class="random-friends"><img src="/models/bunny-preview.png" alt="" /><img src="/models/cat-preview.png" alt="" /><img src="/models/frog-preview.png" alt="" /><img src="/models/dog-preview.png" alt="" /><img src="/models/dragon-preview.png" alt="" /><img src="/models/goldenDragon-preview.png" alt="" /></div><strong>随机朋友</strong><span>六位朋友 · 开局揭晓</span>
+            <div class="random-friends"><img src="%BASE_URL%models/bunny-preview.png" alt="" /><img src="%BASE_URL%models/cat-preview.png" alt="" /><img src="%BASE_URL%models/frog-preview.png" alt="" /><img src="%BASE_URL%models/dog-preview.png" alt="" /><img src="%BASE_URL%models/dragon-preview.png" alt="" /><img src="%BASE_URL%models/goldenDragon-preview.png" alt="" /></div><strong>随机朋友</strong><span>六位朋友 · 开局揭晓</span>
           </button>
         </div>
 

@@ -52,10 +52,11 @@ export class BubbleManager {
     this.createHandIndicators();
     this.contrastSampler=new PointerContrastSampler(null);
 
-    // 连击 Combo 系统 (1.5s 连续戳破，最高 7+ 连击)
+    // 连击只计算泡泡可戳时的有效操作时间，冷却和保护期不扣时。
     this.comboCount = 0;
     this.lastPopTime = 0;
     this.comboTimeoutMs = 1500;
+    this.comboRemainingMs = 0;
     this.onComboChange = null;
   }
 
@@ -596,12 +597,13 @@ export class BubbleManager {
     this.lastPopPosition = burstWorldPos.clone();
 
     const now = typeof performance !== "undefined" ? performance.now() : Date.now();
-    if (this.lastPopTime && (now - this.lastPopTime <= this.comboTimeoutMs)) {
+    if (this.comboCount > 0 && this.comboRemainingMs > 0) {
       this.comboCount = Math.min(8, this.comboCount + 1);
     } else {
       this.comboCount = 1;
     }
     this.lastPopTime = now;
+    this.comboRemainingMs = this.comboTimeoutMs;
     if (typeof this.onComboChange === "function") {
       this.onComboChange(this.comboCount);
     }
@@ -851,17 +853,6 @@ export class BubbleManager {
   update(deltaSeconds, timeSeconds) {
     const dt = Math.min(deltaSeconds, 0.06);
 
-    // 连击超时检查 (超过 1.5s 平滑重置)
-    if (this.comboCount > 0 && this.lastPopTime) {
-      const now = typeof performance !== "undefined" ? performance.now() : Date.now();
-      if (now - this.lastPopTime > this.comboTimeoutMs) {
-        this.comboCount = 0;
-        if (typeof this.onComboChange === "function") {
-          this.onComboChange(0);
-        }
-      }
-    }
-
     this.contrastSampler?.update(dt);
     this.handsAgeSeconds=this.pointerSimulation?0:this.handsAgeSeconds+dt;
     for(let i=this.popRings.length-1;i>=0;i--){const ring=this.popRings[i];ring.elapsed+=dt;const t=Math.min(1,ring.elapsed/.34);ring.mesh.scale.setScalar(1+t*.55);ring.mesh.material.opacity=(1-t)*.85;if(t>=1){this.scene.remove(ring.mesh);ring.mesh.geometry.dispose();ring.mesh.material.dispose();this.popRings.splice(i,1);}}
@@ -948,6 +939,11 @@ export class BubbleManager {
       const b = this.activeBubble;
       b.updateCount = (b.updateCount || 0) + 1;
       b.spawnElapsed += dt;
+      if(this.comboCount>0&&!b.relocating){
+        const playableDt=Math.max(0,b.spawnElapsed-.4)-Math.max(0,b.spawnElapsed-dt-.4);
+        this.comboRemainingMs=Math.max(0,this.comboRemainingMs-playableDt*1000);
+        if(this.comboRemainingMs<=.001)this.resetCombo();
+      }
 
       // 0~320ms 果冻缩放淡入 (0.65→1.08→1.00)
       let spawnScale = 1.0;
@@ -1087,6 +1083,7 @@ export class BubbleManager {
 
   resetCombo() {
     this.comboCount = 0;
+    this.comboRemainingMs = 0;
     this.lastPopTime = 0;
     if (typeof this.onComboChange === "function") {
       this.onComboChange(0);

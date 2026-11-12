@@ -1,52 +1,60 @@
 import * as THREE from 'three';
 import {mat,mesh,pivot,ellipsoid,sculpt,curve} from './rabbitModel.js';
-function earGeometry(inner=false) {
-  const shape=new THREE.Shape();shape.moveTo(-.13,0);shape.quadraticCurveTo(-.145,.07,-.09,.27);shape.quadraticCurveTo(-.08,.31,-.045,.28);shape.quadraticCurveTo(.07,.20,.13,0);shape.quadraticCurveTo(0,-.04,-.13,0);
-  const geo=new THREE.ExtrudeGeometry(shape,{depth:inner?.01:.065,bevelEnabled:true,bevelSize:inner?.006:.023,bevelThickness:.018,bevelSegments:3,steps:1,curveSegments:12});
-  if(inner)geo.scale(.65,.65,1);return geo;
+function earGeometry(inner=false){
+ const s=new THREE.Shape();s.moveTo(-.12,0);s.quadraticCurveTo(-.115,.12,-.075,.265);s.quadraticCurveTo(-.065,.287,-.045,.264);s.quadraticCurveTo(.065,.15,.12,0);s.quadraticCurveTo(0,-.025,-.12,0);
+ const g=new THREE.ExtrudeGeometry(s,{depth:inner?.009:.045,bevelEnabled:true,bevelSize:inner?.006:.015,bevelThickness:.010,bevelSegments:3,steps:1,curveSegments:14});if(inner)g.scale(.65,.70,1);return g;
 }
-export function createCatModel() {
-  const root=new THREE.Group();root.name='Marmalade_Rig';
-  const orange=mat(0xe6a153,.94),cream=mat(0xffefd3,.97),stripe=mat(0xac6738,.96),pink=mat(0xd99b8d,.88),dark=mat(0x3f342a,.24);
-  const body=pivot(root,'Torso',[0,.42,0]);
-  sculpt([[0,0,0,.33,.36,.27],[0,.24,.01,.235,.22,.21],[-.24,-.13,0,.16,.18,.20],[.24,-.13,0,.16,.18,.20]],.10,orange,body,'Cat_Sculpted_Body');
-  ellipsoid(body,'Cream_Chest',cream,[0,.025,.235],[.20,.27,.07]);
-  const head=pivot(root,'Head',[0,.91,.045]);
-  sculpt([[0,.01,0,.375,.275,.25],[-.23,-.09,.025,.17,.15,.21],[.23,-.09,.025,.17,.15,.21]],.08,orange,head,'Cat_Sculpted_Head');
-  for(const side of [-1,1]) {
-    const ear=pivot(head,side<0?'Ear_L':'Ear_R',[side*.245,.20,-.07]);ear.rotation.z=-side*.10;ear.scale.set(.95,.78,1);
-    mesh(earGeometry(),orange,ear,'Cat_Ear');mesh(earGeometry(true),pink,ear,'Inner_Ear',[0,.035,.086]);
-    ellipsoid(head,'Muzzle',cream,[side*.065,-.108,.245],[.092,.057,.038]);
-    for(let i=0;i<3;i++)curve(head,'Whisker',[[side*.12,-.125+i*.018,.30],[side*.28,-.12+i*.035,.30],[side*.35,-.13+i*.050,.27]],.0038,mat(0x8e7358,1));
-    for(let i=0;i<2;i++)curve(head,'Cheek_Stripe',[[side*.31,-.005-i*.065,.185],[side*.29,-.032-i*.065,.221],[side*.255,-.04-i*.065,.244]],.014,stripe);
-    const arm=pivot(root,side<0?'Arm_L':'Arm_R',[side*.185,.52,.13]);
-    ellipsoid(arm,'Front_Leg',orange,[0,-.16,.04],[.085,.23,.09]);ellipsoid(arm,'Cream_Toes',cream,[0,-.30,.08],[.098,.07,.11]);
-    const leg=pivot(root,side<0?'Leg_L':'Leg_R',[side*.285,.15,-.02]);
-    ellipsoid(leg,'Hind_Paw',orange,[0,-.055,.08],[.12,.09,.18]);ellipsoid(leg,'Cream_Hind_Toes',cream,[0,-.048,.20],[.10,.066,.066]);
-    curve(arm,'Leg_Stripe',[[side*.06,-.12,.11],[0,-.13,.13],[-side*.05,-.12,.10]],.012,stripe);
-  }
-  const eyes=pivot(head,'Eyes',[0,0,0]);
-  for(const side of [-1,1]) {
-    const eye=pivot(eyes,side<0?'Eye_L':'Eye_R',[side*.15,.025,.25]);eye.rotation.y=side*.22;
-    ellipsoid(eye,'Iris',mat(0xa4b57a,.3),[0,0,0],[.075,.051,.026]);
-    ellipsoid(eye,'Pupil',dark,[0,0,.026],[.014,.042,.012]);
-    ellipsoid(eye,'Catchlight',mat(0xffffff,.1),[-.014,.019,.034],[.013,.014,.005]);
-  }
-  for(const side of [-1,1])curve(head,'Forehead_M',[[side*.19,.19,.18],[side*.13,.15,.235],[side*.09,.205,.215],[side*.035,.155,.25]],.014,stripe);
-  const noseShape=new THREE.Shape();noseShape.moveTo(-.027,.012);noseShape.lineTo(.027,.012);noseShape.quadraticCurveTo(.018,-.012,0,-.022);noseShape.quadraticCurveTo(-.018,-.012,-.027,.012);
-  mesh(new THREE.ExtrudeGeometry(noseShape,{depth:.012,bevelEnabled:true,bevelSize:.005,bevelThickness:.005,bevelSegments:2}),pink,head,'Cat_Nose',[0,-.075,.285]);
-  curve(head,'Mouth',[[0,-.10,.295],[0,-.14,.294],[-.03,-.155,.290]],.004,dark);
-  curve(head,'Smile',[[0,-.14,.294],[.03,-.155,.290],[.05,-.14,.285]],.004,dark);
-  const happy=ellipsoid(head,'Happy_Mouth',mat(0x7b4c40,1),[0,-.15,.296],[.042,.030,.013]);happy.visible=false;
-  const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.165,.307],[.024,.010,.005]);tongue.visible=false;
-  const tail=pivot(root,'Tail',[.25,.23,-.15]);
-  const tailPoints=[[0,0,0],[.19,.01,-.1],[.36,.08,-.08],[.41,.27,-.06],[.36,.43,-.03]];
-  curve(tail,'Curled_Tail',tailPoints,.065,orange);
-  ellipsoid(tail,'Tail_Tip',cream,[.36,.43,-.03],[.064,.07,.063]);
-  for(let i=0;i<3;i++)curve(tail,'Tail_Ring',[[.33+i*.025,.12+i*.09,-.11],[.40+i*.005,.13+i*.09,-.04],[.40-i*.01,.13+i*.09,0]],.014,stripe);
-  const bow=pivot(root,'Bow',[0,.69,.25]);
-  const teal=mat(0x639c94,.85);
-  for(const side of [-1,1]){const wing=ellipsoid(bow,'Scarf_Wing',teal,[side*.07,0,0],[.075,.045,.027]);wing.rotation.z=side*.3;}
-  ellipsoid(bow,'Bell',mat(0xe5bc68,.32,{metalness:.3}),[0,-.04,.035],[.039,.045,.035]);
-  return root;
+function almond(){
+ const s=new THREE.Shape();s.moveTo(-.081,0);s.quadraticCurveTo(-.025,.084,.080,.018);s.quadraticCurveTo(.028,-.059,-.081,0);
+ return new THREE.ExtrudeGeometry(s,{depth:.016,bevelEnabled:true,bevelSize:.006,bevelThickness:.006,bevelSegments:3,curveSegments:16});
+}
+export function createCatModel(){
+ const root=new THREE.Group();root.name='Marmalade_Rig';root.userData.designVersion=3;
+ const orange=mat(0xe4a05b,.94),cream=mat(0xffedcd,.95),stripe=mat(0xb77743,.96),pink=mat(0xd69a91,.89),ink=mat(0x493b32,.24),green=mat(0x91b697,.30);
+ const body=pivot(root,'Torso',[0,.42,0]);
+ sculpt([[0,-.015,0,.265,.32,.25],[0,.20,.005,.205,.20,.19],[-.20,-.15,-.015,.14,.16,.17],[.20,-.15,-.015,.14,.16,.17]],.075,orange,body,'Cat_Seated_Body');
+ ellipsoid(body,'Cream_Bib',cream,[0,.04,.218],[.137,.20,.038]);
+ const head=pivot(root,'Head',[0,.91,.045]);
+ sculpt([[0,.015,0,.325,.268,.225],[-.185,-.085,.015,.125,.125,.17],[.185,-.085,.015,.125,.125,.17],[0,-.12,.06,.22,.10,.15]],.055,orange,head,'Feline_Head');
+ for(const side of [-1,1]){
+  const ear=pivot(head,side<0?'Ear_L':'Ear_R',[side*.215,.19,-.075]);ear.rotation.z=-side*.12;
+  mesh(earGeometry(),orange,ear,'Pointed_Ear');mesh(earGeometry(true),pink,ear,'Inner_Ear',[0,.026,.066]);
+  // A short twin muzzle, with no projecting rodent-like snout.
+  ellipsoid(head,'Whisker_Pad',cream,[side*.060,-.103,.224],[.079,.052,.035]);
+  ellipsoid(head,'Chin',cream,[0,-.16,.20],[.076,.027,.028]);
+  for(let i=0;i<3;i++)curve(head,'Fine_Whisker',[[side*.115,-.105+i*.017,.262],[side*.24,-.10+i*.025,.266],[side*.335,-.105+i*.038,.242]],.0025,mat(0x998571,1));
+  for(let i=0;i<2;i++)curve(head,'Cheek_Tab',[[side*.283,-.005-i*.053,.12],[side*.265,-.020-i*.053,.155],[side*.24,-.032-i*.053,.176]],.010,stripe);
+  const arm=pivot(root,side<0?'Arm_L':'Arm_R',[side*.14,.52,.13]);
+  ellipsoid(arm,'Slim_Foreleg',orange,[0,-.21,.05],[.061,.22,.067]);ellipsoid(arm,'Grounded_Forepaw',cream,[0,-.414,.095],[.078,.052,.105]);
+  for(let i=0;i<2;i++)curve(arm,'Toe_Seam',[[((i-.5)*.035),-.398,.19],[((i-.5)*.035),-.424,.194]],.0025,stripe);
+  const leg=pivot(root,side<0?'Leg_L':'Leg_R',[side*.245,.15,-.02]);
+  ellipsoid(leg,'Haunch',orange,[side*.01,.02,-.01],[.12,.16,.155]);ellipsoid(leg,'Cream_Hind_Toes',cream,[0,-.067,.13],[.10,.061,.15]);
+  curve(arm,'Leg_Tab',[[side*.045,-.14,.095],[0,-.15,.118],[-side*.045,-.14,.097]],.009,stripe);
+ }
+ const eyes=pivot(head,'Eyes',[0,0,0]);
+ for(const side of [-1,1]){
+  const eye=pivot(eyes,side<0?'Eye_L':'Eye_R',[side*.13,.031,.217]);eye.rotation.y=side*.18;
+  const rim=mesh(almond(),mat(0xa87645,.9),eye,'Almond_Eyelid');rim.scale.set(1.09,1.12,1);rim.position.z=-.004;
+  mesh(almond(),green,eye,'Almond_Iris');
+  ellipsoid(eye,'Pupil',ink,[0,.003,.026],[.013,.042,.012]);
+  ellipsoid(eye,'Catchlight',mat(0xffffff,.1),[-.018,.022,.034],[.012,.013,.004]);
+  ellipsoid(eye,'Catchlight_Small',cream,[.013,-.015,.035],[.005,.006,.003]);
+ }
+ // Flat tabby marks hug the forehead; the previous raised zig-zag looked like eyebrows.
+ for(const [x,y,z]of [[0,.205,.143],[-.082,.19,.155],[.082,.19,.155]])curve(head,'Forehead_Tab',[[x*.85,y+.025,z-.025],[x,y,z],[x*.82,y-.065,z+.039]],.010,stripe);
+ const nose=new THREE.Shape();nose.moveTo(-.023,.009);nose.quadraticCurveTo(0,.017,.023,.009);nose.quadraticCurveTo(.017,-.006,0,-.020);nose.quadraticCurveTo(-.017,-.006,-.023,.009);
+ mesh(new THREE.ExtrudeGeometry(nose,{depth:.009,bevelEnabled:true,bevelSize:.004,bevelThickness:.004,bevelSegments:2}),pink,head,'Cat_Heart_Nose',[0,-.074,.264]);
+ curve(head,'Mouth_Stem',[[0,-.09,.274],[0,-.123,.269]],.0035,ink);
+ curve(head,'Smile_L',[[0,-.123,.269],[-.026,-.141,.26],[-.045,-.126,.249]],.0035,ink);
+ curve(head,'Smile_R',[[0,-.123,.269],[.026,-.141,.26],[.045,-.126,.249]],.0035,ink);
+ const happy=ellipsoid(head,'Happy_Mouth',mat(0x82534a,.95),[0,-.137,.268],[.036,.027,.010]);happy.visible=false;
+ const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.147,.278],[.021,.009,.004]);tongue.visible=false;
+ const tail=pivot(root,'Tail',[.25,.23,-.15]);
+ curve(tail,'Upright_Cat_Tail',[[0,0,0],[.17,.02,-.09],[.29,.16,-.1],[.30,.36,-.1],[.22,.46,-.07]],.049,orange);
+ ellipsoid(tail,'Tail_Tip',cream,[.22,.46,-.07],[.049,.056,.048]);
+ for(let i=0;i<3;i++){const ring=mesh(new THREE.TorusGeometry(.049,.011,6,18),stripe,tail,'Tabby_Tail_Ring',[.30-i*.007,.17+i*.08,-.1]);ring.rotation.x=Math.PI/2;}
+ const bow=pivot(root,'Bow',[0,.69,.23]),teal=mat(0x699e95,.88);
+ for(const side of [-1,1]){const wing=ellipsoid(bow,'Scarf_Wing',teal,[side*.055,0,0],[.06,.034,.022]);wing.rotation.z=side*.3;}
+ ellipsoid(bow,'Bell',mat(0xe5bc68,.32,{metalness:.3}),[0,-.033,.03],[.028,.033,.025]);
+ return root;
 }
