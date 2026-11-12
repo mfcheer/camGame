@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>彩虹小队 - 亲子体感解救小动物</title>
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <!-- 摄像头镜像视频画面（全屏底层背景，未开启或模拟模式为温和渐变） -->
+  <video id="webcam-video" autoplay playsinline muted></video>
+
+  <!-- Three.js 3D 渲染画布容器 -->
+  <div id="canvas-container"></div>
+
+  <!-- UI 覆盖交互层 -->
+  <div id="ui-layer">
+    <!-- 顶部 HUD 栏 -->
+    <div id="game-hud" class="hidden">
+      <div class="hud-left">
+        <button id="btn-sound" class="icon-btn" title="声音开关">🔊</button>
+        <div id="mode-badge" class="mode-badge">👶 单人模式</div>
+      </div>
+
+      <!-- 5 个圆点进度（免识字直观彩虹进度，视口水平绝对居中） -->
+      <div class="progress-dots-container">
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+      </div>
+
+      <div class="hud-right">
+        <button id="btn-pause" class="icon-btn" title="暂停游戏">⏸️</button>
+      </div>
+    </div>
+
+    <!-- 演示模式提示角标（仅在模拟模式下展示，非交互左下角暖灰角标） -->
+    <div id="demo-mode-banner" class="hidden">
+      鼠标／触屏模拟
+    </div>
+
+    <!-- 姿态丢失提示气泡 -->
+    <div id="pose-lost-alert" class="hidden">
+      哎呀，没有看到小手呢~ 请稍微后退一点站在摄像头前哦
+    </div>
+
+    <!-- 首个泡泡伸手动作示范引导 -->
+    <div id="hand-guide-anim" class="hidden">
+      <div class="guide-hand-icon">✋</div>
+      <div class="guide-text">伸手碰碰大泡泡 ✨</div>
+    </div>
+
+    <!-- 免触碰自动就位 3-2-1 倒计时层 -->
+    <div id="countdown-overlay" class="countdown-overlay hidden">
+      <div class="countdown-badge">
+        <div class="countdown-tip">🎯 人脸和小手已就位，准备出发！</div>
+        <div id="countdown-number" class="countdown-number">3</div>
+      </div>
+    </div>
+
+    <!-- 1. 开始欢迎屏幕 -->
+    <div id="start-screen" class="modal-overlay">
+      <div class="card start-card">
+        <h1>🌈 彩虹小队 · 森林大解救</h1>
+        <p id="animal-brief">选一位森林朋友，用食指送给它彩虹能量。</p>
+        <div class="animal-picker" role="group" aria-label="选择动物">
+          <button class="animal-choice selected" data-animal="bunny" aria-pressed="true">
+            <img src="/models/bunny-preview.png" alt="小白兔萌萌" /><strong>小兔 萌萌</strong><span>5 泡泡 · 轻松</span>
+          </button>
+          <button class="animal-choice" data-animal="cat" aria-pressed="false">
+            <img src="/models/cat-preview.png" alt="橘猫橘子" /><strong>橘猫 橘子</strong><span>8 泡泡 · 耐心</span>
+          </button>
+          <button class="animal-choice" data-animal="frog" aria-pressed="false">
+            <img src="/models/frog-preview.png" alt="小青蛙呱呱" /><strong>青蛙 呱呱</strong><span>6 泡泡 · 池塘</span>
+          </button>
+          <button class="animal-choice" data-animal="dog" aria-pressed="false">
+            <img src="/models/dog-preview.png" alt="小狗旺旺" /><strong>小狗 旺旺</strong><span>10 泡泡 · 活力</span>
+          </button>
+          <button class="animal-choice" data-animal="dragon" aria-pressed="false">
+            <img src="/models/dragon-preview.png" alt="飞龙翼翼" /><strong>飞龙 翼翼</strong><span>12 泡泡 · 奇遇</span>
+          </button>
+          <button class="animal-choice" data-animal="goldenDragon" aria-pressed="false">
+            <img src="/models/goldenDragon-preview.png" alt="金龙小金" /><strong>金龙 小金</strong><span>9 泡泡 · 祥云</span>
+          </button>
+          <button class="animal-choice random-choice" data-animal="random" aria-pressed="false">
+            <div class="random-friends"><img src="/models/bunny-preview.png" alt="" /><img src="/models/cat-preview.png" alt="" /><img src="/models/frog-preview.png" alt="" /><img src="/models/dog-preview.png" alt="" /><img src="/models/dragon-preview.png" alt="" /><img src="/models/goldenDragon-preview.png" alt="" /></div><strong>随机朋友</strong><span>六位朋友 · 开局揭晓</span>
+          </button>
+        </div>
+
+        <!-- 模式选择 -->
+        <div class="mode-selector">
+          <button id="btn-mode-single" class="mode-btn selected">
+            <span class="mode-icon">👶</span>
+            <span class="mode-title">单人探索</span>
+            <span class="mode-sub">宝贝自己玩</span>
+          </button>
+          <button id="btn-mode-coop" class="mode-btn">
+            <span class="mode-icon">👨‍👩‍👦</span>
+            <span class="mode-title">亲子合作</span>
+            <span class="mode-sub">父母同框一起玩</span>
+          </button>
+        </div>
+
+        <button id="btn-start-game" class="btn-primary">开始游戏 🎈</button>
+        <button id="btn-demo-mode" class="btn-secondary">💻 电脑鼠标/触控板模拟体验</button>
+
+        <div class="auto-start-pill">
+          ✨ <strong>免触碰倒计时开局</strong>：点击开始后站在镜头前站好露出双手，将自动 3-2-1 倒计时开局！
+        </div>
+
+        <div class="privacy-tip">
+          🔒 <strong>隐私保护承诺</strong>：所有摄像头动作均在您的本地设备离线识别，绝不录制、不存储、不上传任何影像。
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 取景校准界面 -->
+    <div id="calibration-screen" class="modal-overlay hidden">
+      <div class="card">
+        <h2>站在摄像头前 📷</h2>
+        <div class="calibration-box"><span>伸出食指，让小光点跟着指尖</span></div>
+        <p>站好让画面能看到小手与身体，距离屏幕约 1.2 ~ 2 米。<br><strong>识别到小手后将自动 3-2-1 倒计时开局</strong>，无需再去点击屏幕哦！✨</p>
+        <button id="btn-ready-go" class="btn-primary">检测中，就位即自动开始...</button>
+        <button id="btn-calibration-exit" class="btn-secondary">返回首页 🏠</button>
+      </div>
+    </div>
+
+    <!-- 3. 暂停窗口 -->
+    <div id="pause-modal" class="modal-overlay hidden">
+      <div class="card">
+        <h2>游戏已暂停 ⏸️</h2>
+        <p>解救进度已为您保留，休息一下再继续吧。</p>
+        <button id="btn-resume" class="btn-primary">继续游戏 ▶️</button>
+        <button id="btn-switch-mode-in-pause" class="btn-secondary">切换为亲子双人模式</button>
+        <button id="btn-restart" class="btn-secondary">重新开始本轮 🔄</button>
+        <button id="btn-exit" class="btn-secondary">退出回首页 🏠</button>
+      </div>
+    </div>
+
+    <!-- 4. 摄像头异常提示窗口 -->
+    <div id="error-modal" class="modal-overlay hidden">
+      <div class="card">
+        <h2>摄像头遇到问题 ⚠️</h2>
+        <p id="error-message">未检测到可用摄像头或权限被拒绝。</p>
+        <button id="btn-retry-camera" class="btn-primary">重新尝试连接 🔄</button>
+        <button id="btn-error-use-demo" class="btn-secondary">改用鼠标/触屏模拟模式 💻</button>
+      </div>
+    </div>
+
+    <!-- 5. 达成 5 个解救欢庆窗口 -->
+    <div id="victory-modal" class="modal-overlay hidden">
+      <div class="card">
+        <h1>🎉 太棒啦！</h1>
+        <h2 id="victory-animal-title">萌萌自由啦，谢谢你！</h2>
+        <p id="victory-animal-copy">5 份彩虹能量，换来一只自由的小兔。萌萌已经跳回森林，还记得回头向你挥挥手。</p>
+        <div class="victory-actions"><button id="btn-play-again" class="btn-primary">再解救一次 🎈</button>
+        <button id="btn-victory-exit" class="btn-secondary">换个朋友 / 回首页 🏠</button></div>
+        <div class="auto-next-row"><span id="auto-next-status" aria-live="polite"></span><button id="btn-stop-auto-next" class="text-button">先休息，停止自动开始</button></div>
+      </div>
+    </div>
+
+    <!-- 6. 竖屏旋转横屏友好引导层 (固定横屏体验) -->
+    <div id="orientation-modal" class="modal-overlay hidden" style="z-index: 1000;">
+      <div class="card orientation-card">
+        <div class="orientation-icon">🔄</div>
+        <h2>请将设备旋转为横屏使用</h2>
+        <p>彩虹小队固定为横屏宽画幅亲子体验，<br>横屏能让宝贝看到更宽广的跑道和风景哦！✨</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { createRabbitModel, getRabbitRig } from './rabbitModel.js';
+import { createCatModel } from './catModel.js';
+import { createFrogModel } from './frogModel.js';
+import { createGoldenDragonModel } from './goldenDragonModel.js';
+import { createDragonModel } from './dragonModel.js';
+import { createDogModel } from './dogModel.js';
+import { GAME_CONFIG } from './config.js';
+
+export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel};
+const smooth = t => t*t*(3-2*t);
+const clamp = THREE.MathUtils.clamp;
+
+/** Named-pivot character rig, local GLB asset and grounded, staged rabbit hops. */
+export class RescueAnimal {
+  constructor(scene,camera,animalId='bunny') {
+    this.scene=scene;this.camera=camera;this.group=new THREE.Group();
+    this.postGroup=new THREE.Group();this.animalGroup=new THREE.Group();this.ropesGroup=new THREE.Group();
+    this.group.add(this.postGroup,this.animalGroup);scene.add(this.group);
+    this.ropeCoils=[];this.particles=[];
+    this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.escapeDuration=4.1;
+    this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;
+    this.reducedMotion=typeof window!=='undefined'&&window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    this.createPostAndRopes();
+    this.setAnimal(animalId,false);
+    this.createContactShadow();
+    const w=typeof window!=='undefined'?window.innerWidth:1280,h=typeof window!=='undefined'?window.innerHeight:720;
+    this.updateLayout(w,h,camera);
+  }
+  setAnimal(id,reset=true) {
+    this.animalId=ANIMAL_MODELS[id]?id:'bunny';this.profile=GAME_CONFIG.animals[this.animalId];
+    this.targetEnergy=this.profile.targetBubbles;
+    const request=this.assetRequest=(this.assetRequest||0)+1;
+    this.installModel(ANIMAL_MODELS[this.animalId]());this.assetStatus='native';
+    if(reset){this.reset();if(typeof window!=='undefined')this.updateLayout(window.innerWidth,window.innerHeight,this.camera);}
+    if(typeof window!=='undefined'&&typeof window.fetch==='function') {
+      this.assetStatus='loading';
+      new GLTFLoader().load(`/models/${this.profile.asset}.glb`,gltf=>{
+        if(request!==this.assetRequest){gltf.scene.traverse(o=>{if(o.isMesh){o.geometry.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}});return;}
+        this.installModel(gltf.scene);this.assetStatus='glb';
+      },undefined,error=>{if(request===this.assetRequest){this.assetStatus='fallback';console.warn('Animal GLB unavailable; using native rig.',error.message);}});
+    }
+  }
+  installModel(model) {
+    if(this.model) {
+      this.animalGroup.remove(this.model);
+      const geometries=new Set(),materials=new Set();
+      this.model.traverse(o=>{if(o.isMesh){geometries.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);}});
+      geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());
+    }
+    this.model=model;model.rotation.y=-.16;this.animalGroup.add(model);
+    Object.assign(this,getRabbitRig(model));
+    this.furMaterials=new Set();model.traverse(o=>{
+      if(o.isMesh){o.castShadow=true;o.receiveShadow=true;for(const m of Array.isArray(o.material)?o.material:[o.material])this.furMaterials.add(m);}
+    });
+    this.eyeBases=[this.leftEye.position.clone(),this.rightEye.position.clone()];
+    this.happyMouth=model.getObjectByName('Happy_Mouth');this.happyTongue=model.getObjectByName('Happy_Tongue');
+    if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue)this.happyTongue.visible=false;
+    this.bowMaterials=[];this.bowtieGroup.traverse(o=>{if(o.isMesh)this.bowMaterials.push(o.material);});
+  }
+  createContactShadow() {
+    const size=32,data=new Uint8Array(size*size*4);
+    for(let y=0;y<size;y++)for(let x=0;x<size;x++) {
+      const d=Math.hypot((x-size/2)/(size/2),(y-size/2)/(size/2));const i=(x+y*size)*4;
+      data[i]=67;data[i+1]=60;data[i+2]=43;data[i+3]=Math.round(Math.pow(Math.max(0,1-d),1.8)*125);
+    }
+    const tex=new THREE.DataTexture(data,size,size);tex.needsUpdate=true;
+    this.contactShadow=new THREE.Mesh(new THREE.PlaneGeometry(.95,.65),new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false}));
+    this.contactShadow.rotation.x=-Math.PI/2;this.group.add(this.contactShadow);
+  }
+  createPostAndRopes() {
+    const wood=new THREE.MeshStandardMaterial({color:0x96724f,roughness:.96});
+    this.postMesh=new THREE.Mesh(new THREE.CylinderGeometry(.105,.15,.85,14),wood);
+    this.postMesh.position.set(-.23,.425,-.22);this.postMesh.rotation.z=.08;this.postMesh.castShadow=true;this.postGroup.add(this.postMesh);
+    const cap=new THREE.Mesh(new THREE.CylinderGeometry(.108,.108,.012,16),new THREE.MeshStandardMaterial({color:0xc6a77b,roughness:1}));
+    cap.position.set(-.26,.851,-.22);cap.rotation.z=.08;this.postGroup.add(cap);
+    for(let i=0;i<3;i++) {
+      const ring=new THREE.Mesh(new THREE.TorusGeometry(.025+i*.025,.002,4,24),new THREE.MeshStandardMaterial({color:0x9b7d56}));
+      ring.rotation.x=-Math.PI/2;ring.position.set(-.26,.859,-.22);this.postGroup.add(ring);
+    }
+    for(let i=0;i<4;i++) {
+      const g=new THREE.Group(),pts=[];const baseY=.30+i*.078;
+      for(let j=0;j<40;j++) {
+        const a=j/40*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*.35,baseY+Math.sin(a)*.018,Math.sin(a)*.40-.025));
+      }
+      const ropeMat=new THREE.MeshStandardMaterial({color:0xc3a77d,roughness:1,transparent:true,opacity:1});
+      const mesh=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,true),48,.016,6,true),ropeMat);
+      mesh.castShadow=true;g.add(mesh);
+      const knot=new THREE.Mesh(new THREE.TorusGeometry(.028,.011,6,12),ropeMat);knot.position.set(.26,baseY,.17);g.add(knot);
+      this.ropesGroup.add(g);this.ropeCoils.push({group:g,mesh,knot,baseY,loosened:false,falling:false,fallTimer:0});
+    }
+    this.postGroup.add(this.ropesGroup);
+  }
+  updateLayout(w,h,camera) {
+    if(!camera)return;
+    const vh=2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*Math.abs(camera.position.z);
+    const vw=vh*w/h;
+    const oldStart=this.startX,oldEnd=this.endX;
+    const progress=oldEnd>oldStart?clamp((this.currentX-oldStart)/(oldEnd-oldStart),0,1):0;
+    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94})[this.animalId];
+    this.groundY=-vh/2+.45;
+    this.startX=-vw/2+Math.min(1.5,vw*.24);
+    this.endX=vw/2-1.0;
+    this.currentX=this.state==='TRAPPED'?this.startX:THREE.MathUtils.lerp(this.startX,this.endX,progress);
+    this.currentY=this.groundY;
+    this.postGroup.position.set(this.startX,this.groundY,.03);this.postGroup.scale.setScalar(this.modelScale);
+    this.animalGroup.position.set(this.currentX,this.currentY,.06);this.animalGroup.scale.setScalar(this.modelScale);
+    this.contactShadow?.position.set(this.currentX,this.groundY+.012,.09);
+  }
+  getTargetPosition() {
+    this.group.updateMatrixWorld(true);
+    return this.bowtieGroup.getWorldPosition(new THREE.Vector3());
+  }
+  setEnergy(score) {
+    this.energyLevel=score;
+    for(let i=0;i<this.ropeCoils.length;i++)if(score>=Math.ceil((i+1)*this.targetEnergy/5)&&!this.ropeCoils[i].loosened)Object.assign(this.ropeCoils[i],{loosened:true,falling:true,fallTimer:0});
+    this.hopTimer=.70;this.reactionTimer=1.15;
+    this.onEnergyReceived?.(score);
+  }
+  startEscape() {
+    if(this.state!=='TRAPPED')return;
+    this.state='CHEERING';this.escapeElapsed=0;this.ropesGroup.visible=false;this.hopTimer=0;
+    this.spawnRopeBreakParticles();
+  }
+  spawnParticle(pos,dust=false) {
+    if(this.particles.length>=16)return;
+    const geo=dust?new THREE.SphereGeometry(.045,8,6):new THREE.OctahedronGeometry(.035,0);
+    const mesh=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:dust?0xf2e2bd:0xffd778,transparent:true,opacity:.8,depthWrite:false}));
+    mesh.position.copy(pos);this.scene.add(mesh);
+    this.particles.push({mesh,velocity:new THREE.Vector3((Math.random()-.5)*(dust?.28:1.1),dust?.18:.55+Math.random()*.4,(Math.random()-.5)*.3),life:dust?.45:.7,maxLife:dust?.45:.7,dust});
+  }
+  spawnRopeBreakParticles(){if(!this.reducedMotion)for(let i=0;i<12;i++)this.spawnParticle(this.getTargetPosition());}
+  spawnRunDust(pos){if(!this.reducedMotion)this.spawnParticle(pos,true);}
+  setPaused(paused){this.isPaused=paused;}
+  setOpacity(alpha) {
+    for(const mat of this.furMaterials){mat.transparent=alpha<1;mat.opacity=alpha;mat.depthWrite=alpha>.5;}
+  }
+  reset() {
+    this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;this.reactionTimer=0;
+    this.currentX=this.startX;this.currentY=this.groundY;
+    this.group.visible=true;this.animalGroup.visible=true;this.postGroup.visible=true;this.ropesGroup.visible=true;this.setOpacity(1);
+    this.animalGroup.position.set(this.startX,this.groundY,.06);this.animalGroup.rotation.set(0,0,0);this.animalGroup.scale.setScalar(this.modelScale);
+    for(const g of [this.headGroup,this.leftArm,this.rightArm,this.leftLeg,this.rightLeg,this.tailGroup])g.rotation.set(0,0,0);
+    this.leftEarGroup.rotation.set(0,0,.13);this.rightEarGroup.rotation.set(0,0,-.13);this.eyesGroup.scale.set(1,1,1);
+    this.bodyMesh.rotation.set(0,0,0);
+    for(const name of ['Whisker_L','Whisker_R'])this.model.getObjectByName(name)?.rotation.set(0,0,0);
+    this.model.scale.set(1,1,1);this.model.rotation.set(0,-.16,0);this.setQuadrupedPosture(0);
+    for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=sign*.18;}
+    for(const c of this.ropeCoils){Object.assign(c,{loosened:false,falling:false,fallTimer:0});c.group.visible=true;c.group.position.set(0,0,0);c.group.scale.set(1,1,1);c.mesh.material.opacity=1;}
+    for(const p of this.particles){this.scene.remove(p.mesh);p.mesh.geometry.dispose();p.mesh.material.dispose();}this.particles=[];
+    if(this.contactShadow){this.contactShadow.visible=true;this.contactShadow.material.opacity=1;}
+    for(const m of this.bowMaterials)m.emissiveIntensity=0;
+  }
+  setPlayerFocus(players=[]) {
+    const face=players.find(p=>p.face)?.face;
+    this.playerFocus=face?{x:face.x,y:face.eyeY??face.y}:null;
+  }
+  updateExpression(dt) {
+    const reaction=this.reactionTimer||0;this.reactionTimer=Math.max(0,reaction-dt);
+    if(this.state==='TRAPPED') {
+      const eyeContact=reaction>.15;
+      const focus=this.playerFocus||{x:.5,y:.32};
+      const yaw=eyeContact?-.04:THREE.MathUtils.clamp((focus.x-.12)*.65,-.15,.34);
+      this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,yaw,Math.min(1,dt*8));
+      this.headGroup.rotation.x+=eyeContact?-.05:-.14;
+      if(eyeContact)this.headGroup.rotation.z+=Math.sin((1.15-reaction)*5)*.09;
+    }
+    if(this.state!=='TRAPPED')this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,0,Math.min(1,dt*8));
+    const happy=reaction>.1||this.state==='WAVING'||this.state==='CHEERING';
+    if(this.happyMouth)this.happyMouth.visible=happy;
+    if(this.happyTongue)this.happyTongue.visible=happy;
+    if(this.happyMouth)for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=!happy;}
+    if(!this.isBlinking && this.blinkTimer<3.1)this.eyesGroup.scale.y=happy?.75:1;
+    if(this.eyeBases)for(const [i,eye] of [this.leftEye,this.rightEye].entries()) {
+      const shift=this.state==='TRAPPED'&&!happy?.008:0;
+      eye.position.x=this.eyeBases[i].x+shift;eye.position.y=this.eyeBases[i].y+(happy?.003:.005);
+    }
+  }
+  setQuadrupedPosture(blend) {
+    if(!['cat','dog'].includes(this.animalId))return;
+    if(this.animalId==='dog') {
+      this.bodyMesh.rotation.x=1.23*blend;this.bodyMesh.position.set(0,.42-.025*blend,.07*blend);
+      this.headGroup.position.set(0,.88-.25*blend,.045+.37*blend);
+      for(const arm of [this.leftArm,this.rightArm]){arm.position.y=.43;arm.position.z=.14+.24*blend;}
+      this.leftLeg.position.z=this.rightLeg.position.z=-.02-.23*blend;
+      this.tailGroup.position.set(.22,.27+.11*blend,-.2-.13*blend);return;
+    }
+    // Blend a seated silhouette into a four-footed trot without reskinning the rabbit hop.
+    this.bodyMesh.rotation.x=1.2*blend;this.bodyMesh.position.set(0,.42-.03*blend,.08*blend);
+    this.headGroup.position.set(0,.91-.30*blend,.045+.38*blend);
+    for(const arm of [this.leftArm,this.rightArm]){arm.position.y=.52-.15*blend;arm.position.z=.13+.23*blend;}
+    this.leftLeg.position.z=this.rightLeg.position.z=-.02-.23*blend;
+    this.tailGroup.position.set(.25,.23+.12*blend,-.15-.18*blend);
+  }
+
+  animateHop(phase,height) {
+    // Contact -> compression -> push -> flight -> landing. The ears lag behind.
+    let y=0,squash=0;
+    if(phase<.18)squash=Math.sin(phase/.18*Math.PI)*.10;
+    else if(phase<.82)y=Math.sin((phase-.18)/.64*Math.PI)*height;
+    else squash=Math.sin((phase-.82)/.18*Math.PI)*.08;
+    this.currentY=this.groundY+y;
+    this.animalGroup.position.y=this.currentY;
+    this.model.scale.set(1+squash*.65,1-squash,1+squash*.4);
+    this.headGroup.rotation.x=-Math.sin(phase*Math.PI*2)*.08;
+    this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=-Math.sin((phase-.12)*Math.PI*2)*.19;
+    this.leftLeg.rotation.x=this.rightLeg.rotation.x=Math.sin(phase*Math.PI*2)*.62;
+    this.leftArm.rotation.x=this.rightArm.rotation.x=-Math.sin((phase+.12)*Math.PI*2)*.44;
+    return y;
+  }
+  update(dt,timeSeconds) {
+    if(this.isPaused)return;
+    this.idleTime+=dt;this.blinkTimer+=dt;
+    this.eyesGroup.scale.y=this.blinkTimer>3.1&&this.blinkTimer<3.24?.08:1;
+    if(this.blinkTimer>3.6)this.blinkTimer=0;
+    for(let i=this.particles.length-1;i>=0;i--) {
+      const p=this.particles[i];p.mesh.position.addScaledVector(p.velocity,dt);p.velocity.y-=dt*.95;p.life-=dt;
+      p.mesh.material.opacity=Math.max(0,p.life/p.maxLife)*.8;if(p.dust)p.mesh.scale.setScalar(1+(1-p.life/p.maxLife)*1.2);
+      if(p.life<=0){this.scene.remove(p.mesh);p.mesh.geometry.dispose();p.mesh.material.dispose();this.particles.splice(i,1);}
+    }
+    for(const c of this.ropeCoils)if(c.falling) {
+      c.fallTimer+=dt;const t=clamp(c.fallTimer/.32,0,1);c.group.scale.set(1+t*.22,1,1+t*.22);c.group.position.y=-t*.2;c.mesh.material.opacity=1-t;
+      if(t>=1){c.falling=false;c.group.visible=false;}
+    }
+    let jump=0;
+    if(this.state==='TRAPPED') {
+      this.animalGroup.rotation.y=.15+Math.sin(this.idleTime*.85)*.07;
+      this.animalGroup.rotation.z=this.reducedMotion?0:Math.sin(this.idleTime*1.7)*.013;
+      this.model.scale.set(1,1+Math.sin(this.idleTime*2)*.012,1);
+      this.headGroup.rotation.z=Math.sin(this.idleTime*.8)*.045;
+      this.leftEarGroup.rotation.z=.13+Math.sin(this.idleTime*1.9)*.045;
+      this.rightEarGroup.rotation.z=-.13+Math.sin(this.idleTime*1.7+1)*.045;
+      if(this.hopTimer>0) {
+        this.hopTimer=Math.max(0,this.hopTimer-dt);const p=1-this.hopTimer/.7;
+        if(this.animalId==='goldenDragon'){
+          jump=this.reducedMotion?0:Math.sin(p*Math.PI)*.045;this.animalGroup.position.y=this.groundY+jump;
+          this.headGroup.rotation.x=-Math.sin(p*Math.PI)*.10;this.rightArm.rotation.x=-Math.sin(p*Math.PI)*.45;
+        }else if(['cat','dog'].includes(this.animalId)) {
+          this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
+          this.headGroup.rotation.z=Math.sin(p*Math.PI)*.12;
+          this.rightArm.rotation.x=-Math.sin(p*Math.PI)*(this.animalId==='dog'?1.05:.8);
+          if(this.animalId==='dog'){this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=Math.sin(p*Math.PI*2)*.12;this.model.scale.y=1+Math.sin(p*Math.PI)*.025;}
+          this.tailGroup.rotation.z=Math.sin(p*Math.PI*2)*.22;
+        }else jump=this.animateHop(p,this.reducedMotion?.025:(this.animalId==='frog'?.22:.14));
+        this.leftArm.rotation.z=-Math.sin(p*Math.PI)*.45;this.rightArm.rotation.z=Math.sin(p*Math.PI)*.45;
+        for(const m of this.bowMaterials){m.emissive=new THREE.Color(0xe6a94e);m.emissiveIntensity=Math.sin(p*Math.PI)*.6;}
+      }else {
+        this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;this.headGroup.rotation.x=0;
+        this.leftArm.rotation.set(-.12,0,.17);this.rightArm.rotation.set(-.12,0,-.17);
+        this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
+        this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=0;
+        this.tailGroup.rotation.z=['cat','dog'].includes(this.animalId)?Math.sin(this.idleTime*(this.animalId==='dog'?5:1.9))*(this.animalId==='dog'?.25:.12):0;
+      }
+    }else if(this.state!=='ESCAPED') {
+      this.escapeElapsed+=dt;const t=this.escapeElapsed;
+      if(t<.65) {
+        this.state='CHEERING';
+        if(this.animalId==='goldenDragon'){
+          jump=this.reducedMotion?0:Math.sin(t/.65*Math.PI)*.10;this.animalGroup.position.y=this.groundY+jump;
+          this.model.scale.set(1,1,1);
+        }else if(['cat','dog'].includes(this.animalId)) {
+          this.setQuadrupedPosture(smooth(t/.65));
+          const stretch=Math.sin(t/.65*Math.PI);this.model.scale.set(1+.10*stretch,1-.06*stretch,1);
+          this.leftArm.rotation.x=this.rightArm.rotation.x=-stretch*.6;this.tailGroup.rotation.z=-stretch*.3;
+        }else jump=this.animateHop(t/.65,this.reducedMotion?.05:(this.animalId==='frog'?.43:.34));
+        this.animalGroup.rotation.y=THREE.MathUtils.lerp(.15,Math.PI/2,smooth(t/.65));
+        this.leftArm.rotation.z=-.45;this.rightArm.rotation.z=.45;
+      }else if(t<3.15) {
+        this.state='ESCAPING';const p=(t-.65)/2.5;const count=this.animalId==='frog'?4:5;
+        const hopPos=p*count;const phase=hopPos%1;
+        // Advance mainly in the airborne interval, so planted feet do not slide.
+        const step=['cat','dog','dragon','goldenDragon'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
+        this.currentX=THREE.MathUtils.lerp(this.startX,this.endX,step);
+        this.animalGroup.position.x=this.currentX;this.animalGroup.rotation.y=Math.PI/2;this.animalGroup.rotation.z=-.035;
+        if(['cat','dog'].includes(this.animalId)) {
+          this.setQuadrupedPosture(1);
+          const stride=Math.sin(p*Math.PI*(this.animalId==='dog'?24:20));
+          this.model.scale.set(1,1,1);jump=this.reducedMotion?0:Math.abs(stride)*(this.animalId==='dog'?.055:.025);
+          this.currentY=this.groundY+jump;this.animalGroup.position.y=this.currentY;
+          this.leftArm.rotation.x=stride*.42;this.rightArm.rotation.x=-stride*.42;
+          this.leftLeg.rotation.x=-stride*.38;this.rightLeg.rotation.x=stride*.38;
+          this.tailGroup.rotation.z=.3+Math.sin(p*(this.animalId==='dog'?32:20))*(this.animalId==='dog'?.30:.1);this.headGroup.rotation.x=-.04;
+        }else if(['dragon','goldenDragon'].includes(this.animalId)){
+          this.model.scale.set(1,1,1);jump=this.reducedMotion?.05:.18+Math.sin(p*Math.PI)*.10+Math.sin(p*24)*.025;
+          this.animalGroup.position.y=this.groundY+jump;this.leftLeg.rotation.x=this.rightLeg.rotation.x=.35;
+          this.leftArm.rotation.x=this.rightArm.rotation.x=-.3;
+        }else jump=this.animateHop(phase,this.reducedMotion?.025:(this.animalId==='frog'?.35:.22));
+        this.dustClock+=dt;
+        if(phase>.82&&this.dustClock>.25){this.dustClock=0;this.spawnRunDust(new THREE.Vector3(this.currentX-.12,this.groundY+.03,.16));}
+      }else if(t<3.8) {
+        if(this.state!=='WAVING')this.onReachedExit?.();
+        this.state='WAVING';this.currentX=this.endX;this.currentY=this.groundY;
+        this.animalGroup.position.set(this.endX,this.groundY,.06);this.animalGroup.rotation.x=0;this.model.scale.set(1,1,1);
+        this.animalGroup.rotation.y=THREE.MathUtils.lerp(Math.PI/2,0,smooth(clamp((t-3.15)/.22,0,1)));
+        this.setQuadrupedPosture(1-smooth(clamp((t-3.15)/.22,0,1)));
+        this.headGroup.rotation.z=-.1;
+        if(['cat','dog'].includes(this.animalId))this.tailGroup.rotation.z=Math.sin((t-3.15)*12)*.3;
+        this.leftArm.rotation.set(0,0,-1.7+Math.sin((t-3.15)*20)*.22);this.rightArm.rotation.set(0,0,-.1);
+        this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
+        this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=0;
+      }else {
+        const alpha=1-clamp((t-3.8)/.3,0,1);this.setOpacity(alpha);this.contactShadow.material.opacity=alpha;
+        if(alpha===0){this.state='ESCAPED';this.animalGroup.visible=false;this.contactShadow.visible=false;}
+      }
+    }
+    if(this.animalId==='dog')this.tailGroup.rotation.y=Math.sin(this.idleTime*7)*(this.state==='TRAPPED'?.4:.55);
+    if(this.animalId==='dragon'){
+      const flying=this.state==='ESCAPING', excited=this.reactionTimer>0||this.state==='CHEERING';
+      const flap=this.reducedMotion?0:Math.sin(this.idleTime*(flying?12:excited?10:2))*(flying?.6:excited?.4:.06);
+      for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=sign*(.18+flap);}
+      this.tailGroup.rotation.y=Math.sin(this.idleTime*2.5)*.18;
+    }
+    if(this.animalId==='goldenDragon'){
+      const swimming=this.state==='ESCAPING',amplitude=this.reducedMotion?0:(swimming?.075:.025);
+      this.bodyMesh.rotation.z=Math.sin(this.idleTime*3.5)*amplitude;
+      this.tailGroup.rotation.y=Math.sin(this.idleTime*3.5-1)*amplitude*3;
+      this.tailGroup.rotation.z=Math.sin(this.idleTime*3.5-.6)*amplitude;
+      if(swimming){this.animalGroup.rotation.x=Math.sin(this.idleTime*3.5)*.035;this.headGroup.rotation.z=Math.sin(this.idleTime*3.5+.7)*.05;}
+      for(const [name,sign]of [['Whisker_L',-1],['Whisker_R',1]]){const whisker=this.model.getObjectByName(name);if(whisker)whisker.rotation.y=sign*Math.sin(this.idleTime*2.7)*amplitude*2;}
+    }
+    this.updateExpression(dt);
+    this.currentY=this.animalGroup.position.y;
+    if(this.contactShadow){this.contactShadow.position.set(this.currentX,this.groundY+.014,.09);this.contactShadow.scale.setScalar(this.modelScale*(1+jump*.5));if(this.state!=='ESCAPED')this.contactShadow.visible=true;}
+  }
+}

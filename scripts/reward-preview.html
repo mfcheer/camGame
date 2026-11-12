@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><style>body{margin:0;background:#edf2e8;font-family:-apple-system,"PingFang SC",sans-serif}canvas{display:block}.labels{position:absolute;left:0;right:0;bottom:20px;display:flex;text-align:center;color:#4d6356;font-weight:650;font-size:19px}.labels span{flex:1}.labels small{display:block;font-size:12px;color:#889580;margin-top:6px;font-weight:400}</style><div class="labels"><span>星光珠宝冠<small>曲面金冠 · 孔雀绒带 · 彩色宝石</small></span><span>林间花叶环<small>层叠玫瑰 · 月桂叶 · 飘带</small></span><span>小小探险家<small>护目镜 · 手工缝线 · 羽饰</small></span></div>
+<script type="module">
+import * as THREE from 'three';import {createAccessory} from '/src/celebrationAccessories.js';
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});renderer.setSize(1280,420);renderer.setPixelRatio(1);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;document.body.append(renderer.domElement);
+const scene=new THREE.Scene();scene.add(new THREE.HemisphereLight(0xf0f9ff,0xa99a7c,2.0));const key=new THREE.DirectionalLight(0xffefdb,3.2);key.position.set(-3,5,5);scene.add(key);const fill=new THREE.DirectionalLight(0xe5f3ff,1.0);fill.position.set(4,2,3);scene.add(fill);
+for(let i=0;i<3;i++){const prop=createAccessory(i);prop.position.set((i-1)*1.4,0,0);prop.rotation.y=-.10;scene.add(prop);}
+const camera=new THREE.PerspectiveCamera(23,1280/420,.1,100);camera.position.set(0,.85,3.4);camera.lookAt(0,.20,0);renderer.render(scene,camera);window.previewReady=true;
+</script>

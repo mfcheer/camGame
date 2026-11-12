@@ -1,0 +1,588 @@
+:root {
+  --primary-color: #ff6b81;
+  --secondary-color: #ffa502;
+  --accent-color: #2ed573;
+  --sky-blue: #1e90ff;
+  --soft-bg: rgba(255, 255, 255, 0.94);
+  --border-radius-lg: 24px;
+  --border-radius-pill: 9999px;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #2f3542;
+  font-family: var(--font-family);
+}
+
+/* 摄像头背景（完全镜像对齐，充满屏幕，未开启或模拟模式为柔和晴空渐变） */
+#webcam-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  transform: scaleX(-1); /* 水平镜像，如同照镜子 */
+  z-index: 1;
+  background: linear-gradient(180deg, #DDF4FF 0%, #EAFBF1 58%, #BDE9D0 100%);
+}
+
+/* Three.js 3D 渲染层 */
+#canvas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* UI 覆盖层 */
+#ui-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* 顶部状态与控制栏 */
+#game-hud {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  right: 0;
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  pointer-events: auto;
+  z-index: 5;
+}
+
+.hud-left, .hud-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--border-radius-pill);
+  border: none;
+  background: white;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+}
+
+.mode-badge {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 8px 18px;
+  border-radius: var(--border-radius-pill);
+  font-size: 16px;
+  font-weight: 700;
+  color: #2f3542;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* 5 个彩虹进度圆点（视口水平严格绝对居中，杜绝左右非对称按钮导致的偏右） */
+.progress-dots-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 10px 20px;
+  border-radius: var(--border-radius-pill);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+.progress-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #dfe4ea;
+  border: 3px solid white;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.progress-dot::after {
+  content: '⭐';
+  opacity: 0;
+  transform: scale(0.3);
+  transition: all 0.3s ease;
+}
+
+.progress-dot.filled {
+  background: linear-gradient(135deg, #ff9ff3, #feca57);
+  box-shadow: 0 0 16px rgba(254, 202, 87, 0.8);
+  transform: scale(1.15);
+}
+
+.progress-dot.filled::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 模拟模式角标 (左下角非交互暖灰角标，不遮挡泡泡与气球) */
+#demo-mode-banner {
+  position: absolute;
+  top: 87px;
+  left: 24px;
+  bottom: auto;
+  background: rgba(47, 70, 66, 0.62);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  z-index: 10;
+  letter-spacing: 0.5px;
+}
+
+/* 姿态丢失提示气泡 */
+#pose-lost-alert {
+  position: absolute;
+  top: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(47, 53, 66, 0.88);
+  color: #f1f2f6;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: var(--border-radius-pill);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  animation: pulseAlert 2s infinite ease-in-out;
+  z-index: 6;
+}
+
+@keyframes pulseAlert {
+  0%, 100% { opacity: 0.9; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.04); }
+}
+
+/* 首个泡泡动作示范引导动画 */
+#hand-guide-anim {
+  position: absolute;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 8;
+  animation: handBounce 1.8s infinite ease-in-out;
+}
+
+#hand-guide-anim.fading-out {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.guide-hand-icon {
+  font-size: 52px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+}
+
+.guide-text {
+  background: rgba(255, 255, 255, 0.95);
+  color: #2f3542;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: var(--border-radius-pill);
+  margin-top: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+}
+
+@keyframes handBounce {
+  0%, 100% { transform: translateY(0) rotate(-10deg); }
+  50% { transform: translateY(-18px) rotate(12deg); }
+}
+
+/* 弹窗通用结构 */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+  z-index: 20;
+}
+
+.card {
+  background: var(--soft-bg);
+  border-radius: var(--border-radius-lg);
+  padding: 32px 36px;
+  max-width: 480px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  border: 4px solid #ffffff;
+}
+
+.card h1 {
+  font-size: 32px;
+  color: #2f3542;
+  margin-bottom: 8px;
+}
+
+.card h2 {
+  font-size: 26px;
+  color: #2f3542;
+  margin-bottom: 12px;
+}
+
+.card p {
+  font-size: 16px;
+  color: #57606f;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.card .privacy-tip {
+  font-size: 13px;
+  color: #747d8c;
+  background: #f1f2f6;
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-top: 18px;
+  line-height: 1.4;
+}
+
+/* 按钮样式 */
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #ff6b81, #ff4757);
+  color: white;
+  border: none;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 16px 28px;
+  border-radius: var(--border-radius-pill);
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(255, 71, 87, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-secondary {
+  width: 100%;
+  background: white;
+  color: #2f3542;
+  border: 2px solid #ced6e0;
+  font-size: 17px;
+  font-weight: 600;
+  padding: 13px 20px;
+  border-radius: var(--border-radius-pill);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.btn-secondary:hover {
+  background: #f1f2f6;
+}
+
+/* 人数模式选择卡片 */
+.mode-selector {
+  display: flex;
+  gap: 14px;
+  margin: 18px 0 24px 0;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 14px 10px;
+  border-radius: 16px;
+  border: 3px solid #dfe4ea;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.mode-btn .mode-icon {
+  font-size: 32px;
+}
+
+.mode-btn .mode-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2f3542;
+}
+
+.mode-btn .mode-sub {
+  font-size: 12px;
+  color: #747d8c;
+}
+
+.mode-btn.selected {
+  border-color: #ff6b81;
+  background: #fff0f3;
+  box-shadow: 0 6px 16px rgba(255, 107, 129, 0.2);
+}
+
+/* 镜像校准视窗 */
+.calibration-box {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 20px auto;
+  border: 4px dashed #ff9ff3;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  animation: floatCircle 2s infinite ease-in-out;
+}
+
+@keyframes floatCircle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+/* 固定横屏模式引导层 */
+.orientation-card {
+  text-align: center;
+  max-width: 420px;
+  border: 3px solid #ffaa00;
+  box-shadow: 0 16px 36px rgba(255, 170, 0, 0.25);
+}
+
+.orientation-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  display: inline-block;
+  animation: rotateDevice 2.2s ease-in-out infinite;
+}
+
+@keyframes rotateDevice {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@media (max-width: 600px) {
+  #game-hud {
+    padding: 0 12px;
+  }
+  .progress-dots-container {
+    gap: 7px;
+    padding: 6px 12px;
+  }
+  .progress-dot {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+  .mode-badge {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  #demo-mode-banner {
+    top: 76px;
+    bottom: auto;
+    left: 12px;
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+  .card {
+    padding: 24px 20px;
+  }
+  .card h1 {
+    font-size: 26px;
+  }
+}
+
+/* 免触碰开局提示标签 */
+.auto-start-pill {
+  font-size: 13px;
+  color: #ff4757;
+  background: #fff0f3;
+  border: 1px solid #ffccd2;
+  padding: 8px 14px;
+  border-radius: 12px;
+  margin: 10px 0 14px 0;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* 免触碰自动就位 3-2-1 倒计时全屏遮罩层 */
+.countdown-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+.countdown-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.countdown-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.countdown-tip {
+  background: rgba(255, 255, 255, 0.95);
+  color: #2f3542;
+  font-size: 22px;
+  font-weight: 800;
+  padding: 10px 24px;
+  border-radius: var(--border-radius-pill);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  letter-spacing: 0.5px;
+}
+
+.countdown-number {
+  font-size: 148px;
+  font-weight: 900;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  animation: countdownPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes countdownPop {
+  0% {
+    transform: scale(0.35);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.0);
+    opacity: 1;
+  }
+}
+
+/* Animal selection uses renders of the actual playable models. */
+.start-card { max-width: 680px; max-height: calc(100dvh - 28px); overflow-y:auto; padding:24px 30px; }
+.start-card h1 { font-size:28px; }
+.start-card p { margin-bottom:12px; font-size:14px; }
+.animal-picker { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:12px 0 18px; }
+.animal-choice { appearance:none; background:#f4f7ed; border:2px solid transparent; border-radius:18px; padding:8px 6px 12px; color:#3d5149; font:inherit; cursor:pointer; display:flex; align-items:center; flex-direction:column; gap:4px; }
+.animal-choice.selected { border-color:#6b9f87; background:#edf7e8; box-shadow:0 3px 0 #b2cbaa; }
+.animal-choice:hover { background:#eaf3e5; }
+.animal-choice:focus-visible { outline:3px solid #d8a248; outline-offset:3px; }
+.animal-choice > img,.random-friends { width:100%; height:88px; object-fit:contain; }
+.animal-choice strong { font-size:16px; }
+.animal-choice span { font-size:12px; color:#6b7d71; }
+.random-friends { display:flex; justify-content:center; }
+.random-friends img { width:60%; height:88px; object-fit:contain; }
+.random-friends img + img { margin-left:-28%; transform:translate(6px,5px) rotate(9deg); }
+.progress-dots-container[data-compact="true"] { gap:10px; }
+.progress-dots-container[data-compact="true"] .progress-dot { width:var(--energy-dot-size,26px); height:var(--energy-dot-size,26px); font-size:14px; }
+.calibration-box { display:flex; align-items:center; justify-content:center; }
+.calibration-box span { font-size:20px; padding:10px; }
+@media(max-width:900px) {
+  .progress-dots-container[data-compact="true"] { gap:7px; padding:10px 14px; }
+  .progress-dots-container[data-compact="true"] .progress-dot { width:20px; height:20px; font-size:12px; }
+}
+@media(max-width:540px) {
+  .start-card { padding:20px 14px; }
+  .start-card h1 { font-size:23px; }
+  .animal-picker { gap:6px; }
+  .animal-choice strong { font-size:14px; }
+  .animal-choice span { font-size:10px; }
+  .animal-choice > img,.random-friends,.random-friends img { height:72px; }
+}
+
+/* Keep the player's face and AR reward visible during the result countdown. */
+#victory-modal { background:transparent; backdrop-filter:none; align-items:flex-end; padding:0 16px 20px; pointer-events:none; }
+#victory-modal .card { pointer-events:auto; max-width:660px; padding:16px 22px; box-shadow:0 8px 30px #40564626; }
+#victory-modal h1 { font-size:21px; margin:0 0 3px; }
+#victory-modal h2 { font-size:19px; margin:0 0 5px; }
+#victory-modal p { font-size:13px; margin:0 0 10px; }
+.victory-actions { display:flex; gap:12px; }
+.victory-actions button { font-size:15px; padding:10px 16px; margin:0; }
+.auto-next-row { display:flex; justify-content:center; gap:12px; align-items:center; margin-top:10px; color:#5b7165; font-size:12px; }
+.text-button { background:none;border:0;color:#526f61;text-decoration:underline;cursor:pointer;font:inherit;padding:3px; }
+@media(max-height:440px){#victory-modal{padding-bottom:8px;}#victory-modal .card{padding:10px 16px;}#victory-modal h1{display:none;}}
+
+.animal-picker { grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; }
+.animal-choice.random-choice { grid-column:1/-1; flex-direction:row; justify-content:center; gap:14px; min-height:52px; padding:4px 12px; }
+.random-choice .random-friends { width:210px; height:42px; }
+.random-choice .random-friends img { width:43px; height:42px; }
+.random-choice .random-friends img+img { margin-left:-8px; transform:none; }
+.animal-choice > img { height:82px; }
+@media(max-width:540px) {
+ .animal-picker { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .animal-choice > img { height:74px; }
+ .animal-choice.random-choice { gap:8px; flex-wrap:wrap; }
+ .random-choice .random-friends { width:130px; }
+}
+
+@media(min-width:541px){.animal-choice strong{font-size:14px}.animal-choice span{font-size:11px}}

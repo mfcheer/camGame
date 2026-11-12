@@ -1,0 +1,19 @@
+
+> camgame@1.0.0 build
+> vite build
+
+vite v8.3.8 building client environment for production...
+transforming...
+✓ 15 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   5.92 kB │ gzip:   2.40 kB
+dist/assets/index-BURrrTLN.css    6.43 kB │ gzip:   2.05 kB
+dist/assets/index-C1BOGM6n.js   765.78 kB │ gzip: 198.68 kB
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 268ms

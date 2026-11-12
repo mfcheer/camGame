@@ -1,0 +1,7 @@
+MediaPipe Tasks Vision 1.2.3
+Copyright Google LLC. Distributed under Apache License 2.0; see LICENSE-2.0.txt.
+vision_bundle.js is copied from the project's pinned @mediapipe/tasks-vision package.
+Hand model source (version 1):
+https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
+Model documentation and model card: https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker
+No runtime requests to external model hosts are required.

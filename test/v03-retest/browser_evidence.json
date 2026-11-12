@@ -1,0 +1,1934 @@
+{
+  "at": "2026-11-12T12:48:52.591Z",
+  "viewport": {
+    "w": 1280,
+    "h": 720
+  },
+  "normalTimeline": {
+    "at": "2026-11-12T12:46:21.497Z",
+    "hits": [
+      {
+        "ms": 0,
+        "state": "PLAYING",
+        "count": 1,
+        "particles": 16,
+        "energy": [
+          0
+        ],
+        "lit": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "takeoff": 0,
+        "y": -2.7313462443508527,
+        "initialY": -2.68082326711073,
+        "victory": false
+      },
+      {
+        "ms": 0,
+        "state": "PLAYING",
+        "count": 2,
+        "particles": 16,
+        "energy": [
+          0
+        ],
+        "lit": [
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "takeoff": 0,
+        "y": -2.7004345899370072,
+        "initialY": -2.68082326711073,
+        "victory": false
+      },
+      {
+        "ms": 0,
+        "state": "PLAYING",
+        "count": 3,
+        "particles": 16,
+        "energy": [
+          0
+        ],
+        "lit": [
+          true,
+          true,
+          false,
+          false,
+          false
+        ],
+        "takeoff": 0,
+        "y": -2.707845396189387,
+        "initialY": -2.68082326711073,
+        "victory": false
+      },
+      {
+        "ms": 0,
+        "state": "PLAYING",
+        "count": 4,
+        "particles": 16,
+        "energy": [
+          0
+        ],
+        "lit": [
+          true,
+          true,
+          true,
+          false,
+          false
+        ],
+        "takeoff": 0,
+        "y": -2.6240418026707766,
+        "initialY": -2.68082326711073,
+        "victory": false
+      },
+      {
+        "ms": 1,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 16,
+        "energy": [
+          0
+        ],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0,
+        "y": -2.7107754930790735,
+        "initialY": -2.68082326711073,
+        "victory": false
+      }
+    ],
+    "frames": [
+      {
+        "ms": 3,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 16,
+        "energy": [
+          0.11800000011920929
+        ],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0.04720000004768372,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 56,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 16,
+        "energy": [
+          0.2522499996423721
+        ],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0.10089999985694886,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 104,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 16,
+        "energy": [
+          0.3739999997615814
+        ],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0.14959999990463257,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 154,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 16,
+        "energy": [
+          0.49800000011920925
+        ],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0.19920000004768373,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 204,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 16,
+        "energy": [
+          0.6239999997615814
+        ],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0.2495999999046326,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 256,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 16,
+        "energy": [
+          0.7527499997615814
+        ],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0.30109999990463265,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 304,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 13,
+        "energy": [
+          0.87375
+        ],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0.34950000000000003,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 354,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 8,
+        "energy": [
+          0.9982499998807907
+        ],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0.3992999999523163,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 404,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 5,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0.44959999990463256,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 456,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 3,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        "takeoff": 0.501,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 504,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 3,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 0.5495999999046326,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 554,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 2,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 0.5995000000000001,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 605,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 0.6502000000476839,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 655,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 0.7000000000000002,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 706,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 0.750899999856949,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 754,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 0.7992999999523164,
+        "y": -2.68082326711073,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 399.84560488706694
+      },
+      {
+        "ms": 806,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 0.850899999856949,
+        "y": -2.6811060080500804,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 392.88604179128237
+      },
+      {
+        "ms": 854,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 0.8990999999046327,
+        "y": -2.695869003356202,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 393.4272364043778
+      },
+      {
+        "ms": 904,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 0.9488999998569491,
+        "y": -2.708862127257661,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 393.9035495452372
+      },
+      {
+        "ms": 954,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 0.9990000000000001,
+        "y": -2.7176570863163714,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 394.22596273891986
+      },
+      {
+        "ms": 1004,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.0490999999046324,
+        "y": -2.7208222678172334,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 394.3419946919359
+      },
+      {
+        "ms": 1054,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.0988999998569486,
+        "y": -2.717909313545333,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 394.23520910219236
+      },
+      {
+        "ms": 1104,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.148899999856949,
+        "y": -2.7093508383648848,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 393.9214651384556
+      },
+      {
+        "ms": 1156,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.200899999856949,
+        "y": -2.6958690034256025,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 393.4272364069219
+      },
+      {
+        "ms": 1204,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.2497000000476837,
+        "y": -2.6809175147881525,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 392.87913184273566
+      },
+      {
+        "ms": 1254,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.2997000000476835,
+        "y": -2.6785361370715046,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 392.61226935526486
+      },
+      {
+        "ms": 1306,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.351,
+        "y": -2.6714886034160914,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 391.85018288411027
+      },
+      {
+        "ms": 1356,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.401,
+        "y": -2.660199943547632,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 390.6400845577227
+      },
+      {
+        "ms": 1405,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.4502000000476836,
+        "y": -2.64498850348502,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 389.01473518067894
+      },
+      {
+        "ms": 1454,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.4992999999523162,
+        "y": -2.625901552190003,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 386.97699517804546
+      },
+      {
+        "ms": 1505,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.5508999998569488,
+        "y": -2.6018020334300194,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 384.4023950512831
+      },
+      {
+        "ms": 1554,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.5990000000000002,
+        "y": -2.5757589426638035,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 381.615558948049
+      },
+      {
+        "ms": 1606,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.6508999998569491,
+        "y": -2.543952368093585,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 378.20423060967386
+      },
+      {
+        "ms": 1654,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.699700000047684,
+        "y": -2.510691298590248,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 374.6278804504491
+      },
+      {
+        "ms": 1705,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.7508999998569492,
+        "y": -2.472464215251826,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 370.50756007962406
+      },
+      {
+        "ms": 1754,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.7997999999523167,
+        "y": -2.432924803283307,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 366.2369214523778
+      },
+      {
+        "ms": 1805,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.8503999998569491,
+        "y": -2.3890552856654663,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 361.4914206142763
+      },
+      {
+        "ms": 1854,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.8990000000000005,
+        "y": -2.3442406969734355,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 356.6395979418368
+      },
+      {
+        "ms": 1905,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.9498999998569493,
+        "y": -2.294651814447672,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 351.27012964908806
+      },
+      {
+        "ms": 1954,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 1.999899999856949,
+        "y": -2.243456167184625,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 345.7295255227896
+      },
+      {
+        "ms": 2004,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.0488999998569493,
+        "y": -2.191050241959953,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 340.06373091467583
+      },
+      {
+        "ms": 2055,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.100799999952317,
+        "y": -2.133298138285438,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 333.828567563556
+      },
+      {
+        "ms": 2104,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.1495999999046336,
+        "y": -2.077044916383665,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 327.7643191935719
+      },
+      {
+        "ms": 2155,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.20089999985695,
+        "y": -2.0160366729616332,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 321.19657404496724
+      },
+      {
+        "ms": 2204,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.249000000000001,
+        "y": -1.9572398950457064,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 314.8737596480954
+      },
+      {
+        "ms": 2254,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.2990999999046338,
+        "y": -1.8945136440238737,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 308.1327140146309
+      },
+      {
+        "ms": 2304,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.3490999999046336,
+        "y": -1.8305591605878,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 301.26067892543557
+      },
+      {
+        "ms": 2354,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.399500000000001,
+        "y": -1.7648858556889548,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 294.1658234583888
+      },
+      {
+        "ms": 2405,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.45039999985695,
+        "y": -1.6974960359107358,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 286.8246548143045
+      },
+      {
+        "ms": 2456,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.50089999985695,
+        "y": -1.6297426359474905,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 279.4396564336578
+      },
+      {
+        "ms": 2505,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.55089999985695,
+        "y": -1.5619445903030784,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 272.0400481495912
+      },
+      {
+        "ms": 2554,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.5995999999046338,
+        "y": -1.4953766755889792,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 264.76844853529025
+      },
+      {
+        "ms": 2605,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.6500999999046337,
+        "y": -1.4259514195814933,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 257.17980613790803
+      },
+      {
+        "ms": 2655,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.69989999985695,
+        "y": -1.3572502321141493,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 249.66798731633878
+      },
+      {
+        "ms": 2705,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.750500000000001,
+        "y": -1.287365314863645,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 242.0276316261882
+      },
+      {
+        "ms": 2754,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.7990999999046338,
+        "y": -1.2203186582798677,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 234.69651833295876
+      },
+      {
+        "ms": 2805,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.8502999999523175,
+        "y": -1.149928341433491,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 226.9989368765021
+      },
+      {
+        "ms": 2855,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.90089999985695,
+        "y": -1.0807720279081685,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 219.44466228721967
+      },
+      {
+        "ms": 2905,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 2.950799999952318,
+        "y": -1.013131725427547,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 212.0651317554419
+      },
+      {
+        "ms": 2956,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.0008999998569506,
+        "y": -0.9459387446711824,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 204.74311283875673
+      },
+      {
+        "ms": 3005,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.050000000000002,
+        "y": -0.8809390816324163,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 197.66687250458006
+      },
+      {
+        "ms": 3054,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.099200000047686,
+        "y": -0.8168050537037979,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 190.68869136992402
+      },
+      {
+        "ms": 3106,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.1507999999523184,
+        "y": -0.7507808571141694,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 183.49974950365004
+      },
+      {
+        "ms": 3153,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.1988999998569514,
+        "y": -0.6905278890359574,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 176.93825410234578
+      },
+      {
+        "ms": 3204,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.2492000000476864,
+        "y": -0.6290105317337087,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 170.23526812016564
+      },
+      {
+        "ms": 3255,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.3007999999523188,
+        "y": -0.5676546061815979,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 163.54371674042736
+      },
+      {
+        "ms": 3303,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.348799999952319,
+        "y": -0.5123233715266551,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 157.47447616563255
+      },
+      {
+        "ms": 3355,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.4008999998569514,
+        "y": -0.4543358738088732,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 151.06394845527768
+      },
+      {
+        "ms": 3405,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.450299999952319,
+        "y": -0.40150224787137123,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 145.21549617493199
+      },
+      {
+        "ms": 3456,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.5008999998569514,
+        "y": -0.3497165194470777,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 139.47037413291383
+      },
+      {
+        "ms": 3505,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.5508999998569513,
+        "y": -0.30102200647120014,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 134.0673301301511
+      },
+      {
+        "ms": 3554,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.599599999904635,
+        "y": -0.2561126029042238,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 129.08675192670842
+      },
+      {
+        "ms": 3605,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.6508999998569514,
+        "y": -0.21165690865852804,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 124.16226204894404
+      },
+      {
+        "ms": 3655,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.700799999952319,
+        "y": -0.17138143113549553,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 119.70874458755387
+      },
+      {
+        "ms": 3704,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.7492999999523193,
+        "y": -0.13519108974452232,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 115.71548517418015
+      },
+      {
+        "ms": 3754,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.799700000047687,
+        "y": -0.10082648264875482,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 111.93244838556923
+      },
+      {
+        "ms": 3805,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.8502999999523193,
+        "y": -0.06981271397771405,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 108.52594005490869
+      },
+      {
+        "ms": 3855,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.9008999998569522,
+        "y": -0.04245734240928156,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 105.52661589288196
+      },
+      {
+        "ms": 3906,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.9508999998569525,
+        "y": -0.01918087643146693,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 102.9769279000117
+      },
+      {
+        "ms": 3954,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 3.9995000000000034,
+        "y": -0.0002843099830087681,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 100.90647499783897
+      },
+      {
+        "ms": 4006,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 4.050899999856952,
+        "y": 0.015538848685651807,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 99.16931484420842
+      },
+      {
+        "ms": 4055,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 4.100599999904636,
+        "y": 0.02661077866080408,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 97.94790184033963
+      },
+      {
+        "ms": 4104,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 4.14879999995232,
+        "y": 0.033228941383783184,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 97.20990302821667
+      },
+      {
+        "ms": 4156,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 4.20079999995232,
+        "y": 0.02508702809437117,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 98.02849111265822
+      },
+      {
+        "ms": 4204,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 4.24929999995232,
+        "y": 0.02678115651784807,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 97.83379075414815
+      },
+      {
+        "ms": 4255,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 4.300399999856952,
+        "y": 0.028656045240052663,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 97.61917565730474
+      },
+      {
+        "ms": 4305,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 4.3507999999523195,
+        "y": 0.03057689003594635,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 97.40071355074997
+      },
+      {
+        "ms": 4355,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 4.400799999952319,
+        "y": 0.032533486976227426,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 97.18001766240754
+      },
+      {
+        "ms": 4405,
+        "state": "CELEBRATING",
+        "count": 5,
+        "particles": 0,
+        "energy": [],
+        "lit": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "takeoff": 4.450799999952319,
+        "y": 0.0345212768271972,
+        "initialY": -2.68082326711073,
+        "victory": false,
+        "top": 96.95793941397123
+      }
+    ],
+    "t0": 52115.200000047684,
+    "afterResume": {
+      "ms": 15622,
+      "state": "CELEBRATING",
+      "count": 5,
+      "particles": 0,
+      "energy": [],
+      "lit": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "takeoff": 5.302000000000004,
+      "y": 0.028164295352249794,
+      "initialY": -2.68082326711073,
+      "victory": true
+    }
+  },
+  "orientation": [
+    {
+      "label": "landscape-playing",
+      "w": 960,
+      "h": 540,
+      "state": "PLAYING",
+      "orientationPaused": false,
+      "modal": false,
+      "t": 0
+    },
+    {
+      "label": "portrait-playing",
+      "w": 390,
+      "h": 700,
+      "state": "PAUSED",
+      "orientationPaused": true,
+      "modal": true,
+      "t": 0
+    },
+    {
+      "label": "landscape-resumed",
+      "w": 960,
+      "h": 540,
+      "state": "PLAYING",
+      "orientationPaused": false,
+      "modal": false,
+      "t": 0
+    }
+  ],
+  "iframeHits": [
+    {
+      "count": 1,
+      "state": "PLAYING"
+    },
+    {
+      "count": 2,
+      "state": "PLAYING"
+    },
+    {
+      "count": 3,
+      "state": "PLAYING"
+    },
+    {
+      "count": 4,
+      "state": "PLAYING"
+    }
+  ],
+  "pausedEnergy": {
+    "before": {
+      "state": "PAUSED",
+      "progress": 0,
+      "lit": false,
+      "t": 0
+    },
+    "after": {
+      "state": "PAUSED",
+      "progress": 0,
+      "lit": true,
+      "t": 0
+    }
+  },
+  "celebrationRotate": {
+    "before": {
+      "label": "portrait-celebrating",
+      "w": 390,
+      "h": 700,
+      "state": "CELEBRATING",
+      "orientationPaused": false,
+      "modal": true,
+      "t": 0.1
+    },
+    "after": {
+      "label": "after-1s",
+      "w": 390,
+      "h": 700,
+      "state": "CELEBRATING",
+      "orientationPaused": false,
+      "modal": true,
+      "t": 1.0982000000476837
+    },
+    "energy": [],
+    "finish": {
+      "label": "portrait-after-5s",
+      "w": 390,
+      "h": 700,
+      "state": "CELEBRATING",
+      "orientationPaused": false,
+      "modal": true,
+      "t": 5.464899999856951,
+      "victory": true
+    }
+  },
+  "errors": [],
+  "method": "指定Browser，父页面1280x720，同源iframe真实960x540与390x700视口；鼠标事件经实际模拟输入；按钮点击或Game暂停入口明确区分；非移动真机"
+}

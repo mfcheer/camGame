@@ -1,0 +1,55 @@
+{
+  "at": "2026-11-12T18:11:48.943Z",
+  "scope": "横屏核心修复独立补充回归，不替代真实设备",
+  "total": 8,
+  "passed": 8,
+  "results": [
+    {
+      "name": "1280x720 完整升空0–5秒模型不越84px安全线",
+      "pass": true,
+      "evidence": {
+        "minTop": 94.55719194819062
+      }
+    },
+    {
+      "name": "1280x800 完整升空0–5秒模型不越84px安全线",
+      "pass": true,
+      "evidence": {
+        "minTop": 93.67466507833902
+      }
+    },
+    {
+      "name": "1024x768 完整升空0–5秒模型不越84px安全线",
+      "pass": true,
+      "evidence": {
+        "minTop": 94.02767582627966
+      }
+    },
+    {
+      "name": "960x540 完整升空0–5秒模型不越84px安全线",
+      "pass": true,
+      "evidence": {
+        "minTop": 96.5428774053564
+      }
+    },
+    {
+      "name": "844x390 完整升空0–5秒模型不越84px安全线",
+      "pass": true,
+      "evidence": {
+        "minTop": 98.04955140665821
+      }
+    },
+    {
+      "name": "PLAYING旋转竖屏暂停并在横屏恢复",
+      "pass": true
+    },
+    {
+      "name": "CELEBRATING旋转竖屏同样暂停",
+      "pass": true
+    },
+    {
+      "name": "第五分暂停期间不得点亮尚未到达的能量",
+      "pass": true
+    }
+  ]
+}

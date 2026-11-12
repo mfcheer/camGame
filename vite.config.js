@@ -1,0 +1,15 @@
+import { defineConfig } from 'vite';
+import basicSsl from '@vitejs/plugin-basic-ssl';
+
+export default defineConfig({
+  plugins: process.env.CAMGAME_HTTP === '1' ? [] : [basicSsl()],
+  server: {
+    port: 5173,
+    host: '0.0.0.0'
+  },
+  preview: {
+    port: 5173,
+    host: '0.0.0.0'
+  },
+  assetsInclude: ['**/*.task', '**/*.wasm']
+});

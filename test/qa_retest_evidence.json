@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-11-12T17:14:03.403617+08:00",
+  "scope": "源码集成检查，UI/计时器/摄像头替身；非浏览器与真机测试",
+  "checks": [
+    {
+      "command": "node test/qa_acceptance.mjs",
+      "exitCode": 0,
+      "stdout": "{\n  \"type\": \"源码集成测试；无真实浏览器/摄像头；计时器与UI使用替身\",\n  \"results\": [\n    {\n      \"name\": \"实际碰撞闭环：0→5、双人同时触碰只加1、第5个起飞、5秒结算\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"暂停不计数；恢复可碰；重新开始清零\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"冷却未结束时重新开始也能生成泡泡\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"丢失姿态后必须暂停并等待家长继续\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"双人只剩一人必须暂停\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"退出停止全部视频轨道并清空srcObject\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"双人生成区域左右轮换（仅固定区域，非人体校准）\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"手机竖屏双人目标中心必须在可视范围\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"宽屏泡泡视觉边缘内的手应当命中\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"模型加载失败后点重试必须重新初始化模型\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"切后台后暂停且返回不自动继续\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"16:9视频裁剪至竖屏后，手部坐标跟随cover裁剪\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"声音开关可往返；静音阻止创建声音\",\n      \"pass\": true\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "stdout": "\n> camgame@1.0.0 build\n> vite build\n\nvite v8.3.8 building client environment for production...\ntransforming...\n✓ 15 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   5.38 kB │ gzip:   2.20 kB\ndist/assets/index-D-tO_JXN.css    5.69 kB │ gzip:   1.84 kB\ndist/assets/index-BCW1GMFN.js   743.51 kB │ gzip: 193.55 kB\n\n✓ built in 203ms\n",
+      "stderr": "[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+    },
+    {
+      "command": "npm ls --depth=0",
+      "exitCode": 0,
+      "stdout": "camgame@1.0.0 /Users/mfcheer/code/camGame\n├── @mediapipe/tasks-vision@1.2.3\n├── three@0.187.0\n└── vite@8.3.8\n\n",
+      "stderr": ""
+    }
+  ]
+}

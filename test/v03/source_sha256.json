@@ -1,0 +1,15 @@
+{
+  "src/bubbleManager.js": "2714dd79d551f70da2ebc89bc10d59f5ee3a47ca30061e9c43b56e3be3a5dcac",
+  "src/sceneManager.js": "a8b289ca113c7df73482ea2ba1fc0afeae6c08baa1e55042fa753cdc4cbc6e4a",
+  "src/poseDetector.js": "de17817bb5a99745f4a103912901208d061aa1cbf580ef82a88374e94ce82e13",
+  "src/audioManager.js": "6ace71c1849907c5004f5eefbb9feb1ad5ee9b5197665d2a64e6654cf78f81f8",
+  "src/config.js": "2e29a44e9c234f867e7bc1e1b407bc55e62052c40d1d343fb6ca74ef96428674",
+  "src/main.js": "a5dc7cfabe5b8590ee1defac9839f3086222fb37cd9d044dbf21243abf809453",
+  "src/hotAirBalloon.js": "311c83a6244d43ded821bfdadc0c1caf40965d424032d0864372986ffadfe511",
+  "src/style.css": "7bec358a69a08bc0532b9e0270d78c2ebaa303b2a3e1db7de09e79b51ea88a31",
+  "src/uiManager.js": "564486e5cdbdb328d3f80a69d1f2968ae03cd6ee7e2ba64ecf0eda2755c8fbbc",
+  "index.html": "3c68c2b116cdfe5b557f84972de6d42184aa14d8ad261df375c5fd7794711f37",
+  "DESIGN_SPEC_V0.3.md": "09d4679b31631a58e84b01f6294e45bc0a23a8fa6e08a88d4d9a1dd5ecf8b253",
+  "README.md": "0d12a28f433174cc674d3b80ebfa53f347e4a173fa63652ef1f2d296f85b04b8",
+  "test/qa_v03.mjs": "bdd72369bd1335dac4e4c5908431ae9607a78a55a75153f8e3c10c140dedd820"
+}

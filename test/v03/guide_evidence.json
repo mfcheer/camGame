@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"count\": 1,\n  \"fadingAtHit\": true,\n  \"guideBeforeHit\": true,\n  \"hiddenAfter240ms\": true,\n  \"hiddenNextBubble\": true\n}"
+    }
+  ],
+  "isError": false
+}

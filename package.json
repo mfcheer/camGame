@@ -1,0 +1,22 @@
+{
+  "name": "camgame",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 5173",
+    "test": "node test/qa_v12_dragon_stages.mjs && node test/qa_v10_animals_rewards.mjs && node test/qa_v09_features.mjs && node test/qa_v08_tracking_animals.mjs && node test/qa_v07_animation.mjs && node test/qa_v06_fingertip_animal.mjs && node test/qa_v05_rescue_mode.mjs && node test/qa_v04_polish.mjs && node test/qa_v03.mjs && node test/qa_closeout.mjs && node test/qa_landscape_retest.mjs && node test/qa_acceptance.mjs",
+    "build:assets": "node scripts/build-rabbit.mjs",
+    "dev:local": "CAMGAME_HTTP=1 vite --host 127.0.0.1 --port 5175",
+    "preview:assets": "node scripts/render-previews.mjs"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "1.2.3",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "vite": "8.3.8"
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "at": "2026-11-12T17:31:42.300400+08:00",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "test/qa_acceptance.mjs"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"type\": \"源码集成与生命周期回归测试；无真实浏览器/摄像头；计时器与UI使用替身\",\n  \"totalCount\": 18,\n  \"passCount\": 18,\n  \"results\": [\n    {\n      \"name\": \"实际碰撞闭环：0→5、双人同时触碰只加1、第5个起飞、5秒结算\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"暂停不计数；恢复可碰；重新开始清零\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"冷却未结束时重新开始也能生成泡泡\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"丢失姿态后必须暂停并等待家长继续\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"双人只剩一人必须暂停\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"退出停止全部视频轨道并清空srcObject\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"双人生成区域左右轮换（仅固定区域，非人体校准）\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"手机竖屏双人目标中心必须在可视范围\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"宽屏泡泡视觉边缘内的手应当命中\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"模型加载失败后点重试必须重新初始化模型\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"切后台后暂停且返回不自动继续\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"16:9视频裁剪至竖屏后，手部坐标跟随cover裁剪\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"声音开关可往返；静音阻止创建声音\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"QA-08: 就绪门禁自校验、参与人数确认与本轮玩家锁定\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"QA-08: 旁观者防替入机制（第三人入框不替代或扰乱已锁定玩家）\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"庆祝定时器支持暂停冻结有效时长、恢复结算、重新开始与退出取消旧轮回调\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"异步开始与重试具备轮次取消保护，退出后不可重新开摄像头\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"横竖屏（含 390x844）泡泡最大放大边缘（含助力与微浮）全处于可视投影范围\",\n      \"pass\": true\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "stdout": "\n> camgame@1.0.0 build\n> vite build\n\nvite v8.3.8 building client environment for production...\ntransforming...\n✓ 15 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   5.47 kB │ gzip:   2.22 kB\ndist/assets/index-D-tO_JXN.css    5.69 kB │ gzip:   1.84 kB\ndist/assets/index-C-9bJATS.js   750.95 kB │ gzip: 195.28 kB\n\n✓ built in 246ms\n",
+      "stderr": "[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+    },
+    {
+      "command": [
+        "npm",
+        "ls",
+        "--depth=0"
+      ],
+      "exitCode": 0,
+      "stdout": "camgame@1.0.0 /Users/mfcheer/code/camGame\n├── @mediapipe/tasks-vision@1.2.3\n├── three@0.187.0\n└── vite@8.3.8\n\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "curl",
+        "--max-time",
+        "5",
+        "-I",
+        "http://localhost:5173/"
+      ],
+      "exitCode": 7,
+      "stdout": "",
+      "stderr": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\ncurl: (7) Failed to connect to localhost port 5173 after 0 ms: Couldn't connect to server\n"
+    },
+    {
+      "command": [
+        "node",
+        "test/qa_closeout.mjs"
+      ],
+      "exitCode": 1,
+      "stdout": "{\n  \"type\": \"独立收尾源码行为检查；UI、摄像头、计时器为替身；非真机\",\n  \"at\": \"2026-11-12T09:36:04.275Z\",\n  \"totalCount\": 12,\n  \"passCount\": 2,\n  \"results\": [\n    {\n      \"name\": \"庆祝消耗2秒、暂停跨20秒后剩3秒，恢复一次结算；退出取消旧回调\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"单人锁定玩家离框、附近旁观者入框必须不替入\",\n      \"pass\": false,\n      \"actual\": \"旁观者被赋予原玩家身份: [{\\\"id\\\":1,\\\"x\\\":0.55}]\\n\\n1 !== 0\\n\"\n    },\n    {\n      \"name\": \"低可见度且无有效手的姿态不能完成舒适伸手校准\",\n      \"pass\": false,\n      \"actual\": \"hands=0 时仍就绪\\n\\ntrue !== false\\n\"\n    },\n    {\n      \"name\": \"就绪门禁必须确认引擎和摄像头已运行\",\n      \"pass\": false,\n      \"actual\": \"uninitialized / 无stream 仍进入PLAYING\\n\\ntrue !== false\\n\"\n    },\n    {\n      \"name\": \"单人下方舒适区生成目标保持在已校准区内\",\n      \"pass\": false,\n      \"actual\": \"目标y=0.440，校准区y=[.65,.80]\"\n    },\n    {\n      \"name\": \"双人同在画面左侧，轮换目标仍留在各自舒适区\",\n      \"pass\": false,\n      \"actual\": \"目标x=0.717，两位玩家均在左侧\"\n    },\n    {\n      \"name\": \"旧请求失败不得将退出后的START覆盖成ERROR\",\n      \"pass\": false,\n      \"actual\": \"Expected values to be strictly equal:\\n\\n'ERROR' !== 'START'\\n\"\n    },\n    {\n      \"name\": \"旧摄像头请求结束不得停止已就绪的新轮摄像头\",\n      \"pass\": false,\n      \"actual\": \"旧请求清理共享poseDetector，关闭了新轮\\n\\nfalse !== true\\n\"\n    },\n    {\n      \"name\": \"退出后晚到的真实startCamera结果不可绑定或启用轨道\",\n      \"pass\": false,\n      \"actual\": \"退出后重新绑定stream；stop次数=0，仍在等metadata\\n+ actual - expected\\n\\n+ {\\n+   getTracks: [Function: getTracks]\\n+ }\\n- null\\n\"\n    },\n    {\n      \"name\": \"演示退出再摄像头开始必须清除演示标志\",\n      \"pass\": false,\n      \"actual\": \"Game.isDemoMode仍为true，可绕过人数和就绪校验\\n\\ntrue !== false\\n\"\n    },\n    {\n      \"name\": \"390x844和1280x720最大助力半径四边可见\",\n      \"pass\": true\n    },\n    {\n      \"name\": \"320x932窄竖屏最大助力球体边缘可见\",\n      \"pass\": false,\n      \"actual\": \"右边缘NDC=1.036>1\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "curl",
+        "--max-time",
+        "5",
+        "-I",
+        "http://localhost:5173/"
+      ],
+      "exitCode": 0,
+      "stdout": "HTTP/1.1 200 OK\nVary: Origin\nContent-Type: text/html\nCache-Control: no-cache\nEtag: W/\"156d-Oyw8WA3Zdxb7C10KGVj0Hzl9JOE\"\nDate: Thu, 12 Nov 2026 09:36:04 GMT\nConnection: keep-alive\nKeep-Alive: timeout=5\n\n",
+      "stderr": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n"
+    }
+  ],
+  "sourceSha256": {
+    "src/bubbleManager.js": "5322969023d5c39d98f8a9e3eafd18adb6b3db0c28a5e898b02c29ddf2274e3b",
+    "src/sceneManager.js": "79840ff6f9e3cc8ce5cb51291ca054ee9e073d4c4410cd6c831e80b7fae07a1f",
+    "src/poseDetector.js": "5e6040e7210ea96641a4c68805d35a7d0fd2da0f413bf8dd137242ba938edff4",
+    "src/audioManager.js": "6ace71c1849907c5004f5eefbb9feb1ad5ee9b5197665d2a64e6654cf78f81f8",
+    "src/config.js": "2e29a44e9c234f867e7bc1e1b407bc55e62052c40d1d343fb6ca74ef96428674",
+    "src/main.js": "bd3938040d28afe715c2d66fbee8badb0b9f916437227f226016247506660f71",
+    "src/hotAirBalloon.js": "935ec4de17094fd5970a288d226806e6c093600b3f4a98899646a4b6cde095fa",
+    "src/uiManager.js": "19b973dbd5fd86a738e79aa95dd017f7c23dce66a9c3b27cfbc116e76c5ad06b"
+  },
+  "browser": {
+    "surface": "指定内置 Browser",
+    "viewport": [
+      1280,
+      720
+    ],
+    "initialFailures": [
+      "localhost与127.0.0.1均ERR_SOCKS_CONNECTION_FAILED；shell首次连接退出7"
+    ],
+    "recovery": "本轮启动Vite后HTTP200，指定Browser可访问",
+    "inputMethod": "真实页面按钮点击；鼠标碰撞通过页面脚本派发mousemove，非人体输入",
+    "checks": [
+      {
+        "case": "demo 0→5",
+        "result": "1,2,3,4维持PLAYING，第5进入CELEBRATING；5个进度点亮"
+      },
+      {
+        "case": "pause collection",
+        "result": "PAUSED时计数保持1"
+      },
+      {
+        "case": "pause celebration",
+        "result": "remaining=4919.5ms；暂停跨5200ms没有胜利弹层；恢复等待5300ms弹出胜利"
+      },
+      {
+        "case": "play again",
+        "result": "PLAYING,count=0,balloonTakingOff=false"
+      },
+      {
+        "case": "demo to camera",
+        "result": "CALIBRATING但gameDemo=true,poseDemo=true"
+      },
+      {
+        "case": "camera",
+        "result": "NotAllowedError: Permission denied；模型与wasm同源本地加载，未验证真实姿态"
+      },
+      {
+        "case": "error fallback",
+        "result": "点击改用模拟：PLAYING但calibrationVisible=true，校准弹层覆盖游戏"
+      },
+      {
+        "case": "end",
+        "result": "返回首页START,stream=false"
+      }
+    ],
+    "javascriptErrorListener": "演示闭环中error/unhandledrejection采集为空；不等于无所有控制台错误",
+    "consoleError": "摄像头开启失败 NotAllowedError Permission denied",
+    "resources": "观察到 /wasm/vision_wasm_internal.js、.wasm、/models/pose_landmarker_lite.task 同源加载；不是完整网络抓包审计",
+    "screenshots": [
+      "qa_demo_playing.png",
+      "qa_demo_victory.png",
+      "qa_error_fallback_blocked.png"
+    ]
+  }
+}

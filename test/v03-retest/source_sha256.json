@@ -1,0 +1,14 @@
+{
+  "src/bubbleManager.js": "78da4d92817b25ca9846b61b01177f01bf3a6de1690857ae48b1e4f68dc773e6",
+  "src/sceneManager.js": "a8b289ca113c7df73482ea2ba1fc0afeae6c08baa1e55042fa753cdc4cbc6e4a",
+  "src/poseDetector.js": "26c3ebc042421f2455025379807e3d2f995437bab960c0c81421097d0988fd38",
+  "src/audioManager.js": "6ace71c1849907c5004f5eefbb9feb1ad5ee9b5197665d2a64e6654cf78f81f8",
+  "src/config.js": "2e29a44e9c234f867e7bc1e1b407bc55e62052c40d1d343fb6ca74ef96428674",
+  "src/main.js": "f4c966402dc339bf03df802abc8a97c3cd1b054d9182214cf365b653eb3876d7",
+  "src/hotAirBalloon.js": "bc0ce66e31a5485273ee1e0fb527e9d776913474d50b7ce3a20516ec3e9c46d3",
+  "src/style.css": "156553a966bbf5f62d4a27bceff591ec5950bc89c2e3c021285b6a71c341b0f3",
+  "src/uiManager.js": "564486e5cdbdb328d3f80a69d1f2968ae03cd6ee7e2ba64ecf0eda2755c8fbbc",
+  "index.html": "9cd676585860ae0c80c92c77d24f63db73745aea4db609a8d375ea490923ad47",
+  "test/qa_v03.mjs": "bdd72369bd1335dac4e4c5908431ae9607a78a55a75153f8e3c10c140dedd820",
+  "test/qa_landscape_retest.mjs": "0fdc6e842c4bc39f1bad826c06ef0123bc3bb4cf930d5d41741f69165daf2e96"
+}

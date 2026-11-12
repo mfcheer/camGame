@@ -1,0 +1,103 @@
+{
+  "checkedAt": "2026-11-12T11:02:06.986Z",
+  "commands": [
+    {
+      "command": "node test/qa_acceptance.mjs",
+      "exitCode": 0,
+      "pass": 18,
+      "total": 18,
+      "log": "test/v03/qa_acceptance.log"
+    },
+    {
+      "command": "node test/qa_closeout.mjs",
+      "exitCode": 0,
+      "pass": 12,
+      "total": 12,
+      "log": "test/v03/qa_closeout.log"
+    },
+    {
+      "command": "node test/qa_v03.mjs",
+      "exitCode": 1,
+      "pass": 7,
+      "total": 20,
+      "log": "test/v03/qa_v03.log"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": "test/v03/build.log"
+    },
+    {
+      "command": "npm ls --depth=0",
+      "exitCode": 0,
+      "log": "test/v03/dependencies.log"
+    }
+  ],
+  "browser": {
+    "firstHit": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[\n  {\n    \"count\": 0,\n    \"state\": \"PLAYING\"\n  },\n  {\n    \"count\": 1,\n    \"energy\": 1,\n    \"hand\": [\n      {\n        \"box\": {\n          \"bottom\": 475.8702827986256,\n          \"left\": 446.2114173678633,\n          \"right\": 499.2842318330746,\n          \"top\": 424.616779095638\n        },\n        \"color\": 16769902\n      }\n    ],\n    \"lit\": 1,\n    \"particles\": 16,\n    \"state\": \"PLAYING\"\n  }\n]"
+        }
+      ],
+      "isError": false
+    },
+    "desktopFlow": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"balloon\": {\n    \"bottom\": 696.9109776692231,\n    \"left\": 550.122082777665,\n    \"right\": 731.6663326472565,\n    \"top\": 386.8951180917385\n  },\n  \"guideHidden\": true,\n  \"run\": [\n    {\n      \"count\": 0,\n      \"state\": \"PLAYING\"\n    },\n    {\n      \"count\": 1,\n      \"energy\": 1,\n      \"hand\": [\n        {\n          \"box\": {\n            \"bottom\": 475.8702827986256,\n            \"left\": 446.2114173678633,\n            \"right\": 499.2842318330746,\n            \"top\": 424.616779095638\n          },\n          \"color\": 16769902\n        }\n      ],\n      \"lit\": 1,\n      \"particles\": 16,\n      \"state\": \"PLAYING\"\n    },\n    {\n      \"count\": 2,\n      \"energy\": 1,\n      \"particles\": 16,\n      \"state\": \"PLAYING\"\n    },\n    {\n      \"count\": 3,\n      \"energy\": 1,\n      \"particles\": 16,\n      \"state\": \"PLAYING\"\n    },\n    {\n      \"count\": 4,\n      \"energy\": 1,\n      \"particles\": 16,\n      \"state\": \"PLAYING\"\n    },\n    {\n      \"count\": 5,\n      \"energy\": 0,\n      \"particles\": 0,\n      \"state\": \"CELEBRATING\"\n    }\n  ],\n  \"takeoffMs\": 1399.0999999046333\n}"
+        }
+      ],
+      "isError": false
+    },
+    "pauseHands": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"bubble\": true,\n  \"handVisible\": true,\n  \"state\": \"PAUSED\"\n}"
+        }
+      ],
+      "isError": false
+    },
+    "permissionFallback": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"background\": \"linear-gradient(rgb(221, 244, 255) 0%, rgb(234, 251, 241) 58%, rgb(189, 233, 208) 100%)\",\n  \"calibrationHidden\": true,\n  \"demo\": true,\n  \"errorHidden\": true,\n  \"state\": \"PLAYING\"\n}"
+        }
+      ],
+      "isError": false
+    },
+    "portraitFlow": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"paused\": {\n    \"frozen\": true,\n    \"state\": \"PAUSED\",\n    \"victoryHidden\": true\n  },\n  \"run\": [\n    {\n      \"count\": 1,\n      \"energy\": 1,\n      \"particles\": 16,\n      \"state\": \"PLAYING\"\n    },\n    {\n      \"count\": 2,\n      \"energy\": 1,\n      \"particles\": 16,\n      \"state\": \"PLAYING\"\n    },\n    {\n      \"count\": 3,\n      \"energy\": 1,\n      \"particles\": 16,\n      \"state\": \"PLAYING\"\n    },\n    {\n      \"count\": 4,\n      \"energy\": 1,\n      \"particles\": 16,\n      \"state\": \"PLAYING\"\n    },\n    {\n      \"count\": 5,\n      \"energy\": 0,\n      \"particles\": 0,\n      \"state\": \"CELEBRATING\"\n    }\n  ],\n  \"victoryVisible\": true,\n  \"viewport\": [\n    390,\n    844\n  ]\n}"
+        }
+      ],
+      "isError": false
+    },
+    "narrowFlow": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"paused\": {\n    \"frozen\": true,\n    \"victoryHidden\": true\n  },\n  \"resetCount\": 0,\n  \"run\": [\n    1,\n    2,\n    3,\n    4,\n    5\n  ],\n  \"victoryVisible\": true,\n  \"viewport\": [\n    320,\n    932\n  ]\n}"
+        }
+      ],
+      "isError": false
+    },
+    "surface": "指定OpenMausBot内置Browser，1280x720主页面；390x844和320x932为同源iframe的真实页面视口，截图整体缩为70%以在宿主页完整显示。不是移动设备仿真或真机。",
+    "desktopTakeoffMs": 4266,
+    "desktopTakeoffScreenshot": "test/v03/02-takeoff-hud.png",
+    "camera": "真实请求返回NotAllowedError Permission denied；模型加载成功，未获得真实视频流。",
+    "errorScope": "模拟闭环error/unhandledrejection捕获为空；摄像头流程报告一个控制台权限错误，不声称完整控制台无错误。"
+  },
+  "limits": [
+    "真实摄像头识别与儿童试玩待验",
+    "iPhone/iPad/Android真机待验",
+    "音效实际听感及弱网、离线和运行时网络审计待验"
+  ],
+  "monitors": "2026-11-12 19:01北京时间检查：无相关自动任务"
+}
