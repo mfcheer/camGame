@@ -1,3 +1,4 @@
+import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
 /**
  * UI 界面与交互状态管理器
  * 1. 5 个彩色发光圆点进度指示（免识字设计，直观友好）
@@ -302,7 +303,7 @@ export class UIManager {
   }
 
   showHUD() {
-    this.dom.hud.classList.remove('hidden');
+    this.dom.hud.classList.remove('hidden');this.updateLayout();
   }
 
   hideHUD() {
@@ -378,6 +379,12 @@ export class UIManager {
   }
 
   // 首个泡泡的动态动作示范引导 (放置于泡泡旁空白侧，>=12px 留白，首次命中后淡出且不再显示)
+  updateLayout(){
+    if(typeof document==='undefined'||!document.documentElement?.style)return;
+    document.documentElement.style.setProperty('--hud-bottom',`${getHudBottom()}px`);
+    this.showHandGuide(false);
+  }
+
   showHandGuide(show = true, bubbleScreenPos = null) {
     if (!this.dom.handGuide) return;
 
@@ -393,8 +400,8 @@ export class UIManager {
     }
 
     // 定位在泡泡旁边空白区域
-    const winW = (typeof window !== 'undefined' ? window.innerWidth : 1280) || 1280;
-    const winH = (typeof window !== 'undefined' ? window.innerHeight : 720) || 720;
+    const winW = (typeof window !== 'undefined' ? getViewport().width : 1280) || 1280;
+    const winH = (typeof window !== 'undefined' ? getViewport().height : 720) || 720;
 
     let posX = winW * 0.35;
     let posY = winH * 0.42;
@@ -403,9 +410,11 @@ export class UIManager {
       // 位于泡泡一侧，至少留 16px
       const isLeft = bubbleScreenPos.x > winW * 0.5;
       posX = isLeft ? Math.max(20, bubbleScreenPos.x - 140) : Math.min(winW - 160, bubbleScreenPos.x + 80);
-      posY = Math.max(90, Math.min(winH - 180, bubbleScreenPos.y));
+      posY = Math.max(getHudBottom()+40, Math.min(winH - 160-getSafeInsets().bottom, bubbleScreenPos.y));
     }
 
+    if(winH<420)return;
+    posX=Math.max(8+getSafeInsets().left,Math.min(winW-180-getSafeInsets().right,posX));
     this.dom.handGuide.style.left = `${posX}px`;
     this.dom.handGuide.style.top = `${posY}px`;
     this.dom.handGuide.classList.remove('hidden');

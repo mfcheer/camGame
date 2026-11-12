@@ -1,3 +1,4 @@
+import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
 import * as THREE from 'three';
 import { GAME_CONFIG } from './config.js';
 import {PointerContrastSampler,pointerPalette} from './pointerContrast.js';
@@ -199,25 +200,25 @@ export class BubbleManager {
     const vFOV = THREE.MathUtils.degToRad(this.camera.fov || 48);
     const camZ = Math.abs(this.camera.position.z || 7.5);
     const visibleHeight = 2 * Math.tan(vFOV / 2) * camZ;
-    const aspect = this.camera.aspect || (((typeof window !== 'undefined' && window.innerWidth) || 1280) / ((typeof window !== 'undefined' && window.innerHeight) || 720));
+    const aspect = this.camera.aspect || (((typeof window !== 'undefined' && getViewport().width) || 1280) / ((typeof window !== 'undefined' && getViewport().height) || 720));
     const visibleWidth = visibleHeight * aspect;
 
-    const winW = (typeof window !== 'undefined' ? window.innerWidth : 1280) || 1280;
-    const winH = (typeof window !== 'undefined' ? window.innerHeight : 720) || 720;
+    const winW = (typeof window !== 'undefined' ? getViewport().width : 1280) || 1280;
+    const winH = (typeof window !== 'undefined' ? getViewport().height : 720) || 720;
     const pxToWorld = visibleHeight / winH;
     const isNarrow = (winW / winH) < 0.8;
-    const targetDiameterPx = isNarrow
+    const targetDiameterPx = winH<420&&winW>winH ? Math.max(80,Math.min(112,winH*.27)) : isNarrow
       ? Math.min(120, Math.max(100, 0.20 * Math.min(winW, winH)))
       : Math.min(156, Math.max(104, 0.20 * Math.min(winW, winH)));
 
     // 核心安全半径：基础 0.95 * 助力 1.25 + 待机浮动 0.12 (保障各向同性 NDC 全边界 <= 1.0)
     const maxBubbleRadius = 0.95 * 1.25 + 0.12;
 
-    const safeMaxX = Math.min((visibleWidth / 2) - maxBubbleRadius, visibleWidth * .32);
+    const safeMaxX = Math.min((visibleWidth / 2) - maxBubbleRadius-Math.max(getSafeInsets().left,getSafeInsets().right)*pxToWorld, visibleWidth * .32);
     const safeMinX = -safeMaxX;
 
     const maximumVisualRadiusPx = targetDiameterPx * .5 * 1.25 * 1.13 + 14;
-    const hudSafeY = visibleHeight / 2 - (84 + maximumVisualRadiusPx) * pxToWorld;
+    const hudSafeY = visibleHeight / 2 - (Math.max(84,getHudBottom()+44) + maximumVisualRadiusPx) * pxToWorld;
     const topSafeY = Math.min((visibleHeight / 2) - maxBubbleRadius, hudSafeY);
     const bottomSafeY = Math.max(-visibleHeight / 2 + maxBubbleRadius, -visibleHeight * .22);
     const safeMinY = Math.min(bottomSafeY, topSafeY);
@@ -355,15 +356,15 @@ export class BubbleManager {
     const spawnPos = this.calculateSpawnPosition();
     group.position.copy(spawnPos);
 
-    const winW = (typeof window !== 'undefined' ? window.innerWidth : 1280) || 1280;
-    const winH = (typeof window !== 'undefined' ? window.innerHeight : 720) || 720;
+    const winW = (typeof window !== 'undefined' ? getViewport().width : 1280) || 1280;
+    const winH = (typeof window !== 'undefined' ? getViewport().height : 720) || 720;
     const vFOV = THREE.MathUtils.degToRad(this.camera.fov || 48);
     const camZ = Math.abs(this.camera.position.z || 7.5);
     const visibleHeight = 2 * Math.tan(vFOV / 2) * camZ;
     const pxToWorld = visibleHeight / winH;
 
     const isNarrow = (winW / winH) < 0.8;
-    const targetDiameterPx = isNarrow
+    const targetDiameterPx = winH<420&&winW>winH ? Math.max(80,Math.min(112,winH*.27)) : isNarrow
       ? Math.min(120, Math.max(100, 0.20 * Math.min(winW, winH)))
       : Math.min(156, Math.max(104, 0.20 * Math.min(winW, winH)));
     const radius = (targetDiameterPx * pxToWorld) / (2 * 1.10);
@@ -489,8 +490,8 @@ export class BubbleManager {
     const edgeScreenCoord = edgeWorldPos.project(this.camera);
 
     // 统一转换为屏幕物理像素空间进行欧氏距离对比
-    const w = (typeof window !== 'undefined' && window.innerWidth) ? window.innerWidth : 1280;
-    const h = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 720;
+    const w = (typeof window !== 'undefined' && getViewport().width) ? getViewport().width : 1280;
+    const h = (typeof window !== 'undefined' && getViewport().height) ? getViewport().height : 720;
 
     const bubblePxX = bubbleScreenX * w;
     const bubblePxY = bubbleScreenY * h;
@@ -886,7 +887,7 @@ export class BubbleManager {
       if (ind.active) {
         if(ind.targetPosition)ind.group.position.lerp(ind.targetPosition,1-Math.exp(-dt/.022));
         const screen=ind.group.position.clone().project(this.camera);
-        const w=typeof window!=='undefined'?window.innerWidth:1280,h=typeof window!=='undefined'?window.innerHeight:720;
+        const w=typeof window!=='undefined'?getViewport().width:1280,h=typeof window!=='undefined'?getViewport().height:720;
         const luminance=this.contrastSampler?.sample((screen.x+1)/2,(1-screen.y)/2,w,h)??.76;
         ind.backgroundLuminance=ind.backgroundLuminance===undefined?luminance:ind.backgroundLuminance+(luminance-ind.backgroundLuminance)*Math.min(1,dt*8);
         const palette=pointerPalette(ind.backgroundLuminance,ind.contrastMode,ind.playerId);ind.contrastMode=palette.mode;

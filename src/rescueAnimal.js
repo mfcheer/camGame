@@ -1,3 +1,4 @@
+import {getViewport,getSafeInsets} from './viewport.js';
 import * as THREE from 'three';
 import {assetUrl} from './assetUrl.js';
 import {createExpressionRig,resetExpressionRig,updateExpressionRig} from './animalExpressions.js';
@@ -27,7 +28,7 @@ export class RescueAnimal {
     this.createPostAndRopes();
     this.setAnimal(animalId,false);
     this.createContactShadow();
-    const w=typeof window!=='undefined'?window.innerWidth:1280,h=typeof window!=='undefined'?window.innerHeight:720;
+    const w=typeof window!=='undefined'?getViewport().width:1280,h=typeof window!=='undefined'?getViewport().height:720;
     this.updateLayout(w,h,camera);
   }
   setAnimal(id,reset=true) {
@@ -35,7 +36,7 @@ export class RescueAnimal {
     this.targetEnergy=this.profile.targetBubbles;
     const request=this.assetRequest=(this.assetRequest||0)+1;
     this.installModel(ANIMAL_MODELS[this.animalId]());this.assetStatus='native';
-    if(reset){this.reset();if(typeof window!=='undefined')this.updateLayout(window.innerWidth,window.innerHeight,this.camera);}
+    if(reset){this.reset();if(typeof window!=='undefined')this.updateLayout(getViewport().width,getViewport().height,this.camera);}
     if(typeof window!=='undefined'&&typeof window.fetch==='function') {
       this.assetStatus='loading';
       new GLTFLoader().load(assetUrl(`models/${this.profile.asset}.glb`),gltf=>{
@@ -102,9 +103,9 @@ export class RescueAnimal {
     const oldStart=this.startX,oldEnd=this.endX;
     const progress=oldEnd>oldStart?clamp((this.currentX-oldStart)/(oldEnd-oldStart),0,1):0;
     this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94})[this.animalId];
-    this.groundY=-vh/2+.45;
-    this.startX=-vw/2+Math.min(1.5,vw*.24);
-    this.endX=vw/2-1.0;
+    this.groundY=-vh/2+.45+getSafeInsets().bottom*vh/h;
+    this.startX=-vw/2+Math.min(1.5,vw*.24)+getSafeInsets().left*vh/h;
+    this.endX=vw/2-1.0-getSafeInsets().right*vh/h;
     this.currentX=this.state==='TRAPPED'?this.startX:THREE.MathUtils.lerp(this.startX,this.endX,progress);
     this.currentY=this.groundY;
     this.postGroup.position.set(this.startX,this.groundY,.03);this.postGroup.scale.setScalar(this.modelScale);

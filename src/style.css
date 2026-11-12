@@ -670,3 +670,110 @@ html, body {
 @media(prefers-reduced-motion:reduce){.combo-rainbow-wave{animation:none!important;transition:opacity .15s}.combo-badge{animation:none!important;transition:none}}
 
 .app-logo{width:40px;height:40px;vertical-align:middle;border-radius:10px;margin-right:10px;box-shadow:0 3px 10px #477e6220}
+
+/* Match the actually visible mobile viewport, including changing browser bars. */
+:root{
+  --app-width:100vw;--app-height:100vh;--app-height:100dvh;
+  --viewport-left:0px;--viewport-top:0px;
+  --safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px);
+  --hud-bottom:84px;
+}
+html,body{overscroll-behavior:none}
+#webcam-video,#canvas-container,#ui-layer{
+  width:var(--app-width);height:var(--app-height);
+  left:var(--viewport-left);top:var(--viewport-top);
+}
+#canvas-container canvas{display:block}
+.modal-overlay,.countdown-overlay{position:absolute;inset:0}
+.modal-overlay{
+  padding:calc(var(--safe-top) + 10px) calc(var(--safe-right) + 10px) calc(var(--safe-bottom) + 10px) calc(var(--safe-left) + 10px);
+}
+.card{width:min(100%,480px);max-height:100%;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.start-card{width:min(100%,680px);max-height:100%;display:flex;flex-direction:column;overflow:hidden}
+.start-intro,.start-actions{flex-shrink:0;min-width:0}
+.start-choices{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.start-help{font-size:12px;color:#748274;text-align:left;margin-top:5px}
+.start-help summary{cursor:pointer;text-align:center;padding:4px;min-height:26px}
+.start-help[open]{max-height:130px;overflow-y:auto}
+.start-help .privacy-tip{margin-top:8px}
+#game-hud{top:calc(var(--safe-top) + 12px);padding-left:calc(var(--safe-left) + 20px);padding-right:calc(var(--safe-right) + 20px)}
+#demo-mode-banner{top:calc(var(--hud-bottom) + 6px);left:calc(var(--safe-left) + 12px)}
+.combo-badge{top:calc(var(--hud-bottom) + 6px)}
+#pose-lost-alert{top:calc(var(--hud-bottom) + 8px);max-width:calc(100% - var(--safe-left) - var(--safe-right) - 24px);font-size:13px;text-align:center}
+#victory-modal{padding:calc(var(--safe-top) + 8px) calc(var(--safe-right) + 10px) calc(var(--safe-bottom) + 10px) calc(var(--safe-left) + 10px)}
+#victory-modal .card{width:min(100%,660px)}
+.victory-actions{flex-wrap:wrap;gap:8px}
+.victory-actions button{flex:1 1 140px;min-width:0}
+.auto-next-row{flex-wrap:wrap;gap:5px 12px}
+button{touch-action:manipulation}
+
+@media(max-width:900px){
+  #game-hud{
+    top:calc(var(--safe-top) + 8px);height:auto;
+    display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 8px;
+    padding:0 calc(var(--safe-right) + 12px) 0 calc(var(--safe-left) + 12px);
+  }
+  .hud-left{gap:8px;min-width:0}.hud-right{grid-column:2;grid-row:1}
+  .icon-btn{width:42px;height:42px;flex-shrink:0;font-size:20px}
+  .mode-badge{padding:6px 10px;font-size:12px;white-space:nowrap}
+  .progress-dots-container,.progress-dots-container[data-compact="true"]{
+    position:static;transform:none;grid-row:2;grid-column:1/-1;justify-self:center;
+    gap:clamp(3px,1vw,6px);padding:5px 10px;max-width:100%;justify-content:center;
+  }
+  .progress-dot,.progress-dots-container[data-compact="true"] .progress-dot{width:20px;height:20px;flex-shrink:0;font-size:11px;border-width:2px}
+  .combo-badge{font-size:14px;padding:4px 13px}.combo-badge .combo-num{font-size:19px}
+  #demo-mode-banner{font-size:10px;padding:4px 7px;max-width:100px}
+}
+@media(max-width:540px){
+  .start-card{padding:14px 12px;border-width:2px;border-radius:20px}
+  .start-card h1{font-size:20px;line-height:1.3;margin-bottom:5px}.app-logo{width:30px;height:30px;margin-right:6px;border-radius:8px}
+  .start-card p{font-size:12px;line-height:1.45;margin-bottom:8px}
+  .animal-picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:3px 0 8px}
+  .animal-choice{padding:4px 2px 6px;border-radius:12px;gap:2px;min-width:0}
+  .animal-choice>img{height:58px}.animal-choice strong{font-size:12px}.animal-choice span{font-size:10px}
+  .animal-choice.random-choice{min-height:34px;gap:6px;flex-wrap:nowrap;padding:2px 6px}
+  .random-choice .random-friends{width:110px;height:30px}.random-choice .random-friends img{width:25px;height:30px}
+  .random-choice>span{display:none}
+  .mode-selector{margin:7px 0 10px;gap:8px}.mode-btn{padding:7px 5px;gap:2px;border-width:2px}
+  .mode-btn .mode-icon{font-size:22px}.mode-btn .mode-title{font-size:13px}.mode-btn .mode-sub{font-size:10px}
+  .start-actions>.btn-primary{padding:12px 14px;font-size:17px;margin-bottom:8px}
+  .start-actions>.btn-secondary{padding:10px 8px;font-size:13px;margin-bottom:0}
+  .card:not(.start-card){padding:18px 16px;border-width:2px}
+  .card h2{font-size:21px}.card p{font-size:14px;margin-bottom:12px}
+  .progress-dots-container[data-compact="true"] .progress-dot{width:17px;height:17px;font-size:10px}
+  #victory-modal h2{font-size:18px}.auto-next-row{font-size:11px}
+}
+@media(max-height:500px) and (min-aspect-ratio:1/1){
+  .modal-overlay{padding:calc(var(--safe-top) + 8px) calc(var(--safe-right) + 8px) calc(var(--safe-bottom) + 8px) calc(var(--safe-left) + 8px)}
+  .start-card{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,.66fr);
+    grid-template-rows:auto minmax(0,1fr);grid-template-areas:'intro actions' 'choices actions';
+    column-gap:14px;width:min(100%,820px);height:100%;padding:12px 14px;
+  }
+  .start-intro{grid-area:intro}.start-choices{grid-area:choices}.start-actions{grid-area:actions;align-self:center;max-height:100%;overflow-y:auto}
+  .start-card h1{font-size:20px;margin-bottom:3px;line-height:1.25}.app-logo{width:28px;height:28px;margin-right:6px}
+  .start-card p{font-size:11px;line-height:1.35;margin-bottom:5px}
+  .animal-picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:2px 0 0}
+  .animal-choice{padding:3px 2px 4px;border-radius:10px;gap:1px;min-width:0}
+  .animal-choice>img{height:40px}.animal-choice strong{font-size:11px}.animal-choice span{font-size:9px}
+  .animal-choice.random-choice{min-height:28px;padding:1px 4px;gap:6px;flex-wrap:nowrap}
+  .random-choice .random-friends{width:110px;height:23px}.random-choice .random-friends img{width:23px;height:23px}
+  .random-choice>span{display:none}
+  .mode-selector{gap:6px;margin:0 0 8px}.mode-btn{padding:6px 2px;gap:2px;border-width:2px}.mode-btn .mode-icon{display:none}.mode-btn .mode-title{font-size:12px}.mode-btn .mode-sub{font-size:10px}
+  .start-actions>.btn-primary{padding:11px 5px;font-size:16px;margin-bottom:7px;min-height:44px}
+  .start-actions>.btn-secondary{padding:8px 4px;font-size:12px;margin-bottom:0;min-height:40px}
+  .start-help summary{font-size:11px}.start-help[open]{max-height:82px}
+  .card:not(.start-card){padding:12px 18px;border-width:2px;max-width:560px}
+  .card h2{font-size:20px;margin-bottom:6px}.card p{font-size:12px;line-height:1.4;margin-bottom:9px}
+  .card>.btn-primary,.card>.btn-secondary{padding:9px 10px;font-size:14px;margin-bottom:6px;min-height:40px}
+  .calibration-box{width:110px;height:90px;margin-bottom:8px;border-radius:20px}.calibration-box span{font-size:13px;padding:6px}
+  #game-hud .icon-btn{width:38px;height:38px;font-size:19px}.progress-dot,.progress-dots-container[data-compact="true"] .progress-dot{width:17px;height:17px}
+  .progress-dots-container,.progress-dots-container[data-compact="true"]{padding:4px 9px;gap:5px}
+  #victory-modal .card{padding:10px 14px}.victory-actions button{padding:8px 10px;font-size:13px;min-height:38px}
+}
+@media(max-height:640px) and (max-aspect-ratio:1/1){
+  .animal-choice>img{height:48px}.mode-btn{padding:5px 3px}.mode-btn .mode-icon{font-size:18px}
+}
+.start-intro #animal-brief{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.combo-badge:not(.hidden) ~ #demo-mode-banner{display:none}

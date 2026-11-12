@@ -1,3 +1,4 @@
+import {getViewport} from './viewport.js';
 import {assetUrl} from './assetUrl.js';
 import { FilesetResolver, PoseLandmarker, HandLandmarker } from '@mediapipe/tasks-vision';
 import { GAME_CONFIG } from './config.js';
@@ -464,8 +465,8 @@ export class PoseDetector {
 
     const videoW = this.video?.videoWidth || 0;
     const videoH = this.video?.videoHeight || 0;
-    const winW = (typeof window !== 'undefined' ? window.innerWidth : 1280) || 1280;
-    const winH = (typeof window !== 'undefined' ? window.innerHeight : 720) || 720;
+    const winW = (typeof window !== 'undefined' ? getViewport().width : 1280) || 1280;
+    const winH = (typeof window !== 'undefined' ? getViewport().height : 720) || 720;
 
     const viewportKey=`${winW}x${winH}`;
     if(this.filterViewport!==viewportKey){this.handFilters.clear();this.handAssociator.reset();this.filterViewport=viewportKey;}

@@ -1,3 +1,4 @@
+import {getViewport} from './viewport.js';
 import { SceneManager } from './sceneManager.js';
 import { HotAirBalloon } from './hotAirBalloon.js';
 import { RescueAnimal } from './rescueAnimal.js';
@@ -20,7 +21,7 @@ import {CelebrationAccessories} from './celebrationAccessories.js';
  * 6. 姿态丢失改为“柔性等待”：玩家偶尔走开时不弹阻断遮罩，浮动轻量提示，站回即刻无缝继续
  * 7. 0 -> 5 碰破泡泡闭环与逃生欢庆
  * 8. 摄像头生命周期、轮次取消与资源彻底清理
- * 9. 固定横屏策略：检测到竖屏友好弹层引导旋转并暂停，切回横屏平滑恢复
+ * 9. 按可见视口自适应横竖屏，旋转不打断游戏或改变手动暂停状态
  */
 export class Game {
   constructor() {
@@ -115,7 +116,7 @@ export class Game {
     }
 
     if (typeof window !== 'undefined') {
-      window.addEventListener('resize', () => this.bubbleManager?.updateLayout());
+      window.addEventListener('gameviewportchange', () => {this.bubbleManager?.updateLayout();this.uiManager?.updateLayout?.();});
     }
 
     this.setupPoseCallbacks();
@@ -463,8 +464,8 @@ export class Game {
       if (this.state === 'PLAYING' && this.collectedCount === 0 && this.bubbleManager.activeBubble) {
         const bubbleWorld = this.bubbleManager.activeBubble.group.position.clone();
         const screenCoord = bubbleWorld.project(this.bubbleManager.camera);
-        const winW = (typeof window !== 'undefined' ? window.innerWidth : 1280) || 1280;
-        const winH = (typeof window !== 'undefined' ? window.innerHeight : 720) || 720;
+        const winW = (typeof window !== 'undefined' ? getViewport().width : 1280) || 1280;
+        const winH = (typeof window !== 'undefined' ? getViewport().height : 720) || 720;
         const pxX = ((screenCoord.x + 1) / 2) * winW;
         const pxY = ((1 - screenCoord.y) / 2) * winH;
         if (this.uiManager && this.uiManager.showHandGuide) {
@@ -671,7 +672,6 @@ export class Game {
 
   // 重新开始当前关卡（彻底清除旧庆祝回调）
   handleRestart() {
-    this.sceneManager?.randomizeStage?.();
     this.cancelAutoNext(false);this.resultVisible=false;this.celebrationAccessories?.clear();
     this.uiManager?.hideVictory?.();
     this.cancelAutoCountdown();
@@ -800,8 +800,8 @@ export class Game {
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-      const normX = clientX / window.innerWidth;
-      const normY = clientY / window.innerHeight;
+      const normX = (clientX-getViewport().left) / getViewport().width;
+      const normY = (clientY-getViewport().top) / getViewport().height;
 
       this.poseDetector.injectDemoHand(normX, normY);
     };
@@ -826,34 +826,12 @@ export class Game {
     });
   }
 
-  // 横竖屏适配与强制横屏策略引导 (转竖屏时严格冻结有效时长与动画，转横屏时平滑恢复)
+  // Both orientations are playable. Resizing never interrupts an active rescue.
   setupOrientationHandler() {
-    if (typeof window === 'undefined' || typeof window.addEventListener !== 'function') return;
-
-    const checkOrientation = () => {
-      const isPortrait = window.innerHeight > window.innerWidth;
-      const overlay = document.getElementById('orientation-modal') || document.getElementById('orientation-overlay');
-
-      if (isPortrait) {
-        if (overlay) overlay.classList.remove('hidden');
-        if (this.state === 'PLAYING' || this.state === 'CELEBRATING') {
-          this.isOrientationPaused = true;
-          this.handleTogglePause(true);
-        }
-      } else {
-        if (overlay) overlay.classList.add('hidden');
-        if (this.isOrientationPaused) {
-          this.isOrientationPaused = false;
-          if (this.state === 'PAUSED') {
-            this.handleResume();
-          }
-        }
-      }
-    };
-
-    window.addEventListener('resize', checkOrientation);
-    window.addEventListener('orientationchange', checkOrientation);
-    checkOrientation();
+    if(typeof document==='undefined')return;
+    const overlay=document.getElementById('orientation-modal');
+    overlay?.classList.add('hidden');
+    this.isOrientationPaused=false;
   }
 
   // One active-time clock for the character, scenery and energy feedback.
@@ -866,7 +844,7 @@ export class Game {
       this.bubbleManager?.update(deltaSeconds, this.gameTime);
       if(this.state==='PLAYING' && this.bubbleManager?.handsAgeSeconds<.18 && this.bubbleManager.checkHandCollisions(this.bubbleManager.latestTrackedPlayers))this.onBubblePopped();
       this.sceneManager?.update(deltaSeconds);
-      if(this.celebrationAccessories && typeof window!=='undefined')this.celebrationAccessories.update(deltaSeconds,window.innerWidth,window.innerHeight);
+      if(this.celebrationAccessories && typeof window!=='undefined')this.celebrationAccessories.update(deltaSeconds,getViewport().width,getViewport().height);
       if(this.autoNextDeadline)this.uiManager?.setAutoNextCountdown?.(Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)));
       if (this.waitingForEscape && this.state === 'CELEBRATING' && this.rescueAnimal?.state === 'ESCAPED') {
         this.showVictoryWhenReady();
@@ -890,7 +868,7 @@ export class Game {
     const screen = pos => {
       if (!pos || !camera) return null;
       const p = pos.clone().project(camera);
-      return { x: Math.round((p.x+1)/2*window.innerWidth), y: Math.round((1-p.y)/2*window.innerHeight) };
+      return { x: Math.round((p.x+1)/2*getViewport().width+getViewport().left), y: Math.round((1-p.y)/2*getViewport().height+getViewport().top) };
     };
     return JSON.stringify({
       coordinates:'screen pixels; origin top-left; x right, y down',

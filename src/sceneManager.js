@@ -1,3 +1,4 @@
+import {getViewport,getSafeInsets,installViewport} from './viewport.js';
 import * as THREE from 'three';
 import {createStageDesigns,STAGE_IDS,STAGE_NAMES} from './stageDesigns.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -13,13 +14,14 @@ const TAU = Math.PI * 2;
 /** A shallow 3D forest diorama. The central camera/hand area stays transparent. */
 export class SceneManager {
   constructor(canvasContainer) {
+    installViewport();
     this.container = canvasContainer;
     this.scene = new THREE.Scene();
     this.balloon = null; this.rescueAnimal = null;
     this.leftFlowerBounceTimer = 0; this.rightArchGlowTimer = 0;
     this.elapsed = 0; this.swayingPlants = [];
-    const w = typeof window !== 'undefined' ? window.innerWidth : 1280;
-    const h = typeof window !== 'undefined' ? window.innerHeight : 720;
+    const w = typeof window !== 'undefined' ? getViewport().width : 1280;
+    const h = typeof window !== 'undefined' ? getViewport().height : 720;
     this.camera = new THREE.PerspectiveCamera(48, w/h, 0.1, 100);
     this.camera.position.set(0,0,7.5);
     if (typeof window !== 'undefined') {
@@ -245,25 +247,25 @@ export class SceneManager {
     for(const [key,animal]of [['catPawTrail','cat'],['frogExtras','frog'],['dogTrail','dog']])if(this[key])this[key].visible=forest&&this.theme===animal;
     if(this.dragonExtras)this.dragonExtras.visible=forest&&['dragon','goldenDragon'].includes(this.theme);
   }
-  setBalloon(balloon) {this.balloon=balloon; if(typeof window!=='undefined')balloon.updateLayout(window.innerWidth,window.innerHeight,this.camera);}
-  setRescueAnimal(animal) {this.rescueAnimal=animal;if(typeof window!=='undefined')animal.updateLayout(window.innerWidth,window.innerHeight,this.camera);}
+  setBalloon(balloon) {this.balloon=balloon; if(typeof window!=='undefined')balloon.updateLayout(getViewport().width,getViewport().height,this.camera);}
+  setRescueAnimal(animal) {this.rescueAnimal=animal;if(typeof window!=='undefined')animal.updateLayout(getViewport().width,getViewport().height,this.camera);}
   updateGroundLayout(w,h) {
     const vh=2*Math.tan(THREE.MathUtils.degToRad(this.camera.fov/2))*this.camera.position.z;
     const vw=vh*w/h;const bottom=-vh/2;
-    this.groundY=bottom+.45;
+    this.groundY=bottom+.45+getSafeInsets().bottom*vh/h;
     this.bottomStripGroup.position.set(0,this.groundY,0);
     this.road.scale.x=vw+5;this.backVerge.scale.x=vw+5;this.frontVerge.scale.x=vw+5;
     const decorScale=.9;
     this.leftFrame.scale.setScalar(decorScale);this.rightFrame.scale.setScalar(decorScale);
-    this.leftFrame.position.set(-vw/2+.72,this.groundY,-.05);
-    this.rightFrame.position.set(vw/2-1.0,this.groundY,-.05);
+    this.leftFrame.position.set(-vw/2+.72+getSafeInsets().left*vh/h,this.groundY,-.05);
+    this.rightFrame.position.set(vw/2-1.0-getSafeInsets().right*vh/h,this.groundY,-.05);
     this.mushroom.visible=w>=600;
     this.rescueAnimal?.updateLayout(w,h,this.camera);
   }
   setupResizeHandler() {
     if(typeof window==='undefined')return;
-    window.addEventListener('resize',()=>{
-      const w=window.innerWidth,h=window.innerHeight;this.camera.aspect=w/h;this.camera.updateProjectionMatrix();
+    window.addEventListener('gameviewportchange',()=>{
+      const w=getViewport().width,h=getViewport().height;this.camera.aspect=w/h;this.camera.updateProjectionMatrix();
       this.renderer?.setSize(w,h);this.updateGroundLayout(w,h);this.balloon?.updateLayout(w,h,this.camera);
     });
   }

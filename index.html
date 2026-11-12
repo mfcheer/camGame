@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>彩虹小队 - 亲子体感解救小动物</title>
   <meta name="description" content="伸出食指，戳破彩虹泡泡，解救六位动物朋友。支持单人和亲子合作，摄像头识别在本地设备完成。" />
   <meta name="theme-color" content="#78b7a1" />
@@ -84,8 +84,9 @@
     <!-- 1. 开始欢迎屏幕 -->
     <div id="start-screen" class="modal-overlay">
       <div class="card start-card">
-        <h1><img class="app-logo" src="%BASE_URL%icons/icon-192.png" alt="" aria-hidden="true" />彩虹小队 · 森林大解救</h1>
-        <p id="animal-brief">选一位森林朋友，用食指送给它彩虹能量。</p>
+        <header class="start-intro"><h1><img class="app-logo" src="%BASE_URL%icons/icon-192.png" alt="" aria-hidden="true" />彩虹小队 · 森林大解救</h1>
+        <p id="animal-brief">选一位森林朋友，用食指送给它彩虹能量。</p></header>
+        <div class="start-choices">
         <div class="animal-picker" role="group" aria-label="选择动物">
           <button class="animal-choice selected" data-animal="bunny" aria-pressed="true">
             <img src="%BASE_URL%models/bunny-preview.png" alt="小白兔萌萌" /><strong>小兔 萌萌</strong><span>5 泡泡 · 轻松</span>
@@ -110,6 +111,8 @@
           </button>
         </div>
 
+        </div>
+        <div class="start-actions">
         <!-- 模式选择 -->
         <div class="mode-selector">
           <button id="btn-mode-single" class="mode-btn selected">
@@ -127,12 +130,14 @@
         <button id="btn-start-game" class="btn-primary">开始游戏 🎈</button>
         <button id="btn-demo-mode" class="btn-secondary">💻 电脑鼠标/触控板模拟体验</button>
 
+        <details class="start-help"><summary>玩法提示与隐私保护</summary>
         <div class="auto-start-pill">
           ✨ <strong>免触碰倒计时开局</strong>：点击开始后站在镜头前站好露出双手，将自动 3-2-1 倒计时开局！
         </div>
 
         <div class="privacy-tip">
           🔒 <strong>隐私保护承诺</strong>：所有摄像头动作均在您的本地设备离线识别，绝不录制、不存储、不上传任何影像。
+        </div></details>
         </div>
       </div>
     </div>

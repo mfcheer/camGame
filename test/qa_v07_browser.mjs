@@ -5,8 +5,8 @@ const targets={bunny:5,cat:8,frog:6,dog:10,dragon:12,goldenDragon:9};
 const animalId=process.env.GAME_ANIMAL||'bunny',target=targets[animalId];
 const out=process.env.GAME_OUTPUT || new URL('../output/playwright/v07/',import.meta.url).pathname;
 await fs.mkdir(out,{recursive:true});
-const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,args:['--use-gl=angle','--use-angle=swiftshader']});
-const context=await browser.newContext({viewport:{width:1280,height:720},deviceScaleFactor:1,recordVideo:{dir:out+'video',size:{width:1280,height:720}}});
+const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,args:process.env.GAME_NATIVE_GPU==='1'?[]:['--use-gl=angle','--use-angle=swiftshader']});
+const context=await browser.newContext({viewport:process.env.GAME_VIEWPORT?JSON.parse(process.env.GAME_VIEWPORT):{width:1280,height:720},deviceScaleFactor:1,recordVideo:{dir:out+'video',size:{width:1280,height:720}}});
 const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
 const read=()=>page.evaluate(()=>JSON.parse(window.render_game_to_text()));
 const results=[];
@@ -59,15 +59,15 @@ try {
   await page.waitForFunction(()=>window.gameInstance.bubbleManager.activeBubble);
   const reset=await read();assert.equal(reset.score,0);assert.equal(reset.animal.energy,0);assert.equal(reset.animal.visible,true);assert.equal(reset.animal.state,'TRAPPED');
   results.push('Replay resets score, character, ropes and opacity');
-  // Resize during a live run, including the fixed-landscape orientation pause.
+  // Both orientations remain playable; resizing preserves the active round.
   await page.setViewportSize({width:844,height:390});await page.waitForTimeout(150);await capture('07-mobile-landscape');
   const smallState=await read();
   assert.ok(smallState.animal.x>0 && smallState.animal.x<844);
   assert.ok(smallState.bubble.y>130,'small landscape bubble clears HUD');
-  await page.setViewportSize({width:390,height:844});await page.locator('#orientation-modal').waitFor({state:'visible'});
-  assert.equal((await read()).mode,'PAUSED');await capture('08-portrait-paused');
+  await page.setViewportSize({width:390,height:844});await page.locator('#orientation-modal').waitFor({state:'hidden'});
+  assert.equal((await read()).mode,'PLAYING');await capture('08-portrait-playing');
   await page.setViewportSize({width:1280,height:720});await page.waitForFunction(()=>window.gameInstance.state==='PLAYING');
-  results.push('844×390 landscape and portrait pause/resume');
+  results.push('844×390 landscape and 390×844 portrait remain playable');
   await page.locator('#btn-sound').click();assert.equal(await page.evaluate(()=>gameInstance.audioManager.isMuted),true);
   await page.locator('#btn-sound').click();assert.equal(await page.evaluate(()=>gameInstance.audioManager.isMuted),false);
   await page.locator('#btn-pause').click();await page.locator('#btn-exit').click();
