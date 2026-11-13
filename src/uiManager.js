@@ -32,6 +32,7 @@ export class UIManager {
     this.animalSpeechCard?.classList.add('is-listening');
     const hint=this.animalSpeechCard?.querySelector('.animal-speech-hint');if(hint)hint.textContent='可以跟着说一说';
   }
+  showSoundRecovery(show){document.getElementById('btn-recover-audio')?.classList.toggle('hidden',!show);}
   hideAnimalSpeech(animate=false){if(animate){this.animalSpeechCard?.classList.add('is-leaving');return;}this.animalSpeechCard?.remove();this.animalSpeechCard=null;}
 
   constructor(handlers = {}) {
@@ -264,6 +265,7 @@ export class UIManager {
       this.handlers.onStopAutoNext?.(this.hasVictoryPhoto ? 'keep_photo' : 'keep_result');
     });
 
+    document.getElementById('btn-recover-audio')?.addEventListener('click',()=>this.handlers.onRecoverAudio?.());
     document.getElementById('btn-open-vocabulary')?.addEventListener('click',()=>this.handlers.onOpenVocabulary?.());
 
     // 森林营地图鉴

@@ -1,0 +1,366 @@
+[
+  {
+    "kind": "phrases",
+    "id": "hello-play",
+    "text": "Hello, let's play!",
+    "zh": "你好，一起玩吧！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/hello-play.mp3",
+        "sha256": "7265521c571e4102f20adafc3db7ba539b9c748990637c710b5718c785aebd01"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "how-are-you",
+    "text": "How are you today?",
+    "zh": "你今天好吗？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/how-are-you.mp3",
+        "sha256": "f7700927d81b1672525202aa0a5f3180b916e5522921e84c82cbc3af9161b075"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "happy-today",
+    "text": "I'm happy today!",
+    "zh": "我今天很开心！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/happy-today.mp3",
+        "sha256": "7187b57d1513eacdf0cdfbc7ec617cf17f81bbedeb2bf455c3bedcd45d2f13bf"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "like-red",
+    "text": "I like red!",
+    "zh": "我喜欢红色！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/like-red.mp3",
+        "sha256": "9c1434e722ae0441dcc212ca2fa37ee75d516ad26887332df78f1d3d755b2a47"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "like-yellow",
+    "text": "I like yellow!",
+    "zh": "我喜欢黄色！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/like-yellow.mp3",
+        "sha256": "d69e3844036b69cbf6189c66b1e283996436248c929e215a01300bcf9aea9c0f"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "like-blue",
+    "text": "I like blue!",
+    "zh": "我喜欢蓝色！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/like-blue.mp3",
+        "sha256": "9a6429ffb8c4c4f5dddc20463411c18dca006bc66ad6e1e5464ec9f203b952dd"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "like-green",
+    "text": "I like green!",
+    "zh": "我喜欢绿色！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/like-green.mp3",
+        "sha256": "eb8a9c31e607ae28697fecfab883925b4ef81c218baa204929be2cab8deb6eca"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "like-orange",
+    "text": "I like orange!",
+    "zh": "我喜欢橙色！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/like-orange.mp3",
+        "sha256": "38b7d132948b67f8da263d9f177d8806c4ed3632eb2885fb507de1612be60353"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "play-ball",
+    "text": "Let's play with a ball!",
+    "zh": "一起玩球吧！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/play-ball.mp3",
+        "sha256": "508234fafacddfca69675a2535c47df23590eedeec19cf571d36d176968171bc"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "thank-you",
+    "text": "Thank you, my friend!",
+    "zh": "谢谢你，我的朋友！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/thank-you.mp3",
+        "sha256": "41c987f82fcf8fbf2e9270feeac73391bbdcbdd1be68a3b25785bc1ddeacc7f8"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "nice-day",
+    "text": "Have a nice day!",
+    "zh": "祝你度过愉快的一天！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/nice-day.mp3",
+        "sha256": "3e6ff28795f32139e7fff0d20c4d660cbd13ea6a37a1aecdcc21502cec61d77b"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "see-you",
+    "text": "See you again!",
+    "zh": "下次再见！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/see-you.mp3",
+        "sha256": "ff4d87900e6c45a3a934659444c07b8feaf045b742bb6233ea0d8d0d24e71c31"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "goodbye",
+    "text": "Goodbye, my friend!",
+    "zh": "再见，我的朋友！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/goodbye.mp3",
+        "sha256": "d1a62f0f6435a9af814dca8c1404b5e88db604e22b9ee0de9b479ce6ec0b793d"
+      }
+    ]
+  }
+]

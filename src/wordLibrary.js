@@ -16,7 +16,7 @@ export class WordLibrary {
     for(const [id,label]of WORD_CATEGORIES){const button=el('button','word-library-filter',label);button.type='button';button.dataset.category=id;button.addEventListener('click',()=>{this.stopPlayback();this.category=id;this.renderWords();});filters.appendChild(button);}
     const grid=el('div','word-library-grid');grid.setAttribute('aria-label','单词图片列表');
     const footer=el('footer','word-library-footer'),status=el('span','word-library-status','选一张喜欢的卡片吧');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-    const sound=el('button','word-library-sound');sound.type='button';sound.addEventListener('click',()=>{this.audio?.toggleMute?.();this.onMuteChange();this.updateSound();});
+    const sound=el('button','word-library-sound');sound.type='button';sound.addEventListener('click',()=>{if(this.audio?.recoveryNeeded&&!this.audio.isMuted){this.audio.recoverFromGesture?.({rebuild:true});if(this.lastWord&&this.lastCard?.isConnected)this.playWord(this.lastWord,this.lastCard);return;}this.audio?.toggleMute?.();this.onMuteChange();this.updateSound();});
     footer.append(status,sound);panel.append(header,filters,grid,footer);overlay.appendChild(panel);document.body.appendChild(overlay);
     Object.assign(this,{overlay,panel,grid,filters,status,sound});this.updateSound();this.renderWords();
     this.keyHandler=e=>{
@@ -28,7 +28,7 @@ export class WordLibrary {
     };
     document.addEventListener('keydown',this.keyHandler,true);close.focus();
   }
-  updateSound(){if(!this.sound)return;this.sound.textContent=this.audio?.isMuted?'🔇 声音已关':'🔊 声音已开';this.sound.setAttribute('aria-pressed',String(!this.audio?.isMuted));}
+  updateSound(){if(!this.sound)return;this.sound.textContent=this.audio?.isMuted?'🔇 声音已关':this.audio?.recoveryNeeded?'🔊 恢复声音':'🔊 声音已开';this.sound.setAttribute('aria-pressed',String(!this.audio?.isMuted));}
   renderWords(){
     for(const button of this.filters.children)button.setAttribute('aria-pressed',String(button.dataset.category===this.category));
     this.grid.replaceChildren();this.grid.scrollTop=0;
@@ -41,7 +41,7 @@ export class WordLibrary {
     this.status.textContent=`${libraryWords(this.category).length} 张词卡 · 点一下听英文`;
   }
   async playWord(word,card){
-    this.stopPlayback();if(this.audio?.isMuted){this.status.textContent='先点右边的小喇叭，再听英文吧';return;}
+    this.lastWord=word;this.lastCard=card;this.stopPlayback();if(this.audio?.isMuted){this.status.textContent='先点右边的小喇叭，再听英文吧';return;}
     const token=++this.token;this.playingCard=card;card.classList.add('is-speaking');this.status.textContent=`${word.word} · ${word.zh}`;
     try{await this.audio?.playWord?.(word.id,{review:true});}catch{/* The ordinary word player already attempts local media and speech fallbacks. */}finally{if(token===this.token){card.classList.remove('is-speaking');this.playingCard=null;if(this.status)this.status.textContent='再点一次，还可以听一遍';}}
   }

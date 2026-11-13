@@ -1579,3 +1579,5 @@ html, body, .card, .start-choices, .start-actions, .word-library-grid, .word-lib
  .library-word {padding:5px 4px 7px;}.library-word-image {height:56px;margin-bottom:4px;}.library-word-en {font-size:17px;}.library-word-zh {font-size:12px;margin-top:3px;}
  .word-library-footer {grid-column:2;grid-row:3;padding:3px 10px;}.word-library-status {font-size:10px;}.word-library-sound {min-height:28px;padding:4px 8px;font-size:11px;}
 }
+.audio-recovery {position:fixed;z-index:46;right:max(14px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));pointer-events:auto;min-height:44px;padding:10px 16px;border:2px solid #d7bb82;border-radius:999px;background:#fff7dc;color:#6b764c;box-shadow:0 4px 15px #38502d22;font:700 13px var(--font-family);cursor:pointer;}
+.audio-recovery:focus-visible {outline:3px solid #4c927e;outline-offset:3px;}

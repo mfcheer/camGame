@@ -1,5 +1,7 @@
 # 动物短句配音
 
+后续制作统一遵循 [配音制作与验收规范](VOICE_STANDARD.md)，参数以 `scripts/voice-profile.json` 为准。当前页面保留首批素材背景。
+
 13条短句更换为本地离线生成的Kokoro-82M神经语音，取代原来的macOS Samantha系统朗读。句子原文不变，采用af_heart美式英语声音，速度0.92；保持统一温和声线，不做夸张变调或模仿真人声线。
 
 - 官方模型与授权：[hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M)，Apache-2.0。

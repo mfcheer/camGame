@@ -1,3 +1,4 @@
+import {withDeadline} from './audioRecovery.js';
 import { getWordById, getWordCn,resolveAssetUrl, WORDS_LIST } from './wordsConfig.js';
 /**
  * Web Audio API 音频管理器
@@ -65,10 +66,9 @@ export class AudioManager {
   }
 
   init() {
+    if(this.ctx?.state==='closed'){this.ctx=null;this.initialized=false;this.bgmGainNode=null;this.bgmFilterNode=null;}
     if (this.initialized && this.ctx) {
-      if (this.ctx.state === 'suspended' && typeof this.ctx.resume === 'function') {
-        this.ctx.resume().catch(() => {});
-      }
+      this._requestContextResume();
       return;
     }
     const AudioContextClass = typeof window !== 'undefined' ? (window.AudioContext || window.webkitAudioContext) : null;
@@ -77,11 +77,61 @@ export class AudioManager {
         this.ctx = new AudioContextClass();
         this.initialized = true;
         this._setupBGMGraph();
+        this._requestContextResume();
         this.preloadWordAudios();
       } catch (e) {
         // 容错处理
       }
     }
+  }
+
+  _requestContextResume() {
+    const ctx=this.ctx;
+    if(this._audioInBackground)return;
+    if(!ctx||!['suspended','interrupted'].includes(ctx.state)||typeof ctx.resume!=='function')return;
+    if(this._resumeContext===ctx&&this._resumePromise)return;
+    this._resumeContext=ctx;
+    try{const pending=Promise.resolve(ctx.resume()).then(()=>ctx.state==='running',()=>false);
+      this._resumePromise=pending;pending.finally(()=>{if(this._resumePromise===pending)this._resumePromise=null;});
+    }catch{this._resumePromise=null;}
+  }
+
+  async ensureRunning() {
+    this.init();const ctx=this.ctx;
+    if(!ctx)return false;
+    if(!ctx.state||ctx.state==='running')return true;
+    this._requestContextResume();
+    await withDeadline(this._resumePromise,600,false);
+    return ctx===this.ctx&&ctx.state==='running';
+  }
+
+  // Call synchronously from a real tap before awaiting anything (mobile audio activation).
+  recoverFromGesture({rebuild=false}={}) {
+    this.markForeground();const recoveryToken=this._recoveryToken;
+    if(rebuild&&this.ctx){
+      this.stopWord();if(this.bgmInterval)clearInterval(this.bgmInterval);this.bgmInterval=null;
+      try{this.ctx.close?.()?.catch?.(()=>{});}catch{}
+      this.ctx=null;this.initialized=false;this.bgmGainNode=null;this.bgmFilterNode=null;this._resumePromise=null;this._resumeContext=null;
+    }
+    this.init();
+    return this.ensureRunning().then(ok=>{
+      if(recoveryToken!==this._recoveryToken)return false;
+      if(ok){this.setRecoveryNeeded(false);if(this.isBGMPlaying&&!this.isBGMPaused&&!this.isMuted&&!this.bgmInterval)this._startBGMSequencer();}
+      else if(!this.isMuted)this.setRecoveryNeeded(true);
+      return ok;
+    });
+  }
+
+  setRecoveryNeeded(needed) {
+    this.recoveryNeeded=!!needed&&!this.isMuted;
+    this.onRecoveryNeeded?.(this.recoveryNeeded);
+  }
+
+  markForeground() {this._recoveryToken=(this._recoveryToken||0)+1;this._audioInBackground=false;this._resumePromise=null;this._resumeContext=null;}
+
+  suspendForBackground() {
+    this._recoveryToken=(this._recoveryToken||0)+1;this._audioInBackground=true;this.stopWord();if(this.bgmInterval)clearInterval(this.bgmInterval);this.bgmInterval=null;
+    try{this.ctx?.suspend?.()?.catch?.(()=>{});}catch{}
   }
 
   toggleMute() {
@@ -118,7 +168,7 @@ export class AudioManager {
   }
 
   _syncMuteState() {
-    if (this.isMuted) this.stopWord();
+    if (this.isMuted) {this.stopWord();this.setRecoveryNeeded(false);}
     if (this.isMuted && this._wordAudioElements) {
       for (const a of this._wordAudioElements.values()) {
         try { a.pause(); } catch (e) {}
@@ -828,12 +878,16 @@ export class AudioManager {
       if (typeof fetch === "undefined") return null;
       try {
         const url = this.getWordAudioUrl(id,{review,phrase});
-        const res = await fetch(url);
+        const controller=typeof AbortController!=='undefined'?new AbortController():null;
+        const abort=setTimeout(()=>controller?.abort(),6500);
+        let res;try{res=await withDeadline(fetch(url,controller?{signal:controller.signal}:undefined),7000,null);}finally{clearTimeout(abort);}
+        if(!res)return null;
         if (!res.ok) throw new Error(`Failed to fetch word audio: ${res.status}`);
         const arrayBuffer = await res.arrayBuffer();
         this.init();
         if (!this.ctx || typeof this.ctx.decodeAudioData !== "function") return null;
-        const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
+        const audioBuffer = await withDeadline(this.ctx.decodeAudioData(arrayBuffer),3000,null);
+        if(!audioBuffer)return null;
         this._wordAudioBuffers.set(key, audioBuffer);
         return audioBuffer;
       } catch (e) {
@@ -862,44 +916,75 @@ export class AudioManager {
       try{g.cancelScheduledValues(now);g.setTargetAtTime(.025,now,.08);}catch{}
     }
     return new Promise(resolve=>{
-      let finished=false;
-      const finish=()=>{
-        if(finished)return;finished=true;
+      let finished=false,mediaAttempted=false,fallingBack=false,started=false,watch=null,startup=null,deadline=null;
+      const current=()=>!finished&&token===this._wordToken&&!this.isMuted;
+      const stopSource=()=>{const source=this._activeWordSource;this._activeWordSource=null;if(source){source.onended=null;try{source.stop();}catch{}}};
+      const stopElement=()=>{const audio=this._activeWordElement;this._activeWordElement=null;if(audio){audio.onended=null;audio.onpause=null;audio.onerror=null;try{audio.pause();}catch{}}};
+      const finish=(reason='ended')=>{
+        if(finished)return;finished=true;clearInterval(watch);clearTimeout(startup);clearTimeout(deadline);stopSource();stopElement();
         if(this._wordFinish===finish)this._wordFinish=null;
-        if(token===this._wordToken&&!this.isMuted&&!this.isBGMPaused&&this.bgmGainNode&&this.ctx){
-          const g=this.bgmGainNode.gain,now=this.ctx.currentTime;try{g.cancelScheduledValues(now);g.setTargetAtTime(.08,now,.2);}catch{}
+        if(token===this._wordToken){
+          this.lastVoiceStatus=reason;
+          if(reason==='ended')this.setRecoveryNeeded(!!this.ctx?.state&&this.ctx.state!=='running');
+          if(!this.isMuted&&!this.isBGMPaused&&this.bgmGainNode&&this.ctx){
+            const g=this.bgmGainNode.gain,now=this.ctx.currentTime;try{g.cancelScheduledValues(now);g.setTargetAtTime(.08,now,.2);}catch{}
+          }
         }
         resolve();
       };
       this._wordFinish=finish;
-      let fallingBack=false;
+      const blocked=()=>{if(current())this.setRecoveryNeeded(true);};
       const fallback=()=>{
-        if(fallingBack||finished)return;fallingBack=true;
-        if(token!==this._wordToken||this.isMuted){finish();return;}
-        if(typeof window==='undefined'||!window.speechSynthesis||typeof SpeechSynthesisUtterance==='undefined'){finish();return;}
-        try{
-          this._speakWordFallback(id,finish,review,phrase);
-        }catch{finish();}
+        if(fallingBack||!current()){if(!finished&&!current())finish('cancelled');return;}
+        fallingBack=true;stopSource();stopElement();
+        if(typeof window==='undefined'||!window.speechSynthesis||typeof SpeechSynthesisUtterance==='undefined'){finish('unavailable');return;}
+        try{started=true;this._speakWordFallback(id,()=>finish(),review,phrase);}catch{finish('unavailable');}
       };
       const playElement=()=>{
-        if(token!==this._wordToken||this.isMuted){finish();return;}
+        if(!current()){if(!finished)finish('cancelled');return;}
+        if(mediaAttempted)return;mediaAttempted=true;stopSource();clearInterval(watch);watch=null;
         if(typeof Audio==='undefined'){fallback();return;}
         try{
-          const audio=new Audio(this.getWordAudioUrl(id,{review,phrase}));this._activeWordElement=audio;
-          audio.onended=finish;audio.onerror=fallback;audio.volume=.95;
-          const started=audio.play();if(started?.catch)started.catch(fallback);
+          const audio=new Audio(this.getWordAudioUrl(id,{review,phrase}));this._activeWordElement=audio;audio.volume=.95;
+          audio.onended=()=>finish();audio.onerror=fallback;
+          audio.onpause=()=>{if(current()&&!audio.ended){blocked();finish('interrupted');}};
+          if(typeof audio.currentTime==='number'){
+            let mediaClock=audio.currentTime,advancedAt=Date.now();
+            watch=setInterval(()=>{
+              if(!current())return;
+              if(audio.currentTime>mediaClock+.0001){mediaClock=audio.currentTime;advancedAt=Date.now();}
+              if(!audio.ended&&Date.now()-advancedAt>(started?(this.voiceStallTimeoutMs||1500):(this.voiceStartupTimeoutMs||3000))){blocked();finish('stalled');}
+            },250);watch?.unref?.();
+          }
+          const playing=audio.play();
+          if(playing?.then)playing.then(()=>{if(current()){started=true;this.setRecoveryNeeded(!!this.ctx?.state&&this.ctx.state!=='running');}else try{audio.pause();}catch{};},error=>{
+            if(error?.name==='NotAllowedError'){blocked();finish('blocked');}else fallback();
+          });else started=true;
         }catch{fallback();}
       };
       const playBuffer=buffer=>{
-        if(token!==this._wordToken||this.isMuted){finish();return;}
+        if(!current()){if(!finished)finish('cancelled');return;}
+        if(mediaAttempted||fallingBack)return;
         if(!buffer||!this.ctx){playElement();return;}
-        try{const source=this.ctx.createBufferSource(),gain=this.ctx.createGain();this._activeWordSource=source;
-          source.buffer=buffer;gain.gain.value=.95;source.connect(gain);gain.connect(this.ctx.destination);source.onended=finish;source.start();
+        if(this.ctx.state&&this.ctx.state!=='running'){
+          this.ensureRunning().then(ok=>{if(!current())return;if(ok)playBuffer(buffer);else playElement();});return;
+        }
+        try{
+          const ctx=this.ctx,source=ctx.createBufferSource(),gain=ctx.createGain();this._activeWordSource=source;
+          source.buffer=buffer;gain.gain.value=.95;source.connect(gain);gain.connect(ctx.destination);source.onended=()=>finish();source.start();started=true;this.setRecoveryNeeded(false);
+          let clock=ctx.currentTime,advancedAt=Date.now();
+          if(ctx.state)watch=setInterval(()=>{
+            if(!current())return;
+            if(ctx.currentTime>clock+.0001){clock=ctx.currentTime;advancedAt=Date.now();}
+            if(ctx.state!=='running'||Date.now()-advancedAt>(this.voiceStallTimeoutMs||1500))playElement();
+          },250);
+          watch?.unref?.();
         }catch{playElement();}
       };
-      if(this.ctx&&typeof this.ctx.createBufferSource==='function'){
-        this.loadWordBuffer(id,{review,phrase}).then(playBuffer).catch(playElement);
-      }else playElement();
+      startup=setTimeout(()=>{if(current()&&!started)playElement();},this.voiceStartupTimeoutMs||1800);startup?.unref?.();
+      deadline=setTimeout(()=>{if(!current())return;blocked();finish('timeout');try{if(typeof window!=='undefined')window.speechSynthesis?.cancel();}catch{}},this.voiceTimeoutMs||16000);deadline?.unref?.();
+      if(this.ctx&&typeof this.ctx.createBufferSource==='function')this.loadWordBuffer(id,{review,phrase}).then(playBuffer).catch(playElement);
+      else playElement();
     });
   }
 
@@ -913,7 +998,7 @@ export class AudioManager {
     try{this._activeWordElement?.pause();}catch{}
     if(typeof window!=='undefined')window.speechSynthesis?.cancel();
     this._activeWordSource=null;this._activeWordElement=null;
-    this._wordFinish?.();
+    this._wordFinish?.('cancelled');
     if(!this.isMuted&&!this.isBGMPaused&&this.bgmGainNode&&this.ctx){try{this.bgmGainNode.gain.setTargetAtTime(.08,this.ctx.currentTime,.2);}catch{}}
   }
 
@@ -1022,7 +1107,9 @@ export class AudioManager {
   }
 
   resumeBGM() {
+    this.init();
     this.isBGMPaused = false;
+    if(this.isBGMPlaying&&!this.bgmInterval&&!this.isMuted)this._startBGMSequencer();
     if (!this.isBGMPlaying) {
       this.startBGM(this.currentStageId);
       return;

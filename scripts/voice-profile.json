@@ -1,0 +1,16 @@
+{
+  "model": "hexgrad/Kokoro-82M",
+  "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+  "kokoro_version": "0.9.4",
+  "language": "a",
+  "voice": "af_heart",
+  "speed": 0.92,
+  "model_sample_rate": 24000,
+  "head_silence_seconds": 0.1,
+  "tail_silence_seconds": 0.18,
+  "output_sample_rate": 44100,
+  "output_bitrate": "128k",
+  "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+  "chinese_voice": "Tingting",
+  "chinese_rate": 210
+}

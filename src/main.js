@@ -132,6 +132,7 @@ export class Game {
         onTakePhoto: () => this.beginPhoto(false),
         onCancelPhoto: () => this.cancelPhoto(),
         onReplayWord: () => this.replayWord(),
+        onRecoverAudio: () => this.recoverAudio(),
         onReplaySpeech: () => this.animalSpeech?.replay(),
         onOpenVocabulary: () => {if(this.state==='START')this.wordLibrary?.open();},
         onNextFriend: () => this.startNextFriend(),
@@ -148,6 +149,10 @@ export class Game {
 
     this.wordLibrary=new WordLibrary(this.audioManager,()=>{if(this.uiManager?.dom?.btnSound)this.uiManager.dom.btnSound.textContent=this.audioManager.isMuted?'🔇':'🔊';});
     this.animalSpeech=new AnimalSpeech(this.audioManager,this.uiManager,this.rescueAnimal);
+    this.audioManager.onRecoveryNeeded=needed=>{
+      this.wordLibrary?.updateSound();
+      this.uiManager?.showSoundRecovery?.(needed&&!this.wordLibrary?.overlay&&['PLAYING','CELEBRATING'].includes(this.state));
+    };
 
     this.setupPoseCallbacks();
     this.setupBackgroundListener();
@@ -169,6 +174,7 @@ export class Game {
 
   setupPoseCallbacks() {
     this.poseDetector.onResultsCallback = ({ players, isDemo }) => {
+      if(this.pageInBackground)return;
       const receivedAt = performance.now();
       const inputDt = Math.min(.1, Math.max(.016, (receivedAt - (this.lastPlayersReceivedAt || receivedAt - 33)) / 1000));
       this.lastPlayers=players;this.lastPlayersReceivedAt=receivedAt;
@@ -745,6 +751,8 @@ export class Game {
   // 暂停与恢复（支持庆祝状态分段有效时长冻结与恢复，暂停时隐藏手晕光芒）
   handleTogglePause(paused) {
     if (paused) {
+      if(this.state==='PAUSED')return;
+      this.uiManager?.showSoundRecovery?.(false);
       this.cancelAutoNext();
       this.animalSpeech?.setPaused(true);
       if(this.currentWord){this.wordPresentationToken=(this.wordPresentationToken||0)+1;this.audioManager?.stopWord?.();this.wordAudioDone=false;this.uiManager?.setWordPopupPaused?.(true);}
@@ -787,6 +795,11 @@ export class Game {
   }
 
   handleResume() {
+    if(this.pageInBackground){if(typeof document!=='undefined'&&document.hidden)return;this.handlePageForeground();}
+    if(this.state!=='PAUSED')return;
+    this.lastFrameTime=performance.now();
+    this.audioManager?.recoverFromGesture?.();
+    if(!this.isDemoMode&&this.videoElement?.srcObject){try{this.videoElement.play()?.catch?.(()=>{});}catch{}}
     this.state = this.prePauseState || 'PLAYING';
     this.noPoseDetectedTime = 0;
     this.isSoftWaiting = false;
@@ -801,7 +814,7 @@ export class Game {
       this.wordClosingRemaining=0;
       this.wordReplayReady=false;this.wordReplayDwell=0;this.wordReplayHover=false;
       this.uiManager?.setWordReplayProgress?.(0);
-      this.wordElapsed=0;
+      this.wordElapsed=0;this.wordActiveElapsed=0;
       this.wordAudioDone=false;
       this.wordQuietElapsed=0;
       this.uiManager?.setWordPopupPaused?.(false);
@@ -840,6 +853,7 @@ export class Game {
 
   // 重新开始当前关卡（彻底清除旧庆祝回调）
   handleRestart() {
+    this.uiManager?.showSoundRecovery?.(false);
     this.wordLibrary?.close();
     this.animalSpeech?.cancel();
     this.cancelWordPresentation();
@@ -902,6 +916,7 @@ export class Game {
   // 退出回首页（取消所有异步流程、旧定时器并彻底释放摄像头）
   handleExit() {
     this.bubbleManager?.contrastSampler?.clear();
+    this.uiManager?.showSoundRecovery?.(false);
     this.wordLibrary?.close();
     this.animalSpeech?.cancel();
     this.cancelWordPresentation();
@@ -988,19 +1003,40 @@ export class Game {
     window.addEventListener('touchstart', handlePointer, { passive: true });
   }
 
-  // 监听网页切后台 (Page Visibility)
+  // visibilitychange and pagehide can both fire; preserve the original pause state.
+  handlePageBackground() {
+    if(this.pageInBackground)return;
+    this.pageInBackground=true;this.isSoftWaiting=false;this.lastPlayers=[];this.lastPlayersReceivedAt=0;
+    this.wordReplayReady=false;this.wordReplayHover=false;this.wordReplayDwell=0;
+    this.wordLibrary?.stopPlayback();
+    if(['PLAYING','CELEBRATING'].includes(this.state))this.handleTogglePause(true);
+    if(this.state==='PAUSED'){this.poseDetector?.pause?.();this.uiManager?.showPause?.();}
+    if(this.state==='CALIBRATING'){this.cancelAutoCountdown();this.poseDetector?.pause?.();}
+    this.bubbleManager?.hideHandIndicators?.();this.audioManager?.suspendForBackground?.();
+  }
+
+  handlePageForeground() {
+    if(typeof document!=='undefined'&&document.hidden)return;
+    this.pageInBackground=false;this.lastFrameTime=performance.now();
+    this.audioManager?.markForeground?.();
+    // Keep a clear tap-to-continue gate so iOS can unlock audio in a user gesture.
+    if(this.state==='PAUSED')this.uiManager?.showPause?.();
+    if(this.state==='CALIBRATING')this.poseDetector?.resume?.();
+  }
+
   setupBackgroundListener() {
-    if (typeof document === 'undefined' || typeof document.addEventListener !== 'function') return;
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        if (this.state === 'PLAYING' || this.state === 'CELEBRATING') {
-          this.handleTogglePause(true);
-          if (this.uiManager && this.uiManager.showPause) {
-            this.uiManager.showPause();
-          }
-        }
-      }
-    });
+    if(typeof document==='undefined'||typeof document.addEventListener!=='function')return;
+    document.addEventListener('visibilitychange',()=>document.hidden?this.handlePageBackground():this.handlePageForeground());
+    if(typeof window!=='undefined'){
+      window.addEventListener('pagehide',()=>this.handlePageBackground());
+      window.addEventListener('pageshow',event=>{if(event.persisted&&['PLAYING','CELEBRATING'].includes(this.state))this.handlePageBackground();this.handlePageForeground();});
+    }
+  }
+
+  recoverAudio() {
+    this.audioManager?.recoverFromGesture?.({rebuild:true});
+    if(this.currentWord&&this.state==='PLAYING')this.replayWord();
+    else if(this.animalSpeech?.active&&!this.animalSpeech.paused)this.animalSpeech.replay();
   }
 
   presentWord(word,hitX,hitY,audioDone,{review=false}={}) {
@@ -1011,7 +1047,7 @@ export class Game {
     this.wordReplayReady=false;
     this.wordReplayDwell=0;
     this.wordReplayHover=false;
-    this.wordElapsed=0;
+    this.wordElapsed=0;this.wordActiveElapsed=0;this.wordGestureReplayCount=0;
     this.wordClosingRemaining=0;
     this.wordQuietElapsed=0;
     this.wordAudioDone=false;
@@ -1020,8 +1056,9 @@ export class Game {
     this.waitForWordAudio(audioDone,token);
   }
 
-  replayWord() {
-    if(this.state!=='PLAYING' || !this.currentWord)return;
+  replayWord({gesture=false}={}) {
+    if(this.state!=='PLAYING'||!this.currentWord||(gesture&&(this.wordGestureReplayCount||0)>=1))return;
+    if(gesture)this.wordGestureReplayCount=(this.wordGestureReplayCount||0)+1;else this.wordActiveElapsed=0;
     const token=this.wordPresentationToken=(this.wordPresentationToken||0)+1;
     this.wordPlaybackReview=true;
     this.wordElapsed=0;this.wordQuietElapsed=0;this.wordClosingRemaining=0;this.wordAudioDone=false;
@@ -1032,6 +1069,8 @@ export class Game {
   }
 
   updateWordReplay(dt) {
+    this.wordReplayHover=false;
+    if((this.wordGestureReplayCount||0)>=1){this.wordReplayDwell=0;this.uiManager?.setWordReplayProgress?.(0);return;}
     const target=this.uiManager?.getWordReplayTarget?.();
     if(!target || this.wordElapsed<.8)return;
     const v=getViewport();
@@ -1041,7 +1080,7 @@ export class Game {
     if(!touching){this.wordReplayReady=true;this.wordReplayDwell=0;}
     else if(this.wordReplayReady){
       this.wordReplayDwell+=dt;
-      if(this.wordReplayDwell>=.35)this.replayWord();
+      if(this.wordReplayDwell>=.35)this.replayWord({gesture:true});
     }
     this.uiManager?.setWordReplayProgress?.(this.wordReplayDwell/.35);
   }
@@ -1064,12 +1103,13 @@ export class Game {
       deliver?.();
       return;
     }
-    this.wordElapsed+=deltaSeconds;
+    this.wordElapsed+=deltaSeconds;this.wordActiveElapsed=(this.wordActiveElapsed||0)+deltaSeconds;
     this.updateWordReplay(deltaSeconds);
     if(this.wordAudioDone)this.wordQuietElapsed+=deltaSeconds;
     // A quiet reading beat, then a full exit, before the animal responds.
-    if((this.wordElapsed>=(this.wordPlaybackReview?1.5:2.8) && this.wordAudioDone && this.wordQuietElapsed>=(this.wordPlaybackReview?.25:.4) && !this.wordReplayHover) || this.wordElapsed>=12){
+    if((this.wordElapsed>=(this.wordPlaybackReview?1.5:2.8) && this.wordAudioDone && this.wordQuietElapsed>=(this.wordPlaybackReview?.25:.4) && !this.wordReplayHover) || this.wordElapsed>=12 || this.wordActiveElapsed>=18){
       this.wordClosingRemaining=.2;
+      if(!this.wordAudioDone)this.audioManager?.setRecoveryNeeded?.(true);
       this.audioManager?.stopWord?.();
       this.uiManager?.clearWordPopup?.(true);
     }
