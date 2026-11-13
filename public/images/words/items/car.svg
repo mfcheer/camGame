@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_car" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_car)">
+    
+      <!-- Cute Red Toy Car -->
+      <g transform="translate(128, 120)">
+        <path d="M-36 -8 Q-24 -42 0 -42 Q24 -42 36 -8 Z" fill="#C0392B" stroke="#922B21" stroke-width="4"/>
+        <path d="M-28 -8 Q-18 -34 -4 -34 L-4 -8 Z" fill="#D6EAF8"/>
+        <path d="M4 -8 L4 -34 Q18 -34 28 -8 Z" fill="#D6EAF8"/>
+        <rect x="-58" y="-8" width="116" height="32" rx="10" fill="#E74C3C" stroke="#922B21" stroke-width="4"/>
+        <circle cx="-54" cy="2" r="5" fill="#F1C40F"/>
+        <circle cx="54" cy="2" r="5" fill="#F1C40F"/>
+        <rect x="-62" y="16" width="124" height="6" rx="3" fill="#BDC3C7"/>
+        <g stroke="#17202A" stroke-width="4">
+          <circle cx="-34" cy="26" r="16" fill="#2C3E50"/>
+          <circle cx="-34" cy="26" r="7" fill="#BDC3C7"/>
+          <circle cx="34" cy="26" r="16" fill="#2C3E50"/>
+          <circle cx="34" cy="26" r="7" fill="#BDC3C7"/>
+        </g>
+      </g>
+    
+  </g>
+</svg>

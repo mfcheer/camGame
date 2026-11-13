@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_triangle" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_triangle)">
+    
+      <!-- Cheerful Triangle -->
+      <g transform="translate(128, 122)">
+        <polygon points="0,-60 -60,46 60,46" fill="#F1C40F" stroke="#B7950B" stroke-width="6" stroke-linejoin="round"/>
+        <polygon points="0,-50 -50,40 50,40" fill="#F7DC6F" stroke="none"/>
+        <circle cx="-14" cy="6" r="5" fill="#2C3E50"/>
+        <circle cx="14" cy="6" r="5" fill="#2C3E50"/>
+        <path d="M-10 20 Q0 28 10 20" fill="none" stroke="#2C3E50" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="-22" cy="14" r="5" fill="#E67E22" opacity="0.6"/>
+        <circle cx="22" cy="14" r="5" fill="#E67E22" opacity="0.6"/>
+      </g>
+    
+  </g>
+</svg>

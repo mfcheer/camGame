@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_green" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_green)">
+    
+      <!-- Lucky 4-Leaf Clover -->
+      <g transform="translate(128, 120)">
+        <path d="M0 10 Q14 48 26 58" fill="none" stroke="#27AE60" stroke-width="6" stroke-linecap="round"/>
+        <g stroke="#1E8449" stroke-width="4">
+          <path d="M0 0 C-18 -26 0 -48 0 -48 C0 -48 18 -26 0 0 Z" fill="#2ECC71"/>
+          <path d="M0 0 C-18 26 0 48 0 48 C0 48 18 26 0 0 Z" fill="#2ECC71"/>
+          <path d="M0 0 C-26 -18 -48 0 -48 0 C-48 0 -26 18 0 0 Z" fill="#27AE60"/>
+          <path d="M0 0 C26 -18 48 0 48 0 C48 0 26 18 0 0 Z" fill="#27AE60"/>
+        </g>
+        <circle cx="0" cy="0" r="7" fill="#F1C40F"/>
+      </g>
+    
+  </g>
+</svg>

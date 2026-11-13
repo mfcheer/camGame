@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_pencil" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_pencil)">
+    
+      <!-- Pencil angled 35deg -->
+      <g transform="translate(128, 120) rotate(35)">
+        <path d="M-14 -70 L14 -70 C14 -82 -14 -82 -14 -70 Z" fill="#FF8A80" stroke="#C62828" stroke-width="3"/>
+        <rect x="-15" y="-70" width="30" height="14" rx="2" fill="#CFD8DC" stroke="#78909C" stroke-width="3"/>
+        <line x1="-15" y1="-63" x2="15" y2="-63" stroke="#90A4AE" stroke-width="2"/>
+        <rect x="-14" y="-56" width="28" height="96" fill="#FBC02D" stroke="#F57F17" stroke-width="3"/>
+        <line x1="-5" y1="-56" x2="-5" y2="40" stroke="#F57F17" stroke-width="3"/>
+        <line x1="5" y1="-56" x2="5" y2="40" stroke="#FFF176" stroke-width="3"/>
+        <polygon points="-14,40 14,40 0,72" fill="#FFE0B2" stroke="#D7CCC8" stroke-width="2"/>
+        <polygon points="-5,60 5,60 0,72" fill="#263238"/>
+      </g>
+    
+  </g>
+</svg>

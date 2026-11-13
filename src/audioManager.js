@@ -58,6 +58,8 @@ export class AudioManager {
 
     // 英语单词音频发音缓存
     this.lastPlayedWord = null;
+    this._wordAudioBuffers = new Map();
+    this._wordAudioPromises = new Map();
     this._wordAudioElements = new Map();
   }
 
@@ -74,6 +76,7 @@ export class AudioManager {
         this.ctx = new AudioContextClass();
         this.initialized = true;
         this._setupBGMGraph();
+        this.preloadWordAudios();
       } catch (e) {
         // 容错处理
       }
@@ -801,23 +804,103 @@ export class AudioManager {
       click2.stop(now + 0.135);
     } catch (e) {}
   }
-  // 11. 划破气泡时播报对应英语单词发音 (标准美语少儿教学发音 + Web Speech API 备用容错)
+  // 11. 划破气泡时播报对应英语单词发音 (Web Audio API 0延迟缓冲播放 + 标准美语少儿教学发音 + Fallback)
+  getWordAudioUrl(wordId) {
+    const id = String(wordId || "").trim().toLowerCase();
+    const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
+    const cleanBase = base.endsWith("/") ? base : base + "/";
+    return `${cleanBase}audio/words/${id}.mp3`;
+  }
+
+  async loadWordBuffer(wordId) {
+    const id = String(wordId || "").trim().toLowerCase();
+    if (!id) return null;
+    if (this._wordAudioBuffers.has(id)) return this._wordAudioBuffers.get(id);
+    if (this._wordAudioPromises.has(id)) return this._wordAudioPromises.get(id);
+
+    const promise = (async () => {
+      if (typeof fetch === "undefined") return null;
+      try {
+        const url = this.getWordAudioUrl(id);
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Failed to fetch word audio: ${res.status}`);
+        const arrayBuffer = await res.arrayBuffer();
+        this.init();
+        if (!this.ctx || typeof this.ctx.decodeAudioData !== "function") return null;
+        const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
+        this._wordAudioBuffers.set(id, audioBuffer);
+        return audioBuffer;
+      } catch (e) {
+        return null;
+      } finally {
+        this._wordAudioPromises.delete(id);
+      }
+    })();
+
+    this._wordAudioPromises.set(id, promise);
+    return promise;
+  }
+
   playWord(wordId) {
     if (this.isMuted) return;
-    const id = (typeof wordId === 'string' ? wordId : wordId?.id || '').trim().toLowerCase();
+    const id = (typeof wordId === "string" ? wordId : wordId?.id || "").trim().toLowerCase();
     if (!id) return;
 
     this.lastPlayedWord = id;
+    this.init();
 
-    if (typeof Audio !== 'undefined') {
-      try {
-        if (!this._wordAudioElements) {
-          this._wordAudioElements = new Map();
+    // 优先层：使用 Web Audio API (基于已解锁的 this.ctx，免除手势/非手势场景下的浏览器 Autoplay 拦截，0 延迟)
+    if (this.ctx && typeof this.ctx.createBufferSource === "function") {
+      if (this.ctx.state === "suspended" && typeof this.ctx.resume === "function") {
+        this.ctx.resume().catch(() => {});
+      }
+
+      const playBuffer = (buffer) => {
+        if (!buffer || !this.ctx || this.isMuted) return false;
+        try {
+          const source = this.ctx.createBufferSource();
+          const gain = this.ctx.createGain();
+          source.buffer = buffer;
+          const now = this.ctx.currentTime || 0;
+          gain.gain.setValueAtTime(0.95, now);
+          source.connect(gain);
+          gain.connect(this.ctx.destination);
+          source.start(now);
+          return true;
+        } catch (e) {
+          return false;
         }
+      };
+
+      if (this._wordAudioBuffers.has(id)) {
+        const played = playBuffer(this._wordAudioBuffers.get(id));
+        if (played) return;
+      }
+
+      this.loadWordBuffer(id).then((buf) => {
+        if (!buf) {
+          this._playWordAudioElement(id);
+        } else {
+          playBuffer(buf);
+        }
+      }).catch(() => {
+        this._playWordAudioElement(id);
+      });
+      return;
+    }
+
+    this._playWordAudioElement(id);
+  }
+
+  _playWordAudioElement(id) {
+    if (this.isMuted) return;
+    if (typeof Audio !== "undefined") {
+      try {
+        if (!this._wordAudioElements) this._wordAudioElements = new Map();
         let audio = this._wordAudioElements.get(id);
         if (!audio) {
-          audio = new Audio(`/audio/words/${id}.mp3`);
-          audio.preload = 'auto';
+          audio = new Audio(this.getWordAudioUrl(id));
+          audio.preload = "auto";
           this._wordAudioElements.set(id, audio);
         }
         audio.currentTime = 0;
@@ -828,7 +911,6 @@ export class AudioManager {
             this._speakWordFallback(id);
           });
         }
-        return;
       } catch (e) {
         this._speakWordFallback(id);
       }
@@ -838,10 +920,10 @@ export class AudioManager {
   }
 
   _speakWordFallback(text) {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined') {
+    if (typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined") {
       try {
         const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = 'en-US';
+        utter.lang = "en-US";
         utter.rate = 0.95;
         utter.pitch = 1.05;
         window.speechSynthesis.speak(utter);
@@ -850,15 +932,24 @@ export class AudioManager {
   }
 
   preloadWordAudios(wordIds = []) {
-    if (typeof Audio === 'undefined') return;
-    if (!this._wordAudioElements) this._wordAudioElements = new Map();
-    for (const id of wordIds) {
-      if (!this._wordAudioElements.has(id)) {
-        try {
-          const a = new Audio(`/audio/words/${id}.mp3`);
-          a.preload = 'auto';
-          this._wordAudioElements.set(id, a);
-        } catch (e) {}
+    const ids = Array.isArray(wordIds) && wordIds.length > 0 ? wordIds : [
+      "chair", "table", "pencil", "book", "crayon", "teacher",
+      "red", "yellow", "blue", "green", "purple",
+      "circle", "triangle", "square", "rectangle",
+      "doll", "ball", "car", "train", "bike", "teddy"
+    ];
+
+    for (const id of ids) {
+      this.loadWordBuffer(id).catch(() => {});
+      if (typeof Audio !== "undefined") {
+        if (!this._wordAudioElements) this._wordAudioElements = new Map();
+        if (!this._wordAudioElements.has(id)) {
+          try {
+            const a = new Audio(this.getWordAudioUrl(id));
+            a.preload = "auto";
+            this._wordAudioElements.set(id, a);
+          } catch (e) {}
+        }
       }
     }
   }

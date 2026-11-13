@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_ball" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_ball)">
+    
+      <!-- Colorful Beach/Play Ball -->
+      <g transform="translate(128, 120)">
+        <circle cx="0" cy="0" r="54" fill="#FFFFFF" stroke="#2C3E50" stroke-width="5"/>
+        <path d="M0 -54 A 54 54 0 0 1 54 0 L0 0 Z" fill="#E74C3C"/>
+        <path d="M54 0 A 54 54 0 0 1 0 54 L0 0 Z" fill="#F1C40F"/>
+        <path d="M0 54 A 54 54 0 0 1 -54 0 L0 0 Z" fill="#3498DB"/>
+        <path d="M-54 0 A 54 54 0 0 1 0 -54 L0 0 Z" fill="#2ECC71"/>
+        <circle cx="0" cy="0" r="16" fill="#FFFFFF" stroke="#2C3E50" stroke-width="4"/>
+        <circle cx="0" cy="0" r="8" fill="#9B59B6"/>
+        <ellipse cx="-20" cy="-24" rx="8" ry="14" transform="rotate(-30 -20 -24)" fill="#FFFFFF" opacity="0.75"/>
+      </g>
+    
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_circle" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_circle)">
+    
+      <!-- Cheerful Circle -->
+      <g transform="translate(128, 120)">
+        <circle cx="0" cy="0" r="54" fill="#E67E22" stroke="#BA4A00" stroke-width="6"/>
+        <circle cx="0" cy="0" r="48" fill="#F39C12"/>
+        <circle cx="-16" cy="-8" r="6" fill="#2C3E50"/>
+        <circle cx="16" cy="-8" r="6" fill="#2C3E50"/>
+        <circle cx="-14" cy="-10" r="2" fill="#FFFFFF"/>
+        <circle cx="18" cy="-10" r="2" fill="#FFFFFF"/>
+        <path d="M-14 10 Q0 24 14 10" fill="none" stroke="#2C3E50" stroke-width="5" stroke-linecap="round"/>
+        <path d="M-36 -36 A 50 50 0 0 1 36 -36" fill="none" stroke="#F8C471" stroke-width="6" stroke-linecap="round"/>
+      </g>
+    
+  </g>
+</svg>

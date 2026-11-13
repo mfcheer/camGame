@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_train" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_train)">
+    
+      <!-- Cute Steam Train -->
+      <g transform="translate(128, 120)">
+        <circle cx="-32" cy="-56" r="8" fill="#BDC3C7" opacity="0.7"/>
+        <circle cx="-22" cy="-66" r="11" fill="#BDC3C7" opacity="0.6"/>
+        <circle cx="-8" cy="-76" r="14" fill="#BDC3C7" opacity="0.5"/>
+        <rect x="-40" y="-44" width="16" height="24" rx="2" fill="#E67E22" stroke="#BA4A00" stroke-width="3"/>
+        <polygon points="-44,-44 -20,-44 -24,-36 -40,-36" fill="#D35400"/>
+        <rect x="0" y="-42" width="48" height="56" rx="6" fill="#2980B9" stroke="#1B4F72" stroke-width="4"/>
+        <rect x="10" y="-32" width="28" height="20" rx="4" fill="#AED6F1" stroke="#1B4F72" stroke-width="3"/>
+        <rect x="-52" y="-20" width="56" height="34" rx="6" fill="#27AE60" stroke="#1E8449" stroke-width="4"/>
+        <circle cx="-54" cy="-4" r="6" fill="#F1C40F" stroke="#B7950B" stroke-width="3"/>
+        <rect x="-56" y="14" width="108" height="10" rx="3" fill="#E74C3C" stroke="#B03A2E" stroke-width="3"/>
+        <g stroke="#1B2631" stroke-width="4">
+          <circle cx="-36" cy="28" r="13" fill="#34495E"/>
+          <circle cx="-36" cy="28" r="5" fill="#BDC3C7"/>
+          <circle cx="-6" cy="28" r="13" fill="#34495E"/>
+          <circle cx="-6" cy="28" r="5" fill="#BDC3C7"/>
+          <circle cx="26" cy="26" r="15" fill="#34495E"/>
+          <circle cx="26" cy="26" r="6" fill="#BDC3C7"/>
+        </g>
+      </g>
+    
+  </g>
+</svg>

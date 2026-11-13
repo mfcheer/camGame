@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_blue" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_blue)">
+    
+      <!-- Glossy Blue Water Droplet -->
+      <g transform="translate(128, 120)">
+        <path d="M0 -56 C-24 -24 -52 6 -52 30 C-52 56 -28 66 0 66 C28 66 52 56 52 30 C52 6 24 -24 0 -56 Z" fill="#3498DB" stroke="#1F618D" stroke-width="5"/>
+        <path d="M-40 38 C-20 48 20 20 44 32 C38 52 20 62 0 62 C-20 62 -36 52 -40 38 Z" fill="#2980B9"/>
+        <ellipse cx="-22" cy="12" rx="10" ry="20" transform="rotate(-20 -22 12)" fill="#85C1E9" opacity="0.8"/>
+        <circle cx="-16" cy="4" r="5" fill="#FFFFFF" opacity="0.9"/>
+      </g>
+    
+  </g>
+</svg>

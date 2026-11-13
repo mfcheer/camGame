@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_rectangle" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_rectangle)">
+    
+      <!-- Cheerful Rectangle -->
+      <g transform="translate(128, 120)">
+        <rect x="-62" y="-38" width="124" height="76" rx="14" fill="#3498DB" stroke="#1F618D" stroke-width="6"/>
+        <rect x="-54" y="-30" width="108" height="60" rx="10" fill="#5DADE2"/>
+        <circle cx="-18" cy="-4" r="6" fill="#2C3E50"/>
+        <circle cx="18" cy="-4" r="6" fill="#2C3E50"/>
+        <path d="M-12 12 Q0 22 12 12" fill="none" stroke="#2C3E50" stroke-width="5" stroke-linecap="round"/>
+        <line x1="-46" y1="-22" x2="46" y2="-22" stroke="#AED6F1" stroke-width="5" stroke-linecap="round"/>
+      </g>
+    
+  </g>
+</svg>

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
   <defs>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.18"/>
+    <filter id="shadow_train" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
     </filter>
     <radialGradient id="cardGlow_train" cx="50%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.96"/>
       <stop offset="100%" stop-color="#EBF5FB" stop-opacity="0.92"/>
     </radialGradient>
   </defs>
 
-  <circle cx="128" cy="128" r="114" fill="url(#cardGlow_train)" filter="url(#shadow)"/>
+  <circle cx="128" cy="128" r="114" fill="url(#cardGlow_train)" filter="url(#shadow_train)"/>
   <circle cx="128" cy="128" r="114" fill="none" stroke="#2980B9" stroke-width="6" opacity="0.85"/>
   <circle cx="128" cy="128" r="106" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.9"/>
 
   
       <!-- Cute Steam Train -->
-      <g transform="translate(128, 118)">
+      <g transform="translate(128, 120)">
         <circle cx="-32" cy="-56" r="8" fill="#BDC3C7" opacity="0.7"/>
         <circle cx="-22" cy="-66" r="11" fill="#BDC3C7" opacity="0.6"/>
         <circle cx="-8" cy="-76" r="14" fill="#BDC3C7" opacity="0.5"/>
@@ -39,7 +39,7 @@
     
 
   <g transform="translate(128, 206)">
-    <rect x="-56" y="-18" width="112" height="32" rx="16" fill="#2980B9" stroke="#FFFFFF" stroke-width="2.5" filter="url(#shadow)"/>
+    <rect x="-56" y="-18" width="112" height="32" rx="16" fill="#2980B9" stroke="#FFFFFF" stroke-width="2.5" filter="url(#shadow_train)"/>
     <text x="0" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Comic Sans MS', sans-serif" font-size="17" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">TRAIN</text>
   </g>
 </svg>

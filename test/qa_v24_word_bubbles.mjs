@@ -183,41 +183,56 @@ test('4. AudioManager 单词发音播报、静音控制与容错机制', () => {
   assert.equal(audio.lastPlayedWord, 'table', '非法入参不应影响已记录状态');
 });
 
-test('5. UIManager 浮动单词药丸与 CSS 规范验证', () => {
+test("5. UIManager 浮动单词实物认知卡片（实物图片 + 英文名牌）与 CSS 规范验证", () => {
   // DOM 模拟测试
   const fakeApp = {
     children: [],
     appendChild(child) { this.children.push(child); }
   };
   globalThis.document = {
-    getElementById(id) { if (id === 'app') return fakeApp; return null; },
+    getElementById(id) { if (id === "app") return fakeApp; return null; },
     createElement(tag) {
       return {
         tag,
-        className: '',
+        className: "",
         style: {
           properties: {},
           setProperty(k, v) { this.properties[k] = v; }
         },
-        appendChild(c) { this.child = c; },
+        children: [],
+        appendChild(c) { this.children.push(c); this.child = c; },
+        setAttribute(k, v) { this[k] = v; },
         remove() { fakeApp.children = fakeApp.children.filter(x => x !== this); }
       };
     }
   };
 
   const ui = Object.create(UIManager.prototype);
-  const wordObj = getWordById('crayon');
+  const wordObj = getWordById("table");
   ui.showWordPopup(wordObj, 0.5, 0.4);
 
-  assert.equal(fakeApp.children.length, 1, '应当向容器添加 1 个弹窗元素');
-  const pill = fakeApp.children[0];
-  assert.equal(pill.className, 'word-popup-pill');
-  assert.equal(pill.style.properties['--word-accent'], '#E74C3C');
-  assert.equal(pill.child.textContent, 'CRAYON', '单词文本应当转换为大写展示');
+  assert.equal(fakeApp.children.length, 1, "应当向容器添加 1 个弹窗元素");
+  const card = fakeApp.children[0];
+  assert.ok(card.className.includes("word-popup-card"), "应包含 word-popup-card 类");
+  assert.ok(card.className.includes("word-popup-pill"), "应兼容 word-popup-pill 类");
+  assert.equal(card.style.properties["--word-accent"], "#2980B9");
+
+  // 验证弹出了实物物品大图
+  assert.ok(card.photo, "弹窗应当包含实物图片元素");
+  assert.equal(card.photo.className, "word-popup-photo");
+  assert.ok(card.photo.src.includes("table"), "图片 src 应当指向 table 对应的物品实物图");
+  assert.equal(card.photo.alt, "TABLE");
+
+  // 验证醒目英文名牌
+  assert.ok(card.textSpan, "弹窗应当包含单词文本元素");
+  assert.equal(card.textSpan.textContent, "TABLE", "单词文本应当转换为大写展示");
 
   // 验证 CSS 样式文件规范
-  const css = fs.readFileSync('src/style.css', 'utf8');
-  assert.ok(css.includes('.word-popup-pill'), 'CSS 应包含 .word-popup-pill 规范');
-  assert.ok(css.includes('@keyframes wordPillPop'), 'CSS 应包含 @keyframes wordPillPop 动画定义');
-  assert.ok(css.includes('--word-accent'), 'CSS 应当使用 --word-accent 动态主题色');
+  const css = fs.readFileSync("src/style.css", "utf8");
+  assert.ok(css.includes(".word-popup-card"), "CSS 应包含 .word-popup-card 规范");
+  assert.ok(css.includes(".word-popup-photo"), "CSS 应包含 .word-popup-photo 规范");
+  assert.ok(css.includes(".word-popup-pill"), "CSS 应包含 .word-popup-pill 规范");
+  assert.ok(css.includes("@keyframes wordCardPop"), "CSS 应包含 @keyframes wordCardPop 动画定义");
+  assert.ok(css.includes("@keyframes wordPillPop"), "CSS 应包含 @keyframes wordPillPop 动画定义");
+  assert.ok(css.includes("--word-accent"), "CSS 应当使用 --word-accent 动态主题色");
 });

@@ -84,7 +84,11 @@ export class BubbleManager {
       try {
         const loader = new THREE.TextureLoader();
         const word = WORDS_MAP.get(wordId);
-        const url = word?.image || `/images/words/${wordId}.png`;
+        const base = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) || '/';
+        const cleanBase = base.endsWith('/') ? base : base + '/';
+        const rawUrl = word?.bubbleImage || word?.image || `images/words/${wordId}.png`;
+        const cleanRaw = rawUrl.startsWith('/') ? rawUrl.slice(1) : rawUrl;
+        const url = rawUrl.startsWith('http') || rawUrl.startsWith('data:') ? rawUrl : cleanBase + cleanRaw;
         const tex = loader.load(url);
         if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
         this.wordTextureCache.set(wordId, tex);

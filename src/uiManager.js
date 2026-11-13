@@ -682,32 +682,80 @@ export class UIManager {
     const unlocked = campManager.getUnlockedCount();
     this.dom.campBadgeCount.textContent = `${unlocked}/6`;
   }
-  // 划破气泡浮现英文单词药丸徽章 (视听结合双重刺激)
+  // 划破气泡浮现实物认知卡片 (高清实物大图 + 英文单词标牌 + 视听立体刺激)
   showWordPopup(word, hitX = 0.5, hitY = 0.5) {
-    if (typeof document === 'undefined') return;
-    const wordData = typeof word === 'string' ? { word, accent: '#ff6b81' } : word;
+    if (typeof document === "undefined") return;
+    const wordData = typeof word === "string" ? { word, id: word, accent: "#ff6b81" } : word;
     if (!wordData || !wordData.word) return;
 
-    const popup = document.createElement('div');
-    popup.className = 'word-popup-pill';
-    popup.style.setProperty('--word-accent', wordData.accent || '#ff6b81');
+    const popup = document.createElement("div");
+    popup.className = "word-popup-card word-popup-pill";
+    if (typeof popup.setAttribute === "function") {
+      popup.setAttribute("role", "status");
+    }
+    if (popup.style && typeof popup.style.setProperty === "function") {
+      popup.style.setProperty("--word-accent", wordData.accent || "#ff6b81");
+    }
 
-    const normX = Math.min(0.90, Math.max(0.10, Number(hitX) || 0.5));
-    const normY = Math.min(0.85, Math.max(0.15, Number(hitY) || 0.5));
-    popup.style.left = `${(normX * 100).toFixed(1)}%`;
-    popup.style.top = `${(normY * 100).toFixed(1)}%`;
+    const normX = Math.min(0.84, Math.max(0.16, Number(hitX) || 0.5));
+    const normY = Math.min(0.76, Math.max(0.20, Number(hitY) || 0.5));
+    if (popup.style) {
+      popup.style.left = `${(normX * 100).toFixed(1)}%`;
+      popup.style.top = `${(normY * 100).toFixed(1)}%`;
+    }
 
-    const textSpan = document.createElement('span');
-    textSpan.className = 'word-popup-text';
-    textSpan.textContent = String(wordData.word).toUpperCase();
-    popup.appendChild(textSpan);
+    const wordId = String(wordData.id || wordData.word || "").toLowerCase();
+    const wordName = String(wordData.word || wordId).toUpperCase();
 
-    const container = document.getElementById('app') || document.body;
-    container.appendChild(popup);
+    // 1. 实物物品大照片/高清矢量图
+    const photoFrame = document.createElement("div");
+    photoFrame.className = "word-popup-photo-frame";
+
+    const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
+    const cleanBase = base.endsWith("/") ? base : base + "/";
+    const rawSrc = wordData.itemImage || wordData.image || `images/words/items/${wordId}.png`;
+    const cleanRaw = rawSrc.startsWith("/") ? rawSrc.slice(1) : rawSrc;
+    const fullImgSrc = rawSrc.startsWith("http") || rawSrc.startsWith("data:") ? rawSrc : cleanBase + cleanRaw;
+
+    const img = document.createElement("img");
+    img.className = "word-popup-photo";
+    img.src = fullImgSrc;
+    img.alt = wordName;
+    img.loading = "eager";
+    img.onerror = () => {
+      if (!img.dataset) img.dataset = {};
+      if (!img.dataset.fallback) {
+        img.dataset.fallback = "1";
+        img.src = cleanBase + `images/words/${wordId}.png`;
+      } else if (img.dataset.fallback === "1") {
+        img.dataset.fallback = "2";
+        img.src = cleanBase + `images/words/${wordId}.svg`;
+      }
+    };
+    photoFrame.appendChild(img);
+    popup.appendChild(photoFrame);
+
+    // 2. 醒目大号英文名牌
+    const badge = document.createElement("div");
+    badge.className = "word-popup-badge";
+    const textSpan = document.createElement("span");
+    textSpan.className = "word-popup-text";
+    textSpan.textContent = wordName;
+    badge.appendChild(textSpan);
+    popup.appendChild(badge);
+
+    popup.photo = img;
+    popup.textSpan = textSpan;
+
+    const container = document.getElementById("app") || document.body;
+    if (container && typeof container.appendChild === "function") {
+      container.appendChild(popup);
+    }
 
     setTimeout(() => {
-      popup.remove();
-    }, 850);
-  }
-}
+      if (typeof popup.remove === "function") {
+        popup.remove();
+      }
+    }, 1400);
+  }}
 
