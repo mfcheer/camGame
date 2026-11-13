@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { GAME_CONFIG } from './config.js';
 import {getAnimalPlayStyle, animalTargetOffset} from './animalPlayStyles.js';
 import {PointerContrastSampler,pointerPalette} from './pointerContrast.js';
+import { WORDS_LIST, getRandomWord, WORDS_MAP, getWordById } from './wordsConfig.js';
 
 /**
  * 泡泡生命周期与交互管理 (v0.5.1 食指指尖交互与小动物解救)
@@ -67,6 +68,58 @@ export class BubbleManager {
     this.onComboChange = null;
     this.lastPoppedEnergy = 1;
     this.onSpecialPop = null;
+    this.lastWordId = null;
+    this.wordTextureCache = new Map();
+    this.onWordPop = null;
+    if (typeof document !== 'undefined') {
+      this.preloadWordTextures();
+    }
+  }
+
+
+  // 单词纹理缓存管理与卡片 Mesh 构建
+  getWordTexture(wordId) {
+    if (typeof document === 'undefined') return null;
+    if (!this.wordTextureCache.has(wordId)) {
+      try {
+        const loader = new THREE.TextureLoader();
+        const word = WORDS_MAP.get(wordId);
+        const url = word?.image || `/images/words/${wordId}.png`;
+        const tex = loader.load(url);
+        if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
+        this.wordTextureCache.set(wordId, tex);
+      } catch (e) {
+        return null;
+      }
+    }
+    return this.wordTextureCache.get(wordId);
+  }
+
+  preloadWordTextures() {
+    if (typeof document === 'undefined') return;
+    for (const w of WORDS_LIST) {
+      this.getWordTexture(w.id);
+    }
+  }
+
+  createWordCardMesh(word, radius) {
+    const group = new THREE.Group();
+    const cardSize = radius * 1.35;
+    const texture = this.getWordTexture(word.id);
+    const cardGeo = new THREE.PlaneGeometry(cardSize, cardSize);
+    const cardMat = new THREE.MeshBasicMaterial({
+      map: texture || null,
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.96,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    const cardMesh = new THREE.Mesh(cardGeo, cardMat);
+    cardMesh.name = `word_card_${word.id}`;
+    group.add(cardMesh);
+    group.userData = { word, cardMesh };
+    return group;
   }
 
   // 创建手部彩色光晕 (暖金 #FFE394、浅蓝 #8DDAFF，光核 10~14px，外晕 28~36px，透明度约 0.75)
@@ -187,7 +240,7 @@ export class BubbleManager {
     if (this.playerMode === 'coop') this.lastPopPlayerSide = side === 'left' ? 'right' : 'left';
     this.disposeBubble(old.group);
     this.activeBubble = null;
-    this.createBubble(this.bubbleIndex, old.type);
+    this.createBubble(this.bubbleIndex, old.type, old.word);
     for (const [key, value] of Object.entries(saved)) if (value !== undefined) this.activeBubble[key] = value;
     this.lastPopPlayerSide = side;
     // Old camera-space tips must never hit the newly projected target.
@@ -464,12 +517,17 @@ export class BubbleManager {
     this.constrainPlayPosition(b.group.position, b.playBounds);
   }
 
-  createBubble(index, forceType = null) {
+  createBubble(index, forceType = null, forceWord = null) {
     this.bubbleIndex = index;
     const bubbleType = this.determineBubbleType(index, forceType);
     this.bubbleType = bubbleType;
     const rainbowColors = [0xff6b81, 0xffa502, 0x2ed573, 0x1e90ff, 0x9b59b6];
     const colorHex = rainbowColors[index % rainbowColors.length];
+
+    const word = forceWord
+      ? (typeof forceWord === 'string' ? WORDS_MAP.get(forceWord) || { id: forceWord, word: forceWord } : forceWord)
+      : getRandomWord(this.lastWordId);
+    if (word?.id) this.lastWordId = word.id;
 
     const group = new THREE.Group();
     const isJelly = (bubbleType === 'jelly');
@@ -527,15 +585,8 @@ export class BubbleManager {
       const outlineMesh = new THREE.Mesh(outlineGeo, outlineMat);
       group.add(outlineMesh);
 
-      const coreGeo = new THREE.SphereGeometry(jellyRadius * 0.48, 20, 20);
-      const coreMat = new THREE.MeshBasicMaterial({
-        color: 0xff6b81,
-        transparent: true,
-        opacity: 0.65,
-        depthWrite: false
-      });
-      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-      group.add(coreMesh);
+      const cardGroup = this.createWordCardMesh(word, jellyRadius * 0.85);
+      group.add(cardGroup);
 
       const highlightGeo = new THREE.SphereGeometry(jellyRadius * 0.22, 12, 12);
       const highlightMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75, depthWrite: false });
@@ -554,7 +605,9 @@ export class BubbleManager {
         mesh,
         outlineMesh,
         glowMesh: null,
-        core: coreMesh,
+        core: cardGroup,
+        cardGroup,
+        word,
         radius: jellyRadius,
         baseRadius: jellyRadius,
         basePos: spawnPos.clone(),
@@ -565,6 +618,7 @@ export class BubbleManager {
         relocationElapsed: 0,
         updateCount: 0,
         suppressedHands: new Set(),
+        word,
         isPopping: false,
         hitsNeeded: 2,
         hitsReceived: 0,
@@ -618,10 +672,8 @@ export class BubbleManager {
       const rainbowRingMesh = new THREE.Mesh(rainbowRingGeo, rainbowRingMat);
       group.add(rainbowRingMesh);
 
-      const starGeo = new THREE.OctahedronGeometry(radius * 0.38, 0);
-      const starMat = new THREE.MeshBasicMaterial({ color: 0xff3838 });
-      const starMesh = new THREE.Mesh(starGeo, starMat);
-      group.add(starMesh);
+      const cardGroup = this.createWordCardMesh(word, radius);
+      group.add(cardGroup);
 
       group.scale.set(0.65, 0.65, 0.65);
       this.scene.add(group);
@@ -634,7 +686,9 @@ export class BubbleManager {
         outlineMesh,
         glowMesh: rainbowRingMesh,
         rainbowRing: rainbowRingMesh,
-        core: starMesh,
+        core: cardGroup,
+        cardGroup,
+        word,
         radius,
         baseRadius: radius,
         basePos: spawnPos.clone(),
@@ -800,14 +854,9 @@ export class BubbleManager {
     const glowMesh = new THREE.Mesh(glowGeo, glowMat);
     group.add(glowMesh);
 
-    // 4. 泡泡内旋转的小星星装饰
-    const starGeo = new THREE.OctahedronGeometry(radius * 0.34, 0);
-    const starMat = new THREE.MeshBasicMaterial({
-      color: colorHex,
-      wireframe: false
-    });
-    const starMesh = new THREE.Mesh(starGeo, starMat);
-    group.add(starMesh);
+    // 4. 泡泡内展示 21 个英语启蒙单词卡通卡片
+    const cardGroup = this.createWordCardMesh(word, radius);
+    group.add(cardGroup);
 
     // 5. 表面可爱高光弧
     const highlightGeo = new THREE.SphereGeometry(radius * 0.22, 12, 12);
@@ -832,7 +881,9 @@ export class BubbleManager {
       mesh,
       outlineMesh,
       glowMesh,
-      core: starMesh,
+      core: cardGroup,
+      cardGroup,
+      word,
       radius,
       baseRadius: radius,
       basePos: spawnPos.clone(),
@@ -1064,7 +1115,16 @@ export class BubbleManager {
     this.completedBubbleCount++;
     this.rescueAnimal?.followEnergy?.(this.activeBubble.group.position);
 
-    // 1. 播放破裂音效 (按泡泡类型触发专属音效)
+    // 1. 播放破裂音效与英语单词发音 (按泡泡类型触发专属音效)
+    if (this.activeBubble.word) {
+      const word = this.activeBubble.word;
+      if (this.audio && typeof this.audio.playWord === 'function') {
+        this.audio.playWord(word.id || word.word);
+      }
+      if (typeof this.onWordPop === 'function') {
+        this.onWordPop(word, hitX, hitY);
+      }
+    }
     if (this.activeBubble.type === 'rainbow') {
       if (this.audio && typeof this.audio.playRainbowGlide === 'function') {
         this.audio.playRainbowGlide();
@@ -1544,8 +1604,14 @@ export class BubbleManager {
         b.glowMesh.material.opacity = this.isNearHand ? 0.45 : 0.32;
       }
 
-      // 内部小星星缓慢旋转
-      if (b.type !== 'coop_heart') { b.core.rotation.x += dt * 1.2; b.core.rotation.y += dt * 1.8; }
+      // 内部单词卡片与图案微幅摇摆漂浮
+      if (b.cardGroup) {
+        b.cardGroup.rotation.z = Math.sin(timeSeconds * 2.2) * 0.08;
+        b.cardGroup.position.y = Math.sin(timeSeconds * 3.0) * (b.radius * 0.04);
+      } else if (b.type !== 'coop_heart' && b.core) {
+        b.core.rotation.x += dt * 1.2;
+        b.core.rotation.y += dt * 1.8;
+      }
       if(b.relocating){const fade=Math.max(0,1-b.relocationElapsed/.18);b.group.scale.multiplyScalar(.75+.25*fade);b.group.traverse(o=>{if(o.isMesh&&o.material.transparent)o.material.opacity*=fade;});}
     }
 

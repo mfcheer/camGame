@@ -11,6 +11,7 @@ import { GAME_CONFIG, resolveAnimal, PLAYABLE_ANIMALS } from './config.js';
 import {CelebrationAccessories} from './celebrationAccessories.js';
 import { CampManager } from './campManager.js';
 import { PolaroidManager } from './polaroidManager.js';
+import { WORDS_LIST } from './wordsConfig.js';
 
 /**
  * 游戏主控制器《彩虹小队 · 森林大解救》 (v0.5.1 食指指尖追踪、柔性等待与小动物打磨)
@@ -97,6 +98,9 @@ export class Game {
     if (this.bubbleManager) {
       this.bubbleManager.onComboChange = (combo) => this.handleComboChange(combo);
       this.bubbleManager.onSpecialPop = () => this.onBubblePopped();
+      this.bubbleManager.onWordPop = (word, hitX, hitY) => {
+        this.uiManager?.showWordPopup?.(word, hitX, hitY);
+      };
     }
 
     this.bubbleManager?.contrastSampler && (this.bubbleManager.contrastSampler.video=this.videoElement);
@@ -474,6 +478,7 @@ export class Game {
     this.sceneManager?.randomizeStage?.();
     this.audioManager?.setBGMStage?.(this.sceneManager?.stageId);
     this.audioManager?.startBGM?.(this.sceneManager?.stageId || "forest");
+    this.audioManager?.preloadWordAudios?.(WORDS_LIST.map(w => w.id));
     // 生成第 1 个泡泡
     this.bubbleManager.spawnNext(this.collectedCount, true);
 

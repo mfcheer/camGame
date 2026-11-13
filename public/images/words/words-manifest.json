@@ -1,0 +1,191 @@
+[
+  {
+    "id": "chair",
+    "word": "chair",
+    "category": "school",
+    "image": "/images/words/chair.png",
+    "svg": "/images/words/chair.svg",
+    "audio": "/audio/words/chair.mp3",
+    "accent": "#D35400"
+  },
+  {
+    "id": "table",
+    "word": "table",
+    "category": "school",
+    "image": "/images/words/table.png",
+    "svg": "/images/words/table.svg",
+    "audio": "/audio/words/table.mp3",
+    "accent": "#2980B9"
+  },
+  {
+    "id": "pencil",
+    "word": "pencil",
+    "category": "school",
+    "image": "/images/words/pencil.png",
+    "svg": "/images/words/pencil.svg",
+    "audio": "/audio/words/pencil.mp3",
+    "accent": "#F39C12"
+  },
+  {
+    "id": "book",
+    "word": "book",
+    "category": "school",
+    "image": "/images/words/book.png",
+    "svg": "/images/words/book.svg",
+    "audio": "/audio/words/book.mp3",
+    "accent": "#16A085"
+  },
+  {
+    "id": "crayon",
+    "word": "crayon",
+    "category": "school",
+    "image": "/images/words/crayon.png",
+    "svg": "/images/words/crayon.svg",
+    "audio": "/audio/words/crayon.mp3",
+    "accent": "#E74C3C"
+  },
+  {
+    "id": "teacher",
+    "word": "teacher",
+    "category": "school",
+    "image": "/images/words/teacher.png",
+    "svg": "/images/words/teacher.svg",
+    "audio": "/audio/words/teacher.mp3",
+    "accent": "#F39C12"
+  },
+  {
+    "id": "red",
+    "word": "red",
+    "category": "colors",
+    "image": "/images/words/red.png",
+    "svg": "/images/words/red.svg",
+    "audio": "/audio/words/red.mp3",
+    "accent": "#E74C3C"
+  },
+  {
+    "id": "yellow",
+    "word": "yellow",
+    "category": "colors",
+    "image": "/images/words/yellow.png",
+    "svg": "/images/words/yellow.svg",
+    "audio": "/audio/words/yellow.mp3",
+    "accent": "#F1C40F"
+  },
+  {
+    "id": "blue",
+    "word": "blue",
+    "category": "colors",
+    "image": "/images/words/blue.png",
+    "svg": "/images/words/blue.svg",
+    "audio": "/audio/words/blue.mp3",
+    "accent": "#3498DB"
+  },
+  {
+    "id": "green",
+    "word": "green",
+    "category": "colors",
+    "image": "/images/words/green.png",
+    "svg": "/images/words/green.svg",
+    "audio": "/audio/words/green.mp3",
+    "accent": "#2ECC71"
+  },
+  {
+    "id": "purple",
+    "word": "purple",
+    "category": "colors",
+    "image": "/images/words/purple.png",
+    "svg": "/images/words/purple.svg",
+    "audio": "/audio/words/purple.mp3",
+    "accent": "#9B59B6"
+  },
+  {
+    "id": "circle",
+    "word": "circle",
+    "category": "shapes",
+    "image": "/images/words/circle.png",
+    "svg": "/images/words/circle.svg",
+    "audio": "/audio/words/circle.mp3",
+    "accent": "#E67E22"
+  },
+  {
+    "id": "triangle",
+    "word": "triangle",
+    "category": "shapes",
+    "image": "/images/words/triangle.png",
+    "svg": "/images/words/triangle.svg",
+    "audio": "/audio/words/triangle.mp3",
+    "accent": "#F1C40F"
+  },
+  {
+    "id": "square",
+    "word": "square",
+    "category": "shapes",
+    "image": "/images/words/square.png",
+    "svg": "/images/words/square.svg",
+    "audio": "/audio/words/square.mp3",
+    "accent": "#1ABC9C"
+  },
+  {
+    "id": "rectangle",
+    "word": "rectangle",
+    "category": "shapes",
+    "image": "/images/words/rectangle.png",
+    "svg": "/images/words/rectangle.svg",
+    "audio": "/audio/words/rectangle.mp3",
+    "accent": "#3498DB"
+  },
+  {
+    "id": "doll",
+    "word": "doll",
+    "category": "toys",
+    "image": "/images/words/doll.png",
+    "svg": "/images/words/doll.svg",
+    "audio": "/audio/words/doll.mp3",
+    "accent": "#E91E63"
+  },
+  {
+    "id": "ball",
+    "word": "ball",
+    "category": "toys",
+    "image": "/images/words/ball.png",
+    "svg": "/images/words/ball.svg",
+    "audio": "/audio/words/ball.mp3",
+    "accent": "#2ECC71"
+  },
+  {
+    "id": "car",
+    "word": "car",
+    "category": "toys",
+    "image": "/images/words/car.png",
+    "svg": "/images/words/car.svg",
+    "audio": "/audio/words/car.mp3",
+    "accent": "#E74C3C"
+  },
+  {
+    "id": "train",
+    "word": "train",
+    "category": "toys",
+    "image": "/images/words/train.png",
+    "svg": "/images/words/train.svg",
+    "audio": "/audio/words/train.mp3",
+    "accent": "#2980B9"
+  },
+  {
+    "id": "bike",
+    "word": "bike",
+    "category": "toys",
+    "image": "/images/words/bike.png",
+    "svg": "/images/words/bike.svg",
+    "audio": "/audio/words/bike.mp3",
+    "accent": "#16A085"
+  },
+  {
+    "id": "teddy",
+    "word": "teddy",
+    "category": "toys",
+    "image": "/images/words/teddy.png",
+    "svg": "/images/words/teddy.svg",
+    "audio": "/audio/words/teddy.mp3",
+    "accent": "#D35400"
+  }
+]

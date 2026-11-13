@@ -682,4 +682,32 @@ export class UIManager {
     const unlocked = campManager.getUnlockedCount();
     this.dom.campBadgeCount.textContent = `${unlocked}/6`;
   }
+  // 划破气泡浮现英文单词药丸徽章 (视听结合双重刺激)
+  showWordPopup(word, hitX = 0.5, hitY = 0.5) {
+    if (typeof document === 'undefined') return;
+    const wordData = typeof word === 'string' ? { word, accent: '#ff6b81' } : word;
+    if (!wordData || !wordData.word) return;
+
+    const popup = document.createElement('div');
+    popup.className = 'word-popup-pill';
+    popup.style.setProperty('--word-accent', wordData.accent || '#ff6b81');
+
+    const normX = Math.min(0.90, Math.max(0.10, Number(hitX) || 0.5));
+    const normY = Math.min(0.85, Math.max(0.15, Number(hitY) || 0.5));
+    popup.style.left = `${(normX * 100).toFixed(1)}%`;
+    popup.style.top = `${(normY * 100).toFixed(1)}%`;
+
+    const textSpan = document.createElement('span');
+    textSpan.className = 'word-popup-text';
+    textSpan.textContent = String(wordData.word).toUpperCase();
+    popup.appendChild(textSpan);
+
+    const container = document.getElementById('app') || document.body;
+    container.appendChild(popup);
+
+    setTimeout(() => {
+      popup.remove();
+    }, 850);
+  }
 }
+

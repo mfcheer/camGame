@@ -55,6 +55,10 @@ export class AudioManager {
     this.bgmStep = 0;
     this.isBGMPlaying = false;
     this.isBGMPaused = false;
+
+    // 英语单词音频发音缓存
+    this.lastPlayedWord = null;
+    this._wordAudioElements = new Map();
   }
 
   init() {
@@ -110,6 +114,11 @@ export class AudioManager {
   }
 
   _syncMuteState() {
+    if (this.isMuted && this._wordAudioElements) {
+      for (const a of this._wordAudioElements.values()) {
+        try { a.pause(); } catch (e) {}
+      }
+    }
     if (!this.isMuted && this.isBGMPlaying && !this.isBGMPaused) {
       this.init();
       if (this.ctx && !this.bgmInterval) this._startBGMSequencer();
@@ -791,6 +800,67 @@ export class AudioManager {
       click2.start(now + 0.075);
       click2.stop(now + 0.135);
     } catch (e) {}
+  }
+  // 11. 划破气泡时播报对应英语单词发音 (标准美语少儿教学发音 + Web Speech API 备用容错)
+  playWord(wordId) {
+    if (this.isMuted) return;
+    const id = (typeof wordId === 'string' ? wordId : wordId?.id || '').trim().toLowerCase();
+    if (!id) return;
+
+    this.lastPlayedWord = id;
+
+    if (typeof Audio !== 'undefined') {
+      try {
+        if (!this._wordAudioElements) {
+          this._wordAudioElements = new Map();
+        }
+        let audio = this._wordAudioElements.get(id);
+        if (!audio) {
+          audio = new Audio(`/audio/words/${id}.mp3`);
+          audio.preload = 'auto';
+          this._wordAudioElements.set(id, audio);
+        }
+        audio.currentTime = 0;
+        audio.volume = 0.95;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            this._speakWordFallback(id);
+          });
+        }
+        return;
+      } catch (e) {
+        this._speakWordFallback(id);
+      }
+    } else {
+      this._speakWordFallback(id);
+    }
+  }
+
+  _speakWordFallback(text) {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined') {
+      try {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'en-US';
+        utter.rate = 0.95;
+        utter.pitch = 1.05;
+        window.speechSynthesis.speak(utter);
+      } catch (e) {}
+    }
+  }
+
+  preloadWordAudios(wordIds = []) {
+    if (typeof Audio === 'undefined') return;
+    if (!this._wordAudioElements) this._wordAudioElements = new Map();
+    for (const id of wordIds) {
+      if (!this._wordAudioElements.has(id)) {
+        try {
+          const a = new Audio(`/audio/words/${id}.mp3`);
+          a.preload = 'auto';
+          this._wordAudioElements.set(id, a);
+        } catch (e) {}
+      }
+    }
   }
 
   // 7. 多场景童话 BGM 系统
