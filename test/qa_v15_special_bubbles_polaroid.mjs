@@ -268,7 +268,7 @@ check('CampManager：LocalStorage 存储解救计数、点亮判断与全量汇�
 });
 
 // 7. 完整游戏状态机联动：特殊泡泡+2能量充能、胜利拍立得抓拍与营地记录
-check('Game 集成闭环：果冻泡泡+2充能、达成通关触发快门闪烁与营地自动记录', () => {
+check('Game 集成闭环：果冻泡泡+2充能、达成通关后手动拍照与营地自动记录', () => {
   const audio = createMockAudio();
   const fakeStore = {};
   const mockStorage = {
@@ -332,8 +332,13 @@ check('Game 集成闭环：果冻泡泡+2充能、达成通关触发快门闪烁
   // 验证营地自动记录
   assert.equal(camp.getAnimalRescueCount('frog'), 1, '营地应当已自动记录青蛙解救 1 次');
 
-  // 验证就绪后展示拍立得
+  // 就绪后先展示成果，只有显式选择拍照才播放快门。
   g.showVictoryWhenReady();
+  assert.equal(audio.calls.some(c => c.type === 'playCameraShutter'), false);
+  assert.equal(victoryShown, true);
+  g.beginPhoto();
+  assert.equal(g.photoRequested, true);
+  g.captureVictoryPhoto();
   assert.ok(audio.calls.some(c => c.type === 'playCameraShutter'));
   assert.equal(flashTriggered, true);
   assert.equal(polaroidSet, true, '胜利弹窗应包含拍立得图片');

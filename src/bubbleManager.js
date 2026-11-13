@@ -1,3 +1,4 @@
+import {InteractionDemo} from './interactionDemo.js';
 import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
 import * as THREE from 'three';
 import { GAME_CONFIG } from './config.js';
@@ -70,6 +71,9 @@ export class BubbleManager {
     this.onSpecialPop = null;
     this.lastWordId = null;
     this.wordMode = true;
+    this.roundSeenWords = new Set();
+    this.hasLearnedTouch = false;
+    this.visualDemo = new InteractionDemo(scene);
     this.wordPool = [];
     this.wordQueue = [];
     this.wordTextureCache = new Map();
@@ -262,11 +266,11 @@ export class BubbleManager {
   }
 
   // 生成下一个泡泡
-  spawnNext(bubbleNumber, immediate = false, forceType = null) {
+  spawnNext(bubbleNumber, immediate = false, forceType = null, afterWord = false) {
     if (this.activeBubble || this.isSpawning) return;
 
     this.bubbleIndex = bubbleNumber;
-    const delay = immediate ? 50 : this.getPlayStyle().cooldownMs;
+    const delay = immediate ? 50 : afterWord ? Math.min(450,this.getPlayStyle().cooldownMs) : this.getPlayStyle().cooldownMs;
     this.isSpawning = true;
 
     if (this.spawnTimer) clearTimeout(this.spawnTimer);
@@ -1124,6 +1128,7 @@ export class BubbleManager {
   popBubble(hitX, hitY) {
     if (!this.activeBubble || this.activeBubble.isPopping) return;
     this.activeBubble.isPopping = true;
+    this.hasLearnedTouch = true;
 
     const burstWorldPos = this.activeBubble.group.position.clone();
     const burstColor = this.activeBubble.colorHex;
@@ -1152,9 +1157,11 @@ export class BubbleManager {
     // 1. 播放破裂音效与英语单词发音 (按泡泡类型触发专属音效)
     if (this.activeBubble.word) {
       const word = this.activeBubble.word;
-      const audioDone = this.audio?.playWord?.(word.id || word.word);
+      const review = this.roundSeenWords.has(word.id);
+      this.roundSeenWords.add(word.id);
+      const audioDone = this.audio?.playWord?.(word.id || word.word, {review});
       if (typeof this.onWordPop === 'function') {
-        this.onWordPop(word, hitX, hitY, audioDone);
+        this.onWordPop(word, hitX, hitY, audioDone, {review});
       }
     }
     if (this.activeBubble.type === 'rainbow') {
@@ -1382,6 +1389,7 @@ export class BubbleManager {
 
   // 隐藏所有手部光芒环 (暂停或结算时调用)
   hideHandIndicators() {
+    this.visualDemo.hide();
     this.pointerSimulation=false;
     this.handsAgeSeconds=Infinity;
     this.latestTrackedPlayers=[];
@@ -1395,6 +1403,7 @@ export class BubbleManager {
 
   // 仅清理当前泡泡球体，保留粒子与飞行动画 (用于第5分起飞时序完整过渡)
   clearActiveBubble() {
+    this.visualDemo.hide();
     if (this.activeBubble) {
       this.disposeBubble(this.activeBubble.group);
       this.activeBubble = null;
@@ -1510,6 +1519,12 @@ export class BubbleManager {
         }
       }
     }
+    const first=this.activeBubble;
+    if(first && this.completedBubbleCount===0 && first.spawnElapsed>.4 && !this.isNearHand && (!this.hasLearnedTouch || this.idleTimer>4500)){
+      const v=getViewport();
+      const unit=2*Math.tan(THREE.MathUtils.degToRad(this.camera.fov/2))*Math.abs(this.camera.position.z)/v.height;
+      this.visualDemo.update({elapsed:first.spawnElapsed,kind:'tap',target:first.group.position,unit,width:v.width,height:v.height,reducedMotion:this.rescueAnimal?.reducedMotion});
+    }else this.visualDemo.hide();
     // A quiet target may move; never make it flee a hand that is approaching.
     const quiet=this.activeBubble;
     if(quiet) {
@@ -1685,6 +1700,8 @@ export class BubbleManager {
 
   // 重置与清理所有泡泡及粒子
   clear() {
+    this.visualDemo.hide();
+    this.roundSeenWords.clear();
     this.wordPool = [];
     this.wordQueue = [];
     this.lastWordId = null;

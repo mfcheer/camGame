@@ -1322,13 +1322,13 @@ button{touch-action:manipulation}
   font-size: clamp(12px, 2.4vw, 15px); font-weight: 650;
   text-align: center; pointer-events: none; z-index: 12;
 }
-.photo-countdown { top: 20%; padding: 14px 22px; font-size: clamp(18px, 3.2vw, 26px); }
+.photo-countdown { top: max(calc(var(--hud-bottom, 84px) + 12px), 20%); padding: 14px 22px; font-size: clamp(18px, 3.2vw, 26px); }
 .photo-actions { display: flex; gap: 8px; width: 100%; margin-top: 10px; }
 .photo-actions > button { flex: 1; min-width: 0; margin: 0; padding: 10px 8px; font-size: 14px; }
 .photo-save-tip { margin: 6px 0 0; font-size: 11px; color: #607367; text-align: center; }
 .victory-actions { flex-wrap: wrap; }
 @media (max-height: 420px) and (orientation: landscape) {
-  .photo-countdown { top: 22%; padding: 8px 18px; }
+  .photo-countdown { top: calc(var(--hud-bottom, 84px) + 12px); padding: 8px 18px; }
   .photo-actions { margin-top: 5px; }
   .photo-actions > button { padding: 7px; font-size: 12px; }
   .photo-save-tip { font-size: 10px; }
@@ -1472,3 +1472,11 @@ button{touch-action:manipulation}
 .word-mode-toggle { display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:14px; color:#365446; padding:8px 0; }
 .word-mode-toggle input { width:20px; height:20px; accent-color:#277755; }
 .word-mode-toggle span { font-size:12px; color:#627469; }
+
+/* The picture is also the explicit replay control. */
+.word-popup-photo-frame { position:relative; border:0; padding:0; pointer-events:auto; cursor:pointer; }
+.word-popup-photo-frame:focus-visible { outline:3px solid #287754; outline-offset:3px; }
+.word-replay-icon { position:absolute; top:5px; right:5px; display:grid; place-items:center; width:28px; height:28px; border-radius:50%; background:conic-gradient(#4caa7d calc(var(--replay-progress,0) * 1turn), #fffdf5 0); color:#3b6f58; font:bold 23px/1 system-ui; box-shadow:0 1px 5px #214d3318; }
+.photo-cancel { z-index:14; }
+.optional-photo { align-self:center; min-height:40px; margin-top:6px; color:#4f705c; }
+@media(max-height:400px) and (orientation:landscape){ .optional-photo{min-height:32px;margin-top:2px;padding:3px 8px;} }

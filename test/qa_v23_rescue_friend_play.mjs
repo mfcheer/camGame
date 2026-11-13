@@ -49,7 +49,7 @@ test('pause freezes interaction time, response pose and automatic finish',()=>{c
  x.a.setPaused(false);x.f.setPaused(false);step(x,.1);assert.ok(x.f.elapsed>time);
 });
 
-test('idle finishes naturally; repeated skip finishes only once; farewell still reaches its exit',()=>{const x=fixture('cat');step(x,8.1);assert.equal(x.done,1);x.f.finish();assert.equal(x.done,1);
+test('idle finishes naturally; repeated skip finishes only once; farewell still reaches its exit',()=>{const x=fixture('cat');step(x,12.1);assert.equal(x.done,1);x.f.finish();assert.equal(x.done,1);
  x.a.startEscape();x.a.update(4.2,4.2);assert.equal(x.a.state,'ESCAPED');x.a.reset();assert.equal(x.a.state,'TRAPPED');assert.equal(x.a.postGroup.visible,true);assert.equal(x.a.model.position.y,0);
 });
 

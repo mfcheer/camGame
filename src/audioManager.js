@@ -807,48 +807,50 @@ export class AudioManager {
     } catch (e) {}
   }
   // 11. 划破气泡时播报对应英语单词发音 (Web Audio API 0延迟缓冲播放 + 标准美语少儿教学发音 + Fallback)
-  getWordAudioUrl(wordId) {
+  getWordAudioUrl(wordId, {review = false} = {}) {
     const id = String(wordId || "").trim().toLowerCase();
     const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
     const cleanBase = base.endsWith("/") ? base : base + "/";
-    return `${cleanBase}audio/words/${id}.mp3`;
+    return `${cleanBase}audio/words/${review ? "review/" : ""}${id}.mp3`;
   }
 
-  async loadWordBuffer(wordId) {
+  async loadWordBuffer(wordId, {review = false} = {}) {
     const id = String(wordId || "").trim().toLowerCase();
     if (!id) return null;
-    if (this._wordAudioBuffers.has(id)) return this._wordAudioBuffers.get(id);
-    if (this._wordAudioPromises.has(id)) return this._wordAudioPromises.get(id);
+    const key = review ? `review:${id}` : id;
+    if (this._wordAudioBuffers.has(key)) return this._wordAudioBuffers.get(key);
+    if (this._wordAudioPromises.has(key)) return this._wordAudioPromises.get(key);
 
     const promise = (async () => {
       if (typeof fetch === "undefined") return null;
       try {
-        const url = this.getWordAudioUrl(id);
+        const url = this.getWordAudioUrl(id,{review});
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Failed to fetch word audio: ${res.status}`);
         const arrayBuffer = await res.arrayBuffer();
         this.init();
         if (!this.ctx || typeof this.ctx.decodeAudioData !== "function") return null;
         const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
-        this._wordAudioBuffers.set(id, audioBuffer);
+        this._wordAudioBuffers.set(key, audioBuffer);
         return audioBuffer;
       } catch (e) {
         return null;
       } finally {
-        this._wordAudioPromises.delete(id);
+        this._wordAudioPromises.delete(key);
       }
     })();
 
-    this._wordAudioPromises.set(id, promise);
+    this._wordAudioPromises.set(key, promise);
     return promise;
   }
 
   // Resolve only after the recording (or speech fallback) actually ends.
-  playWord(wordId) {
+  playWord(wordId, {review = false} = {}) {
     this.stopWord();
     const id = (typeof wordId === 'string' ? wordId : wordId?.id || '').trim().toLowerCase();
     if (!id || this.isMuted) return Promise.resolve();
     this.lastPlayedWord = id;
+    this.lastWordReview = review;
     this.init();
     const token = this._wordToken;
     if (this.bgmGainNode && this.ctx && !this.isBGMPaused) {
@@ -872,14 +874,14 @@ export class AudioManager {
         if(token!==this._wordToken||this.isMuted){finish();return;}
         if(typeof window==='undefined'||!window.speechSynthesis||typeof SpeechSynthesisUtterance==='undefined'){finish();return;}
         try{
-          this._speakWordFallback(id,finish);
+          this._speakWordFallback(id,finish,review);
         }catch{finish();}
       };
       const playElement=()=>{
         if(token!==this._wordToken||this.isMuted){finish();return;}
         if(typeof Audio==='undefined'){fallback();return;}
         try{
-          const audio=new Audio(this.getWordAudioUrl(id));this._activeWordElement=audio;
+          const audio=new Audio(this.getWordAudioUrl(id,{review}));this._activeWordElement=audio;
           audio.onended=finish;audio.onerror=fallback;audio.volume=.95;
           const started=audio.play();if(started?.catch)started.catch(fallback);
         }catch{fallback();}
@@ -892,7 +894,7 @@ export class AudioManager {
         }catch{playElement();}
       };
       if(this.ctx&&typeof this.ctx.createBufferSource==='function'){
-        this.loadWordBuffer(id).then(playBuffer).catch(playElement);
+        this.loadWordBuffer(id,{review}).then(playBuffer).catch(playElement);
       }else playElement();
     });
   }
@@ -907,11 +909,11 @@ export class AudioManager {
     if(!this.isMuted&&!this.isBGMPaused&&this.bgmGainNode&&this.ctx){try{this.bgmGainNode.gain.setTargetAtTime(.08,this.ctx.currentTime,.2);}catch{}}
   }
 
-  _speakWordFallback(id, onDone=()=>{}) {
+  _speakWordFallback(id, onDone=()=>{}, review=false) {
     try {
       const cfg=getWordById(id), zh=cfg?.zh||getWordCn(id), en=cfg?.word||id;
       const pair=[{text:zh,lang:'zh-CN'},{text:en,lang:'en-US'}].filter(p=>p.text);
-      const phrases=[...pair,...pair];
+      const phrases=review ? [{text:en,lang:'en-US'}] : [...pair,...pair];
       if(!phrases.length){onDone();return;}
       phrases.forEach((phrase,index)=>{
         const utterance=new SpeechSynthesisUtterance(phrase.text);

@@ -91,6 +91,8 @@ export class UIManager {
       polaroidImg: document.getElementById('polaroid-img'),
       btnSavePolaroid: document.getElementById('btn-save-polaroid'),
       btnRetakePhoto: document.getElementById('btn-retake-photo'),
+      btnTakePhoto: document.getElementById('btn-take-photo'),
+      btnCancelPhoto: document.getElementById('btn-cancel-photo'),
       btnNextFriend: document.getElementById('btn-next-friend'),
       photoCountdown: document.getElementById('photo-countdown'),
       interactionHint: document.getElementById('interaction-hint'),
@@ -228,6 +230,8 @@ export class UIManager {
 
     this.dom.btnFriendDone?.addEventListener('click',()=>this.handlers.onFriendDone?.());
     this.dom.btnRetakePhoto?.addEventListener('click', () => this.handlers.onRetakePhoto?.());
+    this.dom.btnTakePhoto?.addEventListener('click', () => this.handlers.onTakePhoto?.());
+    this.dom.btnCancelPhoto?.addEventListener('click', () => this.handlers.onCancelPhoto?.());
     this.dom.btnNextFriend?.addEventListener('click', () => this.handlers.onNextFriend?.());
 
     // 触碰结算弹窗区域即智能驻留冻结倒计时（不干扰「再玩一次」和「回首页」）
@@ -413,8 +417,9 @@ export class UIManager {
     this.dom.btnSavePolaroid.classList.add('btn-saved');
   }
 
-  showVictory({hasPhoto = false} = {}) {
+  showVictory({hasPhoto = false, canTakePhoto = false} = {}) {
     this.hasVictoryPhoto = hasPhoto;
+    this.dom.btnTakePhoto?.classList.toggle('hidden',!canTakePhoto || hasPhoto);
     this.dom.victoryCard?.classList?.toggle?.('without-photo', !hasPhoto);
     this.dom.polaroidWrapper?.classList?.toggle?.('hidden', !hasPhoto);
     if (this.dom.btnSavePolaroid) {
@@ -582,6 +587,7 @@ export class UIManager {
     const el = this.dom.photoCountdown;
     if (!el) return;
     el.classList.toggle('hidden', value === null);
+    this.dom.btnCancelPhoto?.classList.toggle('hidden',value===null);
     if (value !== null) {
       const text = typeof value === 'number' ? `看镜头，合影倒数 ${value}` : value;
       if (el.textContent !== text) el.textContent = text;
@@ -690,6 +696,7 @@ export class UIManager {
     const wordData = typeof word === "string" ? { word, id: word, accent: "#ff6b81" } : word;
     if (!wordData || !wordData.word) return;
 
+    const restoreFocus=document.activeElement===this.activeWordPopup?.replayButton;
     this.clearWordPopup();
     const popup = document.createElement("div");
     popup.className = "word-popup-card word-popup-pill";
@@ -712,8 +719,12 @@ export class UIManager {
     const wordName = String(wordData.word || wordId).toLowerCase();
 
     // 1. 实物物品大照片/高清矢量图
-    const photoFrame = document.createElement("div");
+    const photoFrame = document.createElement("button");
     photoFrame.className = "word-popup-photo-frame";
+    photoFrame.setAttribute("type", "button");
+    photoFrame.setAttribute("aria-label", `再听一次 ${wordName}`);
+    photoFrame.addEventListener?.('click',()=>this.handlers?.onReplayWord?.());
+    popup.replayButton=photoFrame;
 
     const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
     const cleanBase = base.endsWith("/") ? base : base + "/";
@@ -737,6 +748,9 @@ export class UIManager {
       }
     };
     photoFrame.appendChild(img);
+    const replayIcon=document.createElement('span');
+    replayIcon.className='word-replay-icon';replayIcon.textContent='↻';replayIcon.setAttribute('aria-hidden','true');
+    photoFrame.appendChild(replayIcon);
     popup.appendChild(photoFrame);
 
     const wordCn = wordData.zh || wordData.wordCn || wordData.chinese || getWordCn(wordId) || "";
@@ -773,7 +787,19 @@ export class UIManager {
     this.activeWordPopup=popup;
     this.wordPopupAnchor={x:normX,y:normY};
     this.positionWordPopup();
+    if(restoreFocus)photoFrame.focus?.({preventScroll:true});
     return popup;
+  }
+
+  getWordReplayTarget() {
+    const rect=this.activeWordPopup?.replayButton?.getBoundingClientRect?.();
+    if(!rect)return null;
+    const v=getViewport();
+    return {x:rect.x+rect.width/2-v.left,y:rect.y+rect.height/2-v.top,width:rect.width,height:rect.height};
+  }
+
+  setWordReplayProgress(progress) {
+    this.activeWordPopup?.style?.setProperty('--replay-progress',String(Math.min(1,Math.max(0,progress))));
   }
 
   positionWordPopup() {

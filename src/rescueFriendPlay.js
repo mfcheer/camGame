@@ -1,3 +1,4 @@
+import {InteractionDemo} from './interactionDemo.js';
 import * as THREE from 'three';
 import {getViewport, getSafeInsets, getHudBottom} from './viewport.js';
 
@@ -17,6 +18,8 @@ export class RescueFriendPlay {
   constructor(scene, camera, animal, audio, onDone = () => {}) {
     Object.assign(this,{scene,camera,animal,audio,onDone,active:false});
     this.group=new THREE.Group();this.group.name='Rescue_Friend_Play';this.group.visible=false;scene.add(this.group);
+    this.visualDemo=new InteractionDemo(this.group);
+    this.helpedAnimals=new Set();
     this.marker=new THREE.Group();this.group.add(this.marker);
     this.ring=new THREE.Mesh(new THREE.RingGeometry(.78,1,48),new THREE.MeshBasicMaterial({color:0xffd46e,transparent:true,opacity:.85,depthWrite:false,side:THREE.DoubleSide}));
     const border=new THREE.Mesh(new THREE.RingGeometry(1,1.08,48),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.95,depthWrite:false,side:THREE.DoubleSide}));
@@ -35,6 +38,7 @@ export class RescueFriendPlay {
   start(zones=[]) {
     this.clear();
     this.profile=FRIEND_PLAY[this.animal.animalId] || FRIEND_PLAY.bunny;
+    this.firstVisit=!this.helpedAnimals.has(this.animal.animalId);
     Object.assign(this,{active:true,elapsed:0,lastAction:0,hits:0,cooldown:0,touchHeld:false,releaseSeconds:0,padIndex:1,nextPad:0,hopProgress:null,rotationGrace:.65,followTip:null,followAnchor:null,paused:false});
     this.zones=zones;
     this.animal.startFriendPlay();
@@ -97,8 +101,8 @@ export class RescueFriendPlay {
         desired.y+=Math.sin(this.hopProgress*Math.PI)*(a.reducedMotion?.035:.24);
         if(this.hopProgress>=1){this.padIndex=this.nextPad;this.nextPad=(this.padIndex+2)%3;this.hopProgress=null;this.touchHeld=false;}
       }
-    }else if(this.profile.kind==='follow'&&this.followTip){
-      const {x,y}=this.followTip;
+    }else if(this.profile.kind==='follow'&&(this.followTip||this.demoFollow)){
+      const {x,y}=this.followTip||this.demoFollow;
       const vh=this.unit*this.height,vw=vh*this.camera.aspect;
       desired.x=clamp((x-.5)*vw,-this.followLimit,this.followLimit);
       desired.y=this.rootY+clamp((.62-y)*vh,-this.followDown,this.followUp);
@@ -134,6 +138,8 @@ export class RescueFriendPlay {
   }
   respond(tip) {
     this.hits++;this.lastAction=this.elapsed;this.cooldown=.8;
+    this.helpedAnimals.add(this.animal.animalId);
+    this.visualDemo.hide();this.demoFollow=null;
     this.animal.friendReact(this.hits);
     this.audio?.playAnimalSound?.(this.animal.animalId,'energy');
     this.onAction?.(this.profile);
@@ -144,6 +150,10 @@ export class RescueFriendPlay {
     if(!this.active||this.paused)return;
     this.elapsed+=dt;this.rotationGrace=Math.max(0,this.rotationGrace-dt);this.cooldown=Math.max(0,this.cooldown-dt);
     const entrance=clamp(this.elapsed/.8,0,1);
+    const wanted=this.hits===0||this.elapsed-this.lastAction>3.5;
+    this.demoFollow=this.profile.kind==='follow' && wanted && !tips.length
+      ? {x:.5+Math.sin(this.elapsed/2.8*Math.PI*2)*.13,y:.62-Math.sin(this.elapsed/2.8*Math.PI)*.015}
+      : null;
     this.placeAnimal(entrance,dt);
     this.refreshMarker();
     if(entrance>=1&&this.rotationGrace<=0){
@@ -167,10 +177,22 @@ export class RescueFriendPlay {
         }
       }
     }
-    if(this.elapsed>=20||(this.elapsed>=8&&this.elapsed-this.lastAction>=4.5))this.finish();
+    const near=tips.some(t=>Math.hypot(t.px-this.targetScreen.x,t.py-this.targetScreen.y)<this.targetScreen.radius*1.3);
+    if(wanted && entrance>=1 && !near && !(this.profile.kind==='follow'&&tips.length)){
+      const target=this.target.clone();
+      if(this.profile.kind==='follow'){
+        target.x=this.centerX;
+        if(this.height>=400)target.y+=78*this.unit;
+        else target.x+=this.width*.23*this.unit;
+      }
+      this.visualDemo.update({elapsed:this.elapsed,kind:this.profile.kind,target,unit:this.unit,width:this.width,height:this.height,reducedMotion:this.animal.reducedMotion});
+    }else this.visualDemo.hide();
+    // Give a new friend two clear demonstrations before an idle farewell.
+    const idleEnd=this.firstVisit && this.hits===0?12:8;
+    if(this.elapsed>=20||(this.elapsed>=idleEnd&&this.elapsed-this.lastAction>=4.5))this.finish();
   }
   setPaused(paused){this.paused=paused;this.group.visible=this.active&&!paused;}
   finish(){if(!this.active)return;this.clear();this.onDone();}
-  clear(){this.active=false;this.group.visible=false;this.followTip=null;this.touchHeld=false;this.strokeAnchor=null;this.targetScreen=null;}
-  toJSON(){return this.active?{kind:this.profile.kind,hits:this.hits,target:this.targetScreen,elapsed:Math.round(this.elapsed*10)/10}:null;}
+  clear(){this.visualDemo?.hide();this.demoFollow=null;this.active=false;this.group.visible=false;this.followTip=null;this.touchHeld=false;this.strokeAnchor=null;this.targetScreen=null;}
+  toJSON(){return this.active?{kind:this.profile.kind,hits:this.hits,target:this.targetScreen,demo:!!this.visualDemo.group.visible,elapsed:Math.round(this.elapsed*10)/10}:null;}
 }
