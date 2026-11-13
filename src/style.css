@@ -1480,3 +1480,29 @@ button{touch-action:manipulation}
 .photo-cancel { z-index:14; }
 .optional-photo { align-self:center; min-height:40px; margin-top:6px; color:#4f705c; }
 @media(max-height:400px) and (orientation:landscape){ .optional-photo{min-height:32px;margin-top:2px;padding:3px 8px;} }
+
+/* A single, brief line from the current animal. Separate from word and reward cards. */
+.animal-speech {
+  position: fixed; z-index: 45; box-sizing: border-box;
+  top: max(106px, calc(env(safe-area-inset-top, 0px) + 90px));
+  left: 50%; transform: translateX(-50%); width: min(420px, calc(100% - 32px));
+  display: flex; align-items: center; gap: 14px; padding: 18px;
+  border: 2px solid #e5c3a1; border-radius: 28px; background: rgba(255,253,246,.97);
+  box-shadow: 0 12px 36px #35554024; pointer-events: none;
+  animation: speech-arrive .28s ease-out;
+}
+.animal-speech::after {content: ''; position: absolute; bottom: -10px; left: 34px; width: 16px; height: 16px; background: #fffdf6; border-right: 2px solid #e5c3a1; border-bottom: 2px solid #e5c3a1; transform: rotate(45deg);}
+.animal-speech-portrait {width: 82px; height: 96px; object-fit: contain; flex-shrink: 0;}
+.animal-speech-body {min-width: 0; text-align: left;}
+.animal-speech-name {font-size: 12px; color: #797c66; margin-bottom: 6px; font-weight: 600;}
+.animal-speech-en {font-size: clamp(21px, 5vw, 28px); line-height: 1.25; font-weight: 800; color: #294c40; text-wrap: balance;}
+.animal-speech-zh {font-size: 15px; line-height: 1.45; margin-top: 9px; color: #637569;}
+@keyframes speech-arrive {from {opacity: 0; margin-top: 8px;} to {opacity: 1; margin-top: 0;}}
+@media (max-height: 400px) and (orientation: landscape) {
+  .animal-speech {top: 84px; padding: 9px 16px; gap: 10px; border-radius: 22px; width: min(420px, calc(100% - 32px));}
+  .animal-speech-portrait {width: 58px; height: 65px;}
+  .animal-speech-name {font-size: 11px; margin-bottom: 2px;}
+  .animal-speech-en {font-size: 22px;}
+  .animal-speech-zh {font-size: 13px; margin-top: 3px;}
+}
+@media (prefers-reduced-motion: reduce) {.animal-speech {animation: none;}}

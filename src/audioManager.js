@@ -1,4 +1,4 @@
-import { getWordById, getWordCn, WORDS_LIST } from './wordsConfig.js';
+import { getWordById, getWordCn,resolveAssetUrl, WORDS_LIST } from './wordsConfig.js';
 /**
  * Web Audio API 音频管理器
  * 1. 拟真卡通泡泡破裂声 (多振荡器调频微合成 FM + 水滴瞬态 + Combo 阶梯音阶步步爬升)
@@ -807,7 +807,8 @@ export class AudioManager {
     } catch (e) {}
   }
   // 11. 划破气泡时播报对应英语单词发音 (Web Audio API 0延迟缓冲播放 + 标准美语少儿教学发音 + Fallback)
-  getWordAudioUrl(wordId, {review = false} = {}) {
+  getWordAudioUrl(wordId, {review = false, phrase = null} = {}) {
+    if(phrase)return resolveAssetUrl(phrase.audio);
     const raw = String(wordId || "").trim().toLowerCase();
     const id = getWordById(raw)?.id || raw;
     const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
@@ -815,18 +816,18 @@ export class AudioManager {
     return `${cleanBase}audio/words/${review ? "review/" : ""}${id}.mp3`;
   }
 
-  async loadWordBuffer(wordId, {review = false} = {}) {
+  async loadWordBuffer(wordId, {review = false, phrase = null} = {}) {
     const raw = String(wordId || "").trim().toLowerCase();
     const id = getWordById(raw)?.id || raw;
     if (!id) return null;
-    const key = review ? `review:${id}` : id;
+    const key = phrase ? `phrase:${id}` : review ? `review:${id}` : id;
     if (this._wordAudioBuffers.has(key)) return this._wordAudioBuffers.get(key);
     if (this._wordAudioPromises.has(key)) return this._wordAudioPromises.get(key);
 
     const promise = (async () => {
       if (typeof fetch === "undefined") return null;
       try {
-        const url = this.getWordAudioUrl(id,{review});
+        const url = this.getWordAudioUrl(id,{review,phrase});
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Failed to fetch word audio: ${res.status}`);
         const arrayBuffer = await res.arrayBuffer();
@@ -847,7 +848,7 @@ export class AudioManager {
   }
 
   // Resolve only after the recording (or speech fallback) actually ends.
-  playWord(wordId, {review = false} = {}) {
+  playWord(wordId, {review = false, phrase = null} = {}) {
     this.stopWord();
     const raw = (typeof wordId === 'string' ? wordId : wordId?.id || '').trim().toLowerCase();
     const id = getWordById(raw)?.id || raw;
@@ -877,14 +878,14 @@ export class AudioManager {
         if(token!==this._wordToken||this.isMuted){finish();return;}
         if(typeof window==='undefined'||!window.speechSynthesis||typeof SpeechSynthesisUtterance==='undefined'){finish();return;}
         try{
-          this._speakWordFallback(id,finish,review);
+          this._speakWordFallback(id,finish,review,phrase);
         }catch{finish();}
       };
       const playElement=()=>{
         if(token!==this._wordToken||this.isMuted){finish();return;}
         if(typeof Audio==='undefined'){fallback();return;}
         try{
-          const audio=new Audio(this.getWordAudioUrl(id,{review}));this._activeWordElement=audio;
+          const audio=new Audio(this.getWordAudioUrl(id,{review,phrase}));this._activeWordElement=audio;
           audio.onended=finish;audio.onerror=fallback;audio.volume=.95;
           const started=audio.play();if(started?.catch)started.catch(fallback);
         }catch{fallback();}
@@ -897,10 +898,14 @@ export class AudioManager {
         }catch{playElement();}
       };
       if(this.ctx&&typeof this.ctx.createBufferSource==='function'){
-        this.loadWordBuffer(id,{review}).then(playBuffer).catch(playElement);
+        this.loadWordBuffer(id,{review,phrase}).then(playBuffer).catch(playElement);
       }else playElement();
     });
   }
+
+  // Phrases share the word voice channel, cancellation and BGM ducking.
+  playPhrase(phrase) { return this.playWord(phrase.id,{phrase}); }
+  stopPhrase() { this.stopWord(); }
 
   stopWord() {
     this._wordToken=(this._wordToken||0)+1;
@@ -912,11 +917,11 @@ export class AudioManager {
     if(!this.isMuted&&!this.isBGMPaused&&this.bgmGainNode&&this.ctx){try{this.bgmGainNode.gain.setTargetAtTime(.08,this.ctx.currentTime,.2);}catch{}}
   }
 
-  _speakWordFallback(id, onDone=()=>{}, review=false) {
+  _speakWordFallback(id, onDone=()=>{}, review=false, phrase=null) {
     try {
       const cfg=getWordById(id), zh=cfg?.zh||getWordCn(id), en=cfg?.word||id;
       const pair=[{text:zh,lang:'zh-CN'},{text:en,lang:'en-US'}].filter(p=>p.text);
-      const phrases=review ? [{text:en,lang:'en-US'}] : [...pair,...pair];
+      const phrases=phrase ? [{text:phrase.en,lang:'en-US'}] : review ? [{text:en,lang:'en-US'}] : [...pair,...pair];
       if(!phrases.length){onDone();return;}
       phrases.forEach((phrase,index)=>{
         const utterance=new SpeechSynthesisUtterance(phrase.text);

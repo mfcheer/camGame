@@ -1,5 +1,6 @@
 import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
 import { getWordCn, getWordById, resolveAssetUrl } from './wordsConfig.js';
+import {GAME_CONFIG,PLAYABLE_ANIMALS} from './config.js';
 /**
  * UI 界面与交互状态管理器
  * 1. 5 个彩色发光圆点进度指示（免识字设计，直观友好）
@@ -10,6 +11,22 @@ import { getWordCn, getWordById, resolveAssetUrl } from './wordsConfig.js';
  * 6. 连击 Combo 呼吸彩虹微光浪圈与浮动连击徽章 (不挡人脸)
  */
 export class UIManager {
+  showAnimalSpeech(phrase,animalId,phase) {
+    this.hideAnimalSpeech();
+    const id=PLAYABLE_ANIMALS.includes(animalId)?animalId:'bunny';
+    const card=document.createElement('section');card.className='animal-speech';
+    card.setAttribute('role','status');card.setAttribute('aria-live','polite');
+    const portrait=document.createElement('img');portrait.className='animal-speech-portrait';
+    portrait.src=resolveAssetUrl(`/models/${id}-preview.png`);portrait.alt='';
+    const body=document.createElement('div');body.className='animal-speech-body';
+    const name=document.createElement('div');name.className='animal-speech-name';name.textContent=GAME_CONFIG.animals[id].name;
+    const en=document.createElement('div');en.className='animal-speech-en';en.lang='en';en.textContent=phrase.en;
+    const zh=document.createElement('div');zh.className='animal-speech-zh';zh.lang='zh-CN';zh.textContent=phrase.zh;
+    body.append(name,en,zh);card.append(portrait,body);card.dataset.phase=phase;
+    (document.getElementById('app')||document.body).appendChild(card);this.animalSpeechCard=card;
+  }
+  hideAnimalSpeech(){this.animalSpeechCard?.remove();this.animalSpeechCard=null;}
+
   constructor(handlers = {}) {
     this.handlers = handlers; // { onStart, onSelectMode, onTogglePause, onResume, onRestart, onExit, onToggleAudio, onEnableDemo, onRetryCamera }
     this.isPaused = false;

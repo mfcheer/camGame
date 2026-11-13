@@ -192,12 +192,13 @@ export class RescueAnimal {
   spawnRunDust(pos){if(!this.reducedMotion)this.spawnParticle(pos,true);}
   setPaused(paused){this.isPaused=paused;}
   setAnticipation(active){this.anticipating=!!active;}
+  setSpeaking(speaking){this.speaking=speaking;this.speakingTime=0;}
   reactToCombo(count){if(count<2||this.state!=='TRAPPED')return;this.reactionTimer=1.15;this.reactionVariant=1;this.glyphTimer=.95;}
   setOpacity(alpha) {
     for(const mat of this.furMaterials){mat.transparent=alpha<1;mat.opacity=alpha;mat.depthWrite=alpha>.5;}
   }
   reset() {
-    this.friendFarewell=false;this.escapeOriginX=null;this.friendResponse=0;this.model.position.y=0;
+    this.speaking=false;this.speakingTime=0;this.friendFarewell=false;this.escapeOriginX=null;this.friendResponse=0;this.model.position.y=0;
     this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;this.reactionTimer=0;
     this.anticipating=false;this.reactionVariant=0;this.glyphTimer=0;this.emotion='content';this.attentionPhase='player';this.attentionFocus=null;this.targetFocus=null;this.energyFocus=null;this.energyAttentionRemaining=0;resetExpressionRig(this.expressionRig);
     if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.y=.048;}
@@ -243,7 +244,7 @@ export class RescueAnimal {
   updateExpression(dt) {
     const reaction=this.reactionTimer||0;this.reactionTimer=Math.max(0,reaction-dt);
     if(this.state==='TRAPPED'||this.state==='FRIEND') {
-      const eyeContact=this.attentionPhase==='thanks';
+      const eyeContact=this.speaking||this.attentionPhase==='thanks';
       const focus=this.attentionFocus||this.playerFocus||{x:.5,y:.32};
       const yaw=eyeContact?0:THREE.MathUtils.clamp((focus.x-.5)*.7,-.28,.28);
       this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,yaw,1-Math.exp(-dt*8));
@@ -251,7 +252,8 @@ export class RescueAnimal {
       if(eyeContact)this.headGroup.rotation.z+=Math.sin((1.15-reaction)*5)*.055;
     }
     if(!['TRAPPED','FRIEND'].includes(this.state))this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,0,Math.min(1,dt*8));
-    const happy=reaction>.1||this.state==='WAVING'||this.state==='CHEERING';
+    if(this.speaking){this.speakingTime+=dt;this.headGroup.rotation.x+=Math.sin(this.speakingTime*5)*.035;}
+    const happy=this.speaking||reaction>.1||this.state==='WAVING'||this.state==='CHEERING';
     if(this.happyMouth)this.happyMouth.visible=happy;
     if(this.happyTongue)this.happyTongue.visible=happy;
     if(this.happyMouth)for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=!happy;}

@@ -1,3 +1,4 @@
+import {AnimalSpeech} from './animalSpeech.js';
 import {getViewport} from './viewport.js';
 import { SceneManager } from './sceneManager.js';
 import { HotAirBalloon } from './hotAirBalloon.js';
@@ -140,6 +141,8 @@ export class Game {
     if (typeof window !== 'undefined') {
       window.addEventListener('gameviewportchange', () => {this.bubbleManager?.updateLayout();if(this.friendInteraction?.active){this.friendInteraction.updateLayout();this.bubbleManager?.hideHandIndicators();}this.uiManager?.updateLayout?.();this.sceneManager?.render();});
     }
+
+    this.animalSpeech=new AnimalSpeech(this.audioManager,this.uiManager,this.rescueAnimal);
 
     this.setupPoseCallbacks();
     this.setupBackgroundListener();
@@ -287,6 +290,7 @@ export class Game {
     this.poseDetector.onErrorCallback = (err) => {
       // 若当前已退出到 START 状态，不被旧请求错误覆写为 ERROR
       if (this.state === 'START') return;
+      this.animalSpeech?.cancel();
       this.cancelWordPresentation();
       this.photoRequested=false;this.photoRemaining=null;this.photoCapturePending=false;this.retakePhoto=false;
       this.uiManager?.setPhotoCountdown?.(null);
@@ -486,10 +490,16 @@ export class Game {
     this.audioManager?.startBGM?.(this.sceneManager?.stageId || "forest");
     this.audioManager?.preloadWordAudios?.(WORDS_LIST.map(w => w.id));
     // 生成第 1 个泡泡
-    this.bubbleManager.spawnNext(this.collectedCount, true);
+    this.beginRoundGreeting();
 
 
     return true;
+  }
+
+  beginRoundGreeting() {
+    const spawn=()=>{if(this.state==='PLAYING')this.bubbleManager.spawnNext(this.collectedCount,true);};
+    if(this.animalSpeech&&this.bubbleManager?.wordMode!==false)this.animalSpeech.start('start',this.activeAnimalId,spawn);
+    else spawn();
   }
 
   // 碰破泡泡的核心计分与结算
@@ -590,6 +600,14 @@ export class Game {
   }
 
   startFarewell() {
+    if(this.animalSpeech&&this.bubbleManager?.wordMode!==false){
+      this.animalSpeech.start('end',this.activeAnimalId,()=>this.beginFarewell());
+      return;
+    }
+    this.beginFarewell();
+  }
+
+  beginFarewell() {
     if (this.hasLiveCamera()) this.celebrationAccessories?.start(this.lastPlayers || [], false);
     this.rescueAnimal?.startEscape?.();
     const currentSession=this.celebrationSessionId;
@@ -605,7 +623,7 @@ export class Game {
   }
 
   showVictoryWhenReady() {
-    if (this.state !== 'CELEBRATING' || this.friendInteraction?.active) return;
+    if (this.state !== 'CELEBRATING' || this.friendInteraction?.active || this.animalSpeech?.active) return;
     // A slow renderer must not let a wall-clock timer cover the goodbye pose.
     if (this.rescueAnimal?.state && this.rescueAnimal.state !== 'ESCAPED') {
       this.waitingForEscape = true;
@@ -723,6 +741,7 @@ export class Game {
   handleTogglePause(paused) {
     if (paused) {
       this.cancelAutoNext();
+      this.animalSpeech?.setPaused(true);
       if(this.currentWord){this.wordPresentationToken=(this.wordPresentationToken||0)+1;this.audioManager?.stopWord?.();this.wordAudioDone=false;this.uiManager?.setWordPopupPaused?.(true);}
       this.friendInteraction?.setPaused(true);
       this.uiManager?.hideFriendPlay?.();
@@ -791,10 +810,11 @@ export class Game {
       this.rescueAnimal.setPaused?.(false);
     }
 
+    this.animalSpeech?.setPaused(false);
     this.friendInteraction?.setPaused(false);
     if(this.friendInteraction?.active)this.uiManager?.showFriendPlay?.(this.friendInteraction.profile);
     // 恢复为庆祝状态：按剩余有效时长恢复计时器
-    if (this.state === 'CELEBRATING' && !this.friendInteraction?.active) {
+    if (this.state === 'CELEBRATING' && !this.friendInteraction?.active && !this.animalSpeech?.active) {
       const currentSession = this.celebrationSessionId;
       this.celebrationStartTime = performance.now();
       if (this.celebrationRemainingMs <= 0) {
@@ -815,6 +835,7 @@ export class Game {
 
   // 重新开始当前关卡（彻底清除旧庆祝回调）
   handleRestart() {
+    this.animalSpeech?.cancel();
     this.cancelWordPresentation();
     this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();
     this.cancelAutoNext(false);this.resultVisible=false;this.photoRequested=false;this.retakePhoto=false;this.photoRemaining=null;this.photoCapturePending=false;this.uiManager?.setPhotoCountdown?.(null);this.celebrationAccessories?.clear();
@@ -844,7 +865,7 @@ export class Game {
     this.sceneManager?.randomizeStage?.();
     this.audioManager?.setBGMStage?.(this.sceneManager?.stageId);
     this.audioManager?.startBGM?.(this.sceneManager?.stageId || "forest");
-    this.bubbleManager.spawnNext(0, true);
+    this.beginRoundGreeting();
   }
 
   handleSelectAnimal(selection) {
@@ -875,6 +896,7 @@ export class Game {
   // 退出回首页（取消所有异步流程、旧定时器并彻底释放摄像头）
   handleExit() {
     this.bubbleManager?.contrastSampler?.clear();
+    this.animalSpeech?.cancel();
     this.cancelWordPresentation();
     this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();
     this.cancelAutoNext(false);this.resultVisible=false;this.photoRequested=false;this.retakePhoto=false;this.photoRemaining=null;this.photoCapturePending=false;this.uiManager?.setPhotoCountdown?.(null);this.celebrationAccessories?.clear();
@@ -1066,6 +1088,7 @@ export class Game {
   // One active-time clock for the character, scenery and energy feedback.
   updateFrame(deltaSeconds) {
     if (this.state !== 'PAUSED') {
+      this.animalSpeech?.update(deltaSeconds);
       this.updateWordPresentation(deltaSeconds);
       this.gameTime = (this.gameTime || 0) + deltaSeconds;
       this.balloon?.update(deltaSeconds, this.gameTime);
@@ -1124,6 +1147,7 @@ export class Game {
     return JSON.stringify({
       coordinates:'screen pixels; origin top-left; x right, y down',
       mode:this.state, demo:this.isDemoMode, score:this.collectedCount, target:this.targetCount, combo:this.bubbleManager?.comboCount||this.comboCount||0, animalId:this.activeAnimalId,stage:this.sceneManager?.stageId,stageName:this.sceneManager?.stageName,bgmStage:this.audioManager?.currentStageId||this.sceneManager?.stageId||"forest", tracking:this.poseDetector?.metrics,autoNext:this.autoNextDeadline?Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)):null,celebrationDecorations:this.celebrationAccessories?.slots.filter(s=>s.prop.visible).map(s=>s.prop.name),
+      animalSpeech:this.animalSpeech?.toJSON()||null,
       wordLearning:{enabled:this.bubbleManager?.wordMode!==false, word:this.currentWord?.word||null, review:!!this.wordPlaybackReview, speaking:!!this.currentWord&&!this.wordAudioDone, elapsed:Math.round((this.wordElapsed||0)*10)/10},
       bubble:bubble ? {...screen(bubble.group.position), type:bubble.type,playStyle:bubble.playStyle,motionElapsed:Math.round((bubble.motionElapsed||0)*100)/100,ease:Math.round((this.bubbleManager.roundEase||0)*100)/100,hitsReceived:bubble.hitsReceived,leftTouched:bubble.leftTouched,rightTouched:bubble.rightTouched,merging:bubble.merging,protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
       animal:animal ? {state:animal.state,emotion:animal.emotion,reaction:animal.reactionVariant,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,

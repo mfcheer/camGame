@@ -12,7 +12,14 @@
     "reviewAudio": "/audio/words/review/chair.mp3",
     "accent": "#D35400",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "chair",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "table",
@@ -27,7 +34,14 @@
     "reviewAudio": "/audio/words/review/table.mp3",
     "accent": "#2980B9",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "table",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "pencil",
@@ -42,7 +56,14 @@
     "reviewAudio": "/audio/words/review/pencil.mp3",
     "accent": "#F39C12",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "pencil",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "book",
@@ -57,7 +78,14 @@
     "reviewAudio": "/audio/words/review/book.mp3",
     "accent": "#16A085",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "book",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "crayon",
@@ -72,7 +100,14 @@
     "reviewAudio": "/audio/words/review/crayon.mp3",
     "accent": "#E74C3C",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "crayon",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "teacher",
@@ -87,7 +122,14 @@
     "reviewAudio": "/audio/words/review/teacher.mp3",
     "accent": "#F39C12",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "teacher",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "red",
@@ -102,7 +144,14 @@
     "reviewAudio": "/audio/words/review/red.mp3",
     "accent": "#E74C3C",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "red",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "yellow",
@@ -117,7 +166,14 @@
     "reviewAudio": "/audio/words/review/yellow.mp3",
     "accent": "#F1C40F",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "yellow",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "blue",
@@ -132,7 +188,14 @@
     "reviewAudio": "/audio/words/review/blue.mp3",
     "accent": "#3498DB",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "blue",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "green",
@@ -147,7 +210,14 @@
     "reviewAudio": "/audio/words/review/green.mp3",
     "accent": "#2ECC71",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "green",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "purple",
@@ -177,7 +247,14 @@
     "reviewAudio": "/audio/words/review/circle.mp3",
     "accent": "#E67E22",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-09-16",
+        "form": "circle",
+        "date": "2026-09-16",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "triangle",
@@ -237,7 +314,14 @@
     "reviewAudio": "/audio/words/review/doll.mp3",
     "accent": "#E91E63",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-11-12",
+        "form": "doll",
+        "date": "2026-11-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "ball",
@@ -252,7 +336,14 @@
     "reviewAudio": "/audio/words/review/ball.mp3",
     "accent": "#2ECC71",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-11-12",
+        "form": "ball",
+        "date": "2026-11-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "car",
@@ -267,7 +358,20 @@
     "reviewAudio": "/audio/words/review/car.mp3",
     "accent": "#E74C3C",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-11-12",
+        "form": "car",
+        "date": "2026-11-12",
+        "kind": "teacher-message"
+      },
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "car",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "train",
@@ -282,7 +386,14 @@
     "reviewAudio": "/audio/words/review/train.mp3",
     "accent": "#2980B9",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-11-12",
+        "form": "train",
+        "date": "2026-11-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "bike",
@@ -297,7 +408,14 @@
     "reviewAudio": "/audio/words/review/bike.mp3",
     "accent": "#16A085",
     "aliases": [],
-    "sources": []
+    "sources": [
+      {
+        "bookId": "classroom-2026-11-12",
+        "form": "bike",
+        "date": "2026-11-12",
+        "kind": "teacher-message"
+      }
+    ]
   },
   {
     "id": "teddy",
@@ -312,7 +430,14 @@
     "reviewAudio": "/audio/words/review/teddy.mp3",
     "accent": "#D35400",
     "aliases": [],
-    "sources": [],
+    "sources": [
+      {
+        "bookId": "classroom-2026-11-12",
+        "form": "teddy",
+        "date": "2026-11-12",
+        "kind": "teacher-message"
+      }
+    ],
     "conceptId": "plush-bear"
   },
   {
@@ -692,6 +817,12 @@
           7
         ],
         "printedPage": 6
+      },
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "cat",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
       }
     ]
   },
@@ -800,6 +931,196 @@
           10
         ],
         "printedPage": 10
+      }
+    ]
+  },
+  {
+    "id": "egg",
+    "word": "egg",
+    "zh": "鸡蛋",
+    "category": "everyday",
+    "image": "/images/words/learning/egg.svg",
+    "bubbleImage": "/images/words/learning/egg.svg",
+    "svg": "/images/words/learning/egg.svg",
+    "bubbleSvg": "/images/words/learning/egg.svg",
+    "audio": "/audio/words/egg.mp3",
+    "reviewAudio": "/audio/words/review/egg.mp3",
+    "accent": "#D69345",
+    "aliases": [
+      "eggs"
+    ],
+    "sources": [
+      {
+        "bookId": "classroom-2026-11-12",
+        "form": "egg",
+        "date": "2026-11-12",
+        "kind": "teacher-message"
+      }
+    ]
+  },
+  {
+    "id": "elbow",
+    "word": "elbow",
+    "zh": "手肘",
+    "category": "everyday",
+    "image": "/images/words/learning/elbow.svg",
+    "bubbleImage": "/images/words/learning/elbow.svg",
+    "svg": "/images/words/learning/elbow.svg",
+    "bubbleSvg": "/images/words/learning/elbow.svg",
+    "audio": "/audio/words/elbow.mp3",
+    "reviewAudio": "/audio/words/review/elbow.mp3",
+    "accent": "#D69345",
+    "aliases": [
+      "elbows"
+    ],
+    "sources": [
+      {
+        "bookId": "classroom-2026-11-12",
+        "form": "elbow",
+        "date": "2026-11-12",
+        "kind": "teacher-message"
+      }
+    ]
+  },
+  {
+    "id": "envelope",
+    "word": "envelope",
+    "zh": "信封",
+    "category": "everyday",
+    "image": "/images/words/learning/envelope.svg",
+    "bubbleImage": "/images/words/learning/envelope.svg",
+    "svg": "/images/words/learning/envelope.svg",
+    "bubbleSvg": "/images/words/learning/envelope.svg",
+    "audio": "/audio/words/envelope.mp3",
+    "reviewAudio": "/audio/words/review/envelope.mp3",
+    "accent": "#D69345",
+    "aliases": [
+      "envelopes"
+    ],
+    "sources": [
+      {
+        "bookId": "classroom-2026-11-12",
+        "form": "envelope",
+        "date": "2026-11-12",
+        "kind": "teacher-message"
+      }
+    ]
+  },
+  {
+    "id": "elephant",
+    "word": "elephant",
+    "zh": "大象",
+    "category": "everyday",
+    "image": "/images/words/learning/elephant.svg",
+    "bubbleImage": "/images/words/learning/elephant.svg",
+    "svg": "/images/words/learning/elephant.svg",
+    "bubbleSvg": "/images/words/learning/elephant.svg",
+    "audio": "/audio/words/elephant.mp3",
+    "reviewAudio": "/audio/words/review/elephant.mp3",
+    "accent": "#D69345",
+    "aliases": [
+      "elephants"
+    ],
+    "sources": [
+      {
+        "bookId": "classroom-2026-11-12",
+        "form": "elephant",
+        "date": "2026-11-12",
+        "kind": "teacher-message"
+      }
+    ]
+  },
+  {
+    "id": "cup",
+    "word": "cup",
+    "zh": "杯子",
+    "category": "everyday",
+    "image": "/images/words/learning/cup.svg",
+    "bubbleImage": "/images/words/learning/cup.svg",
+    "svg": "/images/words/learning/cup.svg",
+    "bubbleSvg": "/images/words/learning/cup.svg",
+    "audio": "/audio/words/cup.mp3",
+    "reviewAudio": "/audio/words/review/cup.mp3",
+    "accent": "#D69345",
+    "aliases": [
+      "cups"
+    ],
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "cup",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
+  },
+  {
+    "id": "computer",
+    "word": "computer",
+    "zh": "电脑",
+    "category": "everyday",
+    "image": "/images/words/learning/computer.svg",
+    "bubbleImage": "/images/words/learning/computer.svg",
+    "svg": "/images/words/learning/computer.svg",
+    "bubbleSvg": "/images/words/learning/computer.svg",
+    "audio": "/audio/words/computer.mp3",
+    "reviewAudio": "/audio/words/review/computer.mp3",
+    "accent": "#D69345",
+    "aliases": [
+      "computers"
+    ],
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "computer",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
+      }
+    ]
+  },
+  {
+    "id": "mooncake",
+    "word": "mooncake",
+    "zh": "月饼",
+    "category": "everyday",
+    "image": "/images/words/learning/mooncake.svg",
+    "bubbleImage": "/images/words/learning/mooncake.svg",
+    "svg": "/images/words/learning/mooncake.svg",
+    "bubbleSvg": "/images/words/learning/mooncake.svg",
+    "audio": "/audio/words/mooncake.mp3",
+    "reviewAudio": "/audio/words/review/mooncake.mp3",
+    "accent": "#D69345",
+    "aliases": [
+      "mooncakes"
+    ],
+    "sources": [
+      {
+        "bookId": "classroom-2026-09-16",
+        "form": "mooncake",
+        "date": "2026-09-16",
+        "kind": "teacher-message"
+      }
+    ]
+  },
+  {
+    "id": "orange",
+    "word": "orange",
+    "zh": "橙色",
+    "category": "colors",
+    "image": "/images/words/learning/orange.svg",
+    "bubbleImage": "/images/words/learning/orange.svg",
+    "svg": "/images/words/learning/orange.svg",
+    "bubbleSvg": "/images/words/learning/orange.svg",
+    "audio": "/audio/words/orange.mp3",
+    "reviewAudio": "/audio/words/review/orange.mp3",
+    "accent": "#D69345",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "classroom-2026-10-12",
+        "form": "orange",
+        "date": "2026-10-12",
+        "kind": "teacher-message"
       }
     ]
   }

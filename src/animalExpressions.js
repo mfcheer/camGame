@@ -49,7 +49,7 @@ export function updateExpressionRig(animal,dt){
  const rig=animal.expressionRig;if(!rig)return;
  const t=animal.idleTime,reaction=animal.reactionTimer||0,variant=animal.reactionVariant||0;
  const greeting=animal.state==='WAVING'||animal.state==='CHEERING';
- const happy=reaction>.10||greeting,curious=!happy&&animal.anticipating;
+ const happy=!!animal.speaking||reaction>.10||greeting,curious=!happy&&animal.anticipating;
  animal.emotion=greeting?'grateful':happy?(variant===1?'delighted':'happy'):curious?'curious':'content';
  // Slow blink for cats; puppy wink; other friends use upturned smiling eyelids.
  const smileWindow=greeting||(reaction<1.02&&reaction>.42);
