@@ -1533,3 +1533,8 @@ button{touch-action:manipulation}
     transition: opacity 0.3s;
   }
 }
+
+/* Keep the two languages readable on separate lines. */
+.word-popup-card .word-popup-badge { flex-direction: column; gap: 2px; border-radius: 14px; }
+.word-popup-card .word-popup-cn { border-left: 0; padding-left: 0; }
+.word-popup-card .word-popup-text, .word-popup-card .word-popup-cn { white-space: nowrap; }

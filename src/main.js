@@ -99,6 +99,7 @@ export class Game {
       this.bubbleManager.onComboChange = (combo) => this.handleComboChange(combo);
       this.bubbleManager.onSpecialPop = () => this.onBubblePopped();
       this.bubbleManager.onWordPop = (word, hitX, hitY) => {
+        this.wordPresentationRemaining = 4.5;
         this.uiManager?.showWordPopup?.(word, hitX, hitY);
       };
     }
@@ -522,17 +523,20 @@ export class Game {
     const session = this.lifecycleSessionId;
     const deliver = () => {
       if (session !== this.lifecycleSessionId || this.state !== 'PLAYING') return;
+      if ((this.wordPresentationRemaining || 0) > 0) { this.pendingWordDelivery = deliver; return; }
+      this.pendingWordDelivery = null;
       this.uiManager?.updateProgress?.(current);
       this.balloon?.setEnergy(current);
       this.rescueAnimal?.setEnergy(current);
       this.audioManager.playEnergyCharge(current);
       this.audioManager.playAnimalSound?.(this.activeAnimalId || this.rescueAnimal?.animalId || "bunny", "energy");
       if (current >= this.targetCount) this.handleVictory();
+      else this.bubbleManager.spawnNext(this.bubbleManager.completedBubbleCount ?? current);
     };
     const projectile = this.bubbleManager.energyProjectiles?.at(-1);
     if (projectile && !projectile.onArrive) projectile.onArrive = deliver;
     else deliver();
-    if (current < this.targetCount) this.bubbleManager.spawnNext(this.bubbleManager.completedBubbleCount ?? current);
+
   }
 
   // 达成 5 个泡泡，解救成功，逃生大欢庆！
@@ -542,8 +546,7 @@ export class Game {
     this.isSoftWaiting = false;
     this.waitingForEscape = false;this.resultVisible=false;
     this.cancelAutoNext();
-    if (this.hasLiveCamera()) this.celebrationAccessories?.start(this.lastPlayers || [], false);
-    else this.celebrationAccessories?.clear();
+    this.celebrationAccessories?.clear();
     if (this.bubbleManager.clearActiveBubble) {
       this.bubbleManager.clearActiveBubble();
     } else {
@@ -595,6 +598,7 @@ export class Game {
   }
 
   startFarewell() {
+    if (this.hasLiveCamera()) this.celebrationAccessories?.start(this.lastPlayers || [], false);
     this.rescueAnimal?.startEscape?.();
     const currentSession=this.celebrationSessionId;
     this.celebrationRemainingMs=GAME_CONFIG.gameplay.celebrationDurationMs;
@@ -792,6 +796,7 @@ export class Game {
 
   // 重新开始当前关卡（彻底清除旧庆祝回调）
   handleRestart() {
+    this.wordPresentationRemaining=0;this.pendingWordDelivery=null;
     this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();
     this.cancelAutoNext(false);this.resultVisible=false;this.photoRemaining=null;this.photoCapturePending=false;this.uiManager?.setPhotoCountdown?.(null);this.celebrationAccessories?.clear();
     this.uiManager?.hideVictory?.();
@@ -851,6 +856,7 @@ export class Game {
   // 退出回首页（取消所有异步流程、旧定时器并彻底释放摄像头）
   handleExit() {
     this.bubbleManager?.contrastSampler?.clear();
+    this.wordPresentationRemaining=0;this.pendingWordDelivery=null;
     this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();
     this.cancelAutoNext(false);this.resultVisible=false;this.photoRemaining=null;this.photoCapturePending=false;this.uiManager?.setPhotoCountdown?.(null);this.celebrationAccessories?.clear();
     this.cancelAutoCountdown();
@@ -959,6 +965,10 @@ export class Game {
   // One active-time clock for the character, scenery and energy feedback.
   updateFrame(deltaSeconds) {
     if (this.state !== 'PAUSED') {
+      if (this.wordPresentationRemaining > 0) {
+        this.wordPresentationRemaining = Math.max(0, this.wordPresentationRemaining - deltaSeconds);
+        if (!this.wordPresentationRemaining && this.pendingWordDelivery) this.pendingWordDelivery();
+      }
       this.gameTime = (this.gameTime || 0) + deltaSeconds;
       this.balloon?.update(deltaSeconds, this.gameTime);
       if(!this.friendInteraction?.active){
