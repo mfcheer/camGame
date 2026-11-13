@@ -41,6 +41,8 @@ export class UIManager {
 
       animalChoices: Array.from(document.querySelectorAll('[data-animal]')),
       animalBrief: document.getElementById('animal-brief'),
+      startChoices: document.querySelector('.start-choices'),
+      startCard: document.querySelector('.start-card'),
       progressContainer: document.querySelector('.progress-dots-container'),
       victoryAnimalTitle: document.getElementById('victory-animal-title'),
       victoryAnimalCopy: document.getElementById('victory-animal-copy'),
@@ -270,6 +272,11 @@ export class UIManager {
     this.showHandGuide(false);
     this.hasDismissedGuide = false;
     this.resetProgress();
+    if (this.dom.animalBrief) {
+      this.dom.animalBrief.textContent = '选一位森林朋友，用食指送给它彩虹能量。';
+    }
+    if (this.dom.startChoices) this.dom.startChoices.scrollTop = 0;
+    if (this.dom.startCard) this.dom.startCard.scrollTop = 0;
     this.setAnimalSelection?.(this.animalSelection || 'bunny');
   }
 

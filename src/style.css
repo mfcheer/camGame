@@ -692,7 +692,7 @@ html,body{overscroll-behavior:none}
 .card{width:min(100%,480px);max-height:100%;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .start-card{width:min(100%,680px);max-height:100%;display:flex;flex-direction:column;overflow:hidden}
 .start-intro,.start-actions{flex-shrink:0;min-width:0}
-.start-choices{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.start-choices{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;padding-bottom:8px}
 .start-help{font-size:12px;color:#748274;text-align:left;margin-top:5px}
 .start-help summary{cursor:pointer;text-align:center;padding:4px;min-height:26px}
 .start-help[open]{max-height:130px;overflow-y:auto}
@@ -732,13 +732,14 @@ button{touch-action:manipulation}
   .animal-picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:3px 0 8px}
   .animal-choice{padding:4px 2px 6px;border-radius:12px;gap:2px;min-width:0}
   .animal-choice>img{height:58px}.animal-choice strong{font-size:12px}.animal-choice span{font-size:10px}
-  .animal-choice.random-choice{min-height:34px;gap:6px;flex-wrap:nowrap;padding:2px 6px}
+  .animal-choice.random-choice{min-height:34px;gap:6px;flex-wrap:nowrap;padding:2px 6px;margin-bottom:4px;flex-shrink:0}
   .random-choice .random-friends{width:110px;height:30px}.random-choice .random-friends img{width:25px;height:30px}
   .random-choice>span{display:none}
   .mode-selector{margin:7px 0 10px;gap:8px}.mode-btn{padding:7px 5px;gap:2px;border-width:2px}
   .mode-btn .mode-icon{font-size:22px}.mode-btn .mode-title{font-size:13px}.mode-btn .mode-sub{font-size:10px}
   .start-actions>.btn-primary{padding:12px 14px;font-size:17px;margin-bottom:8px}
   .start-actions>.btn-secondary{padding:10px 8px;font-size:13px;margin-bottom:0}
+  .camp-entry-btn{margin:3px 0 6px 0;padding:7px 12px;font-size:13px;border-radius:12px;flex-shrink:0}
   .card:not(.start-card){padding:18px 16px;border-width:2px}
   .card h2{font-size:21px}.card p{font-size:14px;margin-bottom:12px}
   .progress-dots-container[data-compact="true"] .progress-dot{width:17px;height:17px;font-size:10px}
@@ -775,7 +776,7 @@ button{touch-action:manipulation}
 @media(max-height:640px) and (max-aspect-ratio:1/1){
   .animal-choice>img{height:48px}.mode-btn{padding:5px 3px}.mode-btn .mode-icon{font-size:18px}
 }
-.start-intro #animal-brief{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.start-intro #animal-brief{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-height:2.9em}
 .combo-badge:not(.hidden) ~ #demo-mode-banner{display:none}
 
 /* 快门全屏白光闪烁 */
@@ -793,86 +794,67 @@ button{touch-action:manipulation}
 }
 
 /* 拍立得森林英雄合影卡 */
+.victory-content-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.victory-info-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .polaroid-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin: 6px 0 10px;
+  gap: 8px;
+  margin: 4px 0 8px;
   width: 100%;
 }
 
 .polaroid-card {
   background: #fdfdfc;
-  padding: 12px 12px 14px;
+  padding: 6px;
   border-radius: 12px;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
   border: 1px solid #e2e8f0;
-  width: min(100%, 280px);
+  width: min(100%, 260px);
+  max-width: 260px;
+  max-height: 42vh;
+  aspect-ratio: 640 / 760;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .polaroid-photo-frame {
   width: 100%;
-  aspect-ratio: 1.05 / 1;
-  background: linear-gradient(180deg, #d8f3dc 0%, #b7e4c7 100%);
-  border-radius: 6px;
+  height: 100%;
+  aspect-ratio: 640 / 760;
+  border-radius: 8px;
   overflow: hidden;
   position: relative;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #f8fafc;
 }
 
 .polaroid-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
 .polaroid-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-  padding: 0 2px;
+  display: none;
 }
 
-.polaroid-caption {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-}
 
-.polaroid-title {
-  font-size: 13px;
-  font-weight: 800;
-  color: #2d3748;
-}
-
-.polaroid-date {
-  font-size: 10px;
-  color: #718096;
-  margin-top: 2px;
-}
-
-.polaroid-stamp {
-  font-size: 9px;
-  font-weight: 800;
-  color: #e76f51;
-  border: 1.5px dashed #e76f51;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  line-height: 1.1;
-  transform: rotate(12deg);
-  flex-shrink: 0;
-}
 
 .btn-save-photo {
   background: linear-gradient(135deg, #10b981, #059669);
@@ -931,6 +913,16 @@ button{touch-action:manipulation}
   border-radius: var(--border-radius-pill);
   font-size: 11px;
   font-weight: 800;
+}
+
+@media (max-width: 540px) {
+  .start-actions .camp-entry-btn {
+    margin: 4px 0 6px 0;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
 }
 
 /* 营地图鉴弹窗 */
@@ -1080,12 +1072,94 @@ button{touch-action:manipulation}
 }
 
 @media (max-height: 500px) and (min-aspect-ratio: 1/1) {
-  .polaroid-card {
-    max-width: 200px;
-    padding: 8px 8px 10px;
+  #victory-modal {
+    padding: calc(var(--safe-top) + 6px) calc(var(--safe-right) + 10px) calc(var(--safe-bottom) + 6px) calc(var(--safe-left) + 10px);
+    align-items: center;
+    justify-content: center;
   }
-  .polaroid-photo-frame {
-    height: 110px;
+  #victory-modal .card {
+    width: min(100%, 680px);
+    max-height: calc(100vh - 16px);
+    padding: 10px 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  #victory-modal h1 {
+    display: none;
+  }
+  .victory-content-grid {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+  }
+  #victory-modal .polaroid-wrapper {
+    flex: 0 0 auto;
+    width: auto;
+    margin: 0;
+    gap: 6px;
+  }
+  #victory-modal .polaroid-card {
+    height: 180px;
+    max-height: calc(100vh - 72px);
+    width: auto;
+    aspect-ratio: 640 / 760;
+    padding: 4px;
+    border-radius: 8px;
+  }
+  #victory-modal .polaroid-photo-frame {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 640 / 760;
+  }
+  #victory-modal .btn-save-photo {
+    padding: 5px 12px;
+    font-size: 12px;
+    min-height: 30px;
+  }
+  .victory-info-col {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+  }
+  #victory-modal h2 {
+    font-size: 17px;
+    margin: 0 0 3px 0;
+    text-align: left;
+  }
+  #victory-modal p {
+    font-size: 12px;
+    line-height: 1.35;
+    margin: 0 0 8px 0;
+    text-align: left;
+  }
+  .victory-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .victory-actions button {
+    padding: 8px 10px;
+    font-size: 13px;
+    min-height: 36px;
+    flex: 1 1 0;
+  }
+  .auto-next-row {
+    margin-top: 4px;
+    font-size: 11px;
+    justify-content: flex-start;
+  }
+  .camp-entry-btn {
+    margin: 2px 0 5px 0;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 10px;
+    flex-shrink: 0;
   }
   .camp-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));

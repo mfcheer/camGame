@@ -184,29 +184,33 @@
 
     <!-- 5. 达成 5 个解救欢庆窗口 -->
     <div id="victory-modal" class="modal-overlay hidden">
-      <div class="card">
+      <div class="card victory-card">
         <h1>🎉 太棒啦！</h1>
-        <h2 id="victory-animal-title">萌萌自由啦，谢谢你！</h2>
-        <p id="victory-animal-copy">5 份彩虹能量，换来一只自由的小兔。萌萌已经跳回森林，还记得回头向你挥挥手。</p>
-        <!-- 拍立得森林英雄合影卡 -->
-        <div class="polaroid-wrapper" id="polaroid-wrapper">
-          <div class="polaroid-card" id="polaroid-card">
-            <div class="polaroid-photo-frame">
-              <img id="polaroid-img" class="polaroid-img" alt="森林英雄拍立得合影" />
-            </div>
-            <div class="polaroid-footer">
-              <div class="polaroid-caption">
-                <span class="polaroid-title" id="polaroid-title">森林大解救 · 英雄合影</span>
-                <span class="polaroid-date" id="polaroid-date">2026.11.13</span>
+        <div class="victory-content-grid">
+          <!-- 拍立得森林英雄合影卡 -->
+          <div class="polaroid-wrapper" id="polaroid-wrapper">
+            <div class="polaroid-card" id="polaroid-card">
+              <div class="polaroid-photo-frame">
+                <img id="polaroid-img" class="polaroid-img" alt="森林英雄拍立得合影" />
               </div>
-              <div class="polaroid-stamp" id="polaroid-stamp">森林英雄<br>★ HERO ★</div>
+              <div class="polaroid-footer">
+                <div class="polaroid-caption">
+                  <span class="polaroid-title" id="polaroid-title">森林大解救 · 英雄合影</span>
+                  <span class="polaroid-date" id="polaroid-date">2026.11.13</span>
+                </div>
+                <div class="polaroid-stamp" id="polaroid-stamp">森林英雄<br>★ HERO ★</div>
+              </div>
             </div>
+            <button id="btn-save-polaroid" class="btn-primary btn-save-photo" type="button">保存合影 📸</button>
           </div>
-          <button id="btn-save-polaroid" class="btn-primary btn-save-photo" type="button">保存合影 📸</button>
+          <div class="victory-info-col">
+            <h2 id="victory-animal-title">萌萌自由啦，谢谢你！</h2>
+            <p id="victory-animal-copy">5 份彩虹能量，换来一只自由的小兔。萌萌已经跳回森林，还记得回头向你挥挥手。</p>
+            <div class="victory-actions"><button id="btn-play-again" class="btn-primary">再解救一次 🎈</button>
+            <button id="btn-victory-exit" class="btn-secondary">换个朋友 / 回首页 🏠</button></div>
+            <div class="auto-next-row"><span id="auto-next-status" aria-live="polite"></span><button id="btn-stop-auto-next" class="text-button">先休息，停止自动开始</button></div>
+          </div>
         </div>
-        <div class="victory-actions"><button id="btn-play-again" class="btn-primary">再解救一次 🎈</button>
-        <button id="btn-victory-exit" class="btn-secondary">换个朋友 / 回首页 🏠</button></div>
-        <div class="auto-next-row"><span id="auto-next-status" aria-live="polite"></span><button id="btn-stop-auto-next" class="text-button">先休息，停止自动开始</button></div>
       </div>
     </div>
 
