@@ -93,6 +93,10 @@ export class UIManager {
       btnNextFriend: document.getElementById('btn-next-friend'),
       photoCountdown: document.getElementById('photo-countdown'),
       interactionHint: document.getElementById('interaction-hint'),
+      friendPlay: document.getElementById('friend-play'),
+      friendTitle: document.getElementById('friend-play-title'),
+      friendHint: document.getElementById('friend-play-hint'),
+      btnFriendDone: document.getElementById('btn-friend-done'),
 
       // 森林营地图鉴
       btnOpenCamp: document.getElementById('btn-open-camp'),
@@ -221,6 +225,7 @@ export class UIManager {
       this.handlers.onStopAutoNext?.('keep_photo');
     });
 
+    this.dom.btnFriendDone?.addEventListener('click',()=>this.handlers.onFriendDone?.());
     this.dom.btnRetakePhoto?.addEventListener('click', () => this.handlers.onRetakePhoto?.());
     this.dom.btnNextFriend?.addEventListener('click', () => this.handlers.onNextFriend?.());
 
@@ -560,6 +565,16 @@ export class UIManager {
       this.dom.cameraFlash?.classList.add('hidden');
     }, 180);
   }
+
+  showFriendPlay(profile, reacted=false) {
+    if(!this.dom.friendPlay)return;
+    this.dom.friendPlay.classList.remove('hidden');
+    this.dom.friendTitle.textContent=reacted?profile.reply:profile.title;
+    this.dom.friendHint.textContent=profile.hint;
+    this.setInteractionHint('');
+  }
+
+  hideFriendPlay() { this.dom.friendPlay?.classList.add('hidden'); }
 
   setPhotoCountdown(value) {
     const el = this.dom.photoCountdown;

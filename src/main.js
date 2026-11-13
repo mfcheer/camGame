@@ -2,6 +2,7 @@ import {getViewport} from './viewport.js';
 import { SceneManager } from './sceneManager.js';
 import { HotAirBalloon } from './hotAirBalloon.js';
 import { RescueAnimal } from './rescueAnimal.js';
+import {RescueFriendPlay} from './rescueFriendPlay.js';
 import { BubbleManager } from './bubbleManager.js';
 import { AudioManager } from './audioManager.js';
 import { PoseDetector } from './poseDetector.js';
@@ -77,6 +78,8 @@ export class Game {
 
       this.rescueAnimal = new RescueAnimal(this.sceneManager.scene, this.sceneManager.camera);
       this.sceneManager.setRescueAnimal(this.rescueAnimal);
+      this.friendInteraction=new RescueFriendPlay(this.sceneManager.scene,this.sceneManager.camera,this.rescueAnimal,this.audioManager,()=>this.finishFriendPlay());
+      this.friendInteraction.onAction=profile=>this.uiManager?.showFriendPlay?.(profile,true);
       this.celebrationAccessories=new CelebrationAccessories(this.sceneManager.scene,this.sceneManager.camera);
       this.rescueAnimal.onEnergyReceived = () => this.sceneManager.triggerLeftFlowerBounce();
       this.rescueAnimal.onReachedExit = () => this.sceneManager.triggerRightArchGlow();
@@ -119,6 +122,7 @@ export class Game {
         onEnableDemo: (mode) => this.handleEnableDemo(mode),
         onRetryCamera: () => this.handleRetryCamera(),
         onOpenCamp: () => this.uiManager.showCamp(this.campManager, this.audioManager),
+        onFriendDone: () => this.friendInteraction?.finish(),
         onRetakePhoto: () => this.beginPhoto(true),
         onNextFriend: () => this.startNextFriend(),
         onSavePolaroid: () => PolaroidManager.downloadImage(this.currentPolaroidDataUrl, this.currentAnimalName)
@@ -127,7 +131,7 @@ export class Game {
     }
 
     if (typeof window !== 'undefined') {
-      window.addEventListener('gameviewportchange', () => {this.bubbleManager?.updateLayout();this.uiManager?.updateLayout?.();});
+      window.addEventListener('gameviewportchange', () => {this.bubbleManager?.updateLayout();if(this.friendInteraction?.active){this.friendInteraction.updateLayout();this.bubbleManager?.hideHandIndicators();}this.uiManager?.updateLayout?.();this.sceneManager?.render();});
     }
 
     this.setupPoseCallbacks();
@@ -224,6 +228,8 @@ export class Game {
         }
       }
 
+      if(this.state==='CELEBRATING'&&this.friendInteraction?.active){this.bubbleManager?.updateHandIndicators(players);return;}
+
       if (this.state !== 'PLAYING') return;
 
       // A short occlusion is tolerated; a missing partner pauses without a blocking menu.
@@ -275,7 +281,7 @@ export class Game {
       // 若当前已退出到 START 状态，不被旧请求错误覆写为 ERROR
       if (this.state === 'START') return;
       this.cancelAutoCountdown();
-      this.cancelAutoNext();this.celebrationAccessories?.clear();
+      this.cancelAutoNext();this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();this.celebrationAccessories?.clear();
       this.state = 'ERROR';
       if (this.uiManager && this.uiManager.showError) {
         this.uiManager.showError(err.message || '摄像头启动失败，请检查浏览器权限');
@@ -558,7 +564,6 @@ export class Game {
     this.photoCapturePending = false;
     this.uiManager?.setPhotoCountdown?.(null);
     if (this.balloon) this.balloon.startTakeoff();
-    if (this.rescueAnimal) this.rescueAnimal.startEscape();
 
     // 取消旧庆祝计时器，支持分段与暂停打断恢复
     if (this.celebrationTimer) {
@@ -566,21 +571,40 @@ export class Game {
       this.celebrationTimer = null;
     }
     this.celebrationSessionId = (this.celebrationSessionId || 0) + 1;
-    const currentSession = this.celebrationSessionId;
-    this.celebrationRemainingMs = GAME_CONFIG.gameplay.celebrationDurationMs;
-    this.celebrationStartTime = performance.now();
+    if(this.friendInteraction){
+      this.celebrationRemainingMs=0;
+      const profile=this.friendInteraction.start(this.bubbleManager.playerComfortZones || []);
+      this.bubbleManager.hideHandIndicators();
+      this.uiManager?.showFriendPlay?.(profile);
+      return;
+    }
+    this.startFarewell();
+  }
 
-    this.celebrationTimer = setTimeout(() => {
-      if (this.celebrationSessionId === currentSession && this.state === 'CELEBRATING') {
-        this.celebrationRemainingMs = 0;
+  finishFriendPlay() {
+    if(this.state!=='CELEBRATING')return;
+    this.friendInteraction?.clear();
+    this.uiManager?.hideFriendPlay?.();
+    this.bubbleManager?.hideHandIndicators?.();
+    this.startFarewell();
+  }
+
+  startFarewell() {
+    this.rescueAnimal?.startEscape?.();
+    const currentSession=this.celebrationSessionId;
+    this.celebrationRemainingMs=GAME_CONFIG.gameplay.celebrationDurationMs;
+    this.celebrationStartTime=performance.now();
+    this.celebrationTimer=setTimeout(()=>{
+      if(this.celebrationSessionId===currentSession&&this.state==='CELEBRATING'){
+        this.celebrationRemainingMs=0;
         this.showVictoryWhenReady();
-        this.celebrationTimer = null;
+        this.celebrationTimer=null;
       }
-    }, this.celebrationRemainingMs);
+    },this.celebrationRemainingMs);
   }
 
   showVictoryWhenReady() {
-    if (this.state !== 'CELEBRATING') return;
+    if (this.state !== 'CELEBRATING' || this.friendInteraction?.active) return;
     // A slow renderer must not let a wall-clock timer cover the goodbye pose.
     if (this.rescueAnimal?.state && this.rescueAnimal.state !== 'ESCAPED') {
       this.waitingForEscape = true;
@@ -687,6 +711,8 @@ export class Game {
   handleTogglePause(paused) {
     if (paused) {
       this.cancelAutoNext();
+      this.friendInteraction?.setPaused(true);
+      this.uiManager?.hideFriendPlay?.();
       this.prePauseState = this.state;
       this.state = 'PAUSED';
       this.cancelAutoCountdown();
@@ -737,8 +763,10 @@ export class Game {
       this.rescueAnimal.setPaused?.(false);
     }
 
+    this.friendInteraction?.setPaused(false);
+    if(this.friendInteraction?.active)this.uiManager?.showFriendPlay?.(this.friendInteraction.profile);
     // 恢复为庆祝状态：按剩余有效时长恢复计时器
-    if (this.state === 'CELEBRATING') {
+    if (this.state === 'CELEBRATING' && !this.friendInteraction?.active) {
       const currentSession = this.celebrationSessionId;
       this.celebrationStartTime = performance.now();
       if (this.celebrationRemainingMs <= 0) {
@@ -759,6 +787,7 @@ export class Game {
 
   // 重新开始当前关卡（彻底清除旧庆祝回调）
   handleRestart() {
+    this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();
     this.cancelAutoNext(false);this.resultVisible=false;this.photoRemaining=null;this.photoCapturePending=false;this.uiManager?.setPhotoCountdown?.(null);this.celebrationAccessories?.clear();
     this.uiManager?.hideVictory?.();
     this.cancelAutoCountdown();
@@ -817,6 +846,7 @@ export class Game {
   // 退出回首页（取消所有异步流程、旧定时器并彻底释放摄像头）
   handleExit() {
     this.bubbleManager?.contrastSampler?.clear();
+    this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();
     this.cancelAutoNext(false);this.resultVisible=false;this.photoRemaining=null;this.photoCapturePending=false;this.uiManager?.setPhotoCountdown?.(null);this.celebrationAccessories?.clear();
     this.cancelAutoCountdown();
     this.lifecycleSessionId = (this.lifecycleSessionId || 0) + 1;
@@ -882,7 +912,7 @@ export class Game {
     if (typeof window === 'undefined') return;
 
     const handlePointer = (e) => {
-      if (!this.isDemoMode || this.state !== 'PLAYING') return;
+      if (!this.isDemoMode || !(this.state==='PLAYING'||(this.state==='CELEBRATING'&&this.friendInteraction?.active))) return;
 
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -926,11 +956,14 @@ export class Game {
     if (this.state !== 'PAUSED') {
       this.gameTime = (this.gameTime || 0) + deltaSeconds;
       this.balloon?.update(deltaSeconds, this.gameTime);
-      this.rescueAnimal?.setAnticipation?.(this.state==='PLAYING'&&!!this.bubbleManager?.isNearHand);
-      this.rescueAnimal?.setAttentionTarget?.(this.bubbleManager?.activeBubble?.group.position, this.bubbleManager?.energyProjectiles?.at(-1)?.mesh.position);
+      if(!this.friendInteraction?.active){
+        this.rescueAnimal?.setAnticipation?.(this.state==='PLAYING'&&!!this.bubbleManager?.isNearHand);
+        this.rescueAnimal?.setAttentionTarget?.(this.bubbleManager?.activeBubble?.group.position, this.bubbleManager?.energyProjectiles?.at(-1)?.mesh.position);
+      }
       this.rescueAnimal?.update(deltaSeconds, this.gameTime);
       this.bubbleManager?.update(deltaSeconds, this.gameTime);
       if(this.state==='PLAYING' && this.bubbleManager?.handsAgeSeconds<.18 && this.bubbleManager.checkHandCollisions(this.bubbleManager.latestTrackedPlayers))this.onBubblePopped();
+      if(this.friendInteraction?.active){const v=getViewport();this.friendInteraction.update(deltaSeconds,this.bubbleManager?.getInteractionTips(this.bubbleManager.latestTrackedPlayers,v.width,v.height)||[]);}
       this.sceneManager?.update(deltaSeconds);
       if(this.celebrationAccessories && typeof window!=='undefined')this.celebrationAccessories.update(deltaSeconds,getViewport().width,getViewport().height);
       if (this.state === 'PLAYING') this.uiManager?.setInteractionHint?.(this.bubbleManager?.getInteractionHint?.() || '');
@@ -980,6 +1013,7 @@ export class Game {
       mode:this.state, demo:this.isDemoMode, score:this.collectedCount, target:this.targetCount, combo:this.bubbleManager?.comboCount||this.comboCount||0, animalId:this.activeAnimalId,stage:this.sceneManager?.stageId,stageName:this.sceneManager?.stageName,bgmStage:this.audioManager?.currentStageId||this.sceneManager?.stageId||"forest", tracking:this.poseDetector?.metrics,autoNext:this.autoNextDeadline?Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)):null,celebrationDecorations:this.celebrationAccessories?.slots.filter(s=>s.prop.visible).map(s=>s.prop.name),
       bubble:bubble ? {...screen(bubble.group.position), type:bubble.type,playStyle:bubble.playStyle,motionElapsed:Math.round((bubble.motionElapsed||0)*100)/100,ease:Math.round((this.bubbleManager.roundEase||0)*100)/100,hitsReceived:bubble.hitsReceived,leftTouched:bubble.leftTouched,rightTouched:bubble.rightTouched,merging:bubble.merging,protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
       animal:animal ? {state:animal.state,emotion:animal.emotion,reaction:animal.reactionVariant,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,
+      friendPlay:this.friendInteraction?.toJSON() || null,
       photoCountdown:this.photoRemaining ?? null, resultVisible:!!this.resultVisible,
       energyInFlight:this.bubbleManager?.energyProjectiles.length || 0
     });

@@ -126,9 +126,60 @@ export class RescueAnimal {
     this.onEnergyReceived?.(score);
   }
   startEscape() {
-    if(this.state!=='TRAPPED')return;
+    if(!['TRAPPED','FRIEND'].includes(this.state))return;
+    this.friendFarewell=this.state==='FRIEND';
+    if(this.friendFarewell){this.escapeOriginX=this.currentX;this.escapeOriginY=this.currentY;this.escapeOriginScale=this.animalGroup.scale.y;}
+    this.model.position.y=0;
     this.state='CHEERING';this.escapeElapsed=0;this.ropesGroup.visible=false;this.hopTimer=0;
     this.spawnRopeBreakParticles();
+  }
+  startFriendPlay() {
+    this.state='FRIEND';this.friendResponse=0;this.friendHits=0;this.anticipating=false;
+    this.reactionTimer=0;this.glyphTimer=0;this.hopTimer=0;this.energyAttentionRemaining=0;
+    this.ropesGroup.visible=false;this.postGroup.visible=false;this.animalGroup.visible=true;this.setOpacity(1);
+    this.model.scale.set(1,1,1);this.model.position.y=0;this.model.rotation.set(0,-.12,0);
+    this.animalGroup.rotation.set(0,0,0);this.setQuadrupedPosture(0);
+    for(const g of [this.headGroup,this.leftArm,this.rightArm,this.leftLeg,this.rightLeg,this.tailGroup])g.rotation.set(0,0,0);
+  }
+  friendReact(count=1) {
+    if(this.state!=='FRIEND')return;
+    this.friendHits=count;this.friendResponse=1.1;this.reactionTimer=1.15;this.glyphTimer=.95;this.reactionVariant=count%3;
+  }
+  updateFriendPose(dt) {
+    const t=this.idleTime,r=this.friendResponse||0;
+    this.friendResponse=Math.max(0,r-dt);
+    const pulse=r>0?Math.sin(Math.min(1,(1.1-r)/1.1)*Math.PI):0,motion=this.reducedMotion?.2:1;
+    this.model.scale.set(1,1+Math.sin(t*2)*.008,1);this.model.rotation.x=0;this.model.position.y=0;
+    this.headGroup.rotation.x=0;this.headGroup.rotation.z=Math.sin(t)*.025;
+    this.leftArm.rotation.set(-.1,0,.1);this.rightArm.rotation.set(-.1,0,-.1);
+    this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
+    this.leftEarGroup.rotation.set(0,0,.1);this.rightEarGroup.rotation.set(0,0,-.1);
+    this.tailGroup.rotation.set(0,0,0);
+    if(this.animalId==='cat'){
+      this.headGroup.rotation.z-=pulse*.18*motion;this.headGroup.rotation.x=-pulse*.08;
+      this.leftEarGroup.rotation.z=.08-pulse*.10;this.rightEarGroup.rotation.z=-.08+pulse*.10;
+      this.tailGroup.rotation.z=Math.sin(t*(r>0?4:1.5))*(r>0?.25:.08)*motion;
+    }else if(['dog','bunny'].includes(this.animalId)){
+      this.rightArm.rotation.set(-.2,0,2.25-pulse*.35*motion);
+      if(this.animalId==='dog'){
+        this.tailGroup.rotation.y=Math.sin(t*(r>0?11:5))*(r>0?.65:.3)*motion;
+        this.headGroup.rotation.z-=pulse*.12*motion;
+      }else{
+        this.leftEarGroup.rotation.z=.1+pulse*.16*motion;this.rightEarGroup.rotation.z=-.1-pulse*.11*motion;
+        this.model.position.y=pulse*.055*motion;
+      }
+    }else if(this.animalId==='frog'){
+      this.leftArm.rotation.z=-pulse*.3;this.rightArm.rotation.z=pulse*.3;
+      this.leftLeg.rotation.x=this.rightLeg.rotation.x=pulse*.12;
+    }else if(this.animalId==='dragon'){
+      for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=sign*(.3+Math.sin(t*5)*.12*motion);}
+      this.tailGroup.rotation.y=Math.sin(t*2.5)*.2*motion;
+    }else if(this.animalId==='goldenDragon'){
+      this.bodyMesh.rotation.z=Math.sin(t*3)*.035*motion;this.tailGroup.rotation.y=Math.sin(t*3-.8)*.18*motion;
+      for(const [name,sign]of [['Whisker_L',-1],['Whisker_R',1]]){const w=this.model.getObjectByName(name);if(w)w.rotation.y=sign*Math.sin(t*2.5)*.05*motion;}
+    }
+    this.updateAttention(dt);this.updateExpression(dt);updateExpressionRig(this,dt);
+    if(this.contactShadow){this.contactShadow.visible=true;this.contactShadow.position.set(this.currentX,(this.friendFloor??this.currentY)+.01,.1);this.contactShadow.scale.setScalar(this.animalGroup.scale.y);}
   }
   spawnParticle(pos,dust=false) {
     if(this.particles.length>=16)return;
@@ -146,6 +197,7 @@ export class RescueAnimal {
     for(const mat of this.furMaterials){mat.transparent=alpha<1;mat.opacity=alpha;mat.depthWrite=alpha>.5;}
   }
   reset() {
+    this.friendFarewell=false;this.escapeOriginX=null;this.friendResponse=0;this.model.position.y=0;
     this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;this.reactionTimer=0;
     this.anticipating=false;this.reactionVariant=0;this.glyphTimer=0;this.emotion='content';this.attentionPhase='player';this.attentionFocus=null;this.targetFocus=null;this.energyFocus=null;this.energyAttentionRemaining=0;resetExpressionRig(this.expressionRig);
     if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.y=.048;}
@@ -190,7 +242,7 @@ export class RescueAnimal {
   }
   updateExpression(dt) {
     const reaction=this.reactionTimer||0;this.reactionTimer=Math.max(0,reaction-dt);
-    if(this.state==='TRAPPED') {
+    if(this.state==='TRAPPED'||this.state==='FRIEND') {
       const eyeContact=this.attentionPhase==='thanks';
       const focus=this.attentionFocus||this.playerFocus||{x:.5,y:.32};
       const yaw=eyeContact?0:THREE.MathUtils.clamp((focus.x-.5)*.7,-.28,.28);
@@ -198,7 +250,7 @@ export class RescueAnimal {
       this.headGroup.rotation.x+=eyeContact?-.035:THREE.MathUtils.clamp((focus.y-.55)*.35,-.18,.10);
       if(eyeContact)this.headGroup.rotation.z+=Math.sin((1.15-reaction)*5)*.055;
     }
-    if(this.state!=='TRAPPED')this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,0,Math.min(1,dt*8));
+    if(!['TRAPPED','FRIEND'].includes(this.state))this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,0,Math.min(1,dt*8));
     const happy=reaction>.1||this.state==='WAVING'||this.state==='CHEERING';
     if(this.happyMouth)this.happyMouth.visible=happy;
     if(this.happyTongue)this.happyTongue.visible=happy;
@@ -256,6 +308,7 @@ export class RescueAnimal {
       c.fallTimer+=dt;const t=clamp(c.fallTimer/.32,0,1);c.group.scale.set(1+t*.22,1,1+t*.22);c.group.position.y=-t*.2;c.mesh.material.opacity=1-t;
       if(t>=1){c.falling=false;c.group.visible=false;}
     }
+    if(this.state==='FRIEND'){this.updateFriendPose(dt);return;}
     let jump=0;
     // Every pose starts from a fresh pitch; additive reactions must not accumulate over frames.
     this.headGroup.rotation.x=0;
@@ -306,7 +359,7 @@ export class RescueAnimal {
         const hopPos=p*count;const phase=hopPos%1;
         // Advance mainly in the airborne interval, so planted feet do not slide.
         const step=['cat','dog','dragon','goldenDragon'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
-        this.currentX=THREE.MathUtils.lerp(this.startX,this.endX,step);
+        this.currentX=THREE.MathUtils.lerp(this.escapeOriginX??this.startX,this.endX,step);
         this.animalGroup.position.x=this.currentX;this.animalGroup.rotation.y=Math.PI/2;this.animalGroup.rotation.z=-.035;
         if(['cat','dog'].includes(this.animalId)) {
           this.setQuadrupedPosture(1);
@@ -353,6 +406,11 @@ export class RescueAnimal {
       this.tailGroup.rotation.z=Math.sin(this.idleTime*3.5-.6)*amplitude;
       if(swimming){this.animalGroup.rotation.x=Math.sin(this.idleTime*3.5)*.035;this.headGroup.rotation.z=Math.sin(this.idleTime*3.5+.7)*.05;}
       for(const [name,sign]of [['Whisker_L',-1],['Whisker_R',1]]){const whisker=this.model.getObjectByName(name);if(whisker)whisker.rotation.y=sign*Math.sin(this.idleTime*2.7)*amplitude*2;}
+    }
+    if(this.friendFarewell&&this.escapeElapsed<.65){
+      const blend=smooth(clamp(this.escapeElapsed/.65,0,1));
+      this.animalGroup.position.y+=(this.escapeOriginY-this.groundY)*(1-blend);
+      this.animalGroup.scale.setScalar(THREE.MathUtils.lerp(this.escapeOriginScale,this.modelScale,blend));
     }
     this.updateAttention(dt);
     this.updateExpression(dt);updateExpressionRig(this,dt);
