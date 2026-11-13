@@ -1,4 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import * as T from 'three';
+import {SpeechPolicy} from '../src/speechPolicy.js';
 import {VoiceQueue} from '../src/voiceQueue.js';import {Game} from '../src/main.js';import {BubbleManager} from '../src/bubbleManager.js';import {getWordById} from '../src/wordsConfig.js';import {AnimalSpeech} from '../src/animalSpeech.js';
 const tick=async()=>{for(let i=0;i<5;i++)await Promise.resolve();};
 function voice(){const jobs=[],calls=[],audio={playWord(id,options){calls.push(['word',id,options]);let done;const p=new Promise(r=>done=r);jobs.push(done);return p;},playPhrase(p){calls.push(['phrase',p.id]);let done;const promise=new Promise(r=>done=r);jobs.push(done);return promise;},stopWord(){jobs.at(-1)?.();}};return {q:new VoiceQueue(audio),audio,jobs,calls};}
@@ -32,8 +33,8 @@ test('the last hit starts rescue immediately without waiting for word audio',()=
  let wins=0;const g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',collectedCount:4,targetCount:5,voiceQueue:{current:{}},bubbleManager:{lastPoppedEnergy:1},audioManager:{playEnergyCharge(){}},handleVictory:()=>wins++});g.onBubblePopped();assert.equal(wins,1);assert.equal(g.collectedCount,5);
 });
 
-test('a flow word gives a lightweight cue, not a blocking presentation or bilingual recording',()=>{
- const {q,calls}=voice(),shown=[];const g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',voiceQueue:q,uiManager:{setLastWordAvailable(){},showWordCue:w=>shown.push(w.id)}});g.presentPlayWord(getWordById('egg'));assert.equal(g.currentWord,undefined);assert.equal(g.wordPresentationRemaining,undefined);assert.deepEqual(shown,['egg']);assert.equal(g.wordCueRemaining,1.35);assert.equal(calls[0][2].review,true);q.cancel();
+test('an allowed automatic word gives a cue throughout speech, not a blocking presentation or bilingual recording',async()=>{
+ const {q,calls,jobs}=voice(),shown=[];q.policy=new SpeechPolicy(null);q.policy.setAutomatic(true);const g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',collectedCount:0,targetCount:5,voiceQueue:q,uiManager:{setLastWordAvailable(){},showWordCue:w=>shown.push(w.id)}});g.presentPlayWord(getWordById('egg'));assert.equal(g.currentWord,undefined);assert.equal(g.wordPresentationRemaining,undefined);assert.deepEqual(shown,['egg']);assert.equal(g.wordCueRemaining,Infinity);assert.equal(calls[0][2].review,true);jobs[0]();await tick();assert.equal(g.wordCueRemaining,.65);q.cancel();
 });
 
 test('the bubble speaker can use the flow queue without also calling the legacy voice channel',()=>{
@@ -50,5 +51,5 @@ test('opening a word detail deliberately pauses, clears auto-resume voice and ne
 
  test('round startup preloads only its three short English recordings without consuming the first word',()=>{
  const camera=new T.PerspectiveCamera(48,1,.1,100);camera.position.z=7.5;const bm=new BubbleManager(new T.Scene(),camera,{},null),calls=[];bm.spawnNext=()=>{};
- const g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',collectedCount:0,bubbleManager:bm,audioManager:{preloadWordAudios:(ids,options)=>calls.push({ids,options})}});g.beginRoundGreeting();assert.equal(calls.length,1);assert.equal(calls[0].ids.length,3);assert.equal(calls[0].options.review,true);assert.equal(bm.wordQueue.length,3);assert.ok(calls[0].ids.includes(bm.chooseRoundWord().id));
+ const g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',collectedCount:0,speechPolicy:{automaticEnabled:true,beginRound(){}},bubbleManager:bm,audioManager:{preloadWordAudios:(ids,options)=>calls.push({ids,options})}});g.beginRoundGreeting();assert.equal(calls.length,1);assert.equal(calls[0].ids.length,3);assert.equal(calls[0].options.review,true);assert.equal(bm.wordQueue.length,3);assert.ok(calls[0].ids.includes(bm.chooseRoundWord().id));
  });

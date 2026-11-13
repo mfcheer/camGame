@@ -1,4 +1,5 @@
 import {VoiceQueue} from './voiceQueue.js';
+import {SpeechPolicy} from './speechPolicy.js';
 import {WordFocus} from './wordFocus.js';
 import {installNavigationGuard} from './navigationGuard.js';
 import {WordLibrary} from './wordLibrary.js';
@@ -75,6 +76,8 @@ export class Game {
       this.sceneManager = new SceneManager(this.canvasContainer);
     }
     this.audioManager = new AudioManager();
+    this.speechPolicy = new SpeechPolicy();
+    this.voiceQueue = new VoiceQueue(this.audioManager, this.speechPolicy);
     if (this.sceneManager) {
       this.balloon = new HotAirBalloon(this.sceneManager.scene);
       // 核心优化：彻底移走正中央大模型，释放视野正中心留给人脸与双手
@@ -135,6 +138,7 @@ export class Game {
         onReplayWord: () => this.replayWord(),
         onRecoverAudio: () => this.recoverAudio(),
         onReplaySpeech: () => this.animalSpeech?.replay(),
+        onHearAnimal: () => this.hearAnimal(),
         onOpenWord: word => this.openWordDetail(word),
         onOpenVocabulary: () => {if(this.state==='START')this.wordLibrary?.open();},
         onNextFriend: () => this.startNextFriend(),
@@ -142,16 +146,19 @@ export class Game {
       });
       this.uiManager?.updateCampBadge?.(this.campManager);
       const wordMode=document.getElementById('word-mode');
-      wordMode?.addEventListener('change',()=>{this.bubbleManager.wordMode=wordMode.checked;});
+      if(wordMode){
+        wordMode.checked=this.speechPolicy.automaticEnabled;
+        wordMode.addEventListener('change',()=>this.setAutomaticEnglish(wordMode.checked));
+      }
     }
 
     if (typeof window !== 'undefined') {
       window.addEventListener('gameviewportchange', () => {this.bubbleManager?.updateLayout();if(this.friendInteraction?.active){this.friendInteraction.updateLayout();this.bubbleManager?.hideHandIndicators();}this.uiManager?.updateLayout?.();this.sceneManager?.render();});
     }
 
-    this.wordLibrary=new WordLibrary(this.audioManager,()=>{if(this.uiManager?.dom?.btnSound)this.uiManager.dom.btnSound.textContent=this.audioManager.isMuted?'🔇':'🔊';});
-    this.voiceQueue=new VoiceQueue(this.audioManager);
-    this.wordFocus=new WordFocus(this.audioManager,()=>this.handleResume(),()=>{if(this.uiManager?.dom?.btnSound)this.uiManager.dom.btnSound.textContent=this.audioManager.isMuted?'🔇':'🔊';});
+    const manualVoice={playWord:(id,options)=>this.voiceQueue.playManualWord(id,options),stopWord:()=>this.voiceQueue.cancel()};
+    this.wordLibrary=new WordLibrary(this.audioManager,()=>{if(this.uiManager?.dom?.btnSound)this.uiManager.dom.btnSound.textContent=this.audioManager.isMuted?'🔇':'🔊';},manualVoice);
+    this.wordFocus=new WordFocus(this.audioManager,()=>this.handleResume(),()=>{if(this.uiManager?.dom?.btnSound)this.uiManager.dom.btnSound.textContent=this.audioManager.isMuted?'🔇':'🔊';},manualVoice);
     this.animalSpeech=new AnimalSpeech(this.voiceQueue,this.uiManager,this.rescueAnimal);this.animalSpeech.nonBlocking=true;
     if(this.uiManager)this.uiManager.flowLearning=true;
     if(this.bubbleManager)this.bubbleManager.getLearningObstacles=()=>this.uiManager?.getLearningObstacles?.()||[];
@@ -513,26 +520,47 @@ export class Game {
   }
 
   beginRoundGreeting() {
-    this.voiceQueue?.cancel();this.voiceQueue?.resume();this.lastPlayWord=null;this.wordCueRemaining=0;this.uiManager?.hidePlayWords?.();
+    this.animalSpeech?.cancel();this.voiceQueue?.cancel();this.voiceQueue?.resume();this.speechPolicy?.beginRound();this.lastPlayWord=null;this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
     if(this.bubbleManager?.wordMode!==false&&this.bubbleManager?.chooseRoundWord&&!this.bubbleManager.wordPool?.length){const first=this.bubbleManager.chooseRoundWord();if(first)this.bubbleManager.wordQueue.unshift(first);}
-    if(this.bubbleManager?.wordMode!==false)this.audioManager?.preloadWordAudios?.(this.bubbleManager.wordPool?.map(w=>w.id)||[],{review:true});
-    if(this.animalSpeech&&this.bubbleManager?.wordMode!==false)this.animalSpeech.start('start',this.activeAnimalId,()=>{});
+    if(this.speechPolicy?.automaticEnabled)this.audioManager?.preloadWordAudios?.(this.bubbleManager.wordPool?.map(w=>w.id)||[],{review:true});
     if(this.state==='PLAYING')this.bubbleManager.spawnNext(this.collectedCount,true);
   }
 
   presentPlayWord(word) {
     this.lastPlayWord=word;this.uiManager?.setLastWordAvailable?.(true);
-    return this.voiceQueue.playWord(word.id,()=>{
+    // The last hit transitions to pet play immediately, so it has no speech opportunity.
+    if(this.state!=='PLAYING'||this.collectedCount+(this.bubbleManager?.lastPoppedEnergy||1)>=this.targetCount)return Promise.resolve();
+    let token;
+    return this.voiceQueue.playAutomaticWord(word.id,()=>{
       if(this.state!=='PLAYING')return;
-      if(this.animalSpeech?.active&&this.animalSpeech.phase==='start')this.animalSpeech.cancel();
-      this.cueWord=word;this.wordCueRemaining=1.35;this.uiManager?.showWordCue?.(word);
+      token=this.playWordCueToken=(this.playWordCueToken||0)+1;
+      this.cueWord=word;this.wordCueRemaining=Infinity;this.uiManager?.showWordCue?.(word);
+    }).finally(()=>{
+      if(token!==undefined&&token===this.playWordCueToken&&this.state==='PLAYING'&&this.cueWord===word)this.wordCueRemaining=.65;
     });
+  }
+
+  clearPlayWordCue() {
+    this.playWordCueToken=(this.playWordCueToken||0)+1;this.wordCueRemaining=0;this.cueWord=null;this.uiManager?.clearWordCue?.();
+  }
+
+  setAutomaticEnglish(enabled) {
+    this.speechPolicy.setAutomatic(enabled);
+    if(!enabled){if(this.voiceQueue?.current?.automatic)this.voiceQueue.cancel();this.clearPlayWordCue();}
+  }
+
+  hearAnimal() {
+    if(!['PLAYING','CELEBRATING'].includes(this.state)||this.resultVisible||this.wordFocus?.overlay)return;
+    if(this.audioManager?.isMuted){this.audioManager.toggleMute();if(this.uiManager?.dom?.btnSound)this.uiManager.dom.btnSound.textContent='🔊';}
+    this.audioManager?.recoverFromGesture?.();
+    this.clearPlayWordCue();this.voiceQueue?.cancel();
+    this.animalSpeech?.start(this.state==='PLAYING'?'start':'end',this.activeAnimalId,()=>{});
   }
 
   openWordDetail(word=this.lastPlayWord) {
     if(this.state!=='PLAYING'||!word)return;
     this.handleTogglePause(true);if(this.voiceQueue)this.voiceQueue.resumeWord=null;
-    this.animalSpeech?.cancel();this.uiManager?.clearWordCue?.();this.wordFocus?.open(word);
+    this.animalSpeech?.cancel();this.clearPlayWordCue();this.wordFocus?.open(word);
   }
 
   // 碰破泡泡的核心计分与结算
@@ -586,7 +614,7 @@ export class Game {
 
   // 达成 5 个泡泡，解救成功，逃生大欢庆！
   handleVictory() {
-    this.uiManager?.hidePlayWords?.();this.wordCueRemaining=0;
+    this.voiceQueue?.cancel();this.animalSpeech?.cancel();this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
     this.state = 'CELEBRATING';
     this.prePauseState = 'CELEBRATING';
     this.isSoftWaiting = false;
@@ -644,8 +672,8 @@ export class Game {
   }
 
   startFarewell() {
+    this.voiceQueue?.cancel();this.animalSpeech?.cancel();this.clearPlayWordCue();
     this.beginFarewell();
-    if(this.animalSpeech&&this.bubbleManager?.wordMode!==false)this.animalSpeech.start('end',this.activeAnimalId,()=>{});
   }
 
   beginFarewell() {
@@ -683,7 +711,7 @@ export class Game {
   }
 
   showVictoryResult(hasPhoto = false) {
-    this.voiceQueue?.cancel();this.animalSpeech?.cancel();this.uiManager?.hidePlayWords?.();
+    this.voiceQueue?.cancel();this.animalSpeech?.cancel();this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
     this.photoRemaining = null;
     this.photoCapturePending = false;
     this.photoRequested = false;
@@ -783,10 +811,10 @@ export class Game {
   handleTogglePause(paused) {
     if (paused) {
       if(this.state==='PAUSED')return;
-      this.voiceQueue?.pause();this.uiManager?.clearWordCue?.();this.uiManager?.setInteractionHint?.('');
+      this.voiceQueue?.pause({discard:true});this.clearPlayWordCue();this.uiManager?.setInteractionHint?.('');
       this.uiManager?.showSoundRecovery?.(false);
       this.cancelAutoNext();
-      this.animalSpeech?.setPaused(true);
+      this.animalSpeech?.cancel();
       if(this.currentWord){this.wordPresentationToken=(this.wordPresentationToken||0)+1;this.audioManager?.stopWord?.();this.wordAudioDone=false;this.uiManager?.setWordPopupPaused?.(true);}
       this.friendInteraction?.setPaused(true);
       this.uiManager?.hideFriendPlay?.();
@@ -862,7 +890,6 @@ export class Game {
 
     this.voiceQueue?.resume();
     this.animalSpeech?.setPaused(false);
-    this.voiceQueue?.resumePending();
     this.friendInteraction?.setPaused(false);
     if(this.friendInteraction?.active)this.uiManager?.showFriendPlay?.(this.friendInteraction.profile);
     // 恢复为庆祝状态：按剩余有效时长恢复计时器
@@ -887,7 +914,7 @@ export class Game {
 
   // 重新开始当前关卡（彻底清除旧庆祝回调）
   handleRestart() {
-    this.wordFocus?.close(false);this.voiceQueue?.cancel();this.uiManager?.hidePlayWords?.();
+    this.wordFocus?.close(false);this.voiceQueue?.cancel();this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
     this.uiManager?.showSoundRecovery?.(false);
     this.wordLibrary?.close();
     this.animalSpeech?.cancel();
@@ -951,7 +978,7 @@ export class Game {
   // 退出回首页（取消所有异步流程、旧定时器并彻底释放摄像头）
   handleExit() {
     this.bubbleManager?.contrastSampler?.clear();
-    this.wordFocus?.close(false);this.voiceQueue?.cancel();this.uiManager?.hidePlayWords?.();
+    this.wordFocus?.close(false);this.voiceQueue?.cancel();this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
     this.uiManager?.showSoundRecovery?.(false);
     this.wordLibrary?.close();
     this.animalSpeech?.cancel();
@@ -1043,7 +1070,7 @@ export class Game {
   // visibilitychange and pagehide can both fire; preserve the original pause state.
   handlePageBackground() {
     if(this.pageInBackground)return;
-    this.wordFocus?.close(false);this.voiceQueue?.pause();this.uiManager?.clearWordCue?.();
+    this.wordFocus?.close(false);this.voiceQueue?.pause({discard:true});this.clearPlayWordCue();
     this.pageInBackground=true;this.isSoftWaiting=false;this.lastPlayers=[];this.lastPlayersReceivedAt=0;
     this.wordReplayReady=false;this.wordReplayHover=false;this.wordReplayDwell=0;
     this.wordLibrary?.stopPlayback();
@@ -1072,11 +1099,10 @@ export class Game {
   }
 
   recoverAudio() {
-    this.voiceQueue?.cancel();this.audioManager?.recoverFromGesture?.({rebuild:true});
+    this.voiceQueue?.cancel();this.clearPlayWordCue();this.audioManager?.recoverFromGesture?.({rebuild:true});
     if(this.wordFocus?.overlay)this.wordFocus.play(this.wordFocus.lastReview!==false);
     else if(this.currentWord&&this.state==='PLAYING')this.replayWord();
     else if(this.animalSpeech?.active&&!this.animalSpeech.paused&&!this.animalSpeech.done)this.animalSpeech.replay();
-    else if(this.lastPlayWord&&this.state==='PLAYING')this.presentPlayWord(this.lastPlayWord);
   }
 
   presentWord(word,hitX,hitY,audioDone,{review=false}={}) {
@@ -1176,6 +1202,7 @@ export class Game {
   // One active-time clock for the character, scenery and energy feedback.
   updateFrame(deltaSeconds) {
     if (this.state !== 'PAUSED') {
+      if(this.state==='PLAYING'||(this.state==='CELEBRATING'&&!this.resultVisible))this.speechPolicy?.update(deltaSeconds);
       this.animalSpeech?.update(deltaSeconds);
       if(this.wordCueRemaining>0){this.wordCueRemaining=Math.max(0,this.wordCueRemaining-deltaSeconds);if(!this.wordCueRemaining)this.uiManager?.clearWordCue?.();}
       this.updateWordPresentation(deltaSeconds);
@@ -1237,7 +1264,7 @@ export class Game {
       coordinates:'screen pixels; origin top-left; x right, y down',
       mode:this.state, demo:this.isDemoMode, score:this.collectedCount, target:this.targetCount, combo:this.bubbleManager?.comboCount||this.comboCount||0, animalId:this.activeAnimalId,stage:this.sceneManager?.stageId,stageName:this.sceneManager?.stageName,bgmStage:this.audioManager?.currentStageId||this.sceneManager?.stageId||"forest", tracking:this.poseDetector?.metrics,autoNext:this.autoNextDeadline?Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)):null,celebrationDecorations:this.celebrationAccessories?.slots.filter(s=>s.prop.visible).map(s=>s.prop.name),
       animalSpeech:this.animalSpeech?.toJSON()||null,
-      flowLearning:{word:this.lastPlayWord?.word||null,cue:this.wordCueRemaining>0?this.cueWord?.word:null,detail:this.wordFocus?.overlay?this.wordFocus.word?.word:null,voice:this.voiceQueue?.toJSON()||null},
+      flowLearning:{word:this.lastPlayWord?.word||null,cue:this.wordCueRemaining>0?this.cueWord?.word:null,detail:this.wordFocus?.overlay?this.wordFocus.word?.word:null,voice:this.voiceQueue?.toJSON()||null,speechPolicy:this.speechPolicy?.toJSON()||null},
       wordLearning:{enabled:this.bubbleManager?.wordMode!==false, word:this.currentWord?.word||null, review:!!this.wordPlaybackReview, speaking:!!this.currentWord&&!this.wordAudioDone, elapsed:Math.round((this.wordElapsed||0)*10)/10},
       bubble:bubble ? {...screen(bubble.group.position), type:bubble.type,playStyle:bubble.playStyle,motionElapsed:Math.round((bubble.motionElapsed||0)*100)/100,ease:Math.round((this.bubbleManager.roundEase||0)*100)/100,hitsReceived:bubble.hitsReceived,leftTouched:bubble.leftTouched,rightTouched:bubble.rightTouched,merging:bubble.merging,protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
       animal:animal ? {state:animal.state,emotion:animal.emotion,reaction:animal.reactionVariant,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,

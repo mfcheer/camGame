@@ -150,6 +150,7 @@ export class UIManager {
   }
 
   bindEvents() {
+    document.getElementById('btn-animal-voice')?.addEventListener('click',()=>this.handlers.onHearAnimal?.());
     this.dom.btnStopAutoNext?.addEventListener('click',()=>this.handlers.onStopAutoNext?.());
     for (const button of this.dom.animalChoices) button.addEventListener('click', () => {
       this.handlers.onSelectAnimal?.(button.dataset.animal);

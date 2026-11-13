@@ -40,50 +40,14 @@ function createMockAudio() {
   };
 }
 
-// 1. Q 弹果冻大泡泡（多击破裂、Squash & Stretch 弹性形变与 +2 能量充能）
-check('Q 弹果冻大泡泡：首碰弹性形变Duang音效不破，二碰爆破并提供2份能量', () => {
-  const camera = new THREE.PerspectiveCamera(48, 16 / 9, 0.1, 100);
-  camera.position.z = 7.5;
-  camera.updateMatrixWorld();
-  const audio = createMockAudio();
-  const scene = new THREE.Scene();
-  const bm = new BubbleManager(scene, camera, audio, null);
-
-  // 强制生成 jelly 果冻泡泡
-  bm.createBubble(0, 'jelly');
-  assert.ok(bm.activeBubble, '应当成功生成活跃泡泡');
-  assert.equal(bm.activeBubble.type, 'jelly', '泡泡类型应当为 jelly');
-  assert.equal(bm.activeBubble.hitsNeeded, 2, '果冻泡泡需要碰 2 次才破裂');
-  assert.equal(bm.activeBubble.energyValue, 2, '果冻泡泡应当包含 2 份充能');
-
-  // 第 1 次触碰：软弹形变，不破裂
-  const hand1 = center(bm);
-  const hit1 = bm.checkHandCollisions([{ id: 1, hands: [hand1] }]);
-  assert.equal(hit1, false, '第 1 次触碰不应破裂');
-  assert.equal(bm.activeBubble.hitsReceived, 1, '命中次数应为 1');
-  assert.ok(bm.activeBubble.squashTimer > 0, '应触发 squashTimer 弹性形变');
-  assert.ok(audio.calls.some(c => c.type === 'playJellyBoing'), '应当播放 playJellyBoing 音效');
-
-  // 帧更新推进 Squash & Stretch 形变
-  const scaleBefore = bm.activeBubble.group.scale.x;
-  bm.update(0.05, 0.5);
-  assert.ok(bm.activeBubble.group.scale.x !== scaleBefore, '形变期间 scale 应当动态振荡');
-
-  // 模拟时间推进跨越 400ms 出场保护期
-  for (let i = 0; i < 26; i++) bm.update(0.016, 0.5 + i * 0.016);
-
-  // 手移出泡泡解除抑制
-  const outsideHand = { x: 0.05, y: 0.05, isIndexTip: true, observed: true };
-  bm.checkHandCollisions([{ id: 1, hands: [outsideHand] }]);
-
-  // 第 2 次触碰：实时获取中心引爆并充入 2 份能量
-  const hand2 = center(bm);
-  const hit2 = bm.checkHandCollisions([{ id: 1, hands: [hand2] }]);
-  assert.equal(hit2, true, '第 2 次触碰应当破裂');
-  assert.equal(bm.lastPoppedEnergy, 2, '最后一次破裂能量应为 2');
-  assert.equal(bm.activeBubble, null, '破裂后 activeBubble 应当清空');
-  assert.ok(bm.energyProjectiles.length > 0, '应当产生能量飞行光团');
-  assert.equal(bm.energyProjectiles[0].energyCount, 2, '能量飞行光团应携带 2 份能量');
+// 果冻保留特殊外观、破裂音效与奖励，但只需一次触碰。
+check('Q弹果冻一次触碰即破裂，并提供2份能量',()=>{
+ const camera=new THREE.PerspectiveCamera(48,16/9,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();
+ const audio=createMockAudio(),bm=new BubbleManager(new THREE.Scene(),camera,audio,null);bm.createBubble(0,'jelly');
+ assert.equal(bm.activeBubble.hitsNeeded,1);assert.equal(bm.activeBubble.energyValue,2);
+ assert.equal(bm.checkHandCollisions([{id:1,hands:[center(bm)]}]),true);assert.equal(bm.activeBubble,null);
+ assert.equal(bm.lastPoppedEnergy,2);assert.ok(audio.calls.some(c=>c.type==='playJellyBoing'));
+ assert.equal(bm.energyProjectiles[0].energyCount,2);
 });
 
 // 2. 彩虹流光泡泡（连击奖励、七彩旋转光晕与清脆滑音）
@@ -121,53 +85,16 @@ check('彩虹流光泡泡：连击奖励生成、带旋转光晕并播放彩虹�
   assert.equal(bm.particles.length, 24, '彩虹泡泡应当产生 24 颗爆发微星光雨');
 });
 
-// 3. 亲子同心合力泡泡（双人模式专属、双心空中吸附合并）
-check('亲子同心合力泡泡：左右半心分别响应P1与P2，双触后空中吸附合并爆炸', () => {
-  const camera = new THREE.PerspectiveCamera(48, 16 / 9, 0.1, 100);
-  camera.position.z = 7.5;
-  camera.updateMatrixWorld();
-  const audio = createMockAudio();
-  const scene = new THREE.Scene();
-  const bm = new BubbleManager(scene, camera, audio, null);
-  bm.setPlayerMode('coop');
-
-  bm.createBubble(3, 'coop_heart');
-  assert.ok(bm.activeBubble);
-  assert.equal(bm.activeBubble.type, 'coop_heart');
-  assert.ok(bm.activeBubble.leftHeartGroup, '应包含左半心');
-  assert.ok(bm.activeBubble.rightHeartGroup, '应包含右半心');
-
-  const b = bm.activeBubble;
-  // 获取左半心和右半心的屏幕位置
-  const leftWorld = b.leftHeartGroup.getWorldPosition(new THREE.Vector3());
-  const leftScreen = leftWorld.project(camera);
-  const leftHand = { x: (leftScreen.x + 1) / 2, y: (1 - leftScreen.y) / 2, isIndexTip: true, observed: true };
-
-  const rightWorld = b.rightHeartGroup.getWorldPosition(new THREE.Vector3());
-  const rightScreen = rightWorld.project(camera);
-  const rightHand = { x: (rightScreen.x + 1) / 2, y: (1 - rightScreen.y) / 2, isIndexTip: true, observed: true };
-
-  // 1. 仅玩家 1 碰左半心
-  bm.checkHandCollisions([{ id: 1, hands: [leftHand] }]);
-  assert.equal(b.leftTouched, true, '左半心应记录已触碰');
-  assert.equal(b.rightTouched, false, '右半心此时未被触碰');
-  assert.equal(b.merging, false, '单边触碰不触发合并');
-
-  // 2. 玩家 2 碰右半心
-  bm.checkHandCollisions([{ id: 2, hands: [rightHand] }]);
-  assert.equal(b.rightTouched, true, '右半心应记录已触碰');
-  assert.equal(b.merging, true, '双边均触碰后应启动空中吸附合并');
-
-  // 3. 帧更新推进合并
-  let popped = false;
-  bm.onSpecialPop = () => { popped = true; };
-  for (let f = 0; f < 30; f++) {
-    bm.update(0.016, f * 0.016);
-    if (!bm.activeBubble) break;
-  }
-  assert.equal(bm.activeBubble, null, '合并完毕后泡泡应当破裂销毁');
-  assert.ok(audio.calls.some(c => c.type === 'playHeartMerge'), '应当播放 playHeartMerge 和弦');
-  assert.equal(bm.lastPoppedEnergy, 2, '同心泡泡破裂应当提供 2 份充能');
+// 爱心只作为不同外观；任一玩家碰一边或中间的图片即可完成。
+check('亲子爱心任一玩家一次触碰即破裂，无双触或等待合并',()=>{
+ for(const id of [1,2])for(const side of ['left','right','middle']){
+  const camera=new THREE.PerspectiveCamera(48,16/9,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();
+  const audio=createMockAudio(),bm=new BubbleManager(new THREE.Scene(),camera,audio,null);bm.setPlayerMode('coop');bm.createBubble(3,'coop_heart');
+  bm.activeBubble.group.updateWorldMatrix(true,true);const group=side==='middle'?bm.activeBubble.group:bm.activeBubble[side+'HeartGroup'];
+  const p=group.getWorldPosition(new THREE.Vector3()).project(camera);
+  assert.equal(bm.checkHandCollisions([{id,hands:[{x:(p.x+1)/2,y:(1-p.y)/2,isIndexTip:true,observed:true}]}]),true);
+  assert.equal(bm.activeBubble,null);assert.equal(bm.lastPoppedEnergy,2);assert.ok(audio.calls.some(c=>c.type==='playHeartMerge'));
+ }
 });
 
 // 4. 多端尺寸与横竖屏边界安全校验（手机、平板、桌面超窄超短屏幕下绝不出屏）

@@ -44,6 +44,7 @@
       </div>
 
       <div class="hud-right">
+        <button id="btn-animal-voice" class="icon-btn" type="button" title="听朋友说一句" aria-label="听朋友说一句英文">💬</button>
         <button id="btn-last-word" class="icon-btn hidden" type="button" aria-label="看看刚才的单词">📖</button>
         <button id="btn-pause" class="icon-btn" title="暂停游戏">⏸️</button>
       </div>
@@ -149,16 +150,16 @@
           </button>
         </div>
 
+        <label class="word-mode-toggle"><input id="word-mode" type="checkbox" aria-describedby="word-mode-note" /><strong>自动听英语</strong><span id="word-mode-note">每轮最多读一个词 · 关闭也能看图点读</span></label>
         <button id="btn-start-game" class="btn-primary">开始游戏 🎈</button>
         <button id="btn-demo-mode" class="btn-secondary">💻 电脑鼠标/触控板模拟体验</button>
 
         <details class="start-help"><summary>玩法提示与隐私保护</summary>
-        <label class="word-mode-toggle"><input id="word-mode" type="checkbox" checked /> 边玩边听英文 <span>关闭后只玩解救</span></label>
         <div class="auto-start-pill">
           ✨ <strong>免触碰倒计时开局</strong>：点击开始后站在镜头前站好露出双手，将自动 3-2-1 倒计时开局！
         </div>
 
-        <p class="voice-note">动物短句为合成配音，可点「再听一次」一起跟读。</p>
+        <p class="voice-note">默认自由玩，不自动说话。点 📖 看图听词，点 💬 听朋友说一句；英文为合成配音。</p>
         <div class="privacy-tip">
           🔒 <strong>隐私保护承诺</strong>：所有摄像头动作均在您的本地设备离线识别，绝不录制、不存储、不上传任何影像。
         </div></details>

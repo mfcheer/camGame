@@ -6,6 +6,19 @@ import {getAnimalPlayStyle, animalTargetOffset} from './animalPlayStyles.js';
 import {PointerContrastSampler,pointerPalette} from './pointerContrast.js';
 import { WORDS_LIST, WORDS_MAP, getWordById } from './wordsConfig.js';
 
+// Use the same CSS-pixel size for geometry and spawn clearance in either orientation.
+export function getBaseBubbleDiameter(width, height) {
+  const short = Math.min(width, height), long = Math.max(width, height);
+  // Tablet-sized play areas need recognisable pictures at a child's viewing distance.
+  // Includes 11-inch iPad portrait/landscape and the space left by browser toolbars.
+  const coarsePointer = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
+  if (long >= 960 && (short >= 740 || (coarsePointer && short >= 650))) return Math.min(240, Math.max(210, short * .28));
+  if (height < 420 && width > height) return Math.max(height < 300 ? 64 : 80, Math.min(112, height * .27));
+  return width / height < .8
+    ? Math.min(120, Math.max(100, .20 * short))
+    : Math.min(156, Math.max(104, .20 * short));
+}
+
 /**
  * 泡泡生命周期与交互管理 (v0.5.1 食指指尖交互与小动物解救)
  * 1. 每次仅存在一个大泡泡，位置严格在舒适区内，避让手部、气球与顶部 HUD
@@ -291,11 +304,7 @@ export class BubbleManager {
     const winW = (typeof window !== 'undefined' ? getViewport().width : 1280) || 1280;
     const winH = (typeof window !== 'undefined' ? getViewport().height : 720) || 720;
     const pxToWorld = visibleHeight / winH;
-    const isNarrow = (winW / winH) < 0.8;
-    const baseTargetDiameterPx = winH<420&&winW>winH ? Math.max(winH<300?64:80,Math.min(112,winH*.27)) : isNarrow
-      ? Math.min(120, Math.max(100, 0.20 * Math.min(winW, winH)))
-      : Math.min(156, Math.max(104, 0.20 * Math.min(winW, winH)));
-    const targetDiameterPx = baseTargetDiameterPx * this.getPlayStyle().size;
+    const targetDiameterPx = getBaseBubbleDiameter(winW, winH) * this.getPlayStyle().size;
 
     // 核心安全半径：基础 0.95 * 助力 1.25 + 待机浮动 0.12 (保障各向同性 NDC 全边界 <= 1.0)
     const maxBubbleRadius = 0.95 * 1.25 + 0.12;
@@ -522,7 +531,7 @@ export class BubbleManager {
     b.motionGain += ((1 - this.roundEase * .5) - b.motionGain) * (1 - Math.exp(-dt * 2));
     // Stop at the current position on approach; do not pull the target away by
     // returning it to its anchor. Jelly stays still after its first layer.
-    const held = this.isNearHand || (b.type === 'jelly' && b.hitsReceived > 0);
+    const held = this.isNearHand;
     if (held) { this.constrainPlayPosition(b.group.position, b.playBounds); return; }
     b.motionElapsed += dt * (1 - this.roundEase * .65);
     const style = this.getPlayStyle();
@@ -591,11 +600,7 @@ export class BubbleManager {
     const aspect = this.camera.aspect || (winW / winH);
     const visibleWidth = visibleHeight * aspect;
 
-    const isNarrow = (winW / winH) < 0.8;
-    const baseTargetDiameterPx = winH<420&&winW>winH ? Math.max(winH<300?64:80,Math.min(112,winH*.27)) : isNarrow
-      ? Math.min(120, Math.max(100, 0.20 * Math.min(winW, winH)))
-      : Math.min(156, Math.max(104, 0.20 * Math.min(winW, winH)));
-    const targetDiameterPx = baseTargetDiameterPx * this.getPlayStyle().size;
+    const targetDiameterPx = getBaseBubbleDiameter(winW, winH) * this.getPlayStyle().size;
     const radius = (targetDiameterPx * pxToWorld) / (2 * 1.10);
 
     // --- 特殊机制泡泡分流构建 ---
@@ -665,7 +670,7 @@ export class BubbleManager {
         suppressedHands: new Set(),
         word,
         isPopping: false,
-        hitsNeeded: 2,
+        hitsNeeded: 1,
         hitsReceived: 0,
         squashTimer: 0,
         energyValue: 2
@@ -843,7 +848,7 @@ export class BubbleManager {
         updateCount: 0,
         suppressedHands: new Set(),
         isPopping: false,
-        hitsNeeded: 2,
+        hitsNeeded: 1,
         hitsReceived: 0,
         energyValue: 2
       };
@@ -980,9 +985,9 @@ export class BubbleManager {
   getInteractionHint() {
     const b = this.activeBubble;
     if (!b) return '';
-    if (b.type === 'coop_heart') return b.merging ? '两颗爱心合在一起啦' : b.leftTouched ? '左边准备好啦，等右边的朋友' : b.rightTouched ? '右边准备好啦，等左边的朋友' : '左边金色、右边蓝色，一起碰碰爱心';
+    if (b.type === 'coop_heart') return '碰到爱心，一下就开啦';
     const owner = this.playerMode === 'coop' ? (b.ownerId === 2 ? '右边蓝色朋友：' : '左边金色朋友：') : '';
-    if (b.type === 'jelly') return owner + (b.hitsReceived ? '还差一下：收回食指，再戳一次' : '果冻有两层，戳一下，再戳一下');
+    if (b.type === 'jelly') return owner + '软软的果冻，碰一下就开啦';
     return owner + (this.roundEase > .4 ? '泡泡放慢啦，慢慢碰就好' : this.bubbleIndex === 0 ? '先碰一颗，熟悉指尖小光点' : this.getPlayStyle().hint);
   }
 
@@ -1009,34 +1014,26 @@ export class BubbleManager {
     const tips = this.getInteractionTips(trackedPlayers, w, h);
     const isProtected = b.updateCount > 0 && b.spawnElapsed < .400;
     b.suppressedHands ||= new Set();
-    // Both halves obey the same freshness, displayed-tip and spawn guards.
+    // Either player can pop a decorative heart with one touch. The picture in
+    // the middle is also a target; there is no readiness, timing or second-hit gate.
     if (b.type === 'coop_heart' && b.leftHeartGroup && b.rightHeartGroup) {
-      if (b.merging) return false;
-      const now = this.interactionClock * 1000;
-      for (const side of ['left', 'right']) {
-        if (b[side + 'Touched'] && now - b[side + 'TouchTime'] > 2000) b[side + 'Touched'] = false;
-      }
       b.group.updateWorldMatrix(true, true);
+      const targets=[b.leftHeartGroup,b.rightHeartGroup,b.group].map(group=>{
+        const p=group.getWorldPosition(new THREE.Vector3()).project(this.camera);
+        return {x:(p.x+1)*.5*w,y:(1-p.y)*.5*h};
+      });
       const threshold = b.radius * h / (2 * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * Math.abs(this.camera.position.z)) * 1.15;
-      this.isNearHand = false;
-      for (const tip of tips) {
-        const side = tip.playerId === 1 ? 'left' : tip.playerId === 2 ? 'right' : null;
-        if (!side) continue;
-        const p = b[side + 'HeartGroup'].getWorldPosition(new THREE.Vector3()).project(this.camera);
-        const dist = Math.hypot(tip.px - (p.x + 1) * .5 * w, tip.py - (1 - p.y) * .5 * h);
-        const key = tip.key + '_' + side;
-        if (dist < threshold * 1.65) this.isNearHand = true;
-        if (dist > threshold * 1.12) b.suppressedHands.delete(key);
-        if (isProtected) { if (dist <= threshold) b.suppressedHands.add(key); continue; }
-        if (dist <= threshold && !b.suppressedHands.has(key) && !b[side + 'Touched']) {
-          b[side + 'Touched'] = true;
-          b.suppressedHands.add(key);
-          b[side + 'TouchTime'] = now;
-          this.showContact(tip.x, tip.y, b);
-          this.audio?.playCountdown?.(tip.playerId);
+      this.isNearHand=false;
+      for(const tip of tips){
+        if(tip.playerId!==1&&tip.playerId!==2)continue;
+        const dist=Math.min(...targets.map(p=>Math.hypot(tip.px-p.x,tip.py-p.y)));
+        if(dist<threshold*1.65)this.isNearHand=true;
+        if(dist>threshold*1.12)b.suppressedHands.delete(tip.key);
+        if(isProtected){if(dist<=threshold)b.suppressedHands.add(tip.key);continue;}
+        if(dist<=threshold&&!b.suppressedHands.has(tip.key)){
+          this.showContact(tip.x,tip.y,b);this.popBubble(tip.x,tip.y);return true;
         }
       }
-      if (b.leftTouched && b.rightTouched) b.merging = true;
       return false;
     }
 
@@ -1113,18 +1110,6 @@ export class BubbleManager {
 
     if (hit) {
       this.showContact(hitHandX, hitHandY, b);
-      if (b.type === 'jelly' && b.hitsReceived < (b.hitsNeeded - 1)) {
-        b.hitsReceived++;
-        b.squashTimer = 0.32;
-        this.handFlashTimer = 0.160;
-        if (this.audio?.playJellyBoing) {
-          this.audio.playJellyBoing();
-        }
-        this.spawnBurstParticles(b.group.position, b.colorHex, 6);
-        for (const tip of tips) if (Math.hypot(tip.px - bubblePxX, tip.py - bubblePxY) <= radiusPx) b.suppressedHands.add(tip.key);
-        return false;
-      }
-
       this.popBubble(hitHandX, hitHandY);
       return true;
     }
@@ -1171,7 +1156,9 @@ export class BubbleManager {
         this.onWordPop(word, hitX, hitY, audioDone, {review});
       }
     }
-    if (this.activeBubble.type === 'rainbow') {
+    if(this.activeBubble.type==='jelly'&&typeof this.audio?.playJellyBoing==='function'){
+      this.audio.playJellyBoing();
+    } else if (this.activeBubble.type === 'rainbow') {
       if (this.audio && typeof this.audio.playRainbowGlide === 'function') {
         this.audio.playRainbowGlide();
       } else if (this.audio && typeof this.audio.playPop === 'function') {
@@ -1605,17 +1592,6 @@ export class BubbleManager {
         b.rainbowRing.material.color.setHSL(hue, 0.9, 0.6);
       }
 
-      if (b.type === 'jelly') {
-        if (!b.layerBeads) {
-          b.layerBeads = [-1, 1].map(sign => {
-            const bead = new THREE.Mesh(new THREE.SphereGeometry(b.baseRadius * .09, 10, 8), new THREE.MeshBasicMaterial({color: 0xffd166, transparent: true, opacity: 1}));
-            bead.position.set(sign * b.baseRadius * .17, b.baseRadius * .55, b.baseRadius * .85);
-            b.group.add(bead); return bead;
-          });
-        }
-        b.layerBeads.forEach((bead, i) => { bead.visible = i >= b.hitsReceived; });
-        b.core.scale.setScalar(b.hitsReceived ? .72 : 1);
-      }
       if (b.type === 'coop_heart' && !b.merging) {
         for (const side of ['left', 'right']) {
           const ready = b[side + 'Touched'];
@@ -1626,23 +1602,6 @@ export class BubbleManager {
       }
       if (this.isNearHand && b.type !== 'coop_heart' && !b.squashTimer) {
         scaleX *= 1.025; scaleY *= .975;
-      }
-
-      if (b.type === 'coop_heart' && b.merging) {
-        b.mergeProgress += dt * 3.0;
-        const mp = Math.min(1.0, b.mergeProgress);
-        b.leftHeartGroup.position.x = -b.spanX * (1 - mp);
-        b.rightHeartGroup.position.x = b.spanX * (1 - mp);
-        const spin = mp * Math.PI * 0.5;
-        b.leftHeartGroup.rotation.z = spin;
-        b.rightHeartGroup.rotation.z = -spin;
-
-        if (mp >= 1.0 && !b.isPopping) {
-          this.popBubble(0.5, 0.5);
-          if (typeof this.onSpecialPop === 'function') {
-            this.onSpecialPop('coop_heart');
-          }
-        }
       }
 
       b.group.scale.set(scaleX, scaleY, scaleZ);

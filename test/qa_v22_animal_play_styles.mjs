@@ -65,9 +65,10 @@ test('approach holds each moving target at its current location',()=>{
   }
 });
 
-test('first jelly hit stops its motion while a player withdraws and returns',()=>{
-  const b=manager('cat',3,'jelly');step(b,1.5);b.activeBubble.hitsReceived=1;
-  const p=b.activeBubble.group.position.clone();step(b,1);assert.ok(p.distanceTo(b.activeBubble.group.position)<1e-9);b.clear();
+test('jelly also holds still on approach and then pops with one touch',()=>{
+ const b=manager('cat',3,'jelly');step(b,1.5);b.isNearHand=true;const p=b.activeBubble.group.position.clone();step(b,1);
+ assert.ok(p.distanceTo(b.activeBubble.group.position)<1e-9);const point=p.project(b.camera);
+ assert.equal(b.checkHandCollisions([{id:1,hands:[{x:(point.x+1)/2,y:(1-point.y)/2,isIndexTip:true}]}]),true);assert.equal(b.activeBubble,null);b.clear();
 });
 
 test('difficulty eases gradually on a stalled target, then clears on restart',()=>{
@@ -127,13 +128,9 @@ test('manual pause freezes the moving target and its difficulty clock',()=>{
 });
 
 
-test('coop demo cursor can withdraw across the midline and hit its jelly again',()=>{
-  const b=manager('frog',2,'jelly');b.setPlayerMode('coop');b.activeBubble.ownerId=2;
-  const p=b.activeBubble.group.position.clone().project(b.camera);
-  const h={x:(p.x+1)/2,y:(1-p.y)/2,source:'demo',side:'demo_pointer',isIndexTip:true};
-  assert.equal(b.checkHandCollisions([{id:2,hands:[h]}]),false);assert.equal(b.activeBubble.hitsReceived,1);
-  b.checkHandCollisions([{id:1,hands:[{...h,x:0,y:0,source:'hand-21'}]}]);
-  assert.equal(b.checkHandCollisions([{id:2,hands:[h]}]),false,'another real player cannot release the owner’s held finger');
-  b.checkHandCollisions([{id:1,hands:[{...h,x:0,y:0}]}]);
-  assert.equal(b.checkHandCollisions([{id:2,hands:[h]}]),true);b.clear();
+test('coop jelly rejects another player but the owner pops it with one touch',()=>{
+ const b=manager('frog',2,'jelly');b.setPlayerMode('coop');b.activeBubble.ownerId=2;
+ const p=b.activeBubble.group.position.clone().project(b.camera),h={x:(p.x+1)/2,y:(1-p.y)/2,source:'demo',side:'demo_pointer',isIndexTip:true};
+ assert.equal(b.checkHandCollisions([{id:1,hands:[h]}]),false);assert.ok(b.activeBubble);
+ assert.equal(b.checkHandCollisions([{id:2,hands:[h]}]),true);assert.equal(b.activeBubble,null);b.clear();
 });

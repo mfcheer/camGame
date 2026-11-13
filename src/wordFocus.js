@@ -1,7 +1,7 @@
 import {getWordById,resolveAssetUrl} from './wordsConfig.js';
 const el=(tag,cls,text)=>{const e=document.createElement(tag);e.className=cls;if(text)e.textContent=text;return e;};
 export class WordFocus {
-  constructor(audio,onClose,onSoundChange=()=>{}){this.audio=audio;this.onClose=onClose;this.onSoundChange=onSoundChange;this.token=0;}
+  constructor(audio,onClose,onSoundChange=()=>{},voice=audio){this.audio=audio;this.voice=voice;this.onClose=onClose;this.onSoundChange=onSoundChange;this.token=0;}
   open(word){
     this.close(false);this.word=typeof word==='string'?getWordById(word):word;if(!this.word)return;
     this.returnFocus=document.activeElement===document.body?document.getElementById('btn-last-word'):document.activeElement;
@@ -19,10 +19,11 @@ export class WordFocus {
   updateControls(){if(this.listen)this.listen.textContent=this.audio.isMuted?'🔊 打开声音':this.audio.recoveryNeeded?'🔊 恢复声音':'🔊 听中文和英文';}
   async play(review){
     if(!this.overlay)return;if(this.audio.isMuted){this.status.textContent='声音已关闭，可点下方打开声音';this.updateControls();return;}const token=++this.token;this.lastReview=review;this.status.textContent=review?'听一听这个词':'中文、英文，一起听一听';
-    try{await this.audio.playWord(this.word.id,{review});}catch{}finally{if(token===this.token&&this.overlay)this.status.textContent='准备好就继续玩吧';}
+    this.audio.recoverFromGesture?.();
+    try{await this.voice.playWord(this.word.id,{review});}catch{}finally{if(token===this.token&&this.overlay)this.status.textContent='准备好就继续玩吧';}
   }
   close(resume=true){
-    if(!this.overlay)return;++this.token;this.audio.stopWord();document.removeEventListener('keydown',this.keyHandler,true);this.overlay.remove();this.overlay=null;
+    if(!this.overlay)return;++this.token;this.voice.stopWord();document.removeEventListener('keydown',this.keyHandler,true);this.overlay.remove();this.overlay=null;
     this.returnFocus?.focus?.({preventScroll:true});if(resume)this.onClose?.();
   }
 }

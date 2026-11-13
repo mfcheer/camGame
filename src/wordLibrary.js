@@ -4,7 +4,7 @@ export function libraryWords(category='all'){return WORDS_LIST.filter(w=>categor
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text)node.textContent=text;return node;};
 
 export class WordLibrary {
-  constructor(audio,onMuteChange=()=>{}){if(typeof document!=='undefined'){const count=document.querySelector('.vocabulary-entry-count');if(count)count.textContent=`${WORDS_LIST.length} 个词 · 看图点读 →`;}this.audio=audio;this.onMuteChange=onMuteChange;this.category='all';this.token=0;}
+  constructor(audio,onMuteChange=()=>{},voice=audio){if(typeof document!=='undefined'){const count=document.querySelector('.vocabulary-entry-count');if(count)count.textContent=`${WORDS_LIST.length} 个词 · 看图点读 →`;}this.audio=audio;this.voice=voice;this.onMuteChange=onMuteChange;this.category='all';this.token=0;}
   open(){
     if(this.overlay||typeof document==='undefined')return;
     this.returnFocus=document.activeElement;this.home=document.getElementById('start-screen');if(this.home)this.home.inert=true;
@@ -43,9 +43,10 @@ export class WordLibrary {
   async playWord(word,card){
     this.lastWord=word;this.lastCard=card;this.stopPlayback();if(this.audio?.isMuted){this.status.textContent='先点右边的小喇叭，再听英文吧';return;}
     const token=++this.token;this.playingCard=card;card.classList.add('is-speaking');this.status.textContent=`${word.word} · ${word.zh}`;
-    try{await this.audio?.playWord?.(word.id,{review:true});}catch{/* The ordinary word player already attempts local media and speech fallbacks. */}finally{if(token===this.token){card.classList.remove('is-speaking');this.playingCard=null;if(this.status)this.status.textContent='再点一次，还可以听一遍';}}
+    this.audio?.recoverFromGesture?.();
+    try{await this.voice?.playWord?.(word.id,{review:true});}catch{/* The ordinary word player already attempts local media and speech fallbacks. */}finally{if(token===this.token){card.classList.remove('is-speaking');this.playingCard=null;if(this.status)this.status.textContent='再点一次，还可以听一遍';}}
   }
-  stopPlayback(){++this.token;this.audio?.stopWord?.();this.playingCard?.classList.remove('is-speaking');this.playingCard=null;}
+  stopPlayback(){++this.token;this.voice?.stopWord?.();this.playingCard?.classList.remove('is-speaking');this.playingCard=null;}
   close(){
     if(!this.overlay)return;this.stopPlayback();document.removeEventListener('keydown',this.keyHandler,true);this.overlay.remove();this.overlay=null;
     if(this.home)this.home.inert=false;if(this.returnFocus?.isConnected)this.returnFocus.focus();

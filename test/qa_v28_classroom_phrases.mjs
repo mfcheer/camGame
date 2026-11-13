@@ -47,11 +47,10 @@ test('restart and exit discard old speech callbacks; a failed voice cannot trap 
  speech.start('start','frog',()=>next++);step(speech,12.4);assert.equal(next,1);assert.equal(speech.active,false);
 });
 
-test('greetings and farewells run alongside spawning and escape instead of gating them',()=>{
- const calls=[],g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',activeAnimalId:'cat',collectedCount:0,bubbleManager:{spawnNext:()=>calls.push('bubble')},animalSpeech:{start:(phase,id,done)=>calls.push({phase,id,done})}});
- g.beginRoundGreeting();assert.equal(calls[0].phase,'start');assert.equal(calls[1],'bubble');calls[0].done();assert.equal(calls.length,2);
- g.beginFarewell=()=>calls.push('hat-and-escape');g.startFarewell();assert.equal(calls[2],'hat-and-escape');assert.equal(calls[3].phase,'end');calls[3].done();assert.equal(calls.length,4);
- g.bubbleManager.wordMode=false;g.beginRoundGreeting();g.startFarewell();assert.deepEqual(calls.slice(-2),['bubble','hat-and-escape']);
+test('round startup and farewell remain playable without automatic animal phrases',()=>{
+ const calls=[],g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',activeAnimalId:'cat',collectedCount:0,bubbleManager:{spawnNext:()=>calls.push('bubble')},animalSpeech:{cancel(){},start:()=>calls.push('unexpected-speech')}});
+ g.beginRoundGreeting();g.beginFarewell=()=>calls.push('hat-and-escape');g.startFarewell();assert.deepEqual(calls,['bubble','hat-and-escape']);
+ g.speechPolicy={automaticEnabled:true,beginRound(){}};g.beginRoundGreeting();g.startFarewell();assert.deepEqual(calls.slice(-2),['bubble','hat-and-escape']);
 });
 
 test('phrase and word buffers never collide; speech fallback reads exactly the English sentence',async()=>{
