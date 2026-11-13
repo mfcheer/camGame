@@ -1,6 +1,7 @@
 import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
 import * as THREE from 'three';
 import { GAME_CONFIG } from './config.js';
+import {getAnimalPlayStyle, animalTargetOffset} from './animalPlayStyles.js';
 import {PointerContrastSampler,pointerPalette} from './pointerContrast.js';
 
 /**
@@ -32,6 +33,8 @@ export class BubbleManager {
 
     this.playerMode = 'single'; // 'single' | 'coop'
     this.lastPopPlayerSide = 'left'; // 初始为 left，则首次 coop 生成将选 +1 (右侧/2号玩家)
+    this.roundEase = 0;
+    this.comfortableHits = 0;
     this.completedBubbleCount = 0;
     this.layoutGraceSeconds = 0;
     this.interactionClock = 0;
@@ -180,7 +183,7 @@ export class BubbleManager {
     const old = this.activeBubble;
     const side = this.lastPopPlayerSide;
     const saved = {};
-    for (const key of ['hitsReceived', 'leftTouched', 'rightTouched', 'leftTouchTime', 'rightTouchTime', 'merging', 'mergeProgress']) saved[key] = old[key];
+    for (const key of ['hitsReceived', 'leftTouched', 'rightTouched', 'leftTouchTime', 'rightTouchTime', 'merging', 'mergeProgress', 'motionElapsed', 'playableElapsed', 'motionGain', 'nearSeconds']) saved[key] = old[key];
     if (this.playerMode === 'coop') this.lastPopPlayerSide = side === 'left' ? 'right' : 'left';
     this.disposeBubble(old.group);
     this.activeBubble = null;
@@ -189,6 +192,8 @@ export class BubbleManager {
     this.lastPopPlayerSide = side;
     // Old camera-space tips must never hit the newly projected target.
     this.layoutGraceSeconds = .35;
+    this.isNearHand = false;
+    this.proximityOffset.set(0, 0, 0);
     this.hideHandIndicators();
   }
 
@@ -197,7 +202,7 @@ export class BubbleManager {
     if (this.activeBubble || this.isSpawning) return;
 
     this.bubbleIndex = bubbleNumber;
-    const delay = immediate ? 50 : GAME_CONFIG.gameplay.spawnCooldownMs;
+    const delay = immediate ? 50 : this.getPlayStyle().cooldownMs;
     this.isSpawning = true;
 
     if (this.spawnTimer) clearTimeout(this.spawnTimer);
@@ -219,9 +224,10 @@ export class BubbleManager {
     const winH = (typeof window !== 'undefined' ? getViewport().height : 720) || 720;
     const pxToWorld = visibleHeight / winH;
     const isNarrow = (winW / winH) < 0.8;
-    const targetDiameterPx = winH<420&&winW>winH ? Math.max(winH<300?64:80,Math.min(112,winH*.27)) : isNarrow
+    const baseTargetDiameterPx = winH<420&&winW>winH ? Math.max(winH<300?64:80,Math.min(112,winH*.27)) : isNarrow
       ? Math.min(120, Math.max(100, 0.20 * Math.min(winW, winH)))
       : Math.min(156, Math.max(104, 0.20 * Math.min(winW, winH)));
+    const targetDiameterPx = baseTargetDiameterPx * this.getPlayStyle().size;
 
     // 核心安全半径：基础 0.95 * 助力 1.25 + 待机浮动 0.12 (保障各向同性 NDC 全边界 <= 1.0)
     const maxBubbleRadius = 0.95 * 1.25 + 0.12;
@@ -362,27 +368,100 @@ export class BubbleManager {
   determineBubbleType(index, forceType = null) {
     if (forceType) return forceType;
     const targetEnergy = this.rescueAnimal?.targetEnergy || 5;
+    const style = this.getPlayStyle();
+    if (this.playerMode === 'coop' && targetEnergy >= 6 && index === 3) return 'coop_heart';
+    // Signature targets take priority over combo rewards, so the animal's play
+    // pattern remains discoverable even when an experienced player hits quickly.
+    if (style.jellyAt.includes(index)) return 'jelly';
+    if (style.rainbowAt.includes(index) || this.comboCount >= 2) return 'rainbow';
+    return 'normal';
+  }
 
-    if (this.playerMode === 'coop') {
-      if (targetEnergy >= 6 && index === 3) {
-        return 'coop_heart';
-      }
-      if (this.comboCount >= 2) {
-        return 'rainbow';
-      }
-      if (targetEnergy > 5 && index === 2) {
-        return 'jelly';
-      }
-      return 'normal';
-    } else {
-      if (this.comboCount >= 2) {
-        return 'rainbow';
-      }
-      if (targetEnergy > 5 && (index === 2 || index === 4)) {
-        return 'jelly';
-      }
-      return 'normal';
+  getPlayStyle() { return getAnimalPlayStyle(this.rescueAnimal?.animalId); }
+
+  initializePlayTarget() {
+    const b = this.activeBubble;
+    const style = this.getPlayStyle();
+    this.comboTimeoutMs = style.comboMs;
+    b.playStyle = style.name;
+    b.motionElapsed = 0;
+    b.playableElapsed = 0;
+    b.motionGain = 1 - this.roundEase * .5;
+    if (b.type !== 'coop_heart') {
+      b.playBounds = this.getPlayBounds(b);
+      const bounds = b.playBounds;
+      const marginX = Math.min(style.amplitudeX * bounds.unit, (bounds.maxX - bounds.minX) / 3);
+      const marginY = Math.min(style.amplitudeY * bounds.unit, (bounds.maxY - bounds.minY) / 3);
+      this.constrainPlayPosition(b.basePos, {minX:bounds.minX + marginX, maxX:bounds.maxX - marginX,
+        minY:bounds.minY + marginY, maxY:bounds.maxY - marginY});
+      b.group.position.copy(b.basePos);
     }
+  }
+
+  getPlayBounds(b) {
+    const {width:w, height:h} = getViewport();
+    const vh = 2 * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * Math.abs(this.camera.position.z);
+    const unit = vh / h, vw = vh * this.camera.aspect, safe = getSafeInsets();
+    // Include the maximum help scale, rainbow halo and jelly rebound, not just
+    // the collision sphere. Cache until a viewport rebuild to avoid frame reflow.
+    const extent = b.baseRadius * (b.type === 'jelly' ? 1.85 : 1.65) / unit + 8;
+    let left = safe.left + extent, right = w - safe.right - extent;
+    let top = Math.max(getHudBottom() + 50, safe.top + 84) + extent;
+    let bottom = h - Math.max(safe.bottom + 12, h * .16) - extent;
+    if (top > bottom) { top = getHudBottom() + 8 + extent; bottom = h - safe.bottom - 8 - extent; }
+    if (top > bottom) top = bottom = (getHudBottom() + h - safe.bottom) / 2;
+    if (left > right) left = right = w / 2;
+    const owner = b.ownerId || 1;
+    if (this.playerMode === 'coop') {
+      if (owner === 1) right = Math.min(right, w / 2 - 4);
+      else left = Math.max(left, w / 2 + 4);
+    }
+    const zone = this.playerComfortZones.find(p => p.id === owner)?.comfortZone;
+    if (zone) {
+      const zl = Math.max(left, zone.minX * w), zr = Math.min(right, zone.maxX * w);
+      const zt = Math.max(top, zone.minY * h), zb = Math.min(bottom, zone.maxY * h);
+      if (zl <= zr) { left = zl; right = zr; }
+      if (zt <= zb) { top = zt; bottom = zb; }
+    }
+    if (this.playerMode === 'single' && this.getPlayStyle().motion === 'still' && !this.balloon?.group?.visible) {
+      const center = zone ? (zone.minX + zone.maxX) / 2 * w : w / 2;
+      left = Math.max(left, center - w * .14); right = Math.min(right, center + w * .14);
+      if (left > right) left = right = Math.max(extent, Math.min(w - extent, center));
+    }
+    // Off-centre spheres project outward at their front surface. Reserve both
+    // depth extremes, rather than treating a 3D jelly as a flat screen disc.
+    const depth = b.baseRadius * (b.type === 'jelly' ? 1.75 : 1.5) / Math.abs(this.camera.position.z);
+    const lower = value => Math.max(value * (1 - depth), value * (1 + depth));
+    const upper = value => Math.min(value * (1 - depth), value * (1 + depth));
+    const bounds = {minX:lower((left / w - .5) * vw), maxX:upper((right / w - .5) * vw),
+      minY:lower((.5 - bottom / h) * vh), maxY:upper((.5 - top / h) * vh), unit};
+    if (bounds.minX > bounds.maxX) bounds.minX = bounds.maxX = (bounds.minX + bounds.maxX) / 2;
+    if (bounds.minY > bounds.maxY) bounds.minY = bounds.maxY = (bounds.minY + bounds.maxY) / 2;
+    return bounds;
+  }
+
+  constrainPlayPosition(position, bounds) {
+    position.x = THREE.MathUtils.clamp(position.x, bounds.minX, bounds.maxX);
+    position.y = THREE.MathUtils.clamp(position.y, bounds.minY, bounds.maxY);
+  }
+
+  updatePlayMotion(b, dt) {
+    b.playableElapsed = (b.playableElapsed || 0) + (b.spawnElapsed >= .4 ? dt : 0);
+    const struggle = Math.max(0, (b.playableElapsed - 5) / 8, ((b.nearSeconds || 0) - 1.5) / 5);
+    this.roundEase = Math.min(1, Math.max(this.roundEase, struggle));
+    b.motionGain += ((1 - this.roundEase * .5) - b.motionGain) * (1 - Math.exp(-dt * 2));
+    // Stop at the current position on approach; do not pull the target away by
+    // returning it to its anchor. Jelly stays still after its first layer.
+    const held = this.isNearHand || (b.type === 'jelly' && b.hitsReceived > 0);
+    if (held) { this.constrainPlayPosition(b.group.position, b.playBounds); return; }
+    b.motionElapsed += dt * (1 - this.roundEase * .65);
+    const style = this.getPlayStyle();
+    const offset = animalTargetOffset(style, b.motionElapsed, this.bubbleIndex);
+    b.group.position.x = b.basePos.x + offset.x * b.playBounds.unit * b.motionGain;
+    b.group.position.y = b.basePos.y - offset.y * b.playBounds.unit * b.motionGain;
+    // Near-target suction is already expressed by contact feedback; motion and
+    // collision share this final, bounded target position.
+    this.constrainPlayPosition(b.group.position, b.playBounds);
   }
 
   createBubble(index, forceType = null) {
@@ -410,9 +489,10 @@ export class BubbleManager {
     const visibleWidth = visibleHeight * aspect;
 
     const isNarrow = (winW / winH) < 0.8;
-    const targetDiameterPx = winH<420&&winW>winH ? Math.max(winH<300?64:80,Math.min(112,winH*.27)) : isNarrow
+    const baseTargetDiameterPx = winH<420&&winW>winH ? Math.max(winH<300?64:80,Math.min(112,winH*.27)) : isNarrow
       ? Math.min(120, Math.max(100, 0.20 * Math.min(winW, winH)))
       : Math.min(156, Math.max(104, 0.20 * Math.min(winW, winH)));
+    const targetDiameterPx = baseTargetDiameterPx * this.getPlayStyle().size;
     const radius = (targetDiameterPx * pxToWorld) / (2 * 1.10);
 
     // --- 特殊机制泡泡分流构建 ---
@@ -491,9 +571,10 @@ export class BubbleManager {
         squashTimer: 0,
         energyValue: 2
       };
+      this.initializePlayTarget();
       this.idleTimer = 0;
       this.isEnlargedForHelp = false;
-      if (this.balloon?.setBubbleTarget) this.balloon.setBubbleTarget(spawnPos);
+      if (this.balloon?.setBubbleTarget) this.balloon.setBubbleTarget(this.activeBubble.basePos);
       return;
     }
 
@@ -569,9 +650,10 @@ export class BubbleManager {
         hitsReceived: 0,
         energyValue: 1
       };
+      this.initializePlayTarget();
       this.idleTimer = 0;
       this.isEnlargedForHelp = false;
-      if (this.balloon?.setBubbleTarget) this.balloon.setBubbleTarget(spawnPos);
+      if (this.balloon?.setBubbleTarget) this.balloon.setBubbleTarget(this.activeBubble.basePos);
       return;
     }
 
@@ -666,9 +748,10 @@ export class BubbleManager {
         hitsReceived: 0,
         energyValue: 2
       };
+      this.initializePlayTarget();
       this.idleTimer = 0;
       this.isEnlargedForHelp = false;
-      if (this.balloon?.setBubbleTarget) this.balloon.setBubbleTarget(spawnPos);
+      if (this.balloon?.setBubbleTarget) this.balloon.setBubbleTarget(this.activeBubble.basePos);
       return;
     }
 
@@ -767,12 +850,13 @@ export class BubbleManager {
       energyValue: 1
     };
 
+    this.initializePlayTarget();
     this.idleTimer = 0;
     this.isEnlargedForHelp = false;
 
     // 更新小熊目光追踪目标
     if (this.balloon && this.balloon.setBubbleTarget) {
-      this.balloon.setBubbleTarget(spawnPos);
+      this.balloon.setBubbleTarget(this.activeBubble.basePos);
     }
   }
 
@@ -791,7 +875,7 @@ export class BubbleManager {
         const x = displayed ? (displayed.x + 1) * .5 : hand.x;
         const y = displayed ? (1 - displayed.y) * .5 : hand.y;
         if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
-        tips.push({ playerId: player.id, key: player.id + '_' + (hand.side || i), x, y, px: x * w, py: y * h });
+        tips.push({ playerId: player.id, source: hand.source, key: player.id + '_' + (hand.side || i), x, y, px: x * w, py: y * h });
       }
     }
     return tips;
@@ -803,7 +887,7 @@ export class BubbleManager {
     if (b.type === 'coop_heart') return b.merging ? '两颗爱心合在一起啦' : b.leftTouched ? '左边准备好啦，等右边的朋友' : b.rightTouched ? '右边准备好啦，等左边的朋友' : '左边金色、右边蓝色，一起碰碰爱心';
     const owner = this.playerMode === 'coop' ? (b.ownerId === 2 ? '右边蓝色朋友：' : '左边金色朋友：') : '';
     if (b.type === 'jelly') return owner + (b.hitsReceived ? '还差一下：收回食指，再戳一次' : '果冻有两层，戳一下，再戳一下');
-    return owner ? owner + '来戳这一颗' : '';
+    return owner + (this.roundEase > .4 ? '泡泡放慢啦，慢慢碰就好' : this.bubbleIndex === 0 ? '先碰一颗，熟悉指尖小光点' : this.getPlayStyle().hint);
   }
 
   showContact(x, y, b) {
@@ -892,8 +976,13 @@ export class BubbleManager {
     }
 
     for (const tip of tips) {
-      if (this.playerMode === 'coop' && b.ownerId && tip.playerId !== b.ownerId) continue;
       const dist = Math.hypot(tip.px - bubblePxX, tip.py - bubblePxY);
+      if (this.playerMode === 'coop' && b.ownerId && tip.playerId !== b.ownerId) {
+        // The demo has one physical pointer that changes player at the midline.
+        // Moving it outside a jelly must release that pointer's previous role.
+        if (tip.source === 'demo' && dist > radiusPx * 1.12) b.suppressedHands.delete(b.ownerId + '_demo_pointer');
+        continue;
+      }
       if (dist < closestDist) { closestDist = dist; closestHand = tip; }
       const inside = dist <= radiusPx;
       if (isProtected) { if (inside) b.suppressedHands.add(tip.key); continue; }
@@ -969,6 +1058,9 @@ export class BubbleManager {
 
     const energyVal = this.activeBubble.energyValue || 1;
     this.lastPoppedEnergy = energyVal;
+    const elapsed = this.activeBubble.playableElapsed || 0;
+    this.comfortableHits = elapsed > 0 && elapsed < 3.5 ? this.comfortableHits + 1 : 0;
+    if (this.comfortableHits >= 3) this.roundEase = Math.max(0, this.roundEase - .08);
     this.completedBubbleCount++;
     this.rescueAnimal?.followEnergy?.(this.activeBubble.group.position);
 
@@ -1375,7 +1467,7 @@ export class BubbleManager {
         this.isEnlargedForHelp = true;
       }
 
-      const helpScale = this.isEnlargedForHelp ? 1.25 : 1.0;
+      const helpScale = Math.max(1 + this.roundEase * .18, this.isEnlargedForHelp ? 1.25 : 1);
 
       // 呼吸缩放 (周期 2.2s，幅度 1.00 <-> 1.04)
       const breath = 1.0 + Math.sin(timeSeconds * (Math.PI * 2 / 2.2)) * 0.02;
@@ -1442,10 +1534,9 @@ export class BubbleManager {
       b.group.scale.set(scaleX, scaleY, scaleZ);
       b.radius = b.baseRadius * helpScale;
 
-      // 轻微上下浮动 (±8px，周期 2.8s) + 靠近平滑吸附偏移
-      const hoverY = Math.sin(timeSeconds * (Math.PI * 2 / 2.8)) * 0.06;
-      b.group.position.x = b.basePos.x + this.proximityOffset.x;
-      b.group.position.y = b.basePos.y + hoverY + this.proximityOffset.y;
+      if (b.type === 'coop_heart') {
+        b.group.position.copy(b.basePos);
+      } else this.updatePlayMotion(b, dt);
 
       // 接近加亮 (描边增加约 25% 亮度)
       if (b.type !== 'coop_heart' && b.outlineMesh && b.glowMesh) {
@@ -1496,6 +1587,8 @@ export class BubbleManager {
 
   // 重置与清理所有泡泡及粒子
   clear() {
+    this.roundEase = 0;
+    this.comfortableHits = 0;
     this.completedBubbleCount = 0;
     this.layoutGraceSeconds = 0;
     this.resetCombo();

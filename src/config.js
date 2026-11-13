@@ -33,30 +33,30 @@ export const GAME_CONFIG = {
       weightCategory: 'feather',
       balloonScale: 0.9,
       targetBubbles: 5, asset: 'forest-bunny', escapeStyle: 'hop',
-      description: '轻松探索 · 蹬地兔跳，回头挥爪。'
+      description: '安稳入门 · 大泡泡停在身前，慢慢碰也能成功。'
     },
     cat: {
       name: '橘猫 橘子', targetBubbles: 8, asset: 'marmalade-cat', escapeStyle: 'trot',
-      description: '耐心挑战 · 伸懒腰、小步轻跑、摇尾告别。'
+      description: '慢漂追踪 · 跟着缓慢漂移的泡泡，靠近就会停住。'
     },
     frog: {
       name: '小青蛙 呱呱', targetBubbles: 6, asset: 'pond-frog', escapeStyle: 'leap',
-      description: '池塘探险 · 蓄力大跳，张开小手道谢。',
+      description: '荷叶弹跳 · 等泡泡跳起落稳，再伸手碰一碰。',
       victoryText: '呱呱蹬开后腿，跳过荷叶回到池塘啦。'
     },
     dog: {
       name: '小狗 旺旺', targetBubbles: 10, asset: 'sunny-puppy', escapeStyle: 'bound',
-      description: '活力挑战 · 摇尾、撒欢，四足轻快奔跑。',
+      description: '轻快连击 · 更短出场间隔，更宽松的彩虹连击节奏。',
       victoryText: '旺旺摇着尾巴跑回花园，开心地向你伸出小爪。'
     },
     dragon: {
       name: '飞龙 翼翼', targetBubbles: 12, asset: 'jade-dragon', escapeStyle: 'glide',
-      description: '云谷奇遇 · 扇动小翅膀，低空滑翔、回头道谢。',
+      description: '云间弧线 · 沿弧线追踪，交替体验果冻与彩虹泡泡。',
       victoryText: '翼翼张开翅膀飞过云谷，回头向你挥了挥小爪。'
     },
     goldenDragon: {
       name: '金龙 小金', targetBubbles: 9, asset: 'golden-dragon', escapeStyle: 'serpentine',
-      description: '祥云漫游 · 金黄背脊、飘逸龙须，摆尾游过云间。',
+      description: '祥云游动 · 跟随舒缓曲线，收集彩虹与双层能量。',
       victoryText: '小金舒展长尾，游过祥云，轻轻点头向你道谢。'
     },
     panda: {
