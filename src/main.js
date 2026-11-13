@@ -531,7 +531,8 @@ export class Game {
     this.isSoftWaiting = false;
     this.waitingForEscape = false;this.resultVisible=false;
     this.cancelAutoNext();
-    this.celebrationAccessories?.start(this.lastPlayers||[],this.isDemoMode);
+    if (this.hasLiveCamera()) this.celebrationAccessories?.start(this.lastPlayers || [], false);
+    else this.celebrationAccessories?.clear();
     if (this.bubbleManager.clearActiveBubble) {
       this.bubbleManager.clearActiveBubble();
     } else {
@@ -588,12 +589,36 @@ export class Game {
     this.waitingForEscape = false;
     if(this.resultVisible)return;
     if (this.photoRemaining !== null && this.photoRemaining !== undefined) return;
-    if (this.sceneManager?.renderer) this.beginPhoto(false);
+    if (!this.hasLiveCamera()) this.showVictoryResult(false);
+    else if (this.sceneManager?.renderer) this.beginPhoto(false);
     else this.captureVictoryPhoto();
+  }
+
+  hasLiveCamera() {
+    const video = this.videoElement;
+    if (this.isDemoMode || !video || video.readyState < 2 || !video.videoWidth || video.paused) return false;
+    return !!video.srcObject?.getVideoTracks?.().some(track => track.readyState === 'live' && track.enabled !== false);
+  }
+
+  showVictoryResult(hasPhoto = false) {
+    this.photoRemaining = null;
+    this.photoCapturePending = false;
+    this.uiManager?.setPhotoCountdown?.(null);
+    if (!hasPhoto) {
+      this.currentPolaroidDataUrl = null;
+      this.uiManager?.setPolaroidImage?.(null);
+      this.celebrationAccessories?.clear();
+    }
+    this.resultVisible = true;
+    this.uiManager?.showVictory?.({hasPhoto});
+    if (this.retakePhoto) this.cancelAutoNext(true, hasPhoto ? 'keep_photo' : 'keep_result');
+    else if (this.sceneManager && this.uiManager?.setAutoNextCountdown) this.startAutoNext();
+    this.retakePhoto = false;
   }
 
   beginPhoto(retake = false) {
     if (this.state !== 'CELEBRATING' || (!this.resultVisible && retake)) return;
+    if (!this.hasLiveCamera()) { this.showVictoryResult(false); return; }
     this.cancelAutoNext(false);
     this.retakePhoto = retake;
     this.resultVisible = false;
@@ -604,6 +629,7 @@ export class Game {
   }
 
   captureVictoryPhoto() {
+    if (!this.hasLiveCamera()) { this.showVictoryResult(false); return; }
     this.photoRemaining = null;
     this.photoCapturePending = false;
     this.uiManager?.setPhotoCountdown?.(null);
@@ -611,7 +637,7 @@ export class Game {
     const profile = GAME_CONFIG.animals[animalId] || {};
     this.currentAnimalName = profile.name || '小动物';
     this.currentPolaroidDataUrl = PolaroidManager.getDataUrl({
-      videoElement: this.isDemoMode ? null : this.videoElement,
+      videoElement: this.videoElement,
       webglCanvas: this.sceneManager?.renderer?.domElement,
       animalId, animalName: this.currentAnimalName, targetBubbles: this.targetCount,
       animalEmoji: {bunny:'🐰',cat:'🐱',frog:'🐸',dog:'🐶',dragon:'🐲',goldenDragon:'🐉'}[animalId] || '🐾'
@@ -619,11 +645,7 @@ export class Game {
     this.audioManager?.playCameraShutter?.();
     this.uiManager?.triggerCameraFlash?.();
     this.uiManager?.setPolaroidImage?.(this.currentPolaroidDataUrl, this.currentAnimalName);
-    this.resultVisible = true;
-    this.uiManager?.showVictory?.();
-    if (this.retakePhoto) this.cancelAutoNext(true, 'keep_photo');
-    else if (this.sceneManager && this.uiManager?.setAutoNextCountdown) this.startAutoNext();
-    this.retakePhoto = false;
+    this.showVictoryResult(!!this.currentPolaroidDataUrl);
   }
 
   startNextFriend() {
@@ -913,10 +935,13 @@ export class Game {
       if(this.celebrationAccessories && typeof window!=='undefined')this.celebrationAccessories.update(deltaSeconds,getViewport().width,getViewport().height);
       if (this.state === 'PLAYING') this.uiManager?.setInteractionHint?.(this.bubbleManager?.getInteractionHint?.() || '');
       if (this.photoRemaining !== null && this.photoRemaining !== undefined && this.state === 'CELEBRATING') {
-        const present = this.isDemoMode || ((this.lastPlayers?.length || 0) >= (this.playerMode === 'coop' ? 2 : 1) && performance.now() - (this.lastPlayersReceivedAt || 0) < 700);
-        if (present) this.photoRemaining = Math.max(0, this.photoRemaining - deltaSeconds);
-        this.uiManager?.setPhotoCountdown?.(present ? Math.max(1, Math.ceil(this.photoRemaining)) : '回来一起拍合影吧');
-        if (this.photoRemaining <= 0) this.photoCapturePending = true;
+        if (!this.hasLiveCamera()) this.showVictoryResult(false);
+        else {
+          const present = (this.lastPlayers?.length || 0) >= (this.playerMode === 'coop' ? 2 : 1) && performance.now() - (this.lastPlayersReceivedAt || 0) < 700;
+          if (present) this.photoRemaining = Math.max(0, this.photoRemaining - deltaSeconds);
+          this.uiManager?.setPhotoCountdown?.(present ? Math.max(1, Math.ceil(this.photoRemaining)) : '回来一起拍合影吧');
+          if (this.photoRemaining <= 0) this.photoCapturePending = true;
+        }
       }
       if (this.autoNextDeadline) {
         const present = this.isDemoMode || ((this.lastPlayers?.length || 0) >= (this.playerMode === 'coop' ? 2 : 1) && performance.now() - (this.lastPlayersReceivedAt || 0) < 700);

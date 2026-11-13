@@ -30,6 +30,7 @@ export class UIManager {
       pauseModal: document.getElementById('pause-modal'),
       errorModal: document.getElementById('error-modal'),
       victoryModal: document.getElementById('victory-modal'),
+      victoryCard: document.querySelector('.victory-card'),
       demoModeBanner: document.getElementById('demo-mode-banner'),
       poseAlert: document.getElementById('pose-lost-alert'),
 
@@ -226,7 +227,7 @@ export class UIManager {
     // 触碰结算弹窗区域即智能驻留冻结倒计时（不干扰「再玩一次」和「回首页」）
     this.dom.victoryModal?.addEventListener('pointerdown', (e) => {
       if (e.target?.closest?.('#btn-play-again, #btn-victory-restart, #btn-victory-exit')) return;
-      this.handlers.onStopAutoNext?.('keep_photo');
+      this.handlers.onStopAutoNext?.(this.hasVictoryPhoto ? 'keep_photo' : 'keep_result');
     });
 
     // 森林营地图鉴
@@ -395,7 +396,7 @@ export class UIManager {
 
   setAutoNextCountdown(seconds, customMessage = null) {
     if(!this.dom.autoNextStatus)return;
-    const text=customMessage || (seconds===null?'合影已为你保留，想玩时点击「再玩一次」':`${seconds} 秒后随机遇见下一位朋友`);
+    const text=customMessage || (seconds===null?(this.hasVictoryPhoto?'合影已为你保留，想玩时点击「再玩一次」':'本轮成果已保留，准备好再继续'):`${seconds} 秒后随机遇见下一位朋友`);
     if(this.dom.autoNextStatus.textContent!==text)this.dom.autoNextStatus.textContent=text;
     if(this.dom.btnStopAutoNext)this.dom.btnStopAutoNext.hidden=seconds===null;
   }
@@ -406,7 +407,10 @@ export class UIManager {
     this.dom.btnSavePolaroid.classList.add('btn-saved');
   }
 
-  showVictory() {
+  showVictory({hasPhoto = false} = {}) {
+    this.hasVictoryPhoto = hasPhoto;
+    this.dom.victoryCard?.classList?.toggle?.('without-photo', !hasPhoto);
+    this.dom.polaroidWrapper?.classList?.toggle?.('hidden', !hasPhoto);
     if (this.dom.btnSavePolaroid) {
       this.dom.btnSavePolaroid.textContent = '保存合影 📸';
       this.dom.btnSavePolaroid.classList.remove('btn-saved');
@@ -585,6 +589,9 @@ export class UIManager {
     if (this.dom.polaroidImg && dataUrl) {
       this.dom.polaroidImg.src = dataUrl;
       this.dom.polaroidWrapper?.classList.remove('hidden');
+    } else {
+      this.dom.polaroidImg?.removeAttribute?.('src');
+      this.dom.polaroidWrapper?.classList.add('hidden');
     }
   }
 

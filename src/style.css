@@ -1336,3 +1336,14 @@ button{touch-action:manipulation}
 @media (prefers-reduced-motion: reduce) {
   .camera-flash.flash-active { animation: none; opacity: 0; }
 }
+
+/* No-camera wins show the rescue result without an empty photo column. */
+#victory-modal .victory-card.without-photo { width: min(94%, 480px); }
+#victory-modal .without-photo .victory-content-grid { flex-direction: column; gap: 0; }
+#victory-modal .without-photo .victory-info-col { width: 100%; text-align: center; align-items: center; }
+#victory-modal .without-photo h1 { display: block; margin: 8px 0 18px; font-size: clamp(22px, 4vw, 32px); }
+#victory-modal .without-photo h2, #victory-modal .without-photo p { text-align: center; }
+#victory-modal .without-photo .auto-next-row { justify-content: center; }
+@media (max-height: 420px) and (orientation: landscape) {
+  #victory-modal .without-photo h1 { margin: 0 0 8px; font-size: 22px; }
+}

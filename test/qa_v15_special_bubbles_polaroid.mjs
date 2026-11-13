@@ -309,6 +309,7 @@ check('Game 集成闭环：果冻泡泡+2充能、达成通关触发快门闪烁
       resetCombo() {},
       spawnNext() {}
     },
+    videoElement: {readyState:2,videoWidth:1280,paused:false,srcObject:{getVideoTracks:()=>[{readyState:'live',enabled:true}]}},
     lifecycleSessionId: 1
   });
 

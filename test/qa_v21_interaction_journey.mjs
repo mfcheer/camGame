@@ -18,8 +18,50 @@ test('resize preserves jelly layers and rejects old pointer contact',()=>{const 
 test('resize preserves cooperative readiness and merge progress',()=>{const bm=manager('coop_heart');Object.assign(bm.activeBubble,{leftTouched:true,leftTouchTime:150,merging:true,mergeProgress:.42});bm.updateLayout();assert.equal(bm.activeBubble.leftTouched,true);assert.equal(bm.activeBubble.leftTouchTime,150);assert.equal(bm.activeBubble.merging,true);assert.equal(bm.activeBubble.mergeProgress,.42);});
 test('camera pixels and AR points share one photo transform in portrait and landscape',()=>{for(const [w,h]of [[390,844],[844,390],[568,260],[1280,720]]){const r=photoComposition(1920,1080,w,h);for(const x of [.4,.5,.6]){const mirroredViewportX=w-(x*1920-r.sx)/r.sw*w;const cameraX=r.dx+(1-(x*1920-r.sx)/r.sw)*r.dw;const arX=r.dx+mirroredViewportX/w*r.dw;assert.ok(Math.abs(cameraX-arX)<1e-9);}assert.ok(r.dx>=0&&r.dy>=0&&r.dw<=568.0001&&r.dh<=520.0001);}});
 test('six animals follow energy, then return attention to player, reset cleanly',()=>{for(const id of ['bunny','cat','dog','frog','dragon','goldenDragon']){const a=new RescueAnimal(new T.Scene(),camera(),id);a.setPlayerFocus([{face:{x:.75,y:.3}}]);a.setAttentionTarget(new T.Vector3(-1,1,0),new T.Vector3(1,1,0));a.update(.016,0);assert.equal(a.attentionPhase,'energy');a.setEnergy(1);a.setAttentionTarget(null,null);a.update(.016,.016);assert.equal(a.attentionPhase,'thanks');for(let n=0;n<180;n++)a.update(.016,n*.016);assert.equal(a.attentionPhase,'player');assert.ok(Math.abs(a.headGroup.rotation.x)<.4);a.reset();assert.equal(a.attentionFocus,null);}});
-test('photo countdown freezes on pause and captures immediately after render',()=>{const calls=[];const g=Object.assign(Object.create(Game.prototype),{state:'CELEBRATING',isDemoMode:true,photoRemaining:.1,sceneManager:{update(){},render(){calls.push('render');}},captureVictoryPhoto(){calls.push('capture');this.photoCapturePending=false;this.photoRemaining=null;}});g.updateFrame(.05);assert.deepEqual(calls,['render']);g.state='PAUSED';g.updateFrame(1);assert.equal(g.photoRemaining,.05);g.state='CELEBRATING';g.updateFrame(.1);assert.deepEqual(calls.slice(-2),['render','capture']);});
+test('photo countdown freezes on pause and captures immediately after render',()=>{const calls=[];const g=Object.assign(Object.create(Game.prototype),{state:'CELEBRATING',hasLiveCamera:()=>true,lastPlayers:[{id:1}],lastPlayersReceivedAt:performance.now(),photoRemaining:.1,sceneManager:{update(){},render(){calls.push('render');}},captureVictoryPhoto(){calls.push('capture');this.photoCapturePending=false;this.photoRemaining=null;}});g.updateFrame(.05);assert.deepEqual(calls,['render']);g.state='PAUSED';g.updateFrame(1);assert.equal(g.photoRemaining,.05);g.state='CELEBRATING';g.updateFrame(.1);assert.deepEqual(calls.slice(-2),['render','capture']);});
 test('absence cancels auto continuation rather than starting an empty round',()=>{const g=Object.assign(Object.create(Game.prototype),{state:'CELEBRATING',resultVisible:true,autoNextDeadline:performance.now()+12000,lastPlayers:[],photoRemaining:null,uiManager:{setAutoNextCountdown(){}},sceneManager:{update(){},render(){}}});g.updateFrame(1.1);assert.equal(g.autoNextDeadline,0);});
 
 test('holding a timed-out half does not silently re-arm it',()=>{const bm=manager('coop_heart');const left=tip(bm,'left');bm.checkHandCollisions([{id:1,hands:[left]}]);bm.interactionClock=2.1;bm.checkHandCollisions([{id:1,hands:[left]},{id:2,hands:[tip(bm,'right')]}]);assert.equal(bm.activeBubble.leftTouched,false);assert.equal(bm.activeBubble.merging,false);});
 test('jelly needs release and re-entry, not a held pointer',()=>{const bm=manager('jelly');const id=bm.activeBubble.ownerId;const h=tip(bm);bm.checkHandCollisions([{id,hands:[h]}]);assert.equal(bm.activeBubble.hitsReceived,1);for(let i=0;i<10;i++)bm.checkHandCollisions([{id,hands:[h]}]);assert.ok(bm.activeBubble);bm.checkHandCollisions([{id,hands:[{...h,x:0,y:0}]}]);assert.equal(bm.checkHandCollisions([{id,hands:[h]}]),true);});
+
+
+test('no camera or demo mode cannot enter the photo countdown', () => {
+  for (const isDemoMode of [false, true]) {
+    const calls = [];
+    const g = Object.assign(Object.create(Game.prototype), {
+      state: 'CELEBRATING', isDemoMode, photoRemaining: null,
+      rescueAnimal: {state: 'ESCAPED'}, currentPolaroidDataUrl: 'old-photo',
+      uiManager: {setPhotoCountdown(v) { calls.push(['countdown', v]); }, setPolaroidImage(v) { calls.push(['image', v]); }, showVictory(v) { calls.push(['result', v]); }},
+      celebrationAccessories: {clear() { calls.push(['clear']); }}
+    });
+    g.showVictoryWhenReady();
+    assert.equal(g.resultVisible, true);
+    assert.equal(g.photoRemaining, null);
+    assert.equal(g.currentPolaroidDataUrl, null);
+    assert.ok(calls.some(c => c[0] === 'result' && c[1].hasPhoto === false));
+    assert.ok(!calls.some(c => c[0] === 'countdown' && typeof c[1] === 'number'));
+  }
+});
+
+test('photo eligibility requires a playing frame and an enabled live video track', () => {
+  const track = {readyState: 'live', enabled: true};
+  const video = {readyState: 2, videoWidth: 1280, paused: false, srcObject: {getVideoTracks: () => [track]}};
+  const g = Object.assign(Object.create(Game.prototype), {videoElement: video, isDemoMode: false});
+  assert.equal(g.hasLiveCamera(), true);
+  track.readyState = 'ended'; assert.equal(g.hasLiveCamera(), false);
+  track.readyState = 'live'; track.enabled = false; assert.equal(g.hasLiveCamera(), false);
+  track.enabled = true; video.paused = true; assert.equal(g.hasLiveCamera(), false);
+  video.paused = false; g.isDemoMode = true; assert.equal(g.hasLiveCamera(), false);
+});
+
+test('camera stopping during photo preparation returns to a clean rescue result', () => {
+  const g = Object.assign(Object.create(Game.prototype), {
+    state: 'CELEBRATING', photoRemaining: 1, photoCapturePending: true,
+    currentPolaroidDataUrl: 'old-photo', uiManager: {setPhotoCountdown() {}, setPolaroidImage() {}, showVictory({hasPhoto}) {assert.equal(hasPhoto, false);}}
+  });
+  g.updateFrame(.1);
+  assert.equal(g.photoRemaining, null);
+  assert.equal(g.photoCapturePending, false);
+  assert.equal(g.currentPolaroidDataUrl, null);
+  assert.equal(g.resultVisible, true);
+});
