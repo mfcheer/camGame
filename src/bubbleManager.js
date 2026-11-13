@@ -207,7 +207,7 @@ export class BubbleManager {
     const winH = (typeof window !== 'undefined' ? getViewport().height : 720) || 720;
     const pxToWorld = visibleHeight / winH;
     const isNarrow = (winW / winH) < 0.8;
-    const targetDiameterPx = winH<420&&winW>winH ? Math.max(80,Math.min(112,winH*.27)) : isNarrow
+    const targetDiameterPx = winH<420&&winW>winH ? Math.max(winH<300?64:80,Math.min(112,winH*.27)) : isNarrow
       ? Math.min(120, Math.max(100, 0.20 * Math.min(winW, winH)))
       : Math.min(156, Math.max(104, 0.20 * Math.min(winW, winH)));
 
@@ -364,7 +364,7 @@ export class BubbleManager {
     const pxToWorld = visibleHeight / winH;
 
     const isNarrow = (winW / winH) < 0.8;
-    const targetDiameterPx = winH<420&&winW>winH ? Math.max(80,Math.min(112,winH*.27)) : isNarrow
+    const targetDiameterPx = winH<420&&winW>winH ? Math.max(winH<300?64:80,Math.min(112,winH*.27)) : isNarrow
       ? Math.min(120, Math.max(100, 0.20 * Math.min(winW, winH)))
       : Math.min(156, Math.max(104, 0.20 * Math.min(winW, winH)));
     const radius = (targetDiameterPx * pxToWorld) / (2 * 1.10);

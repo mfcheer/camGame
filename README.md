@@ -59,7 +59,7 @@
 ```bash
 npm ci
 npm run dev:local       # http://127.0.0.1:5175/，可用于本机摄像头
-npm test                # 145项模块检查
+npm test                # 146项模块检查
 npm run build           # 生产构建到 dist/
 npm run build:assets    # 从模型源重新导出六种GLB
 ```

@@ -39,3 +39,5 @@ Original prompt: 按 MVP_ACCEPTANCE_V0.2.md 验收《彩虹小队》，检查计
 2026-11-13 Pages正式交付完成：fc29654已推送main，GitHub Actions运行43329777956的build/deploy均success。正式地址https://mfcheer.github.io/camGame/返回HTTP200；在线生产浏览器实际验收通过：首页/manifest/所有图标、六种GLB、Worker/WASM/双模型共13条识别与模型请求均正常，worker-CPU真实初始化成功，实际鼠标命中与暂停恢复通过，无页面错误或HTTP错误。线上截图与结果output/playwright/pages-live/，内置浏览器已打开并保留正式网址。图标为项目自制SVG及PNG，README已提交上线，后续main推送或Actions手动Run workflow即可重新发布。此测试不等于真人摄像头准确率或移动真机验收。
 
 2026-11-13 手机适配：用户确认声音是手机静音，音频实现不变。取消强制横屏遮罩；新增viewport.js统一VisualViewport尺寸/偏移和safe-area，视频/WebGL/UI/投影/指针/头饰/跑道一致。首页动物独立滚动、按钮常驻，窄竖屏三列、短横屏左右布局，HUD两行、长能量不遮控制，所有弹窗可滚动且在可见区内。主屏幕orientation:any；复验另修复重开重复随机场景。145模块检查、Chromium9尺寸、WebKit3尺寸、浏览器栏/刘海夹具、竖屏0→5+自动下一轮、生产子路径真实Worker和标准客户端通过。见design-review/MOBILE_LAYOUT_DELIVERY.md及output/playwright/mobile-fix/。准备推送自动发布，随后复验线上。
+
+2026-11-13 手机适配发布复核：19fe9e8的GitHub Pages工作流43332866006成功。在线Chromium5种尺寸（320×568、390×844、667×320、568×260、667×240）及在线WebKit390×844全流程布局检查通过。补查最大泡泡外沿发现240px可见高度会有约9px下沿出画，已对不足300px的横屏降低最小直径并加入真实网格投影边界回归；146模块检查、最终240px浏览器流程、构建与标准客户端通过。更新内容纳入后续补充提交；实际手机声音已由用户确认正常。\n
