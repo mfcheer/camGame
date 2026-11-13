@@ -209,9 +209,17 @@ export class UIManager {
       if (this.handlers.onExit) this.handlers.onExit();
     });
 
-    // 保存拍立得合影
+    // 保存拍立得合影（保存并智能冻结自动跳转）
     this.dom.btnSavePolaroid?.addEventListener('click', () => {
       this.handlers.onSavePolaroid?.();
+      this.markPolaroidSaved();
+      this.handlers.onStopAutoNext?.('keep_photo');
+    });
+
+    // 触碰结算弹窗区域即智能驻留冻结倒计时（不干扰「再玩一次」和「回首页」）
+    this.dom.victoryModal?.addEventListener('pointerdown', (e) => {
+      if (e.target?.closest?.('#btn-victory-restart, #btn-victory-exit')) return;
+      this.handlers.onStopAutoNext?.('keep_photo');
     });
 
     // 森林营地图鉴
@@ -378,14 +386,24 @@ export class UIManager {
     this.dom.errorModal.classList.add('hidden');
   }
 
-  setAutoNextCountdown(seconds) {
+  setAutoNextCountdown(seconds, customMessage = null) {
     if(!this.dom.autoNextStatus)return;
-    const text=seconds===null?'自动开始已停止，可以慢慢选择。':`${seconds} 秒后随机遇见下一位朋友`;
+    const text=customMessage || (seconds===null?'合影已为你保留，想玩时点击「再玩一次」':`${seconds} 秒后随机遇见下一位朋友`);
     if(this.dom.autoNextStatus.textContent!==text)this.dom.autoNextStatus.textContent=text;
     if(this.dom.btnStopAutoNext)this.dom.btnStopAutoNext.hidden=seconds===null;
   }
 
+  markPolaroidSaved() {
+    if (!this.dom.btnSavePolaroid) return;
+    this.dom.btnSavePolaroid.textContent = '已保存 ✓';
+    this.dom.btnSavePolaroid.classList.add('btn-saved');
+  }
+
   showVictory() {
+    if (this.dom.btnSavePolaroid) {
+      this.dom.btnSavePolaroid.textContent = '保存合影 📸';
+      this.dom.btnSavePolaroid.classList.remove('btn-saved');
+    }
     this.dom.victoryModal.classList.remove('hidden');
     this.showHandGuide(false);
     this.hideCombo();

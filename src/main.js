@@ -107,7 +107,7 @@ export class Game {
         onReady: () => this.handleReadyToPlay(),
         onSelectMode: (mode) => this.handleSelectMode(mode),
         onSelectAnimal: selection => this.handleSelectAnimal(selection),
-        onStopAutoNext: () => this.cancelAutoNext(),
+        onStopAutoNext: (reason) => this.cancelAutoNext(true, reason),
         onTogglePause: (isPaused) => {
           this.isSoftWaiting = false;
           this.handleTogglePause(isPaused);
@@ -613,8 +613,8 @@ export class Game {
     this.cancelAutoNext(false);
     const session=this.celebrationSessionId;
     const ticket=this.autoNextTicket=(this.autoNextTicket||0)+1;
-    this.autoNextDeadline=performance.now()+5000;
-    this.uiManager?.setAutoNextCountdown?.(5);
+    this.autoNextDeadline=performance.now()+12000;
+    this.uiManager?.setAutoNextCountdown?.(12);
     this.autoNextTimer=setTimeout(()=>{
       if(ticket!==this.autoNextTicket)return;
       this.autoNextTimer=null;
@@ -625,13 +625,13 @@ export class Game {
       if(hidden||!present){this.cancelAutoNext();return;}
       this.uiManager?.hideVictory?.();
       this.animalSelection='random';this.uiManager?.setAnimalSelection?.('random');this.prepareAnimal();this.handleRestart();
-    },5000);
+    },12000);
   }
-  cancelAutoNext(showStopped=true) {
+  cancelAutoNext(showStopped=true, reason=null) {
     this.autoNextTicket=(this.autoNextTicket||0)+1;
     if(this.autoNextTimer)clearTimeout(this.autoNextTimer);
     this.autoNextTimer=null;this.autoNextDeadline=0;
-    if(showStopped)this.uiManager?.setAutoNextCountdown?.(null);
+    if(showStopped)this.uiManager?.setAutoNextCountdown?.(null, reason==='keep_photo'?'合影已为你保留，想玩时点击「再玩一次」':null);
   }
 
   // 暂停与恢复（支持庆祝状态分段有效时长冻结与恢复，暂停时隐藏手晕光芒）

@@ -874,6 +874,12 @@ button{touch-action:manipulation}
   transform: scale(0.95);
 }
 
+.btn-save-photo.btn-saved {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.45) !important;
+}
+
 /* 首页营地图鉴入口按钮 */
 .camp-entry-btn {
   display: flex;
@@ -1161,11 +1167,112 @@ button{touch-action:manipulation}
     border-radius: 10px;
     flex-shrink: 0;
   }
+  /* 森林营地图鉴横屏一屏全景优化 (方案 A：紧凑单行 Header + 6列全景展示/矮窄屏自适应) */
+  #camp-modal {
+    padding: calc(var(--safe-top) + 4px) calc(var(--safe-right) + 8px) calc(var(--safe-bottom) + 4px) calc(var(--safe-left) + 8px);
+    align-items: center;
+    justify-content: center;
+  }
+  .camp-card {
+    width: min(100%, 780px);
+    max-height: calc(100vh - 12px);
+    padding: 8px 14px 8px 14px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  .camp-header {
+    margin-bottom: 6px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+    text-align: left;
+  }
+  .camp-header h2 {
+    font-size: 15px;
+    margin: 0;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .camp-header p {
+    font-size: 11px;
+    margin: 0;
+    line-height: 1.2;
+    color: #4b5563;
+  }
+  .camp-tip {
+    font-size: 10px;
+    margin: 0;
+    line-height: 1.2;
+    color: #16a34a;
+    font-weight: 700;
+  }
   .camp-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 6px;
+    padding: 2px 0;
+    margin-bottom: 6px;
+    overflow-y: auto;
+  }
+  .camp-animal-item {
+    padding: 4px 4px 6px;
+    border-radius: 12px;
+    border-width: 1.5px;
+    gap: 2px;
   }
   .camp-animal-avatar-wrapper {
-    height: 44px;
+    height: 38px;
+    width: 100%;
+  }
+  .camp-animal-avatar {
+    max-height: 36px;
+    max-width: 85%;
+  }
+  .camp-animal-badge {
+    font-size: 12px;
+    top: -3px;
+    right: 1px;
+  }
+  .camp-animal-name {
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    line-height: 1.2;
+  }
+  .camp-animal-status {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    line-height: 1.2;
+  }
+  .camp-footer {
+    margin-top: 2px;
+  }
+  .camp-footer .btn-primary {
+    padding: 4px 16px;
+    font-size: 12px;
+    min-height: 28px;
+    border-radius: 10px;
+  }
+}
+
+@media (max-height: 500px) and (max-width: 620px) and (min-aspect-ratio: 1/1) {
+  .camp-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .camp-animal-avatar-wrapper {
+    height: 30px;
+  }
+  .camp-animal-avatar {
+    max-height: 28px;
   }
 }

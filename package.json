@@ -6,7 +6,7 @@
     "dev": "vite --host 0.0.0.0 --port 5173",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0 --port 5173",
-    "test": "node test/qa_viewport.mjs && node test/qa_v14_expressions_combo.mjs && node test/qa_v13_audio_combo.mjs && node test/qa_v12_dragon_stages.mjs && node test/qa_v10_animals_rewards.mjs && node test/qa_v09_features.mjs && node test/qa_v08_tracking_animals.mjs && node test/qa_v07_animation.mjs && node test/qa_v06_fingertip_animal.mjs && node test/qa_v05_rescue_mode.mjs && node test/qa_v04_polish.mjs && node test/qa_v03.mjs && node test/qa_closeout.mjs && node test/qa_landscape_retest.mjs && node test/qa_acceptance.mjs && node test/qa_v15_special_bubbles_polaroid.mjs && node test/qa_v16_layout_fixes.mjs",
+    "test": "node test/qa_viewport.mjs && node test/qa_v14_expressions_combo.mjs && node test/qa_v13_audio_combo.mjs && node test/qa_v12_dragon_stages.mjs && node test/qa_v10_animals_rewards.mjs && node test/qa_v09_features.mjs && node test/qa_v08_tracking_animals.mjs && node test/qa_v07_animation.mjs && node test/qa_v06_fingertip_animal.mjs && node test/qa_v05_rescue_mode.mjs && node test/qa_v04_polish.mjs && node test/qa_v03.mjs && node test/qa_closeout.mjs && node test/qa_landscape_retest.mjs && node test/qa_acceptance.mjs && node test/qa_v15_special_bubbles_polaroid.mjs && node test/qa_v16_layout_fixes.mjs && node test/qa_v17_camp_landscape.mjs",
     "build:assets": "node scripts/build-rabbit.mjs",
     "dev:local": "CAMGAME_HTTP=1 vite --host 127.0.0.1 --port 5175",
     "preview:assets": "node scripts/render-previews.mjs"
