@@ -85,11 +85,11 @@ test('canceling a round removes its card and forbids deferred effects',async()=>
  const {g,events}=gameFixture(),old=deferred();g.presentWord(getWordById('car'),.5,.5,old.promise);g.onBubblePopped();g.cancelWordPresentation();old.resolve();await tick();step(g,15);assert.deepEqual(events,['car','clear']);assert.equal(g.pendingWordDelivery,null);
 });
 
-test('four focused words cover a category before repeating and never immediately repeat',()=>{
+test('three focused words cover a category before repeating and never immediately repeat',()=>{
  const camera=new T.PerspectiveCamera(48,1,.1,100);camera.position.z=7.5;
  const b=new BubbleManager(new T.Scene(),camera,{},null);const seen=[];
  for(let i=0;i<12;i++){const w=b.chooseRoundWord();assert.notEqual(w.id,seen.at(-1)?.id);seen.push(w);b.lastWordId=w.id;}
- assert.equal(new Set(seen.slice(0,4).map(w=>w.id)).size,4);assert.equal(new Set(seen.map(w=>w.category)).size,1);assert.equal(new Set(seen.map(w=>w.id)).size,4);
+ assert.equal(new Set(seen.slice(0,3).map(w=>w.id)).size,3);assert.equal(new Set(seen.map(w=>w.category)).size,1);assert.equal(new Set(seen.map(w=>w.id)).size,3);
  b.clear();assert.equal(b.wordPool.length,0);assert.equal(b.wordQueue.length,0);
 });
 

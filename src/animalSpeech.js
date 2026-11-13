@@ -31,6 +31,7 @@ export class AnimalSpeech {
   setPaused(paused){
     if(!this.active)return;this.paused=paused;
     if(paused){++this.token;this.audio?.stopPhrase?.();this.ui?.hideAnimalSpeech?.();this.animal?.setSpeaking?.(false);this.animal?.setSpeechListening?.(false);}
+    else if(this.nonBlocking&&this.done){this.ui?.showAnimalSpeech?.(this.phrase,this.animalId,this.phase);this.ui?.setAnimalSpeechListening?.();this.animal?.setSpeechListening?.(true);}
     else this.play();
   }
   cancel(){++this.token;this.active=false;this.onDone=null;this.audio?.stopPhrase?.();this.ui?.hideAnimalSpeech?.();this.animal?.setSpeaking?.(false);this.animal?.setSpeechListening?.(false);}

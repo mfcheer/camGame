@@ -338,7 +338,9 @@ export class BubbleManager {
       }
 
       const safeFromHands = (minDistToHand >= minSafeHandDist);
-      return { safe: safeFromHands && safeFromLastPop, minDistToHand };
+      const px=(x/visibleWidth+.5)*getViewport().width,py=(.5-y/visibleHeight)*getViewport().height;
+      const blocked=(this.getLearningObstacles?.()||[]).some(r=>px+maximumVisualRadiusPx>r.left&&px-maximumVisualRadiusPx<r.right&&py+maximumVisualRadiusPx>r.top&&py-maximumVisualRadiusPx<r.bottom);
+      return {safe:safeFromHands&&safeFromLastPop&&!blocked,minDistToHand:blocked?-1e6:Math.min(minDistToHand,1e5)};
     };
 
     let bestCandidate = null;
@@ -540,7 +542,7 @@ export class BubbleManager {
       }
       return items;
     };
-    // A small, coherent theme per rescue, with all four words seen before repeats.
+    // Three familiar words per rescue; meet each one before repeating.
     if (!this.wordPool.length) {
       const categories=[...new Set(WORDS_LIST.map(word=>word.category))];
       const category=categories[Math.floor(Math.random()*categories.length)];
@@ -549,7 +551,7 @@ export class BubbleManager {
         const concept=word.conceptId||word.id;
         if(concepts.has(concept))return false;
         concepts.add(concept);return true;
-      }).slice(0,4);
+      }).slice(0,3);
     }
     if (!this.wordQueue?.length) {
       this.wordQueue=shuffle([...this.wordPool]);
@@ -1164,7 +1166,7 @@ export class BubbleManager {
       const word = this.activeBubble.word;
       const review = this.roundSeenWords.has(word.id);
       this.roundSeenWords.add(word.id);
-      const audioDone = this.audio?.playWord?.(word.id || word.word, {review});
+      const audioDone = this.wordAudioHandler?this.wordAudioHandler(word):this.audio?.playWord?.(word.id || word.word, {review});
       if (typeof this.onWordPop === 'function') {
         this.onWordPop(word, hitX, hitY, audioDone, {review});
       }

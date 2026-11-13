@@ -36,9 +36,9 @@ test('all new words have image, complete bilingual audio and English-only review
  for(const w of STORYBOOK_WORDS){for(const resource of [w.image,w.bubbleImage,w.audio,w.reviewAudio]){const f='public'+resource;assert.ok(fs.existsSync(f),f);assert.ok(fs.statSync(f).size>300,f);}assert.equal(w.itemImage,w.bubbleImage);}
 });
 
-test('book words enter ordinary four-word themed rounds with no immediate repeat',()=>{
+test('book words enter ordinary three-word themed rounds with no immediate repeat',()=>{
  const b=new BubbleManager(new T.Scene(),camera(),{},null);const original=Math.random;
- try{Math.random=()=>([...new Set(WORDS_LIST.map(w=>w.category))].indexOf('two_book')+.1)/new Set(WORDS_LIST.map(w=>w.category)).size;const seen=[];for(let i=0;i<8;i++){const w=b.chooseRoundWord();assert.notEqual(w.id,seen.at(-1));seen.push(w.id);b.lastWordId=w.id;}assert.ok(b.wordPool.every(w=>w.category==='two_book'));assert.equal(new Set(seen.slice(0,4)).size,4);assert.equal(b.wordPool.length,4);}
+ try{Math.random=()=>([...new Set(WORDS_LIST.map(w=>w.category))].indexOf('two_book')+.1)/new Set(WORDS_LIST.map(w=>w.category)).size;const seen=[];for(let i=0;i<8;i++){const w=b.chooseRoundWord();assert.notEqual(w.id,seen.at(-1));seen.push(w.id);b.lastWordId=w.id;}assert.ok(b.wordPool.every(w=>w.category==='two_book'));assert.equal(new Set(seen.slice(0,3)).size,3);assert.equal(b.wordPool.length,3);}
  finally{Math.random=original;}
 });
 

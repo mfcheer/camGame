@@ -14,7 +14,7 @@ export class UIManager {
   showAnimalSpeech(phrase,animalId,phase) {
     this.hideAnimalSpeech();
     const id=PLAYABLE_ANIMALS.includes(animalId)?animalId:'bunny';
-    const card=document.createElement('section');card.className='animal-speech';
+    const card=document.createElement('section');card.className='animal-speech'+(this.flowLearning?' speech-inline':'');
     card.setAttribute('role','status');card.setAttribute('aria-live','polite');
     const portrait=document.createElement('img');portrait.className='animal-speech-portrait';
     portrait.src=resolveAssetUrl(`/models/${id}-preview.png`);portrait.alt='';
@@ -26,14 +26,26 @@ export class UIManager {
     const hint=document.createElement('span');hint.className='animal-speech-hint';hint.textContent='听朋友说一句';
     const replay=document.createElement('button');replay.type='button';replay.className='animal-speech-replay';replay.textContent='↻ 再听一次';replay.setAttribute('aria-label','再听一次这句话');replay.addEventListener('click',()=>this.handlers?.onReplaySpeech?.());
     footer.append(hint,replay);body.append(name,en,zh,footer);card.append(portrait,body);card.dataset.phase=phase;
-    (document.getElementById('app')||document.body).appendChild(card);this.animalSpeechCard=card;
+    (document.getElementById('app')||document.body).appendChild(card);this.animalSpeechCard=card;this.updateLearningChrome();
   }
   setAnimalSpeechListening(){
     this.animalSpeechCard?.classList.add('is-listening');
     const hint=this.animalSpeechCard?.querySelector('.animal-speech-hint');if(hint)hint.textContent='可以跟着说一说';
   }
+  showWordCue(word){
+    this.clearWordCue();const cue=document.createElement('button');cue.type='button';cue.className='play-word-cue';cue.setAttribute('aria-label',`看看 ${word.word} 的图片和读音`);
+    const image=document.createElement('img');image.src=resolveAssetUrl(word.itemImage||word.image);image.alt='';
+    const text=document.createElement('span'),en=document.createElement('strong'),zh=document.createElement('span');en.textContent=word.word;en.lang='en';zh.textContent=word.zh;zh.lang='zh-CN';text.append(en,zh);cue.append(image,text);
+    cue.addEventListener('click',()=>this.handlers.onOpenWord?.(word));document.body.append(cue);this.wordCue=cue;this.updateLearningChrome();
+  }
+  updateLearningChrome(){const busy=!!this.wordCue||!!this.animalSpeechCard;this.dom?.demoModeBanner?.classList.toggle('learning-covered',busy);if(busy)this.setInteractionHint?.('');}
+  clearWordCue(){this.wordCue?.remove();this.wordCue=null;this.updateLearningChrome();}
+  setLastWordAvailable(available){document.getElementById('btn-last-word')?.classList.toggle('hidden',!available);}
+  hidePlayWords(){this.clearWordCue();this.setLastWordAvailable(false);}
+  getLearningObstacles(){return [this.wordCue,this.animalSpeechCard].filter(e=>e?.isConnected).map(e=>e.getBoundingClientRect());}
+
   showSoundRecovery(show){document.getElementById('btn-recover-audio')?.classList.toggle('hidden',!show);}
-  hideAnimalSpeech(animate=false){if(animate){this.animalSpeechCard?.classList.add('is-leaving');return;}this.animalSpeechCard?.remove();this.animalSpeechCard=null;}
+  hideAnimalSpeech(animate=false){if(animate){this.animalSpeechCard?.classList.add('is-leaving');return;}this.animalSpeechCard?.remove();this.animalSpeechCard=null;this.updateLearningChrome();}
 
   constructor(handlers = {}) {
     this.handlers = handlers; // { onStart, onSelectMode, onTogglePause, onResume, onRestart, onExit, onToggleAudio, onEnableDemo, onRetryCamera }
@@ -265,6 +277,7 @@ export class UIManager {
       this.handlers.onStopAutoNext?.(this.hasVictoryPhoto ? 'keep_photo' : 'keep_result');
     });
 
+    document.getElementById('btn-last-word')?.addEventListener('click',()=>this.handlers.onOpenWord?.());
     document.getElementById('btn-recover-audio')?.addEventListener('click',()=>this.handlers.onRecoverAudio?.());
     document.getElementById('btn-open-vocabulary')?.addEventListener('click',()=>this.handlers.onOpenVocabulary?.());
 

@@ -78,7 +78,7 @@ export class AudioManager {
         this.initialized = true;
         this._setupBGMGraph();
         this._requestContextResume();
-        this.preloadWordAudios();
+
       } catch (e) {
         // 容错处理
       }
@@ -1018,18 +1018,19 @@ export class AudioManager {
     } catch { onDone(); }
   }
 
-  preloadWordAudios(wordIds = []) {
+  preloadWordAudios(wordIds = [], {review=false} = {}) {
     const ids = Array.isArray(wordIds) && wordIds.length > 0 ? wordIds : WORDS_LIST.map(word=>word.id);
 
     for (const id of ids) {
-      this.loadWordBuffer(id).catch(() => {});
+      this.loadWordBuffer(id,{review}).catch(() => {});
       if (typeof Audio !== "undefined") {
         if (!this._wordAudioElements) this._wordAudioElements = new Map();
-        if (!this._wordAudioElements.has(id)) {
+        const key=review?`review:${id}`:id;
+        if (!this._wordAudioElements.has(key)) {
           try {
-            const a = new Audio(this.getWordAudioUrl(id));
+            const a = new Audio(this.getWordAudioUrl(id,{review}));
             a.preload = "auto";
-            this._wordAudioElements.set(id, a);
+            this._wordAudioElements.set(key, a);
           } catch (e) {}
         }
       }
