@@ -600,7 +600,7 @@ html, body {
 #victory-modal h2 { font-size:19px; margin:0 0 5px; }
 #victory-modal p { font-size:13px; margin:0 0 10px; }
 .victory-actions { display:flex; gap:12px; }
-.victory-actions button { font-size:15px; padding:10px 16px; margin:0; }
+.victory-actions button { font-size:15px; padding:10px 16px; margin:0; white-space:nowrap; }
 .auto-next-row { display:flex; justify-content:center; gap:12px; align-items:center; margin-top:10px; color:#5b7165; font-size:12px; }
 .text-button { background:none;border:0;color:#526f61;text-decoration:underline;cursor:pointer;font:inherit;padding:3px; }
 @media(max-height:440px){#victory-modal{padding-bottom:8px;}#victory-modal .card{padding:10px 16px;}#victory-modal h1{display:none;}}
@@ -737,7 +737,7 @@ html,body{overscroll-behavior:none}
 #victory-modal{padding:calc(var(--safe-top) + 8px) calc(var(--safe-right) + 10px) calc(var(--safe-bottom) + 10px) calc(var(--safe-left) + 10px)}
 #victory-modal .card{width:min(100%,660px)}
 .victory-actions{flex-wrap:wrap;gap:8px}
-.victory-actions button{flex:1 1 140px;min-width:0}
+.victory-actions button{flex:1 1 120px;min-width:0;white-space:nowrap}
 .auto-next-row{flex-wrap:wrap;gap:5px 12px}
 button{touch-action:manipulation}
 
@@ -804,7 +804,7 @@ button{touch-action:manipulation}
   .calibration-box{width:110px;height:90px;margin-bottom:8px;border-radius:20px}.calibration-box span{font-size:13px;padding:6px}
   #game-hud .icon-btn{width:38px;height:38px;font-size:19px}.progress-dot,.progress-dots-container[data-compact="true"] .progress-dot{width:17px;height:17px}
   .progress-dots-container,.progress-dots-container[data-compact="true"]{padding:4px 9px;gap:5px}
-  #victory-modal .card{padding:10px 14px}.victory-actions button{padding:8px 10px;font-size:13px;min-height:38px}
+  #victory-modal .card{padding:10px 14px}.victory-actions button{padding:8px 10px;font-size:13px;min-height:38px;white-space:nowrap}
 }
 @media(max-height:640px) and (max-aspect-ratio:1/1){
   .animal-choice>img{height:48px}.mode-btn{display:flex;flex-direction:column;align-items:center;padding:5px 3px}.mode-btn .mode-icon{font-size:18px}
@@ -1187,6 +1187,7 @@ button{touch-action:manipulation}
     font-size: 13px;
     min-height: 36px;
     flex: 1 1 0;
+    white-space: nowrap;
   }
   .auto-next-row {
     margin-top: 4px;

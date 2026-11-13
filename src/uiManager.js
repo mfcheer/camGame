@@ -218,7 +218,7 @@ export class UIManager {
 
     // 触碰结算弹窗区域即智能驻留冻结倒计时（不干扰「再玩一次」和「回首页」）
     this.dom.victoryModal?.addEventListener('pointerdown', (e) => {
-      if (e.target?.closest?.('#btn-victory-restart, #btn-victory-exit')) return;
+      if (e.target?.closest?.('#btn-play-again, #btn-victory-restart, #btn-victory-exit')) return;
       this.handlers.onStopAutoNext?.('keep_photo');
     });
 
