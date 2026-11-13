@@ -1,4 +1,4 @@
-import { getWordById, getWordCn } from './wordsConfig.js';
+import { getWordById, getWordCn, WORDS_LIST } from './wordsConfig.js';
 /**
  * Web Audio API 音频管理器
  * 1. 拟真卡通泡泡破裂声 (多振荡器调频微合成 FM + 水滴瞬态 + Combo 阶梯音阶步步爬升)
@@ -808,14 +808,16 @@ export class AudioManager {
   }
   // 11. 划破气泡时播报对应英语单词发音 (Web Audio API 0延迟缓冲播放 + 标准美语少儿教学发音 + Fallback)
   getWordAudioUrl(wordId, {review = false} = {}) {
-    const id = String(wordId || "").trim().toLowerCase();
+    const raw = String(wordId || "").trim().toLowerCase();
+    const id = getWordById(raw)?.id || raw;
     const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
     const cleanBase = base.endsWith("/") ? base : base + "/";
     return `${cleanBase}audio/words/${review ? "review/" : ""}${id}.mp3`;
   }
 
   async loadWordBuffer(wordId, {review = false} = {}) {
-    const id = String(wordId || "").trim().toLowerCase();
+    const raw = String(wordId || "").trim().toLowerCase();
+    const id = getWordById(raw)?.id || raw;
     if (!id) return null;
     const key = review ? `review:${id}` : id;
     if (this._wordAudioBuffers.has(key)) return this._wordAudioBuffers.get(key);
@@ -847,7 +849,8 @@ export class AudioManager {
   // Resolve only after the recording (or speech fallback) actually ends.
   playWord(wordId, {review = false} = {}) {
     this.stopWord();
-    const id = (typeof wordId === 'string' ? wordId : wordId?.id || '').trim().toLowerCase();
+    const raw = (typeof wordId === 'string' ? wordId : wordId?.id || '').trim().toLowerCase();
+    const id = getWordById(raw)?.id || raw;
     if (!id || this.isMuted) return Promise.resolve();
     this.lastPlayedWord = id;
     this.lastWordReview = review;
@@ -926,12 +929,7 @@ export class AudioManager {
   }
 
   preloadWordAudios(wordIds = []) {
-    const ids = Array.isArray(wordIds) && wordIds.length > 0 ? wordIds : [
-      "chair", "table", "pencil", "book", "crayon", "teacher",
-      "red", "yellow", "blue", "green", "purple",
-      "circle", "triangle", "square", "rectangle",
-      "doll", "ball", "car", "train", "bike", "teddy"
-    ];
+    const ids = Array.isArray(wordIds) && wordIds.length > 0 ? wordIds : WORDS_LIST.map(word=>word.id);
 
     for (const id of ids) {
       this.loadWordBuffer(id).catch(() => {});

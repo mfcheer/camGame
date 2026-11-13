@@ -1,10 +1,14 @@
+import {mergeVocabulary,normalizeWordKey} from './vocabularyMerge.js';
+import {STORYBOOK_WORDS} from './storybookVocabulary.js';
+
 /**
- * 21 个少儿英语启蒙自然拼读单词库配置
+ * 少儿英语启蒙单词库：现有主题 + 幼儿园绘本词汇
  * 分类涵盖：
  * 1. 教室与文具 (school): chair, table, pencil, book, crayon, teacher
  * 2. 基础颜色 (colors): red, yellow, blue, green, purple
  * 3. 几何图形 (shapes): circle, triangle, square, rectangle
- * 4. 玩具交通 (toys): doll, ball, car, train, bike, teddy
+ * 4. 玩具交通 (toys): 基础词与 Toys 绘本词
+ * 5. Two 绘本主题 (two_book): 数字、动物与小孩
  */
 
 export function resolveAssetUrl(urlPath) {
@@ -16,7 +20,7 @@ export function resolveAssetUrl(urlPath) {
   return cleanBase + cleanPath;
 }
 
-export const WORDS_LIST = [
+const BASE_WORDS_LIST = [
   // 1. 教室与文具
   {
     id: 'chair',
@@ -346,6 +350,7 @@ export const WORDS_LIST = [
   },
   {
     id: 'teddy',
+    conceptId: 'plush-bear',
     word: 'teddy',
     zh: '泰迪熊',
     wordCn: '泰迪熊',
@@ -362,14 +367,18 @@ export const WORDS_LIST = [
   }
 ];
 
+export const WORDS_LIST = mergeVocabulary(BASE_WORDS_LIST, STORYBOOK_WORDS);
+
 export const WORDS_MAP = new Map(WORDS_LIST.map(w => [w.id, w]));
+const WORD_ALIASES = new Map(WORDS_LIST.flatMap(word=>word.aliases.map(alias=>[alias,word.id])));
 
 /**
  * 随机获取一个单词对象，默认避免连续重复抽取同一个单词
  */
 export function getRandomWord(excludeId = null) {
-  const pool = excludeId && WORDS_LIST.length > 1
-    ? WORDS_LIST.filter(w => w.id !== excludeId)
+  const excluded=getWordById(excludeId)?.id || normalizeWordKey(excludeId);
+  const pool = excluded && WORDS_LIST.length > 1
+    ? WORDS_LIST.filter(w => w.id !== excluded)
     : WORDS_LIST;
   const index = Math.floor(Math.random() * pool.length);
   return pool[index];
@@ -380,7 +389,8 @@ export function getRandomWord(excludeId = null) {
  */
 export function getWordById(id) {
   if (!id) return null;
-  return WORDS_MAP.get(String(id).trim().toLowerCase()) || null;
+  const key=normalizeWordKey(id);
+  return WORDS_MAP.get(WORD_ALIASES.get(key)||key) || null;
 }
 
 /**

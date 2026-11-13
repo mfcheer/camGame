@@ -1,0 +1,38 @@
+[
+  {
+    "id": "bee",
+    "prompt": "Use case: scientific-educational. Asset type: single word picture for a Chinese preschool English bubble game. Primary request: One friendly honeybee, recognizable black-and-gold striped rounded abdomen, head and thorax, six small legs, two antennae, delicate translucent wings, large kind eyes. Full insect visible, no flowers. Style: polished soft 3D clay children's learning illustration with clear silhouette, subtle material texture, warm studio lighting, restrained rounded details, matching a friendly toy-like app. Composition: one central subject fills 78 percent of a square canvas, centered with comfortable margins, crisp even at 100 pixels. Background: genuinely transparent alpha. No text, numbers, logo, watermark, frame, backdrop, props or additional subjects. Anatomically recognizable and non-scary.",
+    "file": "public/images/words/learning/bee.webp",
+    "mode": "built-in image_gen"
+  },
+  {
+    "id": "fish",
+    "prompt": "Use case: scientific-educational. Asset type: single word picture for a Chinese preschool English bubble game. Primary request: One cheerful small golden-yellow fish in side three-quarter view, recognizable fins, fan-shaped tail and scales, small kind eyes, full body visible. No water, bubbles or aquarium. Style: polished soft 3D clay children's learning illustration with clear silhouette, subtle material texture, warm studio lighting, restrained rounded details, matching a friendly toy-like app. Composition: one central subject fills 78 percent of a square canvas, centered with comfortable margins, crisp even at 100 pixels. Background: genuinely transparent alpha. No text, numbers, logo, watermark, frame, backdrop, props or additional subjects. Anatomically recognizable and non-scary.",
+    "file": "public/images/words/learning/fish.webp",
+    "mode": "built-in image_gen"
+  },
+  {
+    "id": "bird",
+    "prompt": "Use case: scientific-educational. Asset type: single word picture for a Chinese preschool English bubble game. Primary request: One friendly small blue songbird standing in side three-quarter view, orange beak, two little feet, two folded wings and short feather tail, full body visible. No branches or nest. Style: polished soft 3D clay children's learning illustration with clear silhouette, subtle material texture, warm studio lighting, restrained rounded details, matching a friendly toy-like app. Composition: one central subject fills 78 percent of a square canvas, centered with comfortable margins, crisp even at 100 pixels. Background: genuinely transparent alpha. No text, numbers, logo, watermark, frame, backdrop, props or additional subjects. Anatomically recognizable and non-scary.",
+    "file": "public/images/words/learning/bird.webp",
+    "mode": "built-in image_gen"
+  },
+  {
+    "id": "cow",
+    "prompt": "Use case: scientific-educational. Asset type: single word picture for a Chinese preschool English bubble game. Primary request: One friendly black-and-white dairy cow standing in three-quarter view, four short sturdy legs with hooves, small horns, two ears, pink broad muzzle, udder subtly visible, full body and tail visible. No meadow or barn. Style: polished soft 3D clay children's learning illustration with clear silhouette, subtle material texture, warm studio lighting, restrained rounded details, matching a friendly toy-like app. Composition: one central subject fills 78 percent of a square canvas, centered with comfortable margins, crisp even at 100 pixels. Background: genuinely transparent alpha. No text, numbers, logo, watermark, frame, backdrop, props or additional subjects. Anatomically recognizable and non-scary.",
+    "file": "public/images/words/learning/cow.webp",
+    "mode": "built-in image_gen"
+  },
+  {
+    "id": "horse",
+    "prompt": "Create one cute brown toy horse for a preschool English picture card. Soft clay 3D illustration, full standing horse with four hooves, two ears, mane and tail, gentle face. Centered square composition with margins, genuinely transparent background. Clear simple silhouette. No text, no props, no rider, no frame or watermark.",
+    "file": "public/images/words/learning/horse.webp",
+    "mode": "built-in image_gen"
+  },
+  {
+    "id": "kid",
+    "prompt": "Use case: scientific-educational. Asset type: single word picture for a Chinese preschool English bubble game. Primary request: One cheerful kindergarten-aged boy standing and waving gently, short brown hair, simple orange T-shirt, blue shorts and shoes, recognizable child proportions, full body visible. No toys or other people. Style: polished soft 3D clay children's learning illustration with clear silhouette, subtle material texture, warm studio lighting, restrained rounded details, matching a friendly toy-like app. Composition: one central subject fills 78 percent of a square canvas, centered with comfortable margins, crisp even at 100 pixels. Background: genuinely transparent alpha. No text, numbers, logo, watermark, frame, backdrop, props or additional subjects. Anatomically recognizable and non-scary.",
+    "file": "public/images/words/learning/kid.webp",
+    "mode": "built-in image_gen"
+  }
+]

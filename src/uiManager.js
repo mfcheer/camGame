@@ -1,5 +1,5 @@
 import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
-import { getWordCn } from './wordsConfig.js';
+import { getWordCn, getWordById, resolveAssetUrl } from './wordsConfig.js';
 /**
  * UI 界面与交互状态管理器
  * 1. 5 个彩色发光圆点进度指示（免识字设计，直观友好）
@@ -693,7 +693,7 @@ export class UIManager {
   // 划破气泡浮现实物认知卡片 (高清实物大图 + 英文单词标牌 + 视听立体刺激)
   showWordPopup(word, hitX = 0.5, hitY = 0.5) {
     if (typeof document === "undefined") return;
-    const wordData = typeof word === "string" ? { word, id: word, accent: "#ff6b81" } : word;
+    const wordData = typeof word === "string" ? getWordById(word) || { word, id: word, accent: "#ff6b81" } : word;
     if (!wordData || !wordData.word) return;
 
     const restoreFocus=document.activeElement===this.activeWordPopup?.replayButton;
@@ -726,26 +726,18 @@ export class UIManager {
     photoFrame.addEventListener?.('click',()=>this.handlers?.onReplayWord?.());
     popup.replayButton=photoFrame;
 
-    const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
-    const cleanBase = base.endsWith("/") ? base : base + "/";
     const rawSrc = wordData.itemImage || wordData.image || `images/words/items/${wordId}.png`;
-    const cleanRaw = rawSrc.startsWith("/") ? rawSrc.slice(1) : rawSrc;
-    const fullImgSrc = rawSrc.startsWith("http") || rawSrc.startsWith("data:") ? rawSrc : cleanBase + cleanRaw;
-
+    const fullImgSrc = resolveAssetUrl(rawSrc);
     const img = document.createElement("img");
     img.className = "word-popup-photo";
     img.src = fullImgSrc;
     img.alt = wordName;
     img.loading = "eager";
-    img.onerror = () => {
-      if (!img.dataset) img.dataset = {};
-      if (!img.dataset.fallback) {
-        img.dataset.fallback = "1";
-        img.src = cleanBase + `images/words/${wordId}.png`;
-      } else if (img.dataset.fallback === "1") {
-        img.dataset.fallback = "2";
-        img.src = cleanBase + `images/words/${wordId}.svg`;
-      }
+    const fallbacks=[...new Set([wordData.itemSvg,wordData.bubbleImage,wordData.bubbleSvg,wordData.svg].filter(Boolean).map(resolveAssetUrl))].filter(src=>src!==fullImgSrc);
+    img.onerror=()=>{
+      const next=fallbacks.shift();
+      if(next)img.src=next;
+      else img.onerror=null;
     };
     photoFrame.appendChild(img);
     const replayIcon=document.createElement('span');

@@ -2,274 +2,805 @@
   {
     "id": "chair",
     "word": "chair",
+    "zh": "椅子",
     "category": "school",
-    "image": "/images/words/items/chair.png",
-    "bubbleImage": "/images/words/chair.png",
+    "image": "/images/words/learning/chair.svg",
+    "bubbleImage": "/images/words/learning/chair.svg",
     "svg": "/images/words/items/chair.svg",
     "bubbleSvg": "/images/words/chair.svg",
     "audio": "/audio/words/chair.mp3",
+    "reviewAudio": "/audio/words/review/chair.mp3",
     "accent": "#D35400",
-    "zh": "椅子",
-    "wordCn": "椅子"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "table",
     "word": "table",
+    "zh": "桌子",
     "category": "school",
-    "image": "/images/words/items/table.png",
-    "bubbleImage": "/images/words/table.png",
+    "image": "/images/words/learning/table.svg",
+    "bubbleImage": "/images/words/learning/table.svg",
     "svg": "/images/words/items/table.svg",
     "bubbleSvg": "/images/words/table.svg",
     "audio": "/audio/words/table.mp3",
+    "reviewAudio": "/audio/words/review/table.mp3",
     "accent": "#2980B9",
-    "zh": "桌子",
-    "wordCn": "桌子"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "pencil",
     "word": "pencil",
+    "zh": "铅笔",
     "category": "school",
-    "image": "/images/words/items/pencil.png",
-    "bubbleImage": "/images/words/pencil.png",
+    "image": "/images/words/learning/pencil.svg",
+    "bubbleImage": "/images/words/learning/pencil.svg",
     "svg": "/images/words/items/pencil.svg",
     "bubbleSvg": "/images/words/pencil.svg",
     "audio": "/audio/words/pencil.mp3",
+    "reviewAudio": "/audio/words/review/pencil.mp3",
     "accent": "#F39C12",
-    "zh": "铅笔",
-    "wordCn": "铅笔"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "book",
     "word": "book",
+    "zh": "书本",
     "category": "school",
-    "image": "/images/words/items/book.png",
-    "bubbleImage": "/images/words/book.png",
+    "image": "/images/words/learning/book.svg",
+    "bubbleImage": "/images/words/learning/book.svg",
     "svg": "/images/words/items/book.svg",
     "bubbleSvg": "/images/words/book.svg",
     "audio": "/audio/words/book.mp3",
+    "reviewAudio": "/audio/words/review/book.mp3",
     "accent": "#16A085",
-    "zh": "书本",
-    "wordCn": "书本"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "crayon",
     "word": "crayon",
+    "zh": "蜡笔",
     "category": "school",
-    "image": "/images/words/items/crayon.png",
-    "bubbleImage": "/images/words/crayon.png",
+    "image": "/images/words/learning/crayon.svg",
+    "bubbleImage": "/images/words/learning/crayon.svg",
     "svg": "/images/words/items/crayon.svg",
     "bubbleSvg": "/images/words/crayon.svg",
     "audio": "/audio/words/crayon.mp3",
+    "reviewAudio": "/audio/words/review/crayon.mp3",
     "accent": "#E74C3C",
-    "zh": "蜡笔",
-    "wordCn": "蜡笔"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "teacher",
     "word": "teacher",
+    "zh": "老师",
     "category": "school",
-    "image": "/images/words/items/teacher.png",
-    "bubbleImage": "/images/words/teacher.png",
+    "image": "/images/words/items/teacher-v2.png",
+    "bubbleImage": "/images/words/items/teacher-v2.png",
     "svg": "/images/words/items/teacher.svg",
     "bubbleSvg": "/images/words/teacher.svg",
     "audio": "/audio/words/teacher.mp3",
+    "reviewAudio": "/audio/words/review/teacher.mp3",
     "accent": "#F39C12",
-    "zh": "老师",
-    "wordCn": "老师"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "red",
     "word": "red",
+    "zh": "红色",
     "category": "colors",
-    "image": "/images/words/items/red.png",
-    "bubbleImage": "/images/words/red.png",
+    "image": "/images/words/learning/red.svg",
+    "bubbleImage": "/images/words/learning/red.svg",
     "svg": "/images/words/items/red.svg",
     "bubbleSvg": "/images/words/red.svg",
     "audio": "/audio/words/red.mp3",
+    "reviewAudio": "/audio/words/review/red.mp3",
     "accent": "#E74C3C",
-    "zh": "红色",
-    "wordCn": "红色"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "yellow",
     "word": "yellow",
+    "zh": "黄色",
     "category": "colors",
-    "image": "/images/words/items/yellow.png",
-    "bubbleImage": "/images/words/yellow.png",
+    "image": "/images/words/learning/yellow.svg",
+    "bubbleImage": "/images/words/learning/yellow.svg",
     "svg": "/images/words/items/yellow.svg",
     "bubbleSvg": "/images/words/yellow.svg",
     "audio": "/audio/words/yellow.mp3",
+    "reviewAudio": "/audio/words/review/yellow.mp3",
     "accent": "#F1C40F",
-    "zh": "黄色",
-    "wordCn": "黄色"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "blue",
     "word": "blue",
+    "zh": "蓝色",
     "category": "colors",
-    "image": "/images/words/items/blue.png",
-    "bubbleImage": "/images/words/blue.png",
+    "image": "/images/words/learning/blue.svg",
+    "bubbleImage": "/images/words/learning/blue.svg",
     "svg": "/images/words/items/blue.svg",
     "bubbleSvg": "/images/words/blue.svg",
     "audio": "/audio/words/blue.mp3",
+    "reviewAudio": "/audio/words/review/blue.mp3",
     "accent": "#3498DB",
-    "zh": "蓝色",
-    "wordCn": "蓝色"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "green",
     "word": "green",
+    "zh": "绿色",
     "category": "colors",
-    "image": "/images/words/items/green.png",
-    "bubbleImage": "/images/words/green.png",
+    "image": "/images/words/learning/green.svg",
+    "bubbleImage": "/images/words/learning/green.svg",
     "svg": "/images/words/items/green.svg",
     "bubbleSvg": "/images/words/green.svg",
     "audio": "/audio/words/green.mp3",
+    "reviewAudio": "/audio/words/review/green.mp3",
     "accent": "#2ECC71",
-    "zh": "绿色",
-    "wordCn": "绿色"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "purple",
     "word": "purple",
+    "zh": "紫色",
     "category": "colors",
-    "image": "/images/words/items/purple.png",
-    "bubbleImage": "/images/words/purple.png",
+    "image": "/images/words/learning/purple.svg",
+    "bubbleImage": "/images/words/learning/purple.svg",
     "svg": "/images/words/items/purple.svg",
     "bubbleSvg": "/images/words/purple.svg",
     "audio": "/audio/words/purple.mp3",
+    "reviewAudio": "/audio/words/review/purple.mp3",
     "accent": "#9B59B6",
-    "zh": "紫色",
-    "wordCn": "紫色"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "circle",
     "word": "circle",
+    "zh": "圆形",
     "category": "shapes",
-    "image": "/images/words/items/circle.png",
-    "bubbleImage": "/images/words/circle.png",
+    "image": "/images/words/learning/circle.svg",
+    "bubbleImage": "/images/words/learning/circle.svg",
     "svg": "/images/words/items/circle.svg",
     "bubbleSvg": "/images/words/circle.svg",
     "audio": "/audio/words/circle.mp3",
+    "reviewAudio": "/audio/words/review/circle.mp3",
     "accent": "#E67E22",
-    "zh": "圆形",
-    "wordCn": "圆形"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "triangle",
     "word": "triangle",
+    "zh": "三角形",
     "category": "shapes",
-    "image": "/images/words/items/triangle.png",
-    "bubbleImage": "/images/words/triangle.png",
+    "image": "/images/words/learning/triangle.svg",
+    "bubbleImage": "/images/words/learning/triangle.svg",
     "svg": "/images/words/items/triangle.svg",
     "bubbleSvg": "/images/words/triangle.svg",
     "audio": "/audio/words/triangle.mp3",
+    "reviewAudio": "/audio/words/review/triangle.mp3",
     "accent": "#F1C40F",
-    "zh": "三角形",
-    "wordCn": "三角形"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "square",
     "word": "square",
+    "zh": "正方形",
     "category": "shapes",
-    "image": "/images/words/items/square.png",
-    "bubbleImage": "/images/words/square.png",
+    "image": "/images/words/learning/square.svg",
+    "bubbleImage": "/images/words/learning/square.svg",
     "svg": "/images/words/items/square.svg",
     "bubbleSvg": "/images/words/square.svg",
     "audio": "/audio/words/square.mp3",
+    "reviewAudio": "/audio/words/review/square.mp3",
     "accent": "#1ABC9C",
-    "zh": "正方形",
-    "wordCn": "正方形"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "rectangle",
     "word": "rectangle",
+    "zh": "长方形",
     "category": "shapes",
-    "image": "/images/words/items/rectangle.png",
-    "bubbleImage": "/images/words/rectangle.png",
+    "image": "/images/words/learning/rectangle.svg",
+    "bubbleImage": "/images/words/learning/rectangle.svg",
     "svg": "/images/words/items/rectangle.svg",
     "bubbleSvg": "/images/words/rectangle.svg",
     "audio": "/audio/words/rectangle.mp3",
+    "reviewAudio": "/audio/words/review/rectangle.mp3",
     "accent": "#3498DB",
-    "zh": "长方形",
-    "wordCn": "长方形"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "doll",
     "word": "doll",
+    "zh": "洋娃娃",
     "category": "toys",
-    "image": "/images/words/items/doll.png",
-    "bubbleImage": "/images/words/doll.png",
+    "image": "/images/words/learning/doll.svg",
+    "bubbleImage": "/images/words/learning/doll.svg",
     "svg": "/images/words/items/doll.svg",
     "bubbleSvg": "/images/words/doll.svg",
     "audio": "/audio/words/doll.mp3",
+    "reviewAudio": "/audio/words/review/doll.mp3",
     "accent": "#E91E63",
-    "zh": "洋娃娃",
-    "wordCn": "洋娃娃"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "ball",
     "word": "ball",
+    "zh": "球",
     "category": "toys",
-    "image": "/images/words/items/ball.png",
-    "bubbleImage": "/images/words/ball.png",
+    "image": "/images/words/learning/ball.svg",
+    "bubbleImage": "/images/words/learning/ball.svg",
     "svg": "/images/words/items/ball.svg",
     "bubbleSvg": "/images/words/ball.svg",
     "audio": "/audio/words/ball.mp3",
+    "reviewAudio": "/audio/words/review/ball.mp3",
     "accent": "#2ECC71",
-    "zh": "球",
-    "wordCn": "球"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "car",
     "word": "car",
+    "zh": "汽车",
     "category": "toys",
-    "image": "/images/words/items/car.png",
-    "bubbleImage": "/images/words/car.png",
+    "image": "/images/words/learning/car.svg",
+    "bubbleImage": "/images/words/learning/car.svg",
     "svg": "/images/words/items/car.svg",
     "bubbleSvg": "/images/words/car.svg",
     "audio": "/audio/words/car.mp3",
+    "reviewAudio": "/audio/words/review/car.mp3",
     "accent": "#E74C3C",
-    "zh": "汽车",
-    "wordCn": "汽车"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "train",
     "word": "train",
+    "zh": "火车",
     "category": "toys",
-    "image": "/images/words/items/train.png",
-    "bubbleImage": "/images/words/train.png",
+    "image": "/images/words/learning/train.svg",
+    "bubbleImage": "/images/words/learning/train.svg",
     "svg": "/images/words/items/train.svg",
     "bubbleSvg": "/images/words/train.svg",
     "audio": "/audio/words/train.mp3",
+    "reviewAudio": "/audio/words/review/train.mp3",
     "accent": "#2980B9",
-    "zh": "火车",
-    "wordCn": "火车"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "bike",
     "word": "bike",
+    "zh": "自行车",
     "category": "toys",
-    "image": "/images/words/items/bike.png",
-    "bubbleImage": "/images/words/bike.png",
+    "image": "/images/words/learning/bike.svg",
+    "bubbleImage": "/images/words/learning/bike.svg",
     "svg": "/images/words/items/bike.svg",
     "bubbleSvg": "/images/words/bike.svg",
     "audio": "/audio/words/bike.mp3",
+    "reviewAudio": "/audio/words/review/bike.mp3",
     "accent": "#16A085",
-    "zh": "自行车",
-    "wordCn": "自行车"
+    "aliases": [],
+    "sources": []
   },
   {
     "id": "teddy",
     "word": "teddy",
+    "zh": "泰迪熊",
     "category": "toys",
-    "image": "/images/words/items/teddy.png",
-    "bubbleImage": "/images/words/teddy.png",
+    "image": "/images/words/learning/teddy.svg",
+    "bubbleImage": "/images/words/learning/teddy.svg",
     "svg": "/images/words/items/teddy.svg",
     "bubbleSvg": "/images/words/teddy.svg",
     "audio": "/audio/words/teddy.mp3",
+    "reviewAudio": "/audio/words/review/teddy.mp3",
     "accent": "#D35400",
-    "zh": "泰迪熊",
-    "wordCn": "泰迪熊"
+    "aliases": [],
+    "sources": [],
+    "conceptId": "plush-bear"
+  },
+  {
+    "id": "toy",
+    "word": "toy",
+    "zh": "玩具",
+    "category": "toys",
+    "image": "/images/words/learning/toy.svg",
+    "bubbleImage": "/images/words/learning/toy.svg",
+    "svg": "/images/words/learning/toy.svg",
+    "bubbleSvg": "/images/words/learning/toy.svg",
+    "audio": "/audio/words/toy.mp3",
+    "reviewAudio": "/audio/words/review/toy.mp3",
+    "accent": "#D78140",
+    "aliases": [
+      "toys"
+    ],
+    "sources": [
+      {
+        "bookId": "toys",
+        "form": "Toys",
+        "pdfPages": [
+          1,
+          2,
+          11,
+          12
+        ],
+        "printedPage": "cover"
+      }
+    ]
+  },
+  {
+    "id": "block",
+    "word": "block",
+    "zh": "积木",
+    "category": "toys",
+    "image": "/images/words/learning/block.svg",
+    "bubbleImage": "/images/words/learning/block.svg",
+    "svg": "/images/words/learning/block.svg",
+    "bubbleSvg": "/images/words/learning/block.svg",
+    "audio": "/audio/words/block.mp3",
+    "reviewAudio": "/audio/words/review/block.mp3",
+    "accent": "#CA6C42",
+    "aliases": [
+      "blocks"
+    ],
+    "sources": [
+      {
+        "bookId": "toys",
+        "form": "blocks",
+        "pdfPages": [
+          3,
+          10
+        ],
+        "printedPage": 3
+      }
+    ]
+  },
+  {
+    "id": "bear",
+    "word": "bear",
+    "zh": "玩具熊",
+    "category": "toys",
+    "image": "/images/words/learning/teddy.svg",
+    "bubbleImage": "/images/words/learning/teddy.svg",
+    "svg": "/images/words/learning/teddy.svg",
+    "bubbleSvg": "/images/words/learning/teddy.svg",
+    "audio": "/audio/words/bear.mp3",
+    "reviewAudio": "/audio/words/review/bear.mp3",
+    "accent": "#AD794E",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "toys",
+        "form": "bear",
+        "pdfPages": [
+          4,
+          9
+        ],
+        "printedPage": 4
+      }
+    ],
+    "conceptId": "plush-bear"
+  },
+  {
+    "id": "paint",
+    "word": "paint",
+    "zh": "颜料",
+    "category": "toys",
+    "image": "/images/words/learning/paint.svg",
+    "bubbleImage": "/images/words/learning/paint.svg",
+    "svg": "/images/words/learning/paint.svg",
+    "bubbleSvg": "/images/words/learning/paint.svg",
+    "audio": "/audio/words/paint.mp3",
+    "reviewAudio": "/audio/words/review/paint.mp3",
+    "accent": "#BD667C",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "toys",
+        "form": "paint",
+        "pdfPages": [
+          5,
+          8
+        ],
+        "printedPage": 5
+      }
+    ]
+  },
+  {
+    "id": "drum",
+    "word": "drum",
+    "zh": "鼓",
+    "category": "toys",
+    "image": "/images/words/learning/drum.svg",
+    "bubbleImage": "/images/words/learning/drum.svg",
+    "svg": "/images/words/learning/drum.svg",
+    "bubbleSvg": "/images/words/learning/drum.svg",
+    "audio": "/audio/words/drum.mp3",
+    "reviewAudio": "/audio/words/review/drum.mp3",
+    "accent": "#C98434",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "toys",
+        "form": "drum",
+        "pdfPages": [
+          6,
+          7
+        ],
+        "printedPage": 6
+      }
+    ]
+  },
+  {
+    "id": "plane",
+    "word": "plane",
+    "zh": "飞机",
+    "category": "toys",
+    "image": "/images/words/learning/plane.svg",
+    "bubbleImage": "/images/words/learning/plane.svg",
+    "svg": "/images/words/learning/plane.svg",
+    "bubbleSvg": "/images/words/learning/plane.svg",
+    "audio": "/audio/words/plane.mp3",
+    "reviewAudio": "/audio/words/review/plane.mp3",
+    "accent": "#4A97BD",
+    "aliases": [
+      "planes"
+    ],
+    "sources": [
+      {
+        "bookId": "toys",
+        "form": "plane",
+        "pdfPages": [
+          6,
+          7
+        ],
+        "printedPage": 7
+      }
+    ]
+  },
+  {
+    "id": "wagon",
+    "word": "wagon",
+    "zh": "小拉车",
+    "category": "toys",
+    "image": "/images/words/learning/wagon.svg",
+    "bubbleImage": "/images/words/learning/wagon.svg",
+    "svg": "/images/words/learning/wagon.svg",
+    "bubbleSvg": "/images/words/learning/wagon.svg",
+    "audio": "/audio/words/wagon.mp3",
+    "reviewAudio": "/audio/words/review/wagon.mp3",
+    "accent": "#CC634E",
+    "aliases": [
+      "wagons"
+    ],
+    "sources": [
+      {
+        "bookId": "toys",
+        "form": "wagon",
+        "pdfPages": [
+          5,
+          8
+        ],
+        "printedPage": 8
+      }
+    ]
+  },
+  {
+    "id": "kite",
+    "word": "kite",
+    "zh": "风筝",
+    "category": "toys",
+    "image": "/images/words/learning/kite.svg",
+    "bubbleImage": "/images/words/learning/kite.svg",
+    "svg": "/images/words/learning/kite.svg",
+    "bubbleSvg": "/images/words/learning/kite.svg",
+    "audio": "/audio/words/kite.mp3",
+    "reviewAudio": "/audio/words/review/kite.mp3",
+    "accent": "#6F9F6B",
+    "aliases": [
+      "kites"
+    ],
+    "sources": [
+      {
+        "bookId": "toys",
+        "form": "kite",
+        "pdfPages": [
+          4,
+          9
+        ],
+        "printedPage": 9
+      }
+    ]
+  },
+  {
+    "id": "robot",
+    "word": "robot",
+    "zh": "机器人",
+    "category": "toys",
+    "image": "/images/words/learning/robot.svg",
+    "bubbleImage": "/images/words/learning/robot.svg",
+    "svg": "/images/words/learning/robot.svg",
+    "bubbleSvg": "/images/words/learning/robot.svg",
+    "audio": "/audio/words/robot.mp3",
+    "reviewAudio": "/audio/words/review/robot.mp3",
+    "accent": "#5E92AA",
+    "aliases": [
+      "robots"
+    ],
+    "sources": [
+      {
+        "bookId": "toys",
+        "form": "robot",
+        "pdfPages": [
+          3,
+          10
+        ],
+        "printedPage": 10
+      }
+    ]
+  },
+  {
+    "id": "two",
+    "word": "two",
+    "zh": "二",
+    "category": "two_book",
+    "image": "/images/words/learning/two.svg",
+    "bubbleImage": "/images/words/learning/two.svg",
+    "svg": "/images/words/learning/two.svg",
+    "bubbleSvg": "/images/words/learning/two.svg",
+    "audio": "/audio/words/two.mp3",
+    "reviewAudio": "/audio/words/review/two.mp3",
+    "accent": "#DE9A34",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "two",
+        "form": "Two",
+        "pdfPages": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          12
+        ],
+        "printedPage": "cover / 3–10"
+      }
+    ]
+  },
+  {
+    "id": "bee",
+    "word": "bee",
+    "zh": "蜜蜂",
+    "category": "two_book",
+    "image": "/images/words/learning/bee.webp",
+    "bubbleImage": "/images/words/learning/bee.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/bee.mp3",
+    "reviewAudio": "/audio/words/review/bee.mp3",
+    "accent": "#C6932E",
+    "aliases": [
+      "bees"
+    ],
+    "sources": [
+      {
+        "bookId": "two",
+        "form": "bees",
+        "pdfPages": [
+          3,
+          10
+        ],
+        "printedPage": 3
+      }
+    ]
+  },
+  {
+    "id": "fish",
+    "word": "fish",
+    "zh": "鱼",
+    "category": "two_book",
+    "image": "/images/words/learning/fish.webp",
+    "bubbleImage": "/images/words/learning/fish.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/fish.mp3",
+    "reviewAudio": "/audio/words/review/fish.mp3",
+    "accent": "#D99737",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "two",
+        "form": "fish",
+        "pdfPages": [
+          4,
+          9
+        ],
+        "printedPage": 4
+      }
+    ]
+  },
+  {
+    "id": "bird",
+    "word": "bird",
+    "zh": "鸟",
+    "category": "two_book",
+    "image": "/images/words/learning/bird.webp",
+    "bubbleImage": "/images/words/learning/bird.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/bird.mp3",
+    "reviewAudio": "/audio/words/review/bird.mp3",
+    "accent": "#5B9BBB",
+    "aliases": [
+      "birds"
+    ],
+    "sources": [
+      {
+        "bookId": "two",
+        "form": "birds",
+        "pdfPages": [
+          5,
+          8
+        ],
+        "printedPage": 5
+      }
+    ]
+  },
+  {
+    "id": "cat",
+    "word": "cat",
+    "zh": "猫",
+    "category": "two_book",
+    "image": "/models/cat-preview.png",
+    "bubbleImage": "/models/cat-preview.png",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/cat.mp3",
+    "reviewAudio": "/audio/words/review/cat.mp3",
+    "accent": "#D89142",
+    "aliases": [
+      "cats"
+    ],
+    "sources": [
+      {
+        "bookId": "two",
+        "form": "cats",
+        "pdfPages": [
+          6,
+          7
+        ],
+        "printedPage": 6
+      }
+    ]
+  },
+  {
+    "id": "dog",
+    "word": "dog",
+    "zh": "狗",
+    "category": "two_book",
+    "image": "/models/dog-preview.png",
+    "bubbleImage": "/models/dog-preview.png",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/dog.mp3",
+    "reviewAudio": "/audio/words/review/dog.mp3",
+    "accent": "#A57D55",
+    "aliases": [
+      "dogs"
+    ],
+    "sources": [
+      {
+        "bookId": "two",
+        "form": "dogs",
+        "pdfPages": [
+          6,
+          7
+        ],
+        "printedPage": 7
+      }
+    ]
+  },
+  {
+    "id": "cow",
+    "word": "cow",
+    "zh": "奶牛",
+    "category": "two_book",
+    "image": "/images/words/learning/cow.webp",
+    "bubbleImage": "/images/words/learning/cow.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/cow.mp3",
+    "reviewAudio": "/audio/words/review/cow.mp3",
+    "accent": "#668E7B",
+    "aliases": [
+      "cows"
+    ],
+    "sources": [
+      {
+        "bookId": "two",
+        "form": "cows",
+        "pdfPages": [
+          5,
+          8
+        ],
+        "printedPage": 8
+      }
+    ]
+  },
+  {
+    "id": "horse",
+    "word": "horse",
+    "zh": "马",
+    "category": "two_book",
+    "image": "/images/words/learning/horse.webp",
+    "bubbleImage": "/images/words/learning/horse.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/horse.mp3",
+    "reviewAudio": "/audio/words/review/horse.mp3",
+    "accent": "#AF7955",
+    "aliases": [
+      "horses"
+    ],
+    "sources": [
+      {
+        "bookId": "two",
+        "form": "horses",
+        "pdfPages": [
+          4,
+          9
+        ],
+        "printedPage": 9
+      }
+    ]
+  },
+  {
+    "id": "kid",
+    "word": "kid",
+    "zh": "小孩",
+    "category": "two_book",
+    "image": "/images/words/learning/kid.webp",
+    "bubbleImage": "/images/words/learning/kid.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/kid.mp3",
+    "reviewAudio": "/audio/words/review/kid.mp3",
+    "accent": "#D78658",
+    "aliases": [
+      "kids"
+    ],
+    "sources": [
+      {
+        "bookId": "two",
+        "form": "kids",
+        "pdfPages": [
+          3,
+          10
+        ],
+        "printedPage": 10
+      }
+    ]
   }
 ]

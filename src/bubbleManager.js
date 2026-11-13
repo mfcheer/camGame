@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { GAME_CONFIG } from './config.js';
 import {getAnimalPlayStyle, animalTargetOffset} from './animalPlayStyles.js';
 import {PointerContrastSampler,pointerPalette} from './pointerContrast.js';
-import { WORDS_LIST, WORDS_MAP } from './wordsConfig.js';
+import { WORDS_LIST, WORDS_MAP, getWordById } from './wordsConfig.js';
 
 /**
  * 泡泡生命周期与交互管理 (v0.5.1 食指指尖交互与小动物解救)
@@ -544,7 +544,12 @@ export class BubbleManager {
     if (!this.wordPool.length) {
       const categories=[...new Set(WORDS_LIST.map(word=>word.category))];
       const category=categories[Math.floor(Math.random()*categories.length)];
-      this.wordPool=shuffle(WORDS_LIST.filter(word=>word.category===category)).slice(0,4);
+      const concepts=new Set();
+      this.wordPool=shuffle(WORDS_LIST.filter(word=>word.category===category)).filter(word=>{
+        const concept=word.conceptId||word.id;
+        if(concepts.has(concept))return false;
+        concepts.add(concept);return true;
+      }).slice(0,4);
     }
     if (!this.wordQueue?.length) {
       this.wordQueue=shuffle([...this.wordPool]);
@@ -563,7 +568,7 @@ export class BubbleManager {
     const colorHex = rainbowColors[index % rainbowColors.length];
 
     const word = forceWord
-      ? (typeof forceWord === 'string' ? WORDS_MAP.get(forceWord) || { id: forceWord, word: forceWord } : forceWord)
+      ? (typeof forceWord === 'string' ? getWordById(forceWord) || { id: forceWord, word: forceWord } : forceWord)
       : this.wordMode ? this.chooseRoundWord() : null;
     if (word?.id) this.lastWordId = word.id;
 
