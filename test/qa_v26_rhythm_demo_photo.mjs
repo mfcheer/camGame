@@ -58,17 +58,18 @@ test('holding the original pop point does not cause an automatic replay; leave a
 
 test('the happy performance plays itself: no input, no score change, pause freezes it',()=>{
  for(const id of ['bunny','cat','dog','frog','dragon','goldenDragon']){const x=friend(id);x.step(1.2);
-  assert.ok(x.f.active,id);assert.ok(x.f.plan.length>=4&&x.f.plan.length<=5,id);assert.ok(x.f.currentAction(),id);
+  assert.ok(x.f.active,id);assert.ok(x.f.plan.length>=5&&x.f.plan.length<=6,id);assert.ok(x.f.currentAction(),id);
   assert.ok(x.a.actionPoseFn,id);assert.equal(x.a.energyLevel,0,id);assert.ok(x.a.friendResponse>0,id);
   x.f.setPaused(true);const elapsed=x.f.elapsed,action=x.f.currentAction();x.step(2);
   assert.equal(x.f.elapsed,elapsed,id);assert.equal(x.f.currentAction(),action,id);assert.equal(x.f.group.visible,false,id);
   x.f.setPaused(false);x.step(15);assert.equal(x.f.active,false,id);assert.equal(x.a.actionPoseFn,null,id);x.f.clear();}
 });
 
-test('each show draws a fresh plan with its signature move and no repeats',()=>{
+test('each show draws a fresh plan with a signature move, a finale, and no repeats',()=>{
  const seen=new Set();
  for(let i=0;i<6;i++){const x=friend('cat');const ids=x.f.plan.map(p=>p.id);
-  seen.add(ids.join(','));assert.ok(ids.includes('earWiggle'),'signature present');
+  seen.add(ids.join(','));assert.ok(ids.some(sid=>['earWiggle','tailSway'].includes(sid)),'a signature present');
+  assert.equal(ids[ids.length-1],'finaleBow','finale closes the show');
   assert.equal(new Set(ids).size,ids.length,'no repeated actions');x.f.clear();}
  assert.ok(seen.size>1,'plans vary between shows');
 });

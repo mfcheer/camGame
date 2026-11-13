@@ -68,8 +68,83 @@ const ACTIONS=[
     a.animalGroup.position.y+=Math.sin(t*Math.PI*3)*.045*m;
     for(const [name,sign] of [['Whisker_L',-1],['Whisker_R',1]]){const w=a.model.getObjectByName(name);if(w)w.rotation.y=sign*Math.sin(t*Math.PI*3)*.10*m;}
   }},
+  {id:'wave',dur:1.6,fn:(a,t,m)=>{
+    const raise=Math.sin(t*Math.PI);
+    a.leftArm.rotation.set(-raise*.4,0,-1.55*raise*m+Math.sin(t*Math.PI*5)*.22*raise*m);
+    a.headGroup.rotation.z=Math.sin(t*Math.PI*2)*.08*raise*m;
+  }},
+  {id:'jellyWobble',dur:1.5,reset:a=>{a.bodyMesh.scale.set(1,1,1);},fn:(a,t,m)=>{
+    const w=Math.sin(t*Math.PI*6)*Math.sin(t*Math.PI)*m;
+    a.bodyMesh.scale.set(1+w*.07,1-w*.09,1+w*.07);
+    a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*6))*.015*m;
+  }},
+  {id:'starJump',dur:1.8,fn:(a,t,m)=>{
+    const k=Math.abs(Math.sin(t*Math.PI*2))*m;
+    a.leftArm.rotation.z=-.9*k;a.rightArm.rotation.z=.9*k;
+    a.leftLeg.rotation.x=a.rightLeg.rotation.x=-.4*k;
+    a.leftEarGroup.rotation.x=a.rightEarGroup.rotation.x=-.3*k;
+    a.animalGroup.position.y+=k*.10;
+  }},
+  {id:'nodDance',dur:1.6,fn:(a,t,m)=>{
+    const env=Math.sin(t*Math.PI),n=Math.sin(t*Math.PI*6)*m;
+    a.headGroup.rotation.x=.22*n*env;
+    a.animalGroup.position.y+=Math.abs(n)*.025;
+    a.leftArm.rotation.z=-n*.18*env;a.rightArm.rotation.z=n*.18*env;
+  }},
+  {id:'skyHop',dur:1.5,animals:['bunny'],fn:(a,t,m)=>{
+    const j=Math.sin(t*Math.PI)*m;
+    a.animalGroup.position.y+=j*.30;
+    a.leftEarGroup.rotation.z=.1+j*.45;a.rightEarGroup.rotation.z=-.1-j*.45;
+    a.leftEarGroup.rotation.x=a.rightEarGroup.rotation.x=-j*.2;
+    a.leftLeg.rotation.x=a.rightLeg.rotation.x=Math.sin(t*Math.PI*2)*.6*m;
+    a.leftArm.rotation.z=-j*.5;a.rightArm.rotation.z=j*.5;
+  }},
+  {id:'tailSway',dur:1.6,animals:['cat'],fn:(a,t,m)=>{
+    a.tailGroup.rotation.z=Math.sin(t*Math.PI*4)*.35*m;
+    a.tailGroup.rotation.y=Math.sin(t*Math.PI*4+1.2)*.18*m;
+    a.headGroup.rotation.z=Math.sin(t*Math.PI*2)*.16*m;
+    a.bodyMesh.rotation.y=Math.sin(t*Math.PI*2)*.04*m;
+  }},
+  {id:'headTilt',dur:1.4,animals:['dog'],fn:(a,t,m)=>{
+    const tilt=Math.sin(t*Math.PI*2)*m;
+    a.headGroup.rotation.z=tilt*.28;
+    a.leftEarGroup.rotation.z=.12+tilt*.22;a.rightEarGroup.rotation.z=-.12-tilt*.22;
+    a.tailGroup.rotation.y=Math.sin(t*Math.PI*8)*.5*m;
+    a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*4))*.02*m;
+  }},
+  {id:'leapFrog',dur:1.7,animals:['frog'],reset:a=>{a.bodyMesh.scale.set(1,1,1);},fn:(a,t,m)=>{
+    const crouch=t<.3?Math.sin(t/.3*Math.PI)*m:0;
+    const jump=t>=.3?Math.sin((t-.3)/.7*Math.PI)*.28*m:0;
+    a.bodyMesh.scale.set(1+crouch*.15,1-crouch*.2,1+crouch*.15);
+    a.leftLeg.rotation.x=a.rightLeg.rotation.x=-crouch*.9;
+    a.animalGroup.position.y+=jump;
+    a.leftArm.rotation.z=-jump*1.2;a.rightArm.rotation.z=jump*1.2;
+    a.headGroup.rotation.x=-jump*.5;
+  }},
+  {id:'wingFlutter',dur:1.5,animals:['dragon'],fn:(a,t,m)=>{
+    const env=Math.sin(t*Math.PI)*m;
+    for(const [name,sign] of [['Wing_L',-1],['Wing_R',1]]){const wing=a.model.getObjectByName(name);if(wing)wing.rotation.y=sign*(.3+Math.sin(t*Math.PI*9)*.35*env);}
+    a.animalGroup.position.y+=env*.16;
+    a.tailGroup.rotation.y=Math.sin(t*Math.PI*6)*.25*m;
+  }},
+  {id:'cloudHover',dur:1.8,animals:['goldenDragon'],fn:(a,t,m)=>{
+    const rise=Math.sin(t*Math.PI)*m;
+    a.animalGroup.position.y+=rise*.18;
+    a.bodyMesh.rotation.z=Math.sin(t*Math.PI*4)*.05*m;
+    a.tailGroup.rotation.y=Math.sin(t*Math.PI*4-.8)*.3*m;
+    for(const [name,sign] of [['Whisker_L',-1],['Whisker_R',1]]){const w=a.model.getObjectByName(name);if(w)w.rotation.y=sign*Math.sin(t*Math.PI*4)*.14*m;}
+    a.headGroup.rotation.z=Math.sin(t*Math.PI*2)*.06*m;
+  }},
+  {id:'finaleBow',dur:1.8,fn:(a,t,m)=>{
+    const bow=Math.sin(t*Math.PI)*m;
+    a.bodyMesh.rotation.x=.5*bow;
+    a.headGroup.rotation.x=.38*bow;
+    a.leftArm.rotation.z=-.45*bow;a.rightArm.rotation.z=.45*bow;
+    a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*.02*m;
+  }},
 ];
-const SIGNATURE={bunny:'earWiggle',cat:'earWiggle',dog:'tailChase',frog:'croak',dragon:'barrelRoll',goldenDragon:'swimS'};
+const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover']};
+const FINALE=ACTIONS.find(x=>x.id==='finaleBow');
 
 // 结算后的"开心小演出"：动物自己走到台前随机表演，孩子和家长可以休息。
 // 无输入、无计分、无引导；每个动作开始播一声该动物的 happy 音效。
@@ -98,15 +173,23 @@ export class HappyPerformance {
     return this.plan.map(p=>p.id);
   }
   buildPlan() {
-    // 4-5 个动作：必含一个该动物的招牌动作，其余从通用动作里不重复随机抽取，顺序随机。
+    // 4-5 个动作：从该动物的两个招牌动作里随机选一个出场，其余从通用动作池不重复随机抽取，顺序随机；
+    // 结尾固定接谢幕彩蛋。与上一局的节目单保证开场动作不同、整单不完全相同。
     const id=this.animal.animalId;
-    const sig=ACTIONS.find(x=>x.id===SIGNATURE[id])||ACTIONS[0];
-    const generics=ACTIONS.filter(x=>!x.animals&&!Object.is(x,sig));
-    for(let i=generics.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[generics[i],generics[j]]=[generics[j],generics[i]];}
+    const pool=ACTIONS.filter(x=>x.animals?.includes(id)||( !x.animals&&x.id!=='finaleBow'));
+    const sigs=pool.filter(x=>x.animals);
+    const sig=sigs[Math.floor(Math.random()*sigs.length)];
+    const others=pool.filter(x=>!Object.is(x,sig));
+    for(let i=others.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[others[i],others[j]]=[others[j],others[i]];}
     const total=4+(Math.random()<.4?1:0);
-    const plan=generics.slice(0,total-1);
+    const plan=others.slice(0,total-1);
     plan.splice(Math.floor(Math.random()*(plan.length+1)),0,sig);
-    return plan;
+    if(this.lastPlan){
+      if(plan[0].id===this.lastPlan[0]){const j=1+Math.floor(Math.random()*(plan.length-1));[plan[0],plan[j]]=[plan[j],plan[0]];}
+      if(plan.map(p=>p.id).join()===this.lastPlan.join()){[plan[plan.length-1],plan[0]]=[plan[0],plan[plan.length-1]];}
+    }
+    this.lastPlan=plan.map(p=>p.id);
+    return plan.concat([FINALE]);
   }
   updateLayout(instant=true) {
     if(!this.active)return;
@@ -144,7 +227,7 @@ export class HappyPerformance {
     this.animal.actionPoseFn=t=>act.fn(this.animal,t,m);
     this.animal.actionPoseT=0;
     this.audio?.playAnimalSound?.(this.animal.animalId,'happy');
-    this.animal.friendReact(i+1);
+    this.animal.friendReact(act.id==='finaleBow'?3:i+1);
   }
   update(dt) {
     if(!this.active||this.paused)return;
