@@ -25,6 +25,8 @@
 
   <!-- UI 覆盖交互层 -->
   <div id="ui-layer">
+    <!-- 拍照快门全屏白光微闪烁 -->
+    <div id="camera-flash" class="camera-flash hidden"></div>
     <!-- 顶部 HUD 栏 -->
     <div id="game-hud" class="hidden">
       <div class="hud-left">
@@ -113,6 +115,11 @@
 
         </div>
         <div class="start-actions">
+        <button id="btn-open-camp" class="camp-entry-btn" type="button">
+          <span class="camp-btn-icon">⛺</span>
+          <span class="camp-btn-text">我的小营地 · 森林图鉴</span>
+          <span id="camp-badge-count" class="camp-badge-count">0/6</span>
+        </button>
         <!-- 模式选择 -->
         <div class="mode-selector">
           <button id="btn-mode-single" class="mode-btn selected">
@@ -181,9 +188,40 @@
         <h1>🎉 太棒啦！</h1>
         <h2 id="victory-animal-title">萌萌自由啦，谢谢你！</h2>
         <p id="victory-animal-copy">5 份彩虹能量，换来一只自由的小兔。萌萌已经跳回森林，还记得回头向你挥挥手。</p>
+        <!-- 拍立得森林英雄合影卡 -->
+        <div class="polaroid-wrapper" id="polaroid-wrapper">
+          <div class="polaroid-card" id="polaroid-card">
+            <div class="polaroid-photo-frame">
+              <img id="polaroid-img" class="polaroid-img" alt="森林英雄拍立得合影" />
+            </div>
+            <div class="polaroid-footer">
+              <div class="polaroid-caption">
+                <span class="polaroid-title" id="polaroid-title">森林大解救 · 英雄合影</span>
+                <span class="polaroid-date" id="polaroid-date">2026.11.13</span>
+              </div>
+              <div class="polaroid-stamp" id="polaroid-stamp">森林英雄<br>★ HERO ★</div>
+            </div>
+          </div>
+          <button id="btn-save-polaroid" class="btn-primary btn-save-photo" type="button">保存合影 📸</button>
+        </div>
         <div class="victory-actions"><button id="btn-play-again" class="btn-primary">再解救一次 🎈</button>
         <button id="btn-victory-exit" class="btn-secondary">换个朋友 / 回首页 🏠</button></div>
         <div class="auto-next-row"><span id="auto-next-status" aria-live="polite"></span><button id="btn-stop-auto-next" class="text-button">先休息，停止自动开始</button></div>
+      </div>
+    </div>
+
+    <!-- 7. 森林营地图鉴窗口 -->
+    <div id="camp-modal" class="modal-overlay hidden">
+      <div class="card camp-card">
+        <div class="camp-header">
+          <h2>⛺ 我的森林营地</h2>
+          <p>已点亮 <strong id="camp-unlocked-count">0</strong> / 6 位朋友 · 累计送出 <strong id="camp-total-count">0</strong> 次自由！</p>
+          <div class="camp-tip">点击已点亮的小动物，可以听听它们的专属叫声哦 🎵</div>
+        </div>
+        <div class="camp-grid" id="camp-grid"></div>
+        <div class="camp-footer">
+          <button id="btn-close-camp" class="btn-primary" type="button">返回首页 🏠</button>
+        </div>
       </div>
     </div>
 

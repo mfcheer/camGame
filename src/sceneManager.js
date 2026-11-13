@@ -25,7 +25,7 @@ export class SceneManager {
     this.camera = new THREE.PerspectiveCamera(48, w/h, 0.1, 100);
     this.camera.position.set(0,0,7.5);
     if (typeof window !== 'undefined') {
-      this.renderer = new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
+      this.renderer = new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance',preserveDrawingBuffer:true});
       this.renderer.setSize(w,h); this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1,2));
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
       this.renderer.toneMapping = THREE.ACESFilmicToneMapping;

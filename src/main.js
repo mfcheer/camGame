@@ -8,6 +8,8 @@ import { PoseDetector } from './poseDetector.js';
 import { UIManager } from './uiManager.js';
 import { GAME_CONFIG, resolveAnimal, PLAYABLE_ANIMALS } from './config.js';
 import {CelebrationAccessories} from './celebrationAccessories.js';
+import { CampManager } from './campManager.js';
+import { PolaroidManager } from './polaroidManager.js';
 
 /**
  * 游戏主控制器《彩虹小队 · 森林大解救》 (v0.5.1 食指指尖追踪、柔性等待与小动物打磨)
@@ -28,6 +30,9 @@ export class Game {
     this.state = 'START'; // 'START' | 'CALIBRATING' | 'PLAYING' | 'PAUSED' | 'CELEBRATING' | 'ERROR'
     this.prePauseState = 'PLAYING';
     this.collectedCount = 0;
+    this.campManager = new CampManager();
+    this.currentPolaroidDataUrl = null;
+    this.currentAnimalName = "小兔 萌萌";
     this.animalSelection = 'bunny';
     this.activeAnimalId = 'bunny';
     this.targetCount = GAME_CONFIG.animals.bunny.targetBubbles;
@@ -88,6 +93,7 @@ export class Game {
     this.comboCount = 0;
     if (this.bubbleManager) {
       this.bubbleManager.onComboChange = (combo) => this.handleComboChange(combo);
+      this.bubbleManager.onSpecialPop = () => this.onBubblePopped();
     }
 
     this.bubbleManager?.contrastSampler && (this.bubbleManager.contrastSampler.video=this.videoElement);
@@ -111,8 +117,11 @@ export class Game {
         onExit: () => this.handleExit(),
         onToggleAudio: () => this.audioManager.toggleMute(),
         onEnableDemo: (mode) => this.handleEnableDemo(mode),
-        onRetryCamera: () => this.handleRetryCamera()
+        onRetryCamera: () => this.handleRetryCamera(),
+        onOpenCamp: () => this.uiManager.showCamp(this.campManager, this.audioManager),
+        onSavePolaroid: () => PolaroidManager.downloadImage(this.currentPolaroidDataUrl, this.currentAnimalName)
       });
+      this.uiManager?.updateCampBadge?.(this.campManager);
     }
 
     if (typeof window !== 'undefined') {
@@ -478,11 +487,12 @@ export class Game {
   }
 
   // 碰破泡泡的核心计分与结算
-  onBubblePopped() {
+  onBubblePopped(energyGained = (this.bubbleManager?.lastPoppedEnergy || 1)) {
     if (this.state !== 'PLAYING') return;
 
-    this.collectedCount++;
+    this.collectedCount = Math.min(this.targetCount, this.collectedCount + energyGained);
     const current = this.collectedCount;
+    if (this.bubbleManager) this.bubbleManager.lastPoppedEnergy = 1;
 
     // 首次碰触立即在 200ms 内淡出首个泡泡示范引导手势，后续不再显示
     if (this.uiManager) {
@@ -532,9 +542,17 @@ export class Game {
     this.comboCount = 0;
     this.uiManager?.hideCombo?.();
 
+    const animalId = this.activeAnimalId || this.rescueAnimal?.animalId || 'bunny';
+    this.campManager?.recordRescue(animalId);
+    this.uiManager?.updateCampBadge?.(this.campManager);
+
     // 播放欢庆音效与小动物大逃亡飞奔动画
     this.audioManager.playCelebration();
-    this.audioManager.playAnimalSound?.(this.activeAnimalId || this.rescueAnimal?.animalId || "bunny", "escape");
+    this.audioManager.playAnimalSound?.(animalId, "escape");
+
+    // 胜利拍照抓拍：快门声、全屏白光微闪烁
+    this.audioManager?.playCameraShutter?.();
+    this.uiManager?.triggerCameraFlash?.();
     if (this.balloon) this.balloon.startTakeoff();
     if (this.rescueAnimal) this.rescueAnimal.startEscape();
 
@@ -567,6 +585,26 @@ export class Game {
     this.waitingForEscape = false;
     if(this.resultVisible)return;
     this.resultVisible=true;
+
+    // 拍立得照片卡生成并展示
+    const animalId = this.activeAnimalId || this.rescueAnimal?.animalId || 'bunny';
+    const video = typeof document !== 'undefined' ? document.getElementById('webcam-video') : null;
+    const webglCanvas = this.sceneManager?.renderer?.domElement;
+    const profile = GAME_CONFIG.animals[animalId] || {};
+    const emojiMap = { bunny: '🐰', cat: '🐱', frog: '🐸', dog: '🐶', dragon: '🐲', goldenDragon: '🐉' };
+    const animalName = profile.name || '小动物';
+    this.currentAnimalName = animalName;
+    const polaroidDataUrl = PolaroidManager.getDataUrl({
+      videoElement: video,
+      webglCanvas,
+      animalId,
+      animalName,
+      targetBubbles: this.targetCount,
+      animalEmoji: emojiMap[animalId] || '🐾'
+    });
+    this.currentPolaroidDataUrl = polaroidDataUrl;
+    this.uiManager?.setPolaroidImage?.(polaroidDataUrl, animalName);
+
     this.uiManager?.showVictory?.();
     if(this.sceneManager && this.uiManager?.setAutoNextCountdown)this.startAutoNext();
   }

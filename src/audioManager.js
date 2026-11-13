@@ -642,6 +642,157 @@ export class AudioManager {
     } catch (e) {}
   }
 
+  // 7. Q弹果冻大泡泡触碰弹性形变音效 (Duang~ 软糯回弹)
+  playJellyBoing() {
+    if (this.isMuted || !this.ctx) return;
+    this.init();
+    if (!this.ctx || typeof this.ctx.createOscillator !== 'function') return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(230, now);
+      osc.frequency.exponentialRampToValueAtTime(120, now + 0.12);
+      osc.frequency.exponentialRampToValueAtTime(160, now + 0.20);
+      osc.frequency.exponentialRampToValueAtTime(95, now + 0.30);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.25, now + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.33);
+    } catch (e) {}
+  }
+
+  // 8. 彩虹流光泡泡清脆滑音与微星光雨 (Crystal Glide & Stars)
+  playRainbowGlide() {
+    if (this.isMuted || !this.ctx) return;
+    this.init();
+    if (!this.ctx || typeof this.ctx.createOscillator !== 'function') return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const notes = [659.25, 783.99, 987.77, 1174.66, 1318.51, 1567.98, 2093.00];
+      notes.forEach((freq, idx) => {
+        const time = now + idx * 0.035;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, time);
+
+        gain.gain.setValueAtTime(0.08, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(time);
+        osc.stop(time + 0.23);
+      });
+    } catch (e) {}
+  }
+
+  // 9. 双人同心合力泡泡吸附合并破裂和弦 (Coop Heart Merge & Pop)
+  playHeartMerge() {
+    if (this.isMuted || !this.ctx) return;
+    this.init();
+    if (!this.ctx || typeof this.ctx.createOscillator !== 'function') return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const leftOsc = this.ctx.createOscillator();
+      const rightOsc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      leftOsc.type = 'triangle';
+      rightOsc.type = 'sine';
+
+      leftOsc.frequency.setValueAtTime(440, now);
+      leftOsc.frequency.exponentialRampToValueAtTime(659.25, now + 0.18);
+
+      rightOsc.frequency.setValueAtTime(554.37, now);
+      rightOsc.frequency.exponentialRampToValueAtTime(880.00, now + 0.18);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.22, now + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+      leftOsc.connect(gain);
+      rightOsc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      leftOsc.start(now);
+      leftOsc.stop(now + 0.38);
+      rightOsc.start(now);
+      rightOsc.stop(now + 0.38);
+
+      const chime = this.ctx.createOscillator();
+      const chimeGain = this.ctx.createGain();
+      chime.type = 'sine';
+      chime.frequency.setValueAtTime(1318.51, now + 0.18);
+      chimeGain.gain.setValueAtTime(0.12, now + 0.18);
+      chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.50);
+      chime.connect(chimeGain);
+      chimeGain.connect(this.ctx.destination);
+      chime.start(now + 0.18);
+      chime.stop(now + 0.52);
+    } catch (e) {}
+  }
+
+  // 10. 胜利拍立得抓拍快门音效 (Ka-cha!)
+  playCameraShutter() {
+    if (this.isMuted || !this.ctx) return;
+    this.init();
+    if (!this.ctx || typeof this.ctx.createOscillator !== 'function') return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const click1 = this.ctx.createOscillator();
+      const gain1 = this.ctx.createGain();
+      click1.type = 'triangle';
+      click1.frequency.setValueAtTime(1800, now);
+      click1.frequency.exponentialRampToValueAtTime(400, now + 0.025);
+      gain1.gain.setValueAtTime(0.24, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.028);
+      click1.connect(gain1);
+      gain1.connect(this.ctx.destination);
+      click1.start(now);
+      click1.stop(now + 0.03);
+
+      const flap = this.ctx.createOscillator();
+      const flapGain = this.ctx.createGain();
+      flap.type = 'sine';
+      flap.frequency.setValueAtTime(140, now + 0.025);
+      flap.frequency.exponentialRampToValueAtTime(65, now + 0.075);
+      flapGain.gain.setValueAtTime(0.18, now + 0.025);
+      flapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      flap.connect(flapGain);
+      flapGain.connect(this.ctx.destination);
+      flap.start(now + 0.025);
+      flap.stop(now + 0.082);
+
+      const click2 = this.ctx.createOscillator();
+      const gain2 = this.ctx.createGain();
+      click2.type = 'sine';
+      click2.frequency.setValueAtTime(2400, now + 0.075);
+      click2.frequency.exponentialRampToValueAtTime(800, now + 0.12);
+      gain2.gain.setValueAtTime(0.20, now + 0.075);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+      click2.connect(gain2);
+      gain2.connect(this.ctx.destination);
+      click2.start(now + 0.075);
+      click2.stop(now + 0.135);
+    } catch (e) {}
+  }
+
   // 7. 多场景童话 BGM 系统
   startBGM(stageId = 'forest') {
     this.currentStageId = stageId || 'forest';

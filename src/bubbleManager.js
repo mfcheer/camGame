@@ -59,6 +59,8 @@ export class BubbleManager {
     this.comboTimeoutMs = 1500;
     this.comboRemainingMs = 0;
     this.onComboChange = null;
+    this.lastPoppedEnergy = 1;
+    this.onSpecialPop = null;
   }
 
   // 创建手部彩色光晕 (暖金 #FFE394、浅蓝 #8DDAFF，光核 10~14px，外晕 28~36px，透明度约 0.75)
@@ -173,15 +175,16 @@ export class BubbleManager {
   updateLayout() {
     if (!this.activeBubble) return;
     const side = this.lastPopPlayerSide;
+    const currentType = this.activeBubble.type;
     if (this.playerMode === 'coop') this.lastPopPlayerSide = side === 'left' ? 'right' : 'left';
     this.disposeBubble(this.activeBubble.group);
     this.activeBubble = null;
-    this.createBubble(this.bubbleIndex);
+    this.createBubble(this.bubbleIndex, currentType);
     this.lastPopPlayerSide = side;
   }
 
   // 生成下一个泡泡
-  spawnNext(bubbleNumber, immediate = false) {
+  spawnNext(bubbleNumber, immediate = false, forceType = null) {
     if (this.activeBubble || this.isSpawning) return;
 
     this.bubbleIndex = bubbleNumber;
@@ -347,13 +350,45 @@ export class BubbleManager {
   }
 
   // 构建可爱的彩虹大泡泡 (带有清晰的 2.5~3px 实线彩色轮廓与外柔光晕)
-  createBubble(index) {
-    this.bubbleIndex=index;
+  determineBubbleType(index, forceType = null) {
+    if (forceType) return forceType;
+    const targetEnergy = this.rescueAnimal?.targetEnergy || 5;
+
+    if (this.playerMode === 'coop') {
+      if (targetEnergy >= 6 && index === 3) {
+        return 'coop_heart';
+      }
+      if (this.comboCount >= 2) {
+        return 'rainbow';
+      }
+      if (targetEnergy > 5 && index === 2) {
+        return 'jelly';
+      }
+      return 'normal';
+    } else {
+      if (this.comboCount >= 2) {
+        return 'rainbow';
+      }
+      if (targetEnergy > 5 && (index === 2 || index === 4)) {
+        return 'jelly';
+      }
+      return 'normal';
+    }
+  }
+
+  createBubble(index, forceType = null) {
+    this.bubbleIndex = index;
+    const bubbleType = this.determineBubbleType(index, forceType);
+    this.bubbleType = bubbleType;
     const rainbowColors = [0xff6b81, 0xffa502, 0x2ed573, 0x1e90ff, 0x9b59b6];
     const colorHex = rainbowColors[index % rainbowColors.length];
 
     const group = new THREE.Group();
+    const isJelly = (bubbleType === 'jelly');
     const spawnPos = this.calculateSpawnPosition();
+    if (bubbleType === "coop_heart") {
+      spawnPos.x = 0;
+    }
     group.position.copy(spawnPos);
 
     const winW = (typeof window !== 'undefined' ? getViewport().width : 1280) || 1280;
@@ -362,12 +397,271 @@ export class BubbleManager {
     const camZ = Math.abs(this.camera.position.z || 7.5);
     const visibleHeight = 2 * Math.tan(vFOV / 2) * camZ;
     const pxToWorld = visibleHeight / winH;
+    const aspect = this.camera.aspect || (winW / winH);
+    const visibleWidth = visibleHeight * aspect;
 
     const isNarrow = (winW / winH) < 0.8;
     const targetDiameterPx = winH<420&&winW>winH ? Math.max(winH<300?64:80,Math.min(112,winH*.27)) : isNarrow
       ? Math.min(120, Math.max(100, 0.20 * Math.min(winW, winH)))
       : Math.min(156, Math.max(104, 0.20 * Math.min(winW, winH)));
     const radius = (targetDiameterPx * pxToWorld) / (2 * 1.10);
+
+    // --- 特殊机制泡泡分流构建 ---
+    if (bubbleType === 'jelly') {
+      const jellyRadius = radius * 1.15;
+      const jellyGeo = new THREE.SphereGeometry(jellyRadius, 32, 32);
+      const jellyMat = new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        transmission: 0,
+        opacity: 0.32,
+        transparent: true,
+        roughness: 0.04,
+        ior: 1.25,
+        reflectivity: 0.95,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.08,
+        emissive: 0xff4757,
+        emissiveIntensity: 0.35,
+        depthWrite: false
+      });
+      const mesh = new THREE.Mesh(jellyGeo, jellyMat);
+      group.add(mesh);
+
+      const outlineGeo = new THREE.RingGeometry(jellyRadius * 0.94, jellyRadius * 1.025, 64);
+      const outlineMat = new THREE.MeshBasicMaterial({
+        color: new THREE.Color(0xff4757).multiplyScalar(0.7),
+        transparent: true,
+        opacity: 0.95,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      const outlineMesh = new THREE.Mesh(outlineGeo, outlineMat);
+      group.add(outlineMesh);
+
+      const coreGeo = new THREE.SphereGeometry(jellyRadius * 0.48, 20, 20);
+      const coreMat = new THREE.MeshBasicMaterial({
+        color: 0xff6b81,
+        transparent: true,
+        opacity: 0.65,
+        depthWrite: false
+      });
+      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+      group.add(coreMesh);
+
+      const highlightGeo = new THREE.SphereGeometry(jellyRadius * 0.22, 12, 12);
+      const highlightMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75, depthWrite: false });
+      const highlightMesh = new THREE.Mesh(highlightGeo, highlightMat);
+      highlightMesh.position.set(-jellyRadius * 0.45, jellyRadius * 0.45, jellyRadius * 0.65);
+      highlightMesh.scale.set(1.4, 0.7, 0.5);
+      group.add(highlightMesh);
+
+      group.scale.set(0.65, 0.65, 0.65);
+      this.scene.add(group);
+
+      this.activeBubble = {
+        group,
+        type: 'jelly',
+        ownerId: this.playerMode === 'coop' ? (this.lastPopPlayerSide === 'left' ? 1 : 2) : 1,
+        mesh,
+        outlineMesh,
+        glowMesh: null,
+        core: coreMesh,
+        radius: jellyRadius,
+        baseRadius: jellyRadius,
+        basePos: spawnPos.clone(),
+        colorHex: 0xff4757,
+        scale: 0.65,
+        spawnElapsed: 0,
+        relocateAfterMs: 8000 + Math.random() * 4000,
+        relocationElapsed: 0,
+        updateCount: 0,
+        suppressedHands: new Set(),
+        isPopping: false,
+        hitsNeeded: 2,
+        hitsReceived: 0,
+        squashTimer: 0,
+        energyValue: 2
+      };
+      this.idleTimer = 0;
+      this.isEnlargedForHelp = false;
+      if (this.balloon?.setBubbleTarget) this.balloon.setBubbleTarget(spawnPos);
+      return;
+    }
+
+    if (bubbleType === 'rainbow') {
+      const bubbleGeo = new THREE.SphereGeometry(radius, 32, 32);
+      const bubbleMat = new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        transmission: 0,
+        opacity: 0.25,
+        transparent: true,
+        roughness: 0.05,
+        ior: 1.18,
+        reflectivity: 0.95,
+        clearcoat: 1.0,
+        emissive: 0xfffa65,
+        emissiveIntensity: 0.40,
+        depthWrite: false
+      });
+      const mesh = new THREE.Mesh(bubbleGeo, bubbleMat);
+      group.add(mesh);
+
+      const outlineGeo = new THREE.RingGeometry(radius * 0.95, radius * 1.03, 64);
+      const outlineMat = new THREE.MeshBasicMaterial({
+        color: 0xffd32a,
+        transparent: true,
+        opacity: 0.96,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      const outlineMesh = new THREE.Mesh(outlineGeo, outlineMat);
+      group.add(outlineMesh);
+
+      const rainbowRingGeo = new THREE.RingGeometry(radius * 1.05, radius * 1.18, 48);
+      const rainbowRingMat = new THREE.MeshBasicMaterial({
+        color: 0x2ed573,
+        transparent: true,
+        opacity: 0.55,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      const rainbowRingMesh = new THREE.Mesh(rainbowRingGeo, rainbowRingMat);
+      group.add(rainbowRingMesh);
+
+      const starGeo = new THREE.OctahedronGeometry(radius * 0.38, 0);
+      const starMat = new THREE.MeshBasicMaterial({ color: 0xff3838 });
+      const starMesh = new THREE.Mesh(starGeo, starMat);
+      group.add(starMesh);
+
+      group.scale.set(0.65, 0.65, 0.65);
+      this.scene.add(group);
+
+      this.activeBubble = {
+        group,
+        type: 'rainbow',
+        ownerId: this.playerMode === 'coop' ? (this.lastPopPlayerSide === 'left' ? 1 : 2) : 1,
+        mesh,
+        outlineMesh,
+        glowMesh: rainbowRingMesh,
+        rainbowRing: rainbowRingMesh,
+        core: starMesh,
+        radius,
+        baseRadius: radius,
+        basePos: spawnPos.clone(),
+        colorHex: 0xffd32a,
+        scale: 0.65,
+        spawnElapsed: 0,
+        relocateAfterMs: 8000 + Math.random() * 4000,
+        relocationElapsed: 0,
+        updateCount: 0,
+        suppressedHands: new Set(),
+        isPopping: false,
+        hitsNeeded: 1,
+        hitsReceived: 0,
+        energyValue: 1
+      };
+      this.idleTimer = 0;
+      this.isEnlargedForHelp = false;
+      if (this.balloon?.setBubbleTarget) this.balloon.setBubbleTarget(spawnPos);
+      return;
+    }
+
+    if (bubbleType === 'coop_heart') {
+      const heartRadius = radius * 0.95;
+      const leftGroup = new THREE.Group();
+      const rightGroup = new THREE.Group();
+
+      const leftShape = new THREE.Shape();
+      leftShape.moveTo(0, heartRadius * 0.4);
+      leftShape.bezierCurveTo(0, heartRadius * 0.7, -heartRadius * 0.6, heartRadius * 0.7, -heartRadius * 0.6, heartRadius * 0.3);
+      leftShape.bezierCurveTo(-heartRadius * 0.6, -heartRadius * 0.1, -heartRadius * 0.2, -heartRadius * 0.45, 0, -heartRadius * 0.65);
+      leftShape.lineTo(0, heartRadius * 0.4);
+
+      const leftGeo = new THREE.ShapeGeometry(leftShape);
+      const leftMat = new THREE.MeshBasicMaterial({
+        color: 0xff6b81,
+        transparent: true,
+        opacity: 0.88,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      const leftMesh = new THREE.Mesh(leftGeo, leftMat);
+      leftGroup.add(leftMesh);
+
+      const leftGlow = new THREE.Mesh(new THREE.RingGeometry(heartRadius * 0.5, heartRadius * 0.75, 32), new THREE.MeshBasicMaterial({ color: 0xff6b81, transparent: true, opacity: 0.4, side: THREE.DoubleSide, depthWrite: false }));
+      leftGroup.add(leftGlow);
+
+      const rightShape = new THREE.Shape();
+      rightShape.moveTo(0, heartRadius * 0.4);
+      rightShape.bezierCurveTo(0, heartRadius * 0.7, heartRadius * 0.6, heartRadius * 0.7, heartRadius * 0.6, heartRadius * 0.3);
+      rightShape.bezierCurveTo(heartRadius * 0.6, -heartRadius * 0.1, heartRadius * 0.2, -heartRadius * 0.45, 0, -heartRadius * 0.65);
+      rightShape.lineTo(0, heartRadius * 0.4);
+
+      const rightGeo = new THREE.ShapeGeometry(rightShape);
+      const rightMat = new THREE.MeshBasicMaterial({
+        color: 0x1e90ff,
+        transparent: true,
+        opacity: 0.88,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      const rightMesh = new THREE.Mesh(rightGeo, rightMat);
+      rightGroup.add(rightMesh);
+
+      const rightGlow = new THREE.Mesh(new THREE.RingGeometry(heartRadius * 0.5, heartRadius * 0.75, 32), new THREE.MeshBasicMaterial({ color: 0x1e90ff, transparent: true, opacity: 0.4, side: THREE.DoubleSide, depthWrite: false }));
+      rightGroup.add(rightGlow);
+
+      const maxSpan = Math.max(visibleWidth * 0.08, Math.min(visibleWidth * 0.16, ((visibleWidth * 0.46) / 1.40) - (heartRadius * 0.85)));
+      const spanX = Math.max(0.08, maxSpan);
+      leftGroup.position.set(-spanX, 0, 0);
+      rightGroup.position.set(spanX, 0, 0);
+
+      group.add(leftGroup);
+      group.add(rightGroup);
+
+      group.scale.set(0.65, 0.65, 0.65);
+      this.scene.add(group);
+
+      this.activeBubble = {
+        group,
+        type: 'coop_heart',
+        leftHeartGroup: leftGroup,
+        rightHeartGroup: rightGroup,
+        leftMesh,
+        rightMesh,
+        leftGlow,
+        rightGlow,
+        spanX,
+        leftTouched: false,
+        rightTouched: false,
+        leftTouchTime: 0,
+        rightTouchTime: 0,
+        merging: false,
+        mergeProgress: 0,
+        mesh: leftMesh,
+        outlineMesh: leftGlow,
+        glowMesh: rightGlow,
+        core: rightMesh,
+        radius: heartRadius,
+        baseRadius: heartRadius,
+        basePos: spawnPos.clone(),
+        colorHex: 0xff6b81,
+        scale: 0.65,
+        spawnElapsed: 0,
+        relocateAfterMs: 12000,
+        relocationElapsed: 0,
+        updateCount: 0,
+        suppressedHands: new Set(),
+        isPopping: false,
+        hitsNeeded: 2,
+        hitsReceived: 0,
+        energyValue: 2
+      };
+      this.idleTimer = 0;
+      this.isEnlargedForHelp = false;
+      if (this.balloon?.setBubbleTarget) this.balloon.setBubbleTarget(spawnPos);
+      return;
+    }
 
     // 1. 主泡泡球体 (七彩透明肥皂泡材质，内部透明度约 0.70)
     const bubbleGeo = new THREE.SphereGeometry(radius, 32, 32);
@@ -457,7 +751,11 @@ export class BubbleManager {
       relocationElapsed:0,
       updateCount: 0,
       suppressedHands: new Set(),
-      isPopping: false
+      isPopping: false,
+      type: 'normal',
+      hitsNeeded: 1,
+      hitsReceived: 0,
+      energyValue: 1
     };
 
     this.idleTimer = 0;
@@ -477,6 +775,70 @@ export class BubbleManager {
     }
 
     const b = this.activeBubble;
+    const w = (typeof window !== 'undefined' && getViewport().width) ? getViewport().width : 1280;
+    const h = (typeof window !== 'undefined' && getViewport().height) ? getViewport().height : 720;
+
+    // A. 亲子同心合力泡泡双人触碰检测
+    if (b.type === 'coop_heart' && b.leftHeartGroup && b.rightHeartGroup) {
+      const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+      const leftWorld = b.leftHeartGroup.getWorldPosition(new THREE.Vector3());
+      const leftScreen = leftWorld.project(this.camera);
+      const leftPxX = ((leftScreen.x + 1) / 2) * w;
+      const leftPxY = ((1 - leftScreen.y) / 2) * h;
+
+      const rightWorld = b.rightHeartGroup.getWorldPosition(new THREE.Vector3());
+      const rightScreen = rightWorld.project(this.camera);
+      const rightPxX = ((rightScreen.x + 1) / 2) * w;
+      const rightPxY = ((1 - rightScreen.y) / 2) * h;
+
+      const touchThreshold = (b.radius * (h / (2 * Math.tan(THREE.MathUtils.degToRad((this.camera.fov || 48) / 2)) * Math.abs(this.camera.position.z || 7.5)))) * 1.5;
+
+      for (const player of trackedPlayers) {
+        if (!player.hands) continue;
+        for (const hand of player.hands) {
+          if (hand.isIndexTip === false || hand.observed === false) continue;
+          const handPxX = hand.x * w;
+          const handPxY = hand.y * h;
+
+          const distLeft = Math.hypot(handPxX - leftPxX, handPxY - leftPxY);
+          const distRight = Math.hypot(handPxX - rightPxX, handPxY - rightPxY);
+
+          if ((player.id === 1 || handPxX < w * 0.5) && distLeft <= touchThreshold) {
+            if (!b.leftTouched) {
+              b.leftTouched = true;
+              b.leftTouchTime = now;
+              this.handFlashTimer = 0.160;
+              b.leftHeartGroup.scale.set(1.22, 1.22, 1.22);
+              if (this.audio?.playCountdown) this.audio.playCountdown(1);
+            }
+          }
+
+          if ((player.id === 2 || handPxX >= w * 0.5) && distRight <= touchThreshold) {
+            if (!b.rightTouched) {
+              b.rightTouched = true;
+              b.rightTouchTime = now;
+              this.handFlashTimer = 0.160;
+              b.rightHeartGroup.scale.set(1.22, 1.22, 1.22);
+              if (this.audio?.playCountdown) this.audio.playCountdown(2);
+            }
+          }
+        }
+      }
+
+      if (b.leftTouched && !b.rightTouched && (now - b.leftTouchTime > 2000)) {
+        b.leftTouched = false;
+        b.leftHeartGroup.scale.set(1.0, 1.0, 1.0);
+      }
+      if (b.rightTouched && !b.leftTouched && (now - b.rightTouchTime > 2000)) {
+        b.rightTouched = false;
+        b.rightHeartGroup.scale.set(1.0, 1.0, 1.0);
+      }
+
+      if (b.leftTouched && b.rightTouched && !b.merging) {
+        b.merging = true;
+      }
+      return false;
+    }
 
     // 将泡泡 3D 世界坐标投影至 2D 归一化屏幕空间
     const bubbleWorldPos = b.group.position.clone();
@@ -490,8 +852,6 @@ export class BubbleManager {
     const edgeScreenCoord = edgeWorldPos.project(this.camera);
 
     // 统一转换为屏幕物理像素空间进行欧氏距离对比
-    const w = (typeof window !== 'undefined' && getViewport().width) ? getViewport().width : 1280;
-    const h = (typeof window !== 'undefined' && getViewport().height) ? getViewport().height : 720;
 
     const bubblePxX = bubbleScreenX * w;
     const bubblePxY = bubbleScreenY * h;
@@ -582,6 +942,28 @@ export class BubbleManager {
     }
 
     if (hit) {
+      if (b.type === 'jelly' && b.hitsReceived < (b.hitsNeeded - 1)) {
+        b.hitsReceived++;
+        b.squashTimer = 0.32;
+        this.handFlashTimer = 0.160;
+        if (this.audio?.playJellyBoing) {
+          this.audio.playJellyBoing();
+        }
+        this.spawnBurstParticles(b.group.position, b.colorHex, 6);
+        for (const player of trackedPlayers) {
+          if (!player.hands) continue;
+          for (let hIdx = 0; hIdx < player.hands.length; hIdx++) {
+            const hand = player.hands[hIdx];
+            const handPxX = hand.x * w;
+            const handPxY = hand.y * h;
+            if (Math.hypot(handPxX - bubblePxX, handPxY - bubblePxY) <= radiusPx) {
+              b.suppressedHands.add(player.id + '_' + (hand.side || hIdx));
+            }
+          }
+        }
+        return false;
+      }
+
       this.popBubble(hitHandX, hitHandY);
       return true;
     }
@@ -609,9 +991,26 @@ export class BubbleManager {
       this.onComboChange(this.comboCount);
     }
 
-    // 1. 播放破裂音效 (带连击音阶步步爬升)
-    if (this.audio && typeof this.audio.playPop === "function") {
-      this.audio.playPop(this.comboCount);
+    const energyVal = this.activeBubble.energyValue || 1;
+    this.lastPoppedEnergy = energyVal;
+
+    // 1. 播放破裂音效 (按泡泡类型触发专属音效)
+    if (this.activeBubble.type === 'rainbow') {
+      if (this.audio && typeof this.audio.playRainbowGlide === 'function') {
+        this.audio.playRainbowGlide();
+      } else if (this.audio && typeof this.audio.playPop === 'function') {
+        this.audio.playPop(this.comboCount);
+      }
+    } else if (this.activeBubble.type === 'coop_heart') {
+      if (this.audio && typeof this.audio.playHeartMerge === 'function') {
+        this.audio.playHeartMerge();
+      } else if (this.audio && typeof this.audio.playPop === 'function') {
+        this.audio.playPop(this.comboCount);
+      }
+    } else {
+      if (this.audio && typeof this.audio.playPop === 'function') {
+        this.audio.playPop(this.comboCount);
+      }
     }
 
     // 2. 触发手晕 160ms 命中闪圈至 ~82px
@@ -622,10 +1021,11 @@ export class BubbleManager {
     this.disposeBubble(this.activeBubble.group);
 
     // 4. 产生 12~18 个彩色小星星与肥皂水滴爆发粒子
-    this.spawnBurstParticles(burstWorldPos, burstColor);
+    const pCount = this.activeBubble.type === "rainbow" ? 24 : (this.activeBubble.type === "jelly" ? 20 : 16);
+    this.spawnBurstParticles(burstWorldPos, burstColor, pCount);
 
     // 5. 产生能量光团，沿弧线飞向小动物领结
-    this.spawnEnergyProjectile(burstWorldPos, burstColor);
+    this.spawnEnergyProjectile(burstWorldPos, burstColor, energyVal);
 
     this.activeBubble = null;
     this.isNearHand = false;
@@ -642,8 +1042,8 @@ export class BubbleManager {
   }
 
   // 生成爆破粒子 (12~18 个彩色闪烁星点与柔和水滴)
-  spawnBurstParticles(pos, color) {
-    const count = 16;
+  spawnBurstParticles(pos, color, customCount = 16) {
+    const count = customCount;
     for (let i = 0; i < count; i++) {
       const isStar = i % 2 === 0;
       const geo = isStar
@@ -682,8 +1082,8 @@ export class BubbleManager {
   }
 
   // 生成飞向解救小动物领结的能量球 (平滑贝塞尔拱形弧线)
-  spawnEnergyProjectile(startPos, color) {
-    const geo = new THREE.SphereGeometry(0.065, 16, 16);
+  spawnEnergyProjectile(startPos, color, energyCount = 1) {
+    const geo = new THREE.SphereGeometry(energyCount > 1 ? 0.088 : 0.065, 16, 16);
     const mat = new THREE.MeshBasicMaterial({
       color: 0xffffff,
       transparent: true,
@@ -693,7 +1093,7 @@ export class BubbleManager {
     mesh.position.copy(startPos);
 
     // 外层柔光环
-    const glowGeo = new THREE.SphereGeometry(0.13, 12, 12);
+    const glowGeo = new THREE.SphereGeometry(energyCount > 1 ? 0.17 : 0.13, 12, 12);
     const glowMat = new THREE.MeshBasicMaterial({
       color: color,
       transparent: true,
@@ -717,7 +1117,8 @@ export class BubbleManager {
       start: startPos.clone(),
       target: targetPos,
       progress: 0,
-      color
+      color,
+      energyCount
     });
     this.scene.add(mesh);
   }
@@ -982,9 +1383,44 @@ export class BubbleManager {
 
       // 呼吸缩放 (周期 2.2s，幅度 1.00 <-> 1.04)
       const breath = 1.0 + Math.sin(timeSeconds * (Math.PI * 2 / 2.2)) * 0.02;
-
       const totalScale = spawnScale * helpScale * breath;
-      b.group.scale.set(totalScale, totalScale, totalScale);
+      let scaleX = totalScale;
+      let scaleY = totalScale;
+      let scaleZ = totalScale;
+
+      if (b.type === 'jelly' && b.squashTimer > 0) {
+        b.squashTimer = Math.max(0, b.squashTimer - dt);
+        const st = b.squashTimer / 0.32;
+        const squish = Math.sin(st * Math.PI * 4) * st * 0.38;
+        scaleX *= (1 + squish);
+        scaleZ *= (1 + squish);
+        scaleY *= (1 - squish * 0.85);
+      }
+
+      if (b.type === 'rainbow' && b.rainbowRing) {
+        b.rainbowRing.rotation.z += dt * 3.5;
+        const hue = (timeSeconds * 0.5) % 1.0;
+        b.rainbowRing.material.color.setHSL(hue, 0.9, 0.6);
+      }
+
+      if (b.type === 'coop_heart' && b.merging) {
+        b.mergeProgress += dt * 3.0;
+        const mp = Math.min(1.0, b.mergeProgress);
+        b.leftHeartGroup.position.x = -b.spanX * (1 - mp);
+        b.rightHeartGroup.position.x = b.spanX * (1 - mp);
+        const spin = mp * Math.PI * 0.5;
+        b.leftHeartGroup.rotation.z = spin;
+        b.rightHeartGroup.rotation.z = -spin;
+
+        if (mp >= 1.0 && !b.isPopping) {
+          this.popBubble(0.5, 0.5);
+          if (typeof this.onSpecialPop === 'function') {
+            this.onSpecialPop('coop_heart');
+          }
+        }
+      }
+
+      b.group.scale.set(scaleX, scaleY, scaleZ);
       b.radius = b.baseRadius * helpScale;
 
       // 轻微上下浮动 (±8px，周期 2.8s) + 靠近平滑吸附偏移
@@ -1035,7 +1471,7 @@ export class BubbleManager {
         this.scene.remove(ep.mesh);
         this.energyProjectiles.splice(i, 1);
         ep.mesh.traverse(obj => { if (obj.isMesh) { obj.geometry.dispose(); obj.material.dispose(); } });
-        ep.onArrive?.();
+        ep.onArrive?.(ep.energyCount || 1);
       }
     }
   }

@@ -79,7 +79,22 @@ export class UIManager {
       // 连击光浪与徽章
       comboWave: document.getElementById('combo-rainbow-wave'),
       comboBadge: document.getElementById('combo-badge'),
-      comboCountNum: document.getElementById('combo-count-num')
+      comboCountNum: document.getElementById('combo-count-num'),
+
+      // 拍照快门闪光与拍立得合影
+      cameraFlash: document.getElementById('camera-flash'),
+      polaroidWrapper: document.getElementById('polaroid-wrapper'),
+      polaroidImg: document.getElementById('polaroid-img'),
+      btnSavePolaroid: document.getElementById('btn-save-polaroid'),
+
+      // 森林营地图鉴
+      btnOpenCamp: document.getElementById('btn-open-camp'),
+      campBadgeCount: document.getElementById('camp-badge-count'),
+      campModal: document.getElementById('camp-modal'),
+      campGrid: document.getElementById('camp-grid'),
+      campUnlockedCount: document.getElementById('camp-unlocked-count'),
+      campTotalCount: document.getElementById('camp-total-count'),
+      btnCloseCamp: document.getElementById('btn-close-camp')
     };
   }
 
@@ -190,6 +205,19 @@ export class UIManager {
     this.dom.btnVictoryExit.addEventListener('click', () => {
       this.hideVictory();
       if (this.handlers.onExit) this.handlers.onExit();
+    });
+
+    // 保存拍立得合影
+    this.dom.btnSavePolaroid?.addEventListener('click', () => {
+      this.handlers.onSavePolaroid?.();
+    });
+
+    // 森林营地图鉴
+    this.dom.btnOpenCamp?.addEventListener('click', () => {
+      this.handlers.onOpenCamp?.();
+    });
+    this.dom.btnCloseCamp?.addEventListener('click', () => {
+      this.hideCamp();
     });
   }
 
@@ -482,5 +510,99 @@ export class UIManager {
 
   resetProgress() {
     this.updateProgress(0);
+  }
+
+  // 拍立得快门轻微白光微闪烁
+  triggerCameraFlash() {
+    if (!this.dom.cameraFlash) return;
+    this.dom.cameraFlash.classList.remove('hidden');
+    this.dom.cameraFlash.classList.add('flash-active');
+    setTimeout(() => {
+      this.dom.cameraFlash?.classList.remove('flash-active');
+      this.dom.cameraFlash?.classList.add('hidden');
+    }, 350);
+  }
+
+  // 设置拍立得合影预览
+  setPolaroidImage(dataUrl, animalName = '小动物') {
+    this.polaroidDataUrl = dataUrl;
+    this.currentAnimalName = animalName;
+    if (this.dom.polaroidImg && dataUrl) {
+      this.dom.polaroidImg.src = dataUrl;
+      this.dom.polaroidWrapper?.classList.remove('hidden');
+    }
+  }
+
+  // 打开森林营地图鉴模态框
+  showCamp(campManager, audioManager) {
+    if (!this.dom.campModal || !this.dom.campGrid) return;
+    this.dom.campGrid.innerHTML = '';
+
+    const rescues = campManager ? campManager.getRescues() : {};
+    const unlockedCount = campManager ? campManager.getUnlockedCount() : 0;
+    const totalCount = campManager ? campManager.getTotalRescues() : 0;
+
+    if (this.dom.campUnlockedCount) this.dom.campUnlockedCount.textContent = String(unlockedCount);
+    if (this.dom.campTotalCount) this.dom.campTotalCount.textContent = String(totalCount);
+
+    const animals = [
+      { id: 'bunny', name: '小兔 萌萌', preview: 'models/bunny-preview.png', title: '森林第一站', badge: '🐰' },
+      { id: 'cat', name: '橘猫 橘子', preview: 'models/cat-preview.png', title: '耐心挑战', badge: '🐱' },
+      { id: 'frog', name: '青蛙 呱呱', preview: 'models/frog-preview.png', title: '池塘探险', badge: '🐸' },
+      { id: 'dog', name: '小狗 旺旺', preview: 'models/dog-preview.png', title: '活力挑战', badge: '🐶' },
+      { id: 'dragon', name: '飞龙 翼翼', preview: 'models/dragon-preview.png', title: '云谷奇遇', badge: '🐲' },
+      { id: 'goldenDragon', name: '金龙 小金', preview: 'models/goldenDragon-preview.png', title: '祥云漫游', badge: '🐉' }
+    ];
+
+    animals.forEach(animal => {
+      const count = rescues[animal.id] || 0;
+      const isUnlocked = count > 0;
+
+      const item = document.createElement('div');
+      item.className = `camp-animal-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+      item.setAttribute('role', 'button');
+      item.setAttribute('tabindex', '0');
+      item.setAttribute('aria-label', `${animal.name}，${isUnlocked ? `已解救 ${count} 次` : '探索中'}`);
+
+      item.innerHTML = `
+        <div class="camp-animal-avatar-wrapper">
+          <img src="${animal.preview}" alt="${animal.name}" class="camp-animal-avatar" />
+          <span class="camp-animal-badge">${animal.badge}</span>
+        </div>
+        <strong class="camp-animal-name">${animal.name}</strong>
+        <span class="camp-animal-status">${isUnlocked ? `已解救 ${count} 次 ✨` : '探索中 🌲'}</span>
+      `;
+
+      item.addEventListener('click', () => {
+        if (isUnlocked) {
+          item.classList.remove('camp-card-bounce');
+          void item.offsetWidth;
+          item.classList.add('camp-card-bounce');
+          if (audioManager && typeof audioManager.playAnimalSound === 'function') {
+            audioManager.playAnimalSound(animal.id, 'escape');
+          }
+        } else {
+          item.classList.remove('camp-card-shake');
+          void item.offsetWidth;
+          item.classList.add('camp-card-shake');
+        }
+      });
+
+      this.dom.campGrid.appendChild(item);
+    });
+
+    this.dom.campModal.classList.remove('hidden');
+  }
+
+  hideCamp() {
+    if (this.dom.campModal) {
+      this.dom.campModal.classList.add('hidden');
+    }
+  }
+
+  updateCampBadge(campManager) {
+    if (!this.dom.campBadgeCount || !campManager) return;
+    const unlocked = campManager.getUnlockedCount();
+    this.dom.campBadgeCount.textContent = `${unlocked}/6`;
   }
 }
