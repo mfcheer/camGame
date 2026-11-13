@@ -118,6 +118,7 @@ export class AudioManager {
   }
 
   _syncMuteState() {
+    if (this.isMuted) this.stopWord();
     if (this.isMuted && this._wordAudioElements) {
       for (const a of this._wordAudioElements.values()) {
         try { a.pause(); } catch (e) {}
@@ -842,108 +843,84 @@ export class AudioManager {
     return promise;
   }
 
+  // Resolve only after the recording (or speech fallback) actually ends.
   playWord(wordId) {
-    if (this.isMuted) return;
-    const id = (typeof wordId === "string" ? wordId : wordId?.id || "").trim().toLowerCase();
-    if (!id) return;
-
+    this.stopWord();
+    const id = (typeof wordId === 'string' ? wordId : wordId?.id || '').trim().toLowerCase();
+    if (!id || this.isMuted) return Promise.resolve();
     this.lastPlayedWord = id;
     this.init();
-
-    // 优先层：使用 Web Audio API (基于已解锁的 this.ctx，免除手势/非手势场景下的浏览器 Autoplay 拦截，0 延迟)
-    if (this.ctx && typeof this.ctx.createBufferSource === "function") {
-      if (this.ctx.state === "suspended" && typeof this.ctx.resume === "function") {
-        this.ctx.resume().catch(() => {});
-      }
-
-      const playBuffer = (buffer) => {
-        if (!buffer || !this.ctx || this.isMuted) return false;
-        try {
-          const source = this.ctx.createBufferSource();
-          const gain = this.ctx.createGain();
-          source.buffer = buffer;
-          const now = this.ctx.currentTime || 0;
-          gain.gain.setValueAtTime(0.95, now);
-          source.connect(gain);
-          gain.connect(this.ctx.destination);
-          source.start(now);
-          return true;
-        } catch (e) {
-          return false;
+    const token = this._wordToken;
+    if (this.bgmGainNode && this.ctx && !this.isBGMPaused) {
+      const g=this.bgmGainNode.gain, now=this.ctx.currentTime;
+      try{g.cancelScheduledValues(now);g.setTargetAtTime(.025,now,.08);}catch{}
+    }
+    return new Promise(resolve=>{
+      let finished=false;
+      const finish=()=>{
+        if(finished)return;finished=true;
+        if(this._wordFinish===finish)this._wordFinish=null;
+        if(token===this._wordToken&&!this.isMuted&&!this.isBGMPaused&&this.bgmGainNode&&this.ctx){
+          const g=this.bgmGainNode.gain,now=this.ctx.currentTime;try{g.cancelScheduledValues(now);g.setTargetAtTime(.08,now,.2);}catch{}
         }
+        resolve();
       };
+      this._wordFinish=finish;
+      let fallingBack=false;
+      const fallback=()=>{
+        if(fallingBack||finished)return;fallingBack=true;
+        if(token!==this._wordToken||this.isMuted){finish();return;}
+        if(typeof window==='undefined'||!window.speechSynthesis||typeof SpeechSynthesisUtterance==='undefined'){finish();return;}
+        try{
+          this._speakWordFallback(id,finish);
+        }catch{finish();}
+      };
+      const playElement=()=>{
+        if(token!==this._wordToken||this.isMuted){finish();return;}
+        if(typeof Audio==='undefined'){fallback();return;}
+        try{
+          const audio=new Audio(this.getWordAudioUrl(id));this._activeWordElement=audio;
+          audio.onended=finish;audio.onerror=fallback;audio.volume=.95;
+          const started=audio.play();if(started?.catch)started.catch(fallback);
+        }catch{fallback();}
+      };
+      const playBuffer=buffer=>{
+        if(token!==this._wordToken||this.isMuted){finish();return;}
+        if(!buffer||!this.ctx){playElement();return;}
+        try{const source=this.ctx.createBufferSource(),gain=this.ctx.createGain();this._activeWordSource=source;
+          source.buffer=buffer;gain.gain.value=.95;source.connect(gain);gain.connect(this.ctx.destination);source.onended=finish;source.start();
+        }catch{playElement();}
+      };
+      if(this.ctx&&typeof this.ctx.createBufferSource==='function'){
+        this.loadWordBuffer(id).then(playBuffer).catch(playElement);
+      }else playElement();
+    });
+  }
 
-      if (this._wordAudioBuffers.has(id)) {
-        const played = playBuffer(this._wordAudioBuffers.get(id));
-        if (played) return;
-      }
+  stopWord() {
+    this._wordToken=(this._wordToken||0)+1;
+    try{this._activeWordSource?.stop();}catch{}
+    try{this._activeWordElement?.pause();}catch{}
+    if(typeof window!=='undefined')window.speechSynthesis?.cancel();
+    this._activeWordSource=null;this._activeWordElement=null;
+    this._wordFinish?.();
+    if(!this.isMuted&&!this.isBGMPaused&&this.bgmGainNode&&this.ctx){try{this.bgmGainNode.gain.setTargetAtTime(.08,this.ctx.currentTime,.2);}catch{}}
+  }
 
-      this.loadWordBuffer(id).then((buf) => {
-        if (!buf) {
-          this._playWordAudioElement(id);
-        } else {
-          playBuffer(buf);
-        }
-      }).catch(() => {
-        this._playWordAudioElement(id);
+  _speakWordFallback(id, onDone=()=>{}) {
+    try {
+      const cfg=getWordById(id), zh=cfg?.zh||getWordCn(id), en=cfg?.word||id;
+      const pair=[{text:zh,lang:'zh-CN'},{text:en,lang:'en-US'}].filter(p=>p.text);
+      const phrases=[...pair,...pair];
+      if(!phrases.length){onDone();return;}
+      phrases.forEach((phrase,index)=>{
+        const utterance=new SpeechSynthesisUtterance(phrase.text);
+        utterance.lang=phrase.lang;utterance.rate=.9;utterance.pitch=1.05;
+        utterance.onend=()=>{if(index===phrases.length-1)onDone();};
+        utterance.onerror=onDone;
+        window.speechSynthesis.speak(utterance);
       });
-      return;
-    }
-
-    this._playWordAudioElement(id);
-  }
-
-  _playWordAudioElement(id) {
-    if (this.isMuted) return;
-    if (typeof Audio !== "undefined") {
-      try {
-        if (!this._wordAudioElements) this._wordAudioElements = new Map();
-        let audio = this._wordAudioElements.get(id);
-        if (!audio) {
-          audio = new Audio(this.getWordAudioUrl(id));
-          audio.preload = "auto";
-          this._wordAudioElements.set(id, audio);
-        }
-        audio.currentTime = 0;
-        audio.volume = 0.95;
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            this._speakWordFallback(id);
-          });
-        }
-      } catch (e) {
-        this._speakWordFallback(id);
-      }
-    } else {
-      this._speakWordFallback(id);
-    }
-  }
-
-  _speakWordFallback(text) {
-    if (typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined") {
-      try {
-        const id = (typeof text === "string" ? text : text?.id || "").trim().toLowerCase();
-        const cfg = typeof getWordById === "function" ? getWordById(id) : null;
-        const zh = cfg ? (cfg.zh || cfg.wordCn || cfg.chinese || "") : (typeof getWordCn === "function" ? getWordCn(id) : "");
-        const en = cfg?.word || id;
-
-        // 播报规则：先说中文，再说英文，重复两遍（中文 -> 英文 -> 中文 -> 英文）
-        const phrases = [];
-        if (zh) phrases.push({ text: zh, lang: "zh-CN" });
-        if (en) phrases.push({ text: en, lang: "en-US" });
-        if (zh) phrases.push({ text: zh, lang: "zh-CN" });
-        if (en) phrases.push({ text: en, lang: "en-US" });
-
-        for (const item of phrases) {
-          const utter = new SpeechSynthesisUtterance(item.text);
-          utter.lang = item.lang;
-          utter.rate = 1.0;
-          utter.pitch = 1.05;
-          window.speechSynthesis.speak(utter);
-        }
-      } catch (e) {}
-    }
+    } catch { onDone(); }
   }
 
   preloadWordAudios(wordIds = []) {

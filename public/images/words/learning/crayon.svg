@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24 24 208 208" width="512" height="512">
+  <title>crayon</title><defs><linearGradient id="tone0" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#E74C3C"/><stop offset="1" stop-color="#E74C3C" stop-opacity=".82"/></linearGradient><linearGradient id="tone1" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#3498DB"/><stop offset="1" stop-color="#3498DB" stop-opacity=".82"/></linearGradient><linearGradient id="tone2" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#2ECC71"/><stop offset="1" stop-color="#2ECC71" stop-opacity=".82"/></linearGradient>
+    <filter id="itemShadow_crayon" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_crayon)">
+
+      <!-- Crayon tilted 40deg -->
+      <g transform="translate(128, 120) rotate(40)">
+        <polygon points="-12,-62 12,-62 0,-86" fill="url(#tone0)" stroke="#C0392B" stroke-width="3"/>
+        <rect x="-12" y="-62" width="24" height="124" rx="4" fill="url(#tone0)" stroke="#C0392B" stroke-width="3"/>
+        <rect x="-13" y="-42" width="26" height="88" rx="2" fill="url(#tone1)" stroke="#2980B9" stroke-width="3"/>
+        <ellipse cx="0" cy="2" rx="10" ry="16" fill="url(#tone2)"/>
+        <line x1="-12" y1="-30" x2="12" y2="-30" stroke="#1F618D" stroke-width="3"/>
+        <line x1="-12" y1="36" x2="12" y2="36" stroke="#1F618D" stroke-width="3"/>
+      </g>
+
+  </g>
+</svg>

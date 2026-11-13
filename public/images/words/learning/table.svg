@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24 24 208 208" width="512" height="512">
+  <title>table</title><defs><linearGradient id="tone0" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#8D6E63"/><stop offset="1" stop-color="#8D6E63" stop-opacity=".82"/></linearGradient><linearGradient id="tone1" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#A1887F"/><stop offset="1" stop-color="#A1887F" stop-opacity=".82"/></linearGradient><linearGradient id="tone2" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#4CAF50"/><stop offset="1" stop-color="#4CAF50" stop-opacity=".82"/></linearGradient><linearGradient id="tone3" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#81C784"/><stop offset="1" stop-color="#81C784" stop-opacity=".82"/></linearGradient>
+    <filter id="itemShadow_table" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_table)">
+
+      <!-- Table -->
+      <g transform="translate(128, 124)">
+        <path d="M-42 -10 L-46 44" stroke="#5D6D7E" stroke-width="6" stroke-linecap="round"/>
+        <path d="M42 -10 L46 44" stroke="#5D6D7E" stroke-width="6" stroke-linecap="round"/>
+        <path d="M-56 0 L-62 50" stroke="#795548" stroke-width="8" stroke-linecap="round"/>
+        <path d="M56 0 L62 50" stroke="#795548" stroke-width="8" stroke-linecap="round"/>
+        <path d="M-58 -4 Q0 12 58 -4" fill="none" stroke="#5D4037" stroke-width="8" stroke-linecap="round"/>
+        <ellipse cx="0" cy="-16" rx="68" ry="24" fill="url(#tone0)" stroke="#4E342E" stroke-width="5"/>
+        <ellipse cx="0" cy="-19" rx="62" ry="19" fill="url(#tone1)"/>
+        <rect x="-8" y="-36" width="16" height="15" rx="3" fill="url(#tone2)"/>
+        <circle cx="0" cy="-40" r="8" fill="url(#tone3)"/>
+      </g>
+
+  </g>
+</svg>

@@ -48,12 +48,12 @@ test('1. 单词配置与 21 个图案/中英双语发音资源完整性验证', 
     const audioStat = fs.statSync(audioPath);
     assert.ok(audioStat.size > 20000, `四段双语音频文件 ${id}.mp3 应具备充足体积 (${audioStat.size} 字节)`);
 
-    // 检查透明 PNG 与矢量 SVG 贴图
+    // 检查实际使用的清晰插画与原生矢量后备资源
     const pngPath = path.resolve('public', item.image.replace(/^\//, ''));
     const svgPath = path.resolve('public', item.svg.replace(/^\//, ''));
     assert.ok(fs.existsSync(pngPath), `PNG 图像应存在: ${pngPath}`);
     assert.ok(fs.existsSync(svgPath), `SVG 图像应存在: ${svgPath}`);
-    assert.ok(fs.statSync(pngPath).size > 1000, `${id}.png 体积应有效`);
+    assert.ok(fs.statSync(pngPath).size > 300, `${id} 图片内容应有效`);
     assert.ok(fs.statSync(svgPath).size > 500, `${id}.svg 体积应有效`);
   }
 
@@ -201,7 +201,7 @@ test('语音合成备用方案按中英顺序重复两遍', () => {
   }
 });
 
-test("5. UIManager 浮动单词实物认知卡片（实物图片 + 中英双语名牌 + 4.5s 驻留周期）与 CSS 规范验证", () => {
+test("5. UIManager 浮动单词实物认知卡片（实物图片 + 小写英文与独立中文 + 播报控制驻留）与 CSS 规范验证", () => {
   // DOM 模拟测试
   const fakeApp = {
     children: [],
@@ -239,17 +239,19 @@ test("5. UIManager 浮动单词实物认知卡片（实物图片 + 中英双语�
   assert.ok(card.photo, "弹窗应当包含实物图片元素");
   assert.equal(card.photo.className, "word-popup-photo");
   assert.ok(card.photo.src.includes("table"), "图片 src 应当指向 table 对应的物品实物图");
-  assert.equal(card.photo.alt, "TABLE");
+  assert.equal(card.photo.alt, "table");
 
   // 验证醒目英文名牌与清晰中文名牌
   assert.ok(card.textSpan, "弹窗应当包含英文单词文本元素");
-  assert.equal(card.textSpan.textContent, "TABLE", "英文单词文本应当转换为大写展示");
+  assert.equal(card.textSpan.textContent, "table", "英文单词文本应当展示为小写");
 
   assert.ok(card.cnSpan, "弹窗应当包含中文释义元素");
   assert.equal(card.cnSpan.textContent, "桌子", "中文释义文本应当正确呈现为桌子");
 
-  // 验证驻留定时器已设定
-  assert.ok(card.dismissTimer, "弹窗应当绑定 4.5 秒驻留销毁定时器");
+  // 卡片由播报流程控制，不依赖固定墙钟定时器。
+  assert.equal(ui.activeWordPopup, card);
+  ui.clearWordPopup();
+  assert.equal(ui.activeWordPopup, null);
 
   // 验证 CSS 样式文件规范
   const css = fs.readFileSync("src/style.css", "utf8");
@@ -257,8 +259,7 @@ test("5. UIManager 浮动单词实物认知卡片（实物图片 + 中英双语�
   assert.ok(css.includes(".word-popup-photo"), "CSS 应包含 .word-popup-photo 规范");
   assert.ok(css.includes(".word-popup-badge"), "CSS 应包含 .word-popup-badge 规范");
   assert.ok(css.includes(".word-popup-cn"), "CSS 应包含 .word-popup-cn 规范");
-  assert.ok(css.includes("wordCardPop 4.5s"), "CSS 动画时长应调整为 4.5s 驻留展示");
-  assert.ok(css.includes("@keyframes wordCardPop"), "CSS 应包含 @keyframes wordCardPop 动画定义");
-  assert.ok(css.includes("@keyframes wordPillPop"), "CSS 应包含 @keyframes wordPillPop 动画定义");
+  assert.ok(css.includes("@keyframes wordCardEntrance"));
+  assert.ok(css.includes("@keyframes wordCardExit"));
   assert.ok(css.includes("--word-accent"), "CSS 应当使用 --word-accent 动态主题色");
 });

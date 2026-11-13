@@ -98,10 +98,7 @@ export class Game {
     if (this.bubbleManager) {
       this.bubbleManager.onComboChange = (combo) => this.handleComboChange(combo);
       this.bubbleManager.onSpecialPop = () => this.onBubblePopped();
-      this.bubbleManager.onWordPop = (word, hitX, hitY) => {
-        this.wordPresentationRemaining = 4.5;
-        this.uiManager?.showWordPopup?.(word, hitX, hitY);
-      };
+      this.bubbleManager.onWordPop = (word, hitX, hitY, audioDone) => this.presentWord(word,hitX,hitY,audioDone);
     }
 
     this.bubbleManager?.contrastSampler && (this.bubbleManager.contrastSampler.video=this.videoElement);
@@ -123,7 +120,7 @@ export class Game {
         onResume: () => this.handleResume(),
         onRestart: () => this.handleRestart(),
         onExit: () => this.handleExit(),
-        onToggleAudio: () => this.audioManager.toggleMute(),
+        onToggleAudio: () => { const muted=this.audioManager.toggleMute(); if(muted&&this.currentWord)this.wordAudioDone=true; return muted; },
         onEnableDemo: (mode) => this.handleEnableDemo(mode),
         onRetryCamera: () => this.handleRetryCamera(),
         onOpenCamp: () => this.uiManager.showCamp(this.campManager, this.audioManager),
@@ -133,6 +130,8 @@ export class Game {
         onSavePolaroid: () => PolaroidManager.downloadImage(this.currentPolaroidDataUrl, this.currentAnimalName)
       });
       this.uiManager?.updateCampBadge?.(this.campManager);
+      const wordMode=document.getElementById('word-mode');
+      wordMode?.addEventListener('change',()=>{this.bubbleManager.wordMode=wordMode.checked;});
     }
 
     if (typeof window !== 'undefined') {
@@ -285,6 +284,7 @@ export class Game {
     this.poseDetector.onErrorCallback = (err) => {
       // 若当前已退出到 START 状态，不被旧请求错误覆写为 ERROR
       if (this.state === 'START') return;
+      this.cancelWordPresentation();
       this.cancelAutoCountdown();
       this.cancelAutoNext();this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();this.celebrationAccessories?.clear();
       this.state = 'ERROR';
@@ -720,6 +720,7 @@ export class Game {
   handleTogglePause(paused) {
     if (paused) {
       this.cancelAutoNext();
+      if(this.currentWord){this.wordPresentationToken=(this.wordPresentationToken||0)+1;this.audioManager?.stopWord?.();this.wordAudioDone=false;this.uiManager?.setWordPopupPaused?.(true);}
       this.friendInteraction?.setPaused(true);
       this.uiManager?.hideFriendPlay?.();
       this.prePauseState = this.state;
@@ -765,6 +766,19 @@ export class Game {
     this.coopLostDuration = 0;
     this.poseDetector?.resume?.();
     this.audioManager?.resumeBGM?.();
+    if(this.currentWord){
+      if(this.wordClosingRemaining>0){
+        const anchor=this.uiManager?.wordPopupAnchor;
+        this.uiManager?.showWordPopup?.(this.currentWord,anchor?.x??.5,anchor?.y??.5);
+      }
+      this.wordClosingRemaining=0;
+      this.wordElapsed=0;
+      this.wordAudioDone=false;
+      this.wordQuietElapsed=0;
+      this.uiManager?.setWordPopupPaused?.(false);
+      const token=this.wordPresentationToken=(this.wordPresentationToken||0)+1;
+      this.waitForWordAudio(this.audioManager?.playWord?.(this.currentWord.id),token);
+    }
     if (this.uiManager && this.uiManager.setPoseLostAlert) {
       this.uiManager.setPoseLostAlert(false);
     }
@@ -796,7 +810,7 @@ export class Game {
 
   // 重新开始当前关卡（彻底清除旧庆祝回调）
   handleRestart() {
-    this.wordPresentationRemaining=0;this.pendingWordDelivery=null;
+    this.cancelWordPresentation();
     this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();
     this.cancelAutoNext(false);this.resultVisible=false;this.photoRemaining=null;this.photoCapturePending=false;this.uiManager?.setPhotoCountdown?.(null);this.celebrationAccessories?.clear();
     this.uiManager?.hideVictory?.();
@@ -856,7 +870,7 @@ export class Game {
   // 退出回首页（取消所有异步流程、旧定时器并彻底释放摄像头）
   handleExit() {
     this.bubbleManager?.contrastSampler?.clear();
-    this.wordPresentationRemaining=0;this.pendingWordDelivery=null;
+    this.cancelWordPresentation();
     this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();
     this.cancelAutoNext(false);this.resultVisible=false;this.photoRemaining=null;this.photoCapturePending=false;this.uiManager?.setPhotoCountdown?.(null);this.celebrationAccessories?.clear();
     this.cancelAutoCountdown();
@@ -954,6 +968,56 @@ export class Game {
     });
   }
 
+  presentWord(word,hitX,hitY,audioDone) {
+    const token=this.wordPresentationToken=(this.wordPresentationToken||0)+1;
+    this.currentWord=word;
+    this.wordElapsed=0;
+    this.wordClosingRemaining=0;
+    this.wordQuietElapsed=0;
+    this.wordAudioDone=false;
+    this.wordPresentationRemaining=1;
+    this.uiManager?.showWordPopup?.(word,hitX,hitY);
+    this.waitForWordAudio(audioDone,token);
+  }
+
+  waitForWordAudio(done,token) {
+    const finish=()=>{if(token===this.wordPresentationToken)this.wordAudioDone=true;};
+    Promise.resolve(done).then(finish,finish);
+  }
+
+  updateWordPresentation(deltaSeconds) {
+    if(!this.wordPresentationRemaining)return;
+    if(this.wordClosingRemaining>0){
+      this.wordClosingRemaining=Math.max(0,this.wordClosingRemaining-deltaSeconds);
+      if(this.wordClosingRemaining>0)return;
+      this.wordPresentationRemaining=0;
+      this.currentWord=null;
+      this.uiManager?.clearWordPopup?.();
+      const deliver=this.pendingWordDelivery;
+      this.pendingWordDelivery=null;
+      deliver?.();
+      return;
+    }
+    this.wordElapsed+=deltaSeconds;
+    if(this.wordAudioDone)this.wordQuietElapsed+=deltaSeconds;
+    // A quiet reading beat, then a full exit, before the animal responds.
+    if((this.wordElapsed>=2.8 && this.wordAudioDone && this.wordQuietElapsed>=.55) || this.wordElapsed>=12){
+      this.wordClosingRemaining=.2;
+      this.audioManager?.stopWord?.();
+      this.uiManager?.clearWordPopup?.(true);
+    }
+  }
+
+  cancelWordPresentation() {
+    this.wordPresentationToken=(this.wordPresentationToken||0)+1;
+    this.wordPresentationRemaining=0;
+    this.wordClosingRemaining=0;
+    this.pendingWordDelivery=null;
+    this.currentWord=null;
+    this.audioManager?.stopWord?.();
+    this.uiManager?.clearWordPopup?.();
+  }
+
   // Both orientations are playable. Resizing never interrupts an active rescue.
   setupOrientationHandler() {
     if(typeof document==='undefined')return;
@@ -965,10 +1029,7 @@ export class Game {
   // One active-time clock for the character, scenery and energy feedback.
   updateFrame(deltaSeconds) {
     if (this.state !== 'PAUSED') {
-      if (this.wordPresentationRemaining > 0) {
-        this.wordPresentationRemaining = Math.max(0, this.wordPresentationRemaining - deltaSeconds);
-        if (!this.wordPresentationRemaining && this.pendingWordDelivery) this.pendingWordDelivery();
-      }
+      this.updateWordPresentation(deltaSeconds);
       this.gameTime = (this.gameTime || 0) + deltaSeconds;
       this.balloon?.update(deltaSeconds, this.gameTime);
       if(!this.friendInteraction?.active){
@@ -1026,6 +1087,7 @@ export class Game {
     return JSON.stringify({
       coordinates:'screen pixels; origin top-left; x right, y down',
       mode:this.state, demo:this.isDemoMode, score:this.collectedCount, target:this.targetCount, combo:this.bubbleManager?.comboCount||this.comboCount||0, animalId:this.activeAnimalId,stage:this.sceneManager?.stageId,stageName:this.sceneManager?.stageName,bgmStage:this.audioManager?.currentStageId||this.sceneManager?.stageId||"forest", tracking:this.poseDetector?.metrics,autoNext:this.autoNextDeadline?Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)):null,celebrationDecorations:this.celebrationAccessories?.slots.filter(s=>s.prop.visible).map(s=>s.prop.name),
+      wordLearning:{enabled:this.bubbleManager?.wordMode!==false, word:this.currentWord?.word||null, speaking:!!this.currentWord&&!this.wordAudioDone, elapsed:Math.round((this.wordElapsed||0)*10)/10},
       bubble:bubble ? {...screen(bubble.group.position), type:bubble.type,playStyle:bubble.playStyle,motionElapsed:Math.round((bubble.motionElapsed||0)*100)/100,ease:Math.round((this.bubbleManager.roundEase||0)*100)/100,hitsReceived:bubble.hitsReceived,leftTouched:bubble.leftTouched,rightTouched:bubble.rightTouched,merging:bubble.merging,protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
       animal:animal ? {state:animal.state,emotion:animal.emotion,reaction:animal.reactionVariant,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,
       friendPlay:this.friendInteraction?.toJSON() || null,

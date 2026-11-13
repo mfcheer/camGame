@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24 24 208 208" width="512" height="512">
+  <title>doll</title><defs><linearGradient id="tone0" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#F39C12"/><stop offset="1" stop-color="#F39C12" stop-opacity=".82"/></linearGradient><linearGradient id="tone1" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#FF4081"/><stop offset="1" stop-color="#FF4081" stop-opacity=".82"/></linearGradient><linearGradient id="tone2" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#FFE0B2"/><stop offset="1" stop-color="#FFE0B2" stop-opacity=".82"/></linearGradient><linearGradient id="tone3" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#FF80AB"/><stop offset="1" stop-color="#FF80AB" stop-opacity=".82"/></linearGradient><linearGradient id="tone4" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#E91E63"/><stop offset="1" stop-color="#E91E63" stop-opacity=".82"/></linearGradient><linearGradient id="tone5" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#C2185B"/><stop offset="1" stop-color="#C2185B" stop-opacity=".82"/></linearGradient>
+    <filter id="itemShadow_doll" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_doll)">
+
+      <!-- Cute Ragdoll -->
+      <g transform="translate(128, 120)">
+        <circle cx="-28" cy="-24" r="14" fill="url(#tone0)" stroke="#D68910" stroke-width="3"/>
+        <circle cx="28" cy="-24" r="14" fill="url(#tone0)" stroke="#D68910" stroke-width="3"/>
+        <path d="M-28 48 L-14 4 L14 4 L28 48 Z" fill="url(#tone1)" stroke="#C2185B" stroke-width="4"/>
+        <path d="M-10 18 Q0 28 10 18" stroke="#FFFFFF" stroke-width="3" fill="none"/>
+        <circle cx="0" cy="-20" r="26" fill="url(#tone2)" stroke="#FFCC80" stroke-width="3"/>
+        <path d="M-24 -30 Q0 -14 24 -30 Q16 -46 0 -46 Q-16 -46 -24 -30 Z" fill="url(#tone0)"/>
+        <circle cx="-10" cy="-18" r="3.5" fill="#2C3E50"/>
+        <circle cx="10" cy="-18" r="3.5" fill="#2C3E50"/>
+        <path d="M-6 -8 Q0 -2 6 -8" fill="none" stroke="#E91E63" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="-16" cy="-12" r="4.5" fill="url(#tone3)" opacity="0.6"/>
+        <circle cx="16" cy="-12" r="4.5" fill="url(#tone3)" opacity="0.6"/>
+        <path d="M0 -42 L-10 -48 L-10 -36 Z M0 -42 L10 -48 L10 -36 Z" fill="url(#tone4)"/>
+        <circle cx="0" cy="-42" r="4" fill="url(#tone5)"/>
+      </g>
+
+  </g>
+</svg>

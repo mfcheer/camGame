@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24 24 208 208" width="512" height="512">
+  <title>car</title><defs><linearGradient id="tone0" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#C0392B"/><stop offset="1" stop-color="#C0392B" stop-opacity=".82"/></linearGradient><linearGradient id="tone1" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#D6EAF8"/><stop offset="1" stop-color="#D6EAF8" stop-opacity=".82"/></linearGradient><linearGradient id="tone2" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#E74C3C"/><stop offset="1" stop-color="#E74C3C" stop-opacity=".82"/></linearGradient><linearGradient id="tone3" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#F1C40F"/><stop offset="1" stop-color="#F1C40F" stop-opacity=".82"/></linearGradient><linearGradient id="tone4" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#BDC3C7"/><stop offset="1" stop-color="#BDC3C7" stop-opacity=".82"/></linearGradient>
+    <filter id="itemShadow_car" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_car)">
+
+      <!-- Cute Red Toy Car -->
+      <g transform="translate(128, 120)">
+        <path d="M-36 -8 Q-24 -42 0 -42 Q24 -42 36 -8 Z" fill="url(#tone0)" stroke="#922B21" stroke-width="4"/>
+        <path d="M-28 -8 Q-18 -34 -4 -34 L-4 -8 Z" fill="url(#tone1)"/>
+        <path d="M4 -8 L4 -34 Q18 -34 28 -8 Z" fill="url(#tone1)"/>
+        <rect x="-58" y="-8" width="116" height="32" rx="10" fill="url(#tone2)" stroke="#922B21" stroke-width="4"/>
+        <circle cx="-54" cy="2" r="5" fill="url(#tone3)"/>
+        <circle cx="54" cy="2" r="5" fill="url(#tone3)"/>
+        <rect x="-62" y="16" width="124" height="6" rx="3" fill="url(#tone4)"/>
+        <g stroke="#17202A" stroke-width="4">
+          <circle cx="-34" cy="26" r="16" fill="#2C3E50"/>
+          <circle cx="-34" cy="26" r="7" fill="url(#tone4)"/>
+          <circle cx="34" cy="26" r="16" fill="#2C3E50"/>
+          <circle cx="34" cy="26" r="7" fill="url(#tone4)"/>
+        </g>
+      </g>
+
+  </g>
+</svg>

@@ -455,6 +455,7 @@ export class UIManager {
     document.documentElement.style.setProperty('--hud-bottom',`${getHudBottom()}px`);
     if(this.dom.interactionHint)this.dom.interactionHint.style.top=`${getHudBottom()+8}px`;
     this.showHandGuide(false);
+    this.positionWordPopup();
   }
 
   showHandGuide(show = true, bubbleScreenPos = null) {
@@ -689,10 +690,12 @@ export class UIManager {
     const wordData = typeof word === "string" ? { word, id: word, accent: "#ff6b81" } : word;
     if (!wordData || !wordData.word) return;
 
+    this.clearWordPopup();
     const popup = document.createElement("div");
     popup.className = "word-popup-card word-popup-pill";
     if (typeof popup.setAttribute === "function") {
       popup.setAttribute("role", "status");
+      popup.setAttribute("aria-live", "off");
     }
     if (popup.style && typeof popup.style.setProperty === "function") {
       popup.style.setProperty("--word-accent", wordData.accent || "#ff6b81");
@@ -706,7 +709,7 @@ export class UIManager {
     }
 
     const wordId = String(wordData.id || wordData.word || "").toLowerCase();
-    const wordName = String(wordData.word || wordId).toUpperCase();
+    const wordName = String(wordData.word || wordId).toLowerCase();
 
     // 1. 实物物品大照片/高清矢量图
     const photoFrame = document.createElement("div");
@@ -744,12 +747,14 @@ export class UIManager {
     const textSpan = document.createElement("span");
     textSpan.className = "word-popup-text";
     textSpan.textContent = wordName;
+    textSpan.setAttribute("lang", "en");
     badge.appendChild(textSpan);
 
     if (wordCn) {
       const cnSpan = document.createElement("span");
       cnSpan.className = "word-popup-cn";
       cnSpan.textContent = wordCn;
+      cnSpan.setAttribute("lang", "zh-CN");
       badge.appendChild(cnSpan);
       popup.cnSpan = cnSpan;
       popup.textCn = cnSpan;
@@ -760,15 +765,46 @@ export class UIManager {
     popup.photo = img;
     popup.textSpan = textSpan;
 
-    const container = document.getElementById("app") || document.body;
+    const container = document.getElementById("app") || document.getElementById("ui-layer") || document.body;
     if (container && typeof container.appendChild === "function") {
       container.appendChild(popup);
     }
 
-    popup.dismissTimer = setTimeout(() => {
-      if (typeof popup.remove === "function") {
-        popup.remove();
-      }
-    }, 4500);
-  }}
+    this.activeWordPopup=popup;
+    this.wordPopupAnchor={x:normX,y:normY};
+    this.positionWordPopup();
+    return popup;
+  }
 
+  positionWordPopup() {
+    const card=this.activeWordPopup;
+    if(!card)return;
+    const v=getViewport(), safe=getSafeInsets(), anchor=this.wordPopupAnchor||{x:.5,y:.45};
+    const halfW=(card.offsetWidth||196)/2, halfH=(card.offsetHeight||228)/2;
+    const left=safe.left+12+halfW, right=v.width-safe.right-12-halfW;
+    const top=Math.max(safe.top+12,getHudBottom()+12)+halfH;
+    const bottom=v.height-safe.bottom-20-halfH;
+    const clamp=(value,min,max)=>max<min?(min+max)/2:Math.max(min,Math.min(max,value));
+    card.style.left=`${clamp(anchor.x*v.width,left,right)}px`;
+    card.style.top=`${clamp(anchor.y*v.height,top,bottom)}px`;
+  }
+
+  setWordPopupPaused(paused) {
+    if(this.activeWordPopup)this.activeWordPopup.style.visibility=paused?'hidden':'visible';
+  }
+
+  clearWordPopup(animate=false) {
+    const card=this.activeWordPopup;
+    if(animate && card?.classList){
+      card.classList.add('word-card-leaving');
+      // The timeout removes only this card, never a replacement from a new round.
+      setTimeout(()=>{
+        card.remove();
+        if(this.activeWordPopup===card)this.activeWordPopup=null;
+      },180);
+    }else{
+      card?.remove?.();
+      this.activeWordPopup=null;
+    }
+  }
+}

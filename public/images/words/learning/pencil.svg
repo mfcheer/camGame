@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24 24 208 208" width="512" height="512">
+  <title>pencil</title><defs><linearGradient id="tone0" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#FF8A80"/><stop offset="1" stop-color="#FF8A80" stop-opacity=".82"/></linearGradient><linearGradient id="tone1" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#CFD8DC"/><stop offset="1" stop-color="#CFD8DC" stop-opacity=".82"/></linearGradient><linearGradient id="tone2" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#FBC02D"/><stop offset="1" stop-color="#FBC02D" stop-opacity=".82"/></linearGradient><linearGradient id="tone3" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#FFE0B2"/><stop offset="1" stop-color="#FFE0B2" stop-opacity=".82"/></linearGradient>
+    <filter id="itemShadow_pencil" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_pencil)">
+
+      <!-- Pencil angled 35deg -->
+      <g transform="translate(128, 120) rotate(35)">
+        <path d="M-14 -70 L14 -70 C14 -82 -14 -82 -14 -70 Z" fill="url(#tone0)" stroke="#C62828" stroke-width="3"/>
+        <rect x="-15" y="-70" width="30" height="14" rx="2" fill="url(#tone1)" stroke="#78909C" stroke-width="3"/>
+        <line x1="-15" y1="-63" x2="15" y2="-63" stroke="#90A4AE" stroke-width="2"/>
+        <rect x="-14" y="-56" width="28" height="96" fill="url(#tone2)" stroke="#F57F17" stroke-width="3"/>
+        <line x1="-5" y1="-56" x2="-5" y2="40" stroke="#F57F17" stroke-width="3"/>
+        <line x1="5" y1="-56" x2="5" y2="40" stroke="#FFF176" stroke-width="3"/>
+        <polygon points="-14,40 14,40 0,72" fill="url(#tone3)" stroke="#D7CCC8" stroke-width="2"/>
+        <polygon points="-5,60 5,60 0,72" fill="#263238"/>
+      </g>
+
+  </g>
+</svg>

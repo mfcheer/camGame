@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { GAME_CONFIG } from './config.js';
 import {getAnimalPlayStyle, animalTargetOffset} from './animalPlayStyles.js';
 import {PointerContrastSampler,pointerPalette} from './pointerContrast.js';
-import { WORDS_LIST, getRandomWord, WORDS_MAP, getWordById } from './wordsConfig.js';
+import { WORDS_LIST, WORDS_MAP } from './wordsConfig.js';
 
 /**
  * 泡泡生命周期与交互管理 (v0.5.1 食指指尖交互与小动物解救)
@@ -69,6 +69,9 @@ export class BubbleManager {
     this.lastPoppedEnergy = 1;
     this.onSpecialPop = null;
     this.lastWordId = null;
+    this.wordMode = true;
+    this.wordPool = [];
+    this.wordQueue = [];
     this.wordTextureCache = new Map();
     this.onWordPop = null;
     if (typeof document !== 'undefined') {
@@ -108,6 +111,10 @@ export class BubbleManager {
 
   createWordCardMesh(word, radius) {
     const group = new THREE.Group();
+    if (!word) {
+      group.add(new THREE.Mesh(new THREE.OctahedronGeometry(radius * .32, 0),new THREE.MeshBasicMaterial({color:0xffd46e})));
+      return group;
+    }
     const cardSize = radius * 1.35;
     const texture = this.getWordTexture(word.id);
     const cardGeo = new THREE.PlaneGeometry(cardSize, cardSize);
@@ -521,6 +528,29 @@ export class BubbleManager {
     this.constrainPlayPosition(b.group.position, b.playBounds);
   }
 
+  chooseRoundWord() {
+    const shuffle = items => {
+      for (let i=items.length-1;i>0;i--) {
+        const j=Math.floor(Math.random()*(i+1));
+        [items[i],items[j]]=[items[j],items[i]];
+      }
+      return items;
+    };
+    // A small, coherent theme per rescue, with all four words seen before repeats.
+    if (!this.wordPool.length) {
+      const categories=[...new Set(WORDS_LIST.map(word=>word.category))];
+      const category=categories[Math.floor(Math.random()*categories.length)];
+      this.wordPool=shuffle(WORDS_LIST.filter(word=>word.category===category)).slice(0,4);
+    }
+    if (!this.wordQueue?.length) {
+      this.wordQueue=shuffle([...this.wordPool]);
+      if(this.wordQueue.length>1 && this.wordQueue[0].id===this.lastWordId) {
+        [this.wordQueue[0],this.wordQueue[1]]=[this.wordQueue[1],this.wordQueue[0]];
+      }
+    }
+    return this.wordQueue.shift();
+  }
+
   createBubble(index, forceType = null, forceWord = null) {
     this.bubbleIndex = index;
     const bubbleType = this.determineBubbleType(index, forceType);
@@ -530,7 +560,7 @@ export class BubbleManager {
 
     const word = forceWord
       ? (typeof forceWord === 'string' ? WORDS_MAP.get(forceWord) || { id: forceWord, word: forceWord } : forceWord)
-      : getRandomWord(this.lastWordId);
+      : this.wordMode ? this.chooseRoundWord() : null;
     if (word?.id) this.lastWordId = word.id;
 
     const group = new THREE.Group();
@@ -1122,11 +1152,9 @@ export class BubbleManager {
     // 1. 播放破裂音效与英语单词发音 (按泡泡类型触发专属音效)
     if (this.activeBubble.word) {
       const word = this.activeBubble.word;
-      if (this.audio && typeof this.audio.playWord === 'function') {
-        this.audio.playWord(word.id || word.word);
-      }
+      const audioDone = this.audio?.playWord?.(word.id || word.word);
       if (typeof this.onWordPop === 'function') {
-        this.onWordPop(word, hitX, hitY);
+        this.onWordPop(word, hitX, hitY, audioDone);
       }
     }
     if (this.activeBubble.type === 'rainbow') {
@@ -1657,6 +1685,9 @@ export class BubbleManager {
 
   // 重置与清理所有泡泡及粒子
   clear() {
+    this.wordPool = [];
+    this.wordQueue = [];
+    this.lastWordId = null;
     this.roundEase = 0;
     this.comfortableHits = 0;
     this.completedBubbleCount = 0;
