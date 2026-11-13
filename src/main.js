@@ -787,8 +787,8 @@ export class Game {
     const session=this.celebrationSessionId;
     const ticket=this.autoNextTicket=(this.autoNextTicket||0)+1;
     this.autoNextAwaySeconds=0;
-    this.autoNextDeadline=performance.now()+12000;
-    this.uiManager?.setAutoNextCountdown?.(12);
+    this.autoNextDeadline=performance.now()+5000;
+    this.uiManager?.setAutoNextCountdown?.(5);
     this.autoNextTimer=setTimeout(()=>{
       if(ticket!==this.autoNextTicket)return;
       this.autoNextTimer=null;
@@ -798,7 +798,7 @@ export class Game {
       const present=this.isDemoMode || ((this.lastPlayers?.length||0)>=required && performance.now()-(this.lastPlayersReceivedAt||0)<700);
       if(hidden||!present){this.cancelAutoNext();return;}
       this.startNextFriend();
-    },12000);
+    },5000);
   }
   cancelAutoNext(showStopped=true, reason=null) {
     this.autoNextTicket=(this.autoNextTicket||0)+1;
