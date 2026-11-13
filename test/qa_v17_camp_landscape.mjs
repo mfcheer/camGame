@@ -159,7 +159,7 @@ check('Game: startAutoNext 放宽至 12 秒倒计时，cancelAutoNext(true, "kee
   }
 });
 
-check('UIManager: markPolaroidSaved 将按钮变为绿色“已保存 ✓”并附带 btn-saved，showVictory 重置按钮状态', () => {
+check('UIManager: markPolaroidSaved 显示真实下载状态并附带 btn-saved，showVictory 重置按钮状态', () => {
   function createMockElem(id = "", className = "") {
     const classList = new Set(className.split(" ").filter(Boolean));
     return {
@@ -180,7 +180,7 @@ check('UIManager: markPolaroidSaved 将按钮变为绿色“已保存 ✓”并�
   ui.dom = { btnSavePolaroid: saveBtn, victoryModal: modal };
 
   ui.markPolaroidSaved();
-  assert.equal(saveBtn.textContent, "已保存 ✓", "保存后按钮文字应变为 已保存 ✓");
+  assert.equal(saveBtn.textContent, "已发起下载 · 可再次下载", "下载请求不能承诺已写入相册");
   assert.ok(saveBtn.classList.contains("btn-saved"), "保存后按钮应包含 btn-saved 类");
 
   ui.showVictory();

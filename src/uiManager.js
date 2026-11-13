@@ -3,7 +3,7 @@ import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
  * UI 界面与交互状态管理器
  * 1. 5 个彩色发光圆点进度指示（免识字设计，直观友好）
  * 2. 模式选择（单人 / 亲子双人）
- * 3. 简短取景校准提示、常驻退出与首个泡泡动态伸手示范（留白避让、淡入与单次触碰淡出）
+ * 3. 简短取景校准提示、常驻退出与首点能量动态伸手示范（留白避让、淡入与单次触碰淡出）
  * 4. 摄像头异常明确友好中文提示、重试与独立模拟模式入口（彻底隐藏校准弹层）
  * 5. 暂停、音效开关、起飞庆祝后家长选择
  * 6. 连击 Combo 呼吸彩虹微光浪圈与浮动连击徽章 (不挡人脸)
@@ -88,6 +88,10 @@ export class UIManager {
       polaroidWrapper: document.getElementById('polaroid-wrapper'),
       polaroidImg: document.getElementById('polaroid-img'),
       btnSavePolaroid: document.getElementById('btn-save-polaroid'),
+      btnRetakePhoto: document.getElementById('btn-retake-photo'),
+      btnNextFriend: document.getElementById('btn-next-friend'),
+      photoCountdown: document.getElementById('photo-countdown'),
+      interactionHint: document.getElementById('interaction-hint'),
 
       // 森林营地图鉴
       btnOpenCamp: document.getElementById('btn-open-camp'),
@@ -216,6 +220,9 @@ export class UIManager {
       this.handlers.onStopAutoNext?.('keep_photo');
     });
 
+    this.dom.btnRetakePhoto?.addEventListener('click', () => this.handlers.onRetakePhoto?.());
+    this.dom.btnNextFriend?.addEventListener('click', () => this.handlers.onNextFriend?.());
+
     // 触碰结算弹窗区域即智能驻留冻结倒计时（不干扰「再玩一次」和「回首页」）
     this.dom.victoryModal?.addEventListener('pointerdown', (e) => {
       if (e.target?.closest?.('#btn-play-again, #btn-victory-restart, #btn-victory-exit')) return;
@@ -249,7 +256,7 @@ export class UIManager {
       container.setAttribute('role','progressbar');container.setAttribute('aria-valuemin','0');container.setAttribute('aria-valuemax',String(this.targetCount));
       container.setAttribute('aria-label',profile.name+'的彩虹能量');
     }
-    if(this.dom.animalBrief)this.dom.animalBrief.textContent=`${profile.name}需要 ${profile.targetBubbles} 个泡泡。${profile.description} 不计时，慢慢来也没关系。`;
+    if(this.dom.animalBrief)this.dom.animalBrief.textContent=`${profile.name}需要 ${profile.targetBubbles} 点能量。${profile.description} 不计时，慢慢来也没关系。`;
     if(this.dom.victoryAnimalTitle)this.dom.victoryAnimalTitle.textContent=`${profile.name}自由啦，谢谢你！`;
     if(this.dom.victoryAnimalCopy)this.dom.victoryAnimalCopy.textContent=profile.victoryText ? `${profile.targetBubbles} 份彩虹能量！${profile.victoryText}` : profile.escapeStyle==='trot' ? `${profile.targetBubbles} 份彩虹能量！橘子伸了个懒腰，摇着尾巴回森林啦。` : `${profile.targetBubbles} 份彩虹能量！萌萌跳回森林，还记得回头向你挥挥手。`;
     this.updateProgress(0);
@@ -395,7 +402,7 @@ export class UIManager {
 
   markPolaroidSaved() {
     if (!this.dom.btnSavePolaroid) return;
-    this.dom.btnSavePolaroid.textContent = '已保存 ✓';
+    this.dom.btnSavePolaroid.textContent = '已发起下载 · 可再次下载';
     this.dom.btnSavePolaroid.classList.add('btn-saved');
   }
 
@@ -404,6 +411,7 @@ export class UIManager {
       this.dom.btnSavePolaroid.textContent = '保存合影 📸';
       this.dom.btnSavePolaroid.classList.remove('btn-saved');
     }
+    this.setInteractionHint('');
     this.dom.victoryModal.classList.remove('hidden');
     this.showHandGuide(false);
     this.hideCombo();
@@ -431,10 +439,11 @@ export class UIManager {
     }
   }
 
-  // 首个泡泡的动态动作示范引导 (放置于泡泡旁空白侧，>=12px 留白，首次命中后淡出且不再显示)
+  // 首点能量的动态动作示范引导 (放置于泡泡旁空白侧，>=12px 留白，首次命中后淡出且不再显示)
   updateLayout(){
     if(typeof document==='undefined'||!document.documentElement?.style)return;
     document.documentElement.style.setProperty('--hud-bottom',`${getHudBottom()}px`);
+    if(this.dom.interactionHint)this.dom.interactionHint.style.top=`${getHudBottom()+8}px`;
     this.showHandGuide(false);
   }
 
@@ -545,7 +554,28 @@ export class UIManager {
     setTimeout(() => {
       this.dom.cameraFlash?.classList.remove('flash-active');
       this.dom.cameraFlash?.classList.add('hidden');
-    }, 350);
+    }, 180);
+  }
+
+  setPhotoCountdown(value) {
+    const el = this.dom.photoCountdown;
+    if (!el) return;
+    el.classList.toggle('hidden', value === null);
+    if (value !== null) {
+      const text = typeof value === 'number' ? `看镜头，合影倒数 ${value}` : value;
+      if (el.textContent !== text) el.textContent = text;
+    }
+    this.setInteractionHint('');
+  }
+
+  setInteractionHint(text = '') {
+    const el = this.dom.interactionHint;
+    if (!el) return;
+    if (this.lastInteractionHint === text) return;
+    this.lastInteractionHint = text;
+    el.classList.toggle('hidden', !text);
+    if (el.textContent !== text) el.textContent = text;
+    if (text) el.style.top = `${getHudBottom() + 8}px`;
   }
 
   // 设置拍立得合影预览

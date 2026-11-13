@@ -820,10 +820,10 @@ button{touch-action:manipulation}
   pointer-events: none;
   z-index: 999;
   opacity: 0;
-  transition: opacity 0.35s ease-out;
+  transition: opacity 0.14s ease-out;
 }
 .camera-flash.flash-active {
-  opacity: 0.85;
+  opacity: 0.45;
 }
 
 /* 拍立得森林英雄合影卡 */
@@ -1309,4 +1309,30 @@ button{touch-action:manipulation}
   .camp-animal-avatar {
     max-height: 28px;
   }
+}
+
+/* Interaction feedback stays in the HUD clearance, leaving faces unobscured. */
+.interaction-hint, .photo-countdown {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  width: max-content; max-width: calc(100% - 28px);
+  box-sizing: border-box; padding: 8px 16px; border-radius: 20px;
+  background: rgba(255, 253, 246, .94); color: #354c43;
+  border: 1px solid rgba(91, 128, 100, .25);
+  box-shadow: 0 3px 14px rgba(26, 48, 32, .12);
+  font-size: clamp(12px, 2.4vw, 15px); font-weight: 650;
+  text-align: center; pointer-events: none; z-index: 12;
+}
+.photo-countdown { top: 20%; padding: 14px 22px; font-size: clamp(18px, 3.2vw, 26px); }
+.photo-actions { display: flex; gap: 8px; width: 100%; margin-top: 10px; }
+.photo-actions > button { flex: 1; min-width: 0; margin: 0; padding: 10px 8px; font-size: 14px; }
+.photo-save-tip { margin: 6px 0 0; font-size: 11px; color: #607367; text-align: center; }
+.victory-actions { flex-wrap: wrap; }
+@media (max-height: 420px) and (orientation: landscape) {
+  .photo-countdown { top: 22%; padding: 8px 18px; }
+  .photo-actions { margin-top: 5px; }
+  .photo-actions > button { padding: 7px; font-size: 12px; }
+  .photo-save-tip { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .camera-flash.flash-active { animation: none; opacity: 0; }
 }

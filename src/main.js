@@ -119,6 +119,8 @@ export class Game {
         onEnableDemo: (mode) => this.handleEnableDemo(mode),
         onRetryCamera: () => this.handleRetryCamera(),
         onOpenCamp: () => this.uiManager.showCamp(this.campManager, this.audioManager),
+        onRetakePhoto: () => this.beginPhoto(true),
+        onNextFriend: () => this.startNextFriend(),
         onSavePolaroid: () => PolaroidManager.downloadImage(this.currentPolaroidDataUrl, this.currentAnimalName)
       });
       this.uiManager?.updateCampBadge?.(this.campManager);
@@ -148,7 +150,9 @@ export class Game {
 
   setupPoseCallbacks() {
     this.poseDetector.onResultsCallback = ({ players, isDemo }) => {
-      this.lastPlayers=players;this.lastPlayersReceivedAt=performance.now();
+      const receivedAt = performance.now();
+      const inputDt = Math.min(.1, Math.max(.016, (receivedAt - (this.lastPlayersReceivedAt || receivedAt - 33)) / 1000));
+      this.lastPlayers=players;this.lastPlayersReceivedAt=receivedAt;
       this.celebrationAccessories?.setPlayers(players);
       this.rescueAnimal?.setPlayerFocus?.(players);
       // 1. 取景校准阶段：动态校验人数与舒适伸手范围，更新界面就绪门禁并支持免手触自动 3-2-1 倒计时开局
@@ -222,17 +226,16 @@ export class Game {
 
       if (this.state !== 'PLAYING') return;
 
-      // 2. 双人合作模式必须保持两位玩家同框；若仅剩一人，立即暂停并进入等待
+      // A short occlusion is tolerated; a missing partner pauses without a blocking menu.
       if (this.playerMode === 'coop' && players.length < 2 && !isDemo) {
-        this.handleTogglePause(true);
-        if (this.uiManager) {
-          if (this.uiManager.showPause && !this.isSoftWaiting) this.uiManager.showPause();
-          if (this.uiManager.setPoseLostAlert) {
-            this.uiManager.setPoseLostAlert(true, '双人模式需要两位玩家同框哦，请就位后点击继续，或切换为单人模式');
-          }
+        this.coopLostDuration = (this.coopLostDuration || 0) + inputDt;
+        if (this.coopLostDuration > 1) {
+          this.isSoftWaiting = true;
+          this.handleTogglePause(true);
+          this.uiManager?.setPoseLostAlert?.(true, '等另一位朋友回来，爱心和能量都为你们留着');
+          return;
         }
-        return;
-      }
+      } else this.coopLostDuration = 0;
 
       // 更新手部星芒与彩色光晕视觉反馈 (玩家1暖金，玩家2浅蓝)
       if (this.bubbleManager && this.bubbleManager.updateHandIndicators) {
@@ -241,7 +244,7 @@ export class Game {
 
       // 3. 姿态丢失处理 (单人模式柔性等待)
       if (players.length === 0 && !isDemo) {
-        this.noPoseDetectedTime += 0.016;
+        this.noPoseDetectedTime += inputDt;
         // 连续丢失姿态超过 1.0 秒时自动进入柔性等待保留进度
         if (this.noPoseDetectedTime > 1.0) {
           this.isSoftWaiting = true;
@@ -518,7 +521,7 @@ export class Game {
     const projectile = this.bubbleManager.energyProjectiles?.at(-1);
     if (projectile && !projectile.onArrive) projectile.onArrive = deliver;
     else deliver();
-    if (current < this.targetCount) this.bubbleManager.spawnNext(current);
+    if (current < this.targetCount) this.bubbleManager.spawnNext(this.bubbleManager.completedBubbleCount ?? current);
   }
 
   // 达成 5 个泡泡，解救成功，逃生大欢庆！
@@ -550,9 +553,9 @@ export class Game {
     this.audioManager.playCelebration();
     this.audioManager.playAnimalSound?.(animalId, "escape");
 
-    // 胜利拍照抓拍：快门声、全屏白光微闪烁
-    this.audioManager?.playCameraShutter?.();
-    this.uiManager?.triggerCameraFlash?.();
+    this.photoRemaining = null;
+    this.photoCapturePending = false;
+    this.uiManager?.setPhotoCountdown?.(null);
     if (this.balloon) this.balloon.startTakeoff();
     if (this.rescueAnimal) this.rescueAnimal.startEscape();
 
@@ -584,35 +587,60 @@ export class Game {
     }
     this.waitingForEscape = false;
     if(this.resultVisible)return;
-    this.resultVisible=true;
+    if (this.photoRemaining !== null && this.photoRemaining !== undefined) return;
+    if (this.sceneManager?.renderer) this.beginPhoto(false);
+    else this.captureVictoryPhoto();
+  }
 
-    // 拍立得照片卡生成并展示
+  beginPhoto(retake = false) {
+    if (this.state !== 'CELEBRATING' || (!this.resultVisible && retake)) return;
+    this.cancelAutoNext(false);
+    this.retakePhoto = retake;
+    this.resultVisible = false;
+    this.photoRemaining = 2.4;
+    this.photoCapturePending = false;
+    this.uiManager?.hideVictory?.();
+    this.uiManager?.setPhotoCountdown?.(3);
+  }
+
+  captureVictoryPhoto() {
+    this.photoRemaining = null;
+    this.photoCapturePending = false;
+    this.uiManager?.setPhotoCountdown?.(null);
     const animalId = this.activeAnimalId || this.rescueAnimal?.animalId || 'bunny';
-    const video = typeof document !== 'undefined' ? document.getElementById('webcam-video') : null;
-    const webglCanvas = this.sceneManager?.renderer?.domElement;
     const profile = GAME_CONFIG.animals[animalId] || {};
-    const emojiMap = { bunny: '🐰', cat: '🐱', frog: '🐸', dog: '🐶', dragon: '🐲', goldenDragon: '🐉' };
-    const animalName = profile.name || '小动物';
-    this.currentAnimalName = animalName;
-    const polaroidDataUrl = PolaroidManager.getDataUrl({
-      videoElement: video,
-      webglCanvas,
-      animalId,
-      animalName,
-      targetBubbles: this.targetCount,
-      animalEmoji: emojiMap[animalId] || '🐾'
+    this.currentAnimalName = profile.name || '小动物';
+    this.currentPolaroidDataUrl = PolaroidManager.getDataUrl({
+      videoElement: this.isDemoMode ? null : this.videoElement,
+      webglCanvas: this.sceneManager?.renderer?.domElement,
+      animalId, animalName: this.currentAnimalName, targetBubbles: this.targetCount,
+      animalEmoji: {bunny:'🐰',cat:'🐱',frog:'🐸',dog:'🐶',dragon:'🐲',goldenDragon:'🐉'}[animalId] || '🐾'
     });
-    this.currentPolaroidDataUrl = polaroidDataUrl;
-    this.uiManager?.setPolaroidImage?.(polaroidDataUrl, animalName);
-
+    this.audioManager?.playCameraShutter?.();
+    this.uiManager?.triggerCameraFlash?.();
+    this.uiManager?.setPolaroidImage?.(this.currentPolaroidDataUrl, this.currentAnimalName);
+    this.resultVisible = true;
     this.uiManager?.showVictory?.();
-    if(this.sceneManager && this.uiManager?.setAutoNextCountdown)this.startAutoNext();
+    if (this.retakePhoto) this.cancelAutoNext(true, 'keep_photo');
+    else if (this.sceneManager && this.uiManager?.setAutoNextCountdown) this.startAutoNext();
+    this.retakePhoto = false;
+  }
+
+  startNextFriend() {
+    this.cancelAutoNext(false);
+    this.uiManager?.hideVictory?.();
+    const candidates = PLAYABLE_ANIMALS.filter(id => id !== this.activeAnimalId);
+    this.animalSelection = 'random';
+    this.uiManager?.setAnimalSelection?.('random');
+    this.applyAnimal(candidates[Math.floor(Math.random() * candidates.length)]);
+    this.handleRestart();
   }
 
   startAutoNext() {
     this.cancelAutoNext(false);
     const session=this.celebrationSessionId;
     const ticket=this.autoNextTicket=(this.autoNextTicket||0)+1;
+    this.autoNextAwaySeconds=0;
     this.autoNextDeadline=performance.now()+12000;
     this.uiManager?.setAutoNextCountdown?.(12);
     this.autoNextTimer=setTimeout(()=>{
@@ -623,8 +651,7 @@ export class Game {
       const required=this.playerMode==='coop'?2:1;
       const present=this.isDemoMode || ((this.lastPlayers?.length||0)>=required && performance.now()-(this.lastPlayersReceivedAt||0)<700);
       if(hidden||!present){this.cancelAutoNext();return;}
-      this.uiManager?.hideVictory?.();
-      this.animalSelection='random';this.uiManager?.setAnimalSelection?.('random');this.prepareAnimal();this.handleRestart();
+      this.startNextFriend();
     },12000);
   }
   cancelAutoNext(showStopped=true, reason=null) {
@@ -710,7 +737,7 @@ export class Game {
 
   // 重新开始当前关卡（彻底清除旧庆祝回调）
   handleRestart() {
-    this.cancelAutoNext(false);this.resultVisible=false;this.celebrationAccessories?.clear();
+    this.cancelAutoNext(false);this.resultVisible=false;this.photoRemaining=null;this.photoCapturePending=false;this.uiManager?.setPhotoCountdown?.(null);this.celebrationAccessories?.clear();
     this.uiManager?.hideVictory?.();
     this.cancelAutoCountdown();
     this.celebrationSessionId = (this.celebrationSessionId || 0) + 1;
@@ -768,7 +795,7 @@ export class Game {
   // 退出回首页（取消所有异步流程、旧定时器并彻底释放摄像头）
   handleExit() {
     this.bubbleManager?.contrastSampler?.clear();
-    this.cancelAutoNext(false);this.resultVisible=false;this.celebrationAccessories?.clear();
+    this.cancelAutoNext(false);this.resultVisible=false;this.photoRemaining=null;this.photoCapturePending=false;this.uiManager?.setPhotoCountdown?.(null);this.celebrationAccessories?.clear();
     this.cancelAutoCountdown();
     this.lifecycleSessionId = (this.lifecycleSessionId || 0) + 1;
     this.celebrationSessionId = (this.celebrationSessionId || 0) + 1;
@@ -878,17 +905,32 @@ export class Game {
       this.gameTime = (this.gameTime || 0) + deltaSeconds;
       this.balloon?.update(deltaSeconds, this.gameTime);
       this.rescueAnimal?.setAnticipation?.(this.state==='PLAYING'&&!!this.bubbleManager?.isNearHand);
+      this.rescueAnimal?.setAttentionTarget?.(this.bubbleManager?.activeBubble?.group.position, this.bubbleManager?.energyProjectiles?.at(-1)?.mesh.position);
       this.rescueAnimal?.update(deltaSeconds, this.gameTime);
       this.bubbleManager?.update(deltaSeconds, this.gameTime);
       if(this.state==='PLAYING' && this.bubbleManager?.handsAgeSeconds<.18 && this.bubbleManager.checkHandCollisions(this.bubbleManager.latestTrackedPlayers))this.onBubblePopped();
       this.sceneManager?.update(deltaSeconds);
       if(this.celebrationAccessories && typeof window!=='undefined')this.celebrationAccessories.update(deltaSeconds,getViewport().width,getViewport().height);
-      if(this.autoNextDeadline)this.uiManager?.setAutoNextCountdown?.(Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)));
+      if (this.state === 'PLAYING') this.uiManager?.setInteractionHint?.(this.bubbleManager?.getInteractionHint?.() || '');
+      if (this.photoRemaining !== null && this.photoRemaining !== undefined && this.state === 'CELEBRATING') {
+        const present = this.isDemoMode || ((this.lastPlayers?.length || 0) >= (this.playerMode === 'coop' ? 2 : 1) && performance.now() - (this.lastPlayersReceivedAt || 0) < 700);
+        if (present) this.photoRemaining = Math.max(0, this.photoRemaining - deltaSeconds);
+        this.uiManager?.setPhotoCountdown?.(present ? Math.max(1, Math.ceil(this.photoRemaining)) : '回来一起拍合影吧');
+        if (this.photoRemaining <= 0) this.photoCapturePending = true;
+      }
+      if (this.autoNextDeadline) {
+        const present = this.isDemoMode || ((this.lastPlayers?.length || 0) >= (this.playerMode === 'coop' ? 2 : 1) && performance.now() - (this.lastPlayersReceivedAt || 0) < 700);
+        this.autoNextAwaySeconds = present ? 0 : (this.autoNextAwaySeconds || 0) + deltaSeconds;
+        if (this.autoNextAwaySeconds > 1) this.cancelAutoNext(true);
+        else this.uiManager?.setAutoNextCountdown?.(Math.max(0, Math.ceil((this.autoNextDeadline-performance.now())/1000)));
+      }
       if (this.waitingForEscape && this.state === 'CELEBRATING' && this.rescueAnimal?.state === 'ESCAPED') {
         this.showVictoryWhenReady();
       }
     }
     this.sceneManager?.render();
+    // Read WebGL immediately after rendering; no preserveDrawingBuffer needed.
+    if (this.photoCapturePending && this.state === 'CELEBRATING') this.captureVictoryPhoto();
   }
 
   renderLoop() {
@@ -911,8 +953,9 @@ export class Game {
     return JSON.stringify({
       coordinates:'screen pixels; origin top-left; x right, y down',
       mode:this.state, demo:this.isDemoMode, score:this.collectedCount, target:this.targetCount, combo:this.bubbleManager?.comboCount||this.comboCount||0, animalId:this.activeAnimalId,stage:this.sceneManager?.stageId,stageName:this.sceneManager?.stageName,bgmStage:this.audioManager?.currentStageId||this.sceneManager?.stageId||"forest", tracking:this.poseDetector?.metrics,autoNext:this.autoNextDeadline?Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)):null,celebrationDecorations:this.celebrationAccessories?.slots.filter(s=>s.prop.visible).map(s=>s.prop.name),
-      bubble:bubble ? {...screen(bubble.group.position), protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
+      bubble:bubble ? {...screen(bubble.group.position), type:bubble.type,hitsReceived:bubble.hitsReceived,leftTouched:bubble.leftTouched,rightTouched:bubble.rightTouched,merging:bubble.merging,protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
       animal:animal ? {state:animal.state,emotion:animal.emotion,reaction:animal.reactionVariant,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,
+      photoCountdown:this.photoRemaining ?? null, resultVisible:!!this.resultVisible,
       energyInFlight:this.bubbleManager?.energyProjectiles.length || 0
     });
   }

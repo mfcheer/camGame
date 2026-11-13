@@ -115,14 +115,19 @@ check('丢失姿态后必须暂停并等待家长继续', () => {
   assert.equal(g.state,'PAUSED');
 });
 
-check('双人只剩一人必须暂停', () => {
+check('双人短暂遮挡宽限，持续一秒后柔性暂停', () => {
   const g=fixture();
   g.playerMode='coop';
   g.bubbleManager.setPlayerMode('coop');
   g.bubbleManager.createBubble(0);
   contact(g,1);
+  assert.equal(g.state,'PLAYING');
+  for(let n=0;n<70;n++) contact(g,1);
   assert.equal(g.collectedCount,0);
   assert.equal(g.state,'PAUSED');
+  assert.equal(g.isSoftWaiting,true);
+  g.poseDetector.onResultsCallback({players:[{id:1,hands:[]},{id:2,hands:[]}]});
+  assert.equal(g.state,'PLAYING');
 });
 
 check('退出停止全部视频轨道并清空srcObject', () => {

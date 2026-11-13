@@ -324,15 +324,17 @@ check('Game 集成闭环：果冻泡泡+2充能、达成通关触发快门闪烁
   assert.equal(g.collectedCount, 6);
   assert.equal(g.state, 'CELEBRATING', '满分后应进入 CELEBRATING 状态');
 
-  // 验证快门声与闪烁
-  assert.ok(audio.calls.some(c => c.type === 'playCameraShutter'), '应当触发 playCameraShutter 快门音效');
-  assert.equal(flashTriggered, true, '应当触发 triggerCameraFlash 闪烁');
+  // 拍照发生在动物挥别与准备完成后，胜利时不提前播放快门。
+  assert.equal(audio.calls.some(c => c.type === 'playCameraShutter'), false);
+  assert.equal(flashTriggered, false);
 
   // 验证营地自动记录
   assert.equal(camp.getAnimalRescueCount('frog'), 1, '营地应当已自动记录青蛙解救 1 次');
 
   // 验证就绪后展示拍立得
   g.showVictoryWhenReady();
+  assert.ok(audio.calls.some(c => c.type === 'playCameraShutter'));
+  assert.equal(flashTriggered, true);
   assert.equal(polaroidSet, true, '胜利弹窗应包含拍立得图片');
   assert.equal(victoryShown, true, '应当展示胜利弹窗');
 });

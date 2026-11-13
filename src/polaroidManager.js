@@ -1,3 +1,13 @@
+// Camera and AR must share the viewport crop before entering the photo frame.
+export function photoComposition(videoW, videoH, viewportW, viewportH, frameW = 568, frameH = 520) {
+  const cover = Math.max(viewportW / videoW, viewportH / videoH);
+  const sw = viewportW / cover, sh = viewportH / cover;
+  const fit = Math.min(frameW / viewportW, frameH / viewportH);
+  return { sx: (videoW - sw) / 2, sy: (videoH - sh) / 2, sw, sh,
+    dx: (frameW - viewportW * fit) / 2, dy: (frameH - viewportH * fit) / 2,
+    dw: viewportW * fit, dh: viewportH * fit };
+}
+
 /**
  * 胜利抓拍拍立得合影生成器 (PolaroidManager)
  * 1. 抓取摄像头视频帧与 Three.js 3D 画布（包含头戴 3D 皇冠/花环及通关小动物）
@@ -15,7 +25,9 @@ export class PolaroidManager {
     animalId = 'bunny',
     animalName = '小兔 萌萌',
     targetBubbles = 5,
-    animalEmoji = '🐰'
+    animalEmoji = '🐰',
+    viewportWidth = webglCanvas?.width || 1280,
+    viewportHeight = webglCanvas?.height || 720
   } = {}) {
     if (typeof document === 'undefined') {
       // Node 测试环境防崩回退
@@ -55,74 +67,25 @@ export class PolaroidManager {
     ctx.roundRect(px, py, pw, ph, 8);
     ctx.clip();
 
-    // A. 视频底图 (如有真实摄像头流，水平镜像渲染；如无流或模拟模式，渲染森林梦幻渐变)
-    let hasDrawnVideo = false;
-    if (videoElement && videoElement.videoWidth > 0 && !videoElement.paused) {
+    // Retain the entire visible play area, including heads near the top edge.
+    const grad = ctx.createLinearGradient(px, py, px, py + ph);
+    grad.addColorStop(0, '#c7ecfc'); grad.addColorStop(1, '#b1edd0');
+    ctx.fillStyle = grad; ctx.fillRect(px, py, pw, ph);
+    const vw = videoElement?.videoWidth || viewportWidth;
+    const vh = videoElement?.videoHeight || viewportHeight;
+    const rect = photoComposition(vw, vh, viewportWidth, viewportHeight, pw, ph);
+    if (videoElement?.videoWidth > 0 && !videoElement.paused) {
+      ctx.save();
       try {
-        ctx.save();
-        ctx.translate(px + pw, py);
+        ctx.translate(px + rect.dx + rect.dw, py + rect.dy);
         ctx.scale(-1, 1);
-
-        const vw = videoElement.videoWidth;
-        const vh = videoElement.videoHeight;
-        const vAspect = vw / vh;
-        const fAspect = pw / ph;
-
-        let dw, dh, dx, dy;
-        if (vAspect > fAspect) {
-          dh = ph;
-          dw = ph * vAspect;
-          dx = (pw - dw) / 2;
-          dy = 0;
-        } else {
-          dw = pw;
-          dh = pw / vAspect;
-          dx = 0;
-          dy = (ph - dh) / 2;
-        }
-        ctx.drawImage(videoElement, dx, dy, dw, dh);
-        ctx.restore();
-        hasDrawnVideo = true;
-      } catch (e) {}
+        ctx.drawImage(videoElement, rect.sx, rect.sy, rect.sw, rect.sh, 0, 0, rect.dw, rect.dh);
+      } catch (e) { console.warn('Camera frame unavailable for photo', e); }
+      finally { ctx.restore(); }
     }
-
-    if (!hasDrawnVideo) {
-      const grad = ctx.createLinearGradient(px, py, px, py + ph);
-      grad.addColorStop(0, '#c7ecfc');
-      grad.addColorStop(0.55, '#e4fae8');
-      grad.addColorStop(1, '#b1edd0');
-      ctx.fillStyle = grad;
-      ctx.fillRect(px, py, pw, ph);
-
-      // 绘制几抹柔和的森林阳光
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
-      ctx.beginPath();
-      ctx.arc(px + pw * 0.5, py + ph * 0.2, 140, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // B. 绘制 Three.js 3D WebGL 画布 (包含场景、小动物与头上 3D 皇冠/花环)
-    if (webglCanvas && webglCanvas.width > 0) {
-      try {
-        const cw = webglCanvas.width;
-        const ch = webglCanvas.height;
-        const cAspect = cw / ch;
-        const fAspect = pw / ph;
-
-        let dw, dh, dx, dy;
-        if (cAspect > fAspect) {
-          dh = ph;
-          dw = ph * cAspect;
-          dx = px + (pw - dw) / 2;
-          dy = py;
-        } else {
-          dw = pw;
-          dh = pw / cAspect;
-          dx = px;
-          dy = py + (ph - dh) / 2;
-        }
-        ctx.drawImage(webglCanvas, dx, dy, dw, dh);
-      } catch (e) {}
+    if (webglCanvas?.width > 0) {
+      try { ctx.drawImage(webglCanvas, px + rect.dx, py + rect.dy, rect.dw, rect.dh); }
+      catch (e) { console.warn('AR frame unavailable for photo', e); }
     }
 
     // 照片内阴影边缘
@@ -172,14 +135,15 @@ export class PolaroidManager {
     // 标题
     ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif';
     ctx.fillStyle = '#2d3748';
-    ctx.fillText(`🎉 与${animalName}的自由合影`, px + 8, textStartY);
+    ctx.fillText(`与${animalName}的自由合影`, px + 8, textStartY, pw - 120);
 
     // 获救副标题与能量数
     const now = new Date();
     const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
     ctx.font = '14px -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif';
     ctx.fillStyle = '#718096';
-    ctx.fillText(`送出 ${targetBubbles} 份彩虹能量 · ${dateStr} 森林营地留念`, px + 8, textStartY + 36);
+    ctx.fillText(`送出 ${targetBubbles} 份彩虹能量`, px + 8, textStartY + 36);
+    ctx.fillText(`${dateStr} · 森林营地留念`, px + 8, textStartY + 62);
 
     // 5. “森林英雄”复古红色/金色双圈纪念印章
     ctx.save();

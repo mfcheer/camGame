@@ -48,6 +48,9 @@
       </div>
     </div>
 
+    <div id="interaction-hint" class="interaction-hint hidden" role="status" aria-live="polite"></div>
+    <div id="photo-countdown" class="photo-countdown hidden" role="status" aria-live="polite"></div>
+
     <!-- 连击彩虹呼吸光浪与微星光边框（不挡中央人脸） -->
     <div id="combo-rainbow-wave" class="combo-rainbow-wave hidden"></div>
 
@@ -91,22 +94,22 @@
         <div class="start-choices">
         <div class="animal-picker" role="group" aria-label="选择动物">
           <button class="animal-choice selected" data-animal="bunny" aria-pressed="true">
-            <img src="%BASE_URL%models/bunny-preview.png" alt="小白兔萌萌" /><strong>小兔 萌萌</strong><span>5 泡泡 · 轻松</span>
+            <img src="%BASE_URL%models/bunny-preview.png" alt="小白兔萌萌" /><strong>小兔 萌萌</strong><span>5 能量 · 轻松</span>
           </button>
           <button class="animal-choice" data-animal="cat" aria-pressed="false">
-            <img src="%BASE_URL%models/cat-preview.png" alt="橘猫橘子" /><strong>橘猫 橘子</strong><span>8 泡泡 · 耐心</span>
+            <img src="%BASE_URL%models/cat-preview.png" alt="橘猫橘子" /><strong>橘猫 橘子</strong><span>8 能量 · 耐心</span>
           </button>
           <button class="animal-choice" data-animal="frog" aria-pressed="false">
-            <img src="%BASE_URL%models/frog-preview.png" alt="小青蛙呱呱" /><strong>青蛙 呱呱</strong><span>6 泡泡 · 池塘</span>
+            <img src="%BASE_URL%models/frog-preview.png" alt="小青蛙呱呱" /><strong>青蛙 呱呱</strong><span>6 能量 · 池塘</span>
           </button>
           <button class="animal-choice" data-animal="dog" aria-pressed="false">
-            <img src="%BASE_URL%models/dog-preview.png" alt="小狗旺旺" /><strong>小狗 旺旺</strong><span>10 泡泡 · 活力</span>
+            <img src="%BASE_URL%models/dog-preview.png" alt="小狗旺旺" /><strong>小狗 旺旺</strong><span>10 能量 · 活力</span>
           </button>
           <button class="animal-choice" data-animal="dragon" aria-pressed="false">
-            <img src="%BASE_URL%models/dragon-preview.png" alt="飞龙翼翼" /><strong>飞龙 翼翼</strong><span>12 泡泡 · 奇遇</span>
+            <img src="%BASE_URL%models/dragon-preview.png" alt="飞龙翼翼" /><strong>飞龙 翼翼</strong><span>12 能量 · 奇遇</span>
           </button>
           <button class="animal-choice" data-animal="goldenDragon" aria-pressed="false">
-            <img src="%BASE_URL%models/goldenDragon-preview.png" alt="金龙小金" /><strong>金龙 小金</strong><span>9 泡泡 · 祥云</span>
+            <img src="%BASE_URL%models/goldenDragon-preview.png" alt="金龙小金" /><strong>金龙 小金</strong><span>9 能量 · 祥云</span>
           </button>
           <button class="animal-choice random-choice" data-animal="random" aria-pressed="false">
             <div class="random-friends"><img src="%BASE_URL%models/bunny-preview.png" alt="" /><img src="%BASE_URL%models/cat-preview.png" alt="" /><img src="%BASE_URL%models/frog-preview.png" alt="" /><img src="%BASE_URL%models/dog-preview.png" alt="" /><img src="%BASE_URL%models/dragon-preview.png" alt="" /><img src="%BASE_URL%models/goldenDragon-preview.png" alt="" /></div><strong>随机朋友</strong><span>六位朋友 · 开局揭晓</span>
@@ -201,12 +204,17 @@
                 <div class="polaroid-stamp" id="polaroid-stamp">森林英雄<br>★ HERO ★</div>
               </div>
             </div>
-            <button id="btn-save-polaroid" class="btn-primary btn-save-photo" type="button">保存合影 📸</button>
+            <div class="photo-actions">
+              <button id="btn-save-polaroid" class="btn-primary btn-save-photo" type="button">保存合影 📸</button>
+              <button id="btn-retake-photo" class="btn-secondary" type="button">再拍一张</button>
+            </div>
+            <p class="photo-save-tip">未出现下载？可以长按合影保存图片。</p>
           </div>
           <div class="victory-info-col">
             <h2 id="victory-animal-title">萌萌自由啦，谢谢你！</h2>
             <p id="victory-animal-copy">5 份彩虹能量，换来一只自由的小兔。萌萌已经跳回森林，还记得回头向你挥挥手。</p>
             <div class="victory-actions"><button id="btn-play-again" class="btn-primary">再解救一次 🎈</button>
+            <button id="btn-next-friend" class="btn-secondary" type="button">随机下一位</button>
             <button id="btn-victory-exit" class="btn-secondary">返回首页 🏠</button></div>
             <div class="auto-next-row"><span id="auto-next-status" aria-live="polite"></span><button id="btn-stop-auto-next" class="text-button">先休息，停止自动开始</button></div>
           </div>

@@ -59,16 +59,39 @@ export function updateExpressionRig(animal,dt){
   eye.visible=!close;smile.visible=close;eye.scale.y=curious?1.12:happy&&!close?.90:1;
  }
  if(animal.happyTongue&&animal.animalId==='dog'){animal.happyTongue.rotation.z=happy?Math.sin(t*5)*.10:0;animal.happyTongue.scale.y=.048*(happy?1+Math.sin(t*7)*.08:1);}
- const focus=animal.playerFocus||{x:.5,y:.32};
+ const focus=animal.attentionFocus||animal.playerFocus||{x:.5,y:.32};
  const lookX=THREE.MathUtils.clamp((focus.x-.5)*.022,-.012,.012),lookY=THREE.MathUtils.clamp((.4-focus.y)*.025,-.01,.01);
- for(const {node,base}of rig.pupils){node.position.x=base.x+lookX;node.position.y=base.y+lookY;}
+ for(const {node,base}of rig.pupils){node.position.x=THREE.MathUtils.lerp(node.position.x,base.x+lookX,1-Math.exp(-dt*12));node.position.y=THREE.MathUtils.lerp(node.position.y,base.y+lookY,1-Math.exp(-dt*12));}
  const glyphLife=animal.glyphTimer||0;animal.glyphTimer=Math.max(0,glyphLife-dt);rig.effects.visible=glyphLife>0&&!animal.reducedMotion;
  if(rig.effects.visible){const p=1-glyphLife/.95;for(let i=0;i<rig.glyphs.length;i++){const m=rig.glyphs[i];m.position.set((i-1)*.14,.05+p*.18+Math.sin(i*2)*.025,0);m.rotation.z=Math.sin(t*3+i)*.12;m.scale.setScalar(.65+Math.sin(Math.min(1,p*4)*Math.PI/2)*.35);m.material.opacity=Math.min(1,p*7)*(1-p)*.85;}}
  if(rig.sac){const inflate=happy?Math.sin(Math.min(1,(1.15-reaction)/.7)*Math.PI)*.5+.5:0;rig.sac.scale.set(.09+inflate*.045,.025+inflate*.055,.045+inflate*.03);}
  if(animal.state!=='TRAPPED')return;
  const amount=happy?Math.sin(Math.max(0,1.15-reaction)*Math.PI):0;
  const motion=animal.reducedMotion?.25:1;
- if(curious){animal.headGroup.rotation.x-=.035;animal.headGroup.rotation.z+=Math.sin(t*2)*.025;}
+ // Small anticipations precede the larger, species-specific thanks.
+ animal.model.rotation.x=curious&&!animal.reducedMotion?-.025:0;
+ if(curious){
+  animal.headGroup.rotation.z+=Math.sin(t*2)*.025*motion;
+  switch(animal.animalId){
+   case 'cat':
+    animal.leftEarGroup.rotation.z=.06;animal.rightEarGroup.rotation.z=-.06;
+    animal.rightArm.rotation.x=-.18-Math.sin(t*2)*.055*motion;
+    animal.tailGroup.rotation.z=Math.sin(t*2.2)*.07*motion;break;
+   case 'bunny':animal.leftEarGroup.rotation.z=.23;animal.rightEarGroup.rotation.z=-.08;animal.headGroup.rotation.z+=.055*motion;break;
+   case 'dog':animal.headGroup.rotation.z+=.10*motion;animal.tailGroup.rotation.y=Math.sin(t*8)*.48*motion;break;
+   case 'frog':animal.leftLeg.rotation.x=animal.rightLeg.rotation.x=.10;break;
+   case 'dragon':
+    for(const [name,sign] of [['Wing_L',-1],['Wing_R',1]]){const wing=animal.model.getObjectByName(name);if(wing)wing.rotation.y=sign*.27;}
+    break;
+   case 'goldenDragon':animal.tailGroup.rotation.y+=Math.sin(t*2.5-.8)*.035*motion;break;
+  }
+ }
+ // Cat slow blinks remain readable while looking back at the player.
+ if(animal.animalId==='cat'&&!happy&&!curious){
+  const phase=t%5.2;
+  const blink=phase>3.8&&phase<4.5?Math.sin((phase-3.8)/.7*Math.PI):0;
+  for(const {eye} of rig.smileEyes)eye.scale.y=1-blink*.93;
+ }
  if(animal.animalId==='cat'&&!happy)animal.tailGroup.rotation.y=Math.sin(t*1.4)*.065*motion;
  if(happy){
   switch(animal.animalId){

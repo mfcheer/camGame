@@ -761,7 +761,7 @@ export class PoseDetector {
     if (!this.isDemoMode) return;
     this.trackedPlayers = [
       {
-        id: 1,
+        id: this.playerMode === 'coop' && normalizedX >= .5 ? 2 : 1,
         centerX: normalizedX,
         comfortZone: {
           minX: Math.max(0.1, normalizedX - 0.25),

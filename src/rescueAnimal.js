@@ -119,7 +119,10 @@ export class RescueAnimal {
   setEnergy(score) {
     this.energyLevel=score;
     for(let i=0;i<this.ropeCoils.length;i++)if(score>=Math.ceil((i+1)*this.targetEnergy/5)&&!this.ropeCoils[i].loosened)Object.assign(this.ropeCoils[i],{loosened:true,falling:true,fallTimer:0});
-    this.hopTimer=.70;this.reactionTimer=1.15;this.reactionVariant=(score-1)%3;this.glyphTimer=.95;
+    this.hopTimer=.70;this.reactionTimer=1.15;this.reactionVariant=(score-1)%3;
+    // Quiet ordinary thanks, more visible milestones and a full finale.
+    this.glyphTimer=score % 3 === 0 || score >= this.targetEnergy ? .95 : 0;
+    this.energyAttentionRemaining=0;
     this.onEnergyReceived?.(score);
   }
   startEscape() {
@@ -144,7 +147,7 @@ export class RescueAnimal {
   }
   reset() {
     this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;this.reactionTimer=0;
-    this.anticipating=false;this.reactionVariant=0;this.glyphTimer=0;this.emotion='content';resetExpressionRig(this.expressionRig);
+    this.anticipating=false;this.reactionVariant=0;this.glyphTimer=0;this.emotion='content';this.attentionPhase='player';this.attentionFocus=null;this.targetFocus=null;this.energyFocus=null;this.energyAttentionRemaining=0;resetExpressionRig(this.expressionRig);
     if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.y=.048;}
     for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=true;}
     this.currentX=this.startX;this.currentY=this.groundY;
@@ -162,18 +165,38 @@ export class RescueAnimal {
     for(const m of this.bowMaterials)m.emissiveIntensity=0;
   }
   setPlayerFocus(players=[]) {
-    const face=players.find(p=>p.face)?.face;
-    this.playerFocus=face?{x:face.x,y:face.eyeY??face.y}:null;
+    const faces=players.map(p=>p.face).filter(Boolean);
+    this.playerFocus=faces.length?{x:faces.reduce((n,f)=>n+f.x,0)/faces.length,y:faces.reduce((n,f)=>n+(f.eyeY??f.y),0)/faces.length}:null;
+  }
+  followEnergy(position) {
+    this.energyFocus=position?.clone();
+    this.energyAttentionRemaining=.6;
+  }
+  setAttentionTarget(target, energy) {
+    this.targetFocus=target?.clone() || null;
+    if(energy){this.energyFocus=energy.clone();this.energyAttentionRemaining=.25;}
+  }
+  updateAttention(dt) {
+    this.energyAttentionRemaining=Math.max(0,(this.energyAttentionRemaining||0)-dt);
+    const energy=this.energyAttentionRemaining>0 && this.energyFocus;
+    const target=energy || (this.anticipating && !this.reactionTimer ? this.targetFocus : null);
+    this.attentionPhase=energy?'energy':target?'bubble':this.reactionTimer>0?'thanks':'player';
+    let focus=this.playerFocus||{x:.5,y:.35};
+    if(target&&this.camera){const p=target.clone().project(this.camera);focus={x:(p.x+1)/2,y:(1-p.y)/2};}
+    this.attentionFocus ||= {...focus};
+    const blend=1-Math.exp(-dt*7);
+    this.attentionFocus.x+=(focus.x-this.attentionFocus.x)*blend;
+    this.attentionFocus.y+=(focus.y-this.attentionFocus.y)*blend;
   }
   updateExpression(dt) {
     const reaction=this.reactionTimer||0;this.reactionTimer=Math.max(0,reaction-dt);
     if(this.state==='TRAPPED') {
-      const eyeContact=reaction>.15;
-      const focus=this.playerFocus||{x:.5,y:.32};
-      const yaw=eyeContact?-.04:THREE.MathUtils.clamp((focus.x-.12)*.65,-.15,.34);
-      this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,yaw,Math.min(1,dt*8));
-      this.headGroup.rotation.x+=eyeContact?-.05:-.14;
-      if(eyeContact)this.headGroup.rotation.z+=Math.sin((1.15-reaction)*5)*.09;
+      const eyeContact=this.attentionPhase==='thanks';
+      const focus=this.attentionFocus||this.playerFocus||{x:.5,y:.32};
+      const yaw=eyeContact?0:THREE.MathUtils.clamp((focus.x-.5)*.7,-.28,.28);
+      this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,yaw,1-Math.exp(-dt*8));
+      this.headGroup.rotation.x+=eyeContact?-.035:THREE.MathUtils.clamp((focus.y-.55)*.35,-.18,.10);
+      if(eyeContact)this.headGroup.rotation.z+=Math.sin((1.15-reaction)*5)*.055;
     }
     if(this.state!=='TRAPPED')this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,0,Math.min(1,dt*8));
     const happy=reaction>.1||this.state==='WAVING'||this.state==='CHEERING';
@@ -331,6 +354,7 @@ export class RescueAnimal {
       if(swimming){this.animalGroup.rotation.x=Math.sin(this.idleTime*3.5)*.035;this.headGroup.rotation.z=Math.sin(this.idleTime*3.5+.7)*.05;}
       for(const [name,sign]of [['Whisker_L',-1],['Whisker_R',1]]){const whisker=this.model.getObjectByName(name);if(whisker)whisker.rotation.y=sign*Math.sin(this.idleTime*2.7)*amplitude*2;}
     }
+    this.updateAttention(dt);
     this.updateExpression(dt);updateExpressionRig(this,dt);
     this.currentY=this.animalGroup.position.y;
     if(this.contactShadow){this.contactShadow.position.set(this.currentX,this.groundY+.014,.09);this.contactShadow.scale.setScalar(this.modelScale*(1+jump*.5));if(this.state!=='ESCAPED')this.contactShadow.visible=true;}

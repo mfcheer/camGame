@@ -32,6 +32,9 @@ export class BubbleManager {
 
     this.playerMode = 'single'; // 'single' | 'coop'
     this.lastPopPlayerSide = 'left'; // 初始为 left，则首次 coop 生成将选 +1 (右侧/2号玩家)
+    this.completedBubbleCount = 0;
+    this.layoutGraceSeconds = 0;
+    this.interactionClock = 0;
     this.bubbleIndex = 0; // 当前第几个泡泡 (0~4)
     this.playerComfortZones = []; // 校准的玩家舒适伸手区域
     this.latestTrackedPlayers = [];
@@ -174,13 +177,19 @@ export class BubbleManager {
   // pixel radius and HUD/corner clearance without resetting score or coop turn.
   updateLayout() {
     if (!this.activeBubble) return;
+    const old = this.activeBubble;
     const side = this.lastPopPlayerSide;
-    const currentType = this.activeBubble.type;
+    const saved = {};
+    for (const key of ['hitsReceived', 'leftTouched', 'rightTouched', 'leftTouchTime', 'rightTouchTime', 'merging', 'mergeProgress']) saved[key] = old[key];
     if (this.playerMode === 'coop') this.lastPopPlayerSide = side === 'left' ? 'right' : 'left';
-    this.disposeBubble(this.activeBubble.group);
+    this.disposeBubble(old.group);
     this.activeBubble = null;
-    this.createBubble(this.bubbleIndex, currentType);
+    this.createBubble(this.bubbleIndex, old.type);
+    for (const [key, value] of Object.entries(saved)) if (value !== undefined) this.activeBubble[key] = value;
     this.lastPopPlayerSide = side;
+    // Old camera-space tips must never hit the newly projected target.
+    this.layoutGraceSeconds = .35;
+    this.hideHandIndicators();
   }
 
   // 生成下一个泡泡
@@ -193,7 +202,7 @@ export class BubbleManager {
 
     if (this.spawnTimer) clearTimeout(this.spawnTimer);
     this.spawnTimer = setTimeout(() => {
-      this.createBubble(this.bubbleIndex);
+      this.createBubble(this.bubbleIndex, forceType);
       this.isSpawning = false;
     }, delay);
   }
@@ -767,6 +776,44 @@ export class BubbleManager {
     }
   }
 
+  getInteractionTips(players, w, h) {
+    const tips = [];
+    for (const player of players || []) {
+      const used = new Set();
+      for (const [i, hand] of (player.hands || []).entries()) {
+        if (hand.isIndexTip === false || hand.observed === false) continue;
+        if (hand.source === 'hand-21' && this.handsAgeSeconds >= .18) continue;
+        const base = player.id === 2 ? 2 : 0;
+        const slot = hand.side === 'right' ? base + 1 : hand.side === 'left' ? base : !used.has(base) ? base : base + 1;
+        used.add(slot);
+        const marker = this.handIndicators[slot];
+        const displayed = marker?.active && this.handsAgeSeconds < .18 ? marker.group.position.clone().project(this.camera) : null;
+        const x = displayed ? (displayed.x + 1) * .5 : hand.x;
+        const y = displayed ? (1 - displayed.y) * .5 : hand.y;
+        if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+        tips.push({ playerId: player.id, key: player.id + '_' + (hand.side || i), x, y, px: x * w, py: y * h });
+      }
+    }
+    return tips;
+  }
+
+  getInteractionHint() {
+    const b = this.activeBubble;
+    if (!b) return '';
+    if (b.type === 'coop_heart') return b.merging ? '两颗爱心合在一起啦' : b.leftTouched ? '左边准备好啦，等右边的朋友' : b.rightTouched ? '右边准备好啦，等左边的朋友' : '左边金色、右边蓝色，一起碰碰爱心';
+    const owner = this.playerMode === 'coop' ? (b.ownerId === 2 ? '右边蓝色朋友：' : '左边金色朋友：') : '';
+    if (b.type === 'jelly') return owner + (b.hitsReceived ? '还差一下：收回食指，再戳一次' : '果冻有两层，戳一下，再戳一下');
+    return owner ? owner + '来戳这一颗' : '';
+  }
+
+  showContact(x, y, b) {
+    const p = new THREE.Vector3(x * 2 - 1, 1 - y * 2, 0).unproject(this.camera);
+    const direction = p.clone().sub(this.camera.position);
+    p.copy(this.camera.position).addScaledVector(direction, (b.group.position.z - this.camera.position.z) / direction.z);
+    this.spawnPopRing(p, 0xffffff, b.baseRadius * .22);
+    this.handFlashTimer = .16;
+  }
+
   // 碰撞检测与接近吸附加亮检测（以食指尖为单一交互锚点，含 400ms 出场保护期与防秒爆）
   checkHandCollisions(trackedPlayers) {
     if (!this.activeBubble || this.activeBubble.isPopping || !trackedPlayers || trackedPlayers.length === 0) {
@@ -778,65 +825,38 @@ export class BubbleManager {
     const w = (typeof window !== 'undefined' && getViewport().width) ? getViewport().width : 1280;
     const h = (typeof window !== 'undefined' && getViewport().height) ? getViewport().height : 720;
 
-    // A. 亲子同心合力泡泡双人触碰检测
+    if (this.layoutGraceSeconds > 0 || b.relocating) return false;
+    const tips = this.getInteractionTips(trackedPlayers, w, h);
+    const isProtected = b.updateCount > 0 && b.spawnElapsed < .400;
+    b.suppressedHands ||= new Set();
+    // Both halves obey the same freshness, displayed-tip and spawn guards.
     if (b.type === 'coop_heart' && b.leftHeartGroup && b.rightHeartGroup) {
-      const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
-      const leftWorld = b.leftHeartGroup.getWorldPosition(new THREE.Vector3());
-      const leftScreen = leftWorld.project(this.camera);
-      const leftPxX = ((leftScreen.x + 1) / 2) * w;
-      const leftPxY = ((1 - leftScreen.y) / 2) * h;
-
-      const rightWorld = b.rightHeartGroup.getWorldPosition(new THREE.Vector3());
-      const rightScreen = rightWorld.project(this.camera);
-      const rightPxX = ((rightScreen.x + 1) / 2) * w;
-      const rightPxY = ((1 - rightScreen.y) / 2) * h;
-
-      const touchThreshold = (b.radius * (h / (2 * Math.tan(THREE.MathUtils.degToRad((this.camera.fov || 48) / 2)) * Math.abs(this.camera.position.z || 7.5)))) * 1.5;
-
-      for (const player of trackedPlayers) {
-        if (!player.hands) continue;
-        for (const hand of player.hands) {
-          if (hand.isIndexTip === false || hand.observed === false) continue;
-          const handPxX = hand.x * w;
-          const handPxY = hand.y * h;
-
-          const distLeft = Math.hypot(handPxX - leftPxX, handPxY - leftPxY);
-          const distRight = Math.hypot(handPxX - rightPxX, handPxY - rightPxY);
-
-          if ((player.id === 1 || handPxX < w * 0.5) && distLeft <= touchThreshold) {
-            if (!b.leftTouched) {
-              b.leftTouched = true;
-              b.leftTouchTime = now;
-              this.handFlashTimer = 0.160;
-              b.leftHeartGroup.scale.set(1.22, 1.22, 1.22);
-              if (this.audio?.playCountdown) this.audio.playCountdown(1);
-            }
-          }
-
-          if ((player.id === 2 || handPxX >= w * 0.5) && distRight <= touchThreshold) {
-            if (!b.rightTouched) {
-              b.rightTouched = true;
-              b.rightTouchTime = now;
-              this.handFlashTimer = 0.160;
-              b.rightHeartGroup.scale.set(1.22, 1.22, 1.22);
-              if (this.audio?.playCountdown) this.audio.playCountdown(2);
-            }
-          }
+      if (b.merging) return false;
+      const now = this.interactionClock * 1000;
+      for (const side of ['left', 'right']) {
+        if (b[side + 'Touched'] && now - b[side + 'TouchTime'] > 2000) b[side + 'Touched'] = false;
+      }
+      b.group.updateWorldMatrix(true, true);
+      const threshold = b.radius * h / (2 * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * Math.abs(this.camera.position.z)) * 1.15;
+      this.isNearHand = false;
+      for (const tip of tips) {
+        const side = tip.playerId === 1 ? 'left' : tip.playerId === 2 ? 'right' : null;
+        if (!side) continue;
+        const p = b[side + 'HeartGroup'].getWorldPosition(new THREE.Vector3()).project(this.camera);
+        const dist = Math.hypot(tip.px - (p.x + 1) * .5 * w, tip.py - (1 - p.y) * .5 * h);
+        const key = tip.key + '_' + side;
+        if (dist < threshold * 1.65) this.isNearHand = true;
+        if (dist > threshold * 1.12) b.suppressedHands.delete(key);
+        if (isProtected) { if (dist <= threshold) b.suppressedHands.add(key); continue; }
+        if (dist <= threshold && !b.suppressedHands.has(key) && !b[side + 'Touched']) {
+          b[side + 'Touched'] = true;
+          b.suppressedHands.add(key);
+          b[side + 'TouchTime'] = now;
+          this.showContact(tip.x, tip.y, b);
+          this.audio?.playCountdown?.(tip.playerId);
         }
       }
-
-      if (b.leftTouched && !b.rightTouched && (now - b.leftTouchTime > 2000)) {
-        b.leftTouched = false;
-        b.leftHeartGroup.scale.set(1.0, 1.0, 1.0);
-      }
-      if (b.rightTouched && !b.leftTouched && (now - b.rightTouchTime > 2000)) {
-        b.rightTouched = false;
-        b.rightHeartGroup.scale.set(1.0, 1.0, 1.0);
-      }
-
-      if (b.leftTouched && b.rightTouched && !b.merging) {
-        b.merging = true;
-      }
+      if (b.leftTouched && b.rightTouched) b.merging = true;
       return false;
     }
 
@@ -859,7 +879,7 @@ export class BubbleManager {
     const radiusPx = Math.abs(edgePxX - bubblePxX) * GAME_CONFIG.gameplay.touchDistanceMultiplier;
 
     // 出场 400ms 保护期检测（仅在游戏运行帧更新状态下生效；单元测试单帧模式下不阻塞）
-    const isProtected = (b.updateCount > 0 && b.spawnElapsed < 0.400);
+
 
     let hit = false;
     let hitHandX = bubbleScreenX;
@@ -871,53 +891,18 @@ export class BubbleManager {
       b.suppressedHands = new Set();
     }
 
-    // 遍历所有被追踪玩家的双手食指尖
-    for (const player of trackedPlayers) {
-      if (!player.hands) continue;
-      for (let hIdx = 0; hIdx < player.hands.length; hIdx++) {
-        const hand = player.hands[hIdx];
-        // 严格以食指尖为单一交互锚点，未识别食指尖时不参与戳破碰撞
-        if (hand.isIndexTip === false || hand.observed === false) continue;
-
-        if(hand.source==='hand-21' && this.handsAgeSeconds>=.18)continue;
-        const handKey = player.id + "_" + (hand.side || hIdx);
-        const slot=(player.id===2?2:0)+(hand.side==='right'?1:0);
-        const marker=this.handIndicators[slot];
-        const displayed=marker?.active && this.handsAgeSeconds<.18 ? marker.group.position.clone().project(this.camera) : null;
-        const handPxX = displayed ? (displayed.x+1)*.5*w : hand.x*w;
-        const handPxY = displayed ? (1-displayed.y)*.5*h : hand.y*h;
-        const dist = Math.hypot(handPxX - bubblePxX, handPxY - bubblePxY);
-
-        if (dist < closestDist) {
-          closestDist = dist;
-          closestHand = hand;
-        }
-
-        const isInside = dist <= radiusPx;
-
-        if (isProtected) {
-          // 保护期内记录所有已重叠的食指尖，并在保护期内禁止碰撞
-          if (isInside) {
-            b.suppressedHands.add(handKey);
-          }
-        } else {
-          // 保护期已过
-          if (!isInside) {
-            // 手已移出泡泡，解除抑制标记
-            b.suppressedHands.delete(handKey);
-          } else {
-            // 手在泡泡内：若手在生成/保护期结束时就停在泡泡内，必须先离开再进入才触发
-            if (b.suppressedHands.has(handKey)) {
-              continue;
-            }
-            hit = true;
-            hitHandX = hand.x;
-            hitHandY = hand.y;
-            break;
-          }
-        }
+    for (const tip of tips) {
+      if (this.playerMode === 'coop' && b.ownerId && tip.playerId !== b.ownerId) continue;
+      const dist = Math.hypot(tip.px - bubblePxX, tip.py - bubblePxY);
+      if (dist < closestDist) { closestDist = dist; closestHand = tip; }
+      const inside = dist <= radiusPx;
+      if (isProtected) { if (inside) b.suppressedHands.add(tip.key); continue; }
+      if (dist > radiusPx * 1.12) b.suppressedHands.delete(tip.key);
+      if (inside && !b.suppressedHands.has(tip.key)) {
+        hit = true; hitHandX = tip.x; hitHandY = tip.y;
+        b.suppressedHands.add(tip.key);
+        break;
       }
-      if (hit) break;
     }
 
     if (isProtected) {
@@ -942,6 +927,7 @@ export class BubbleManager {
     }
 
     if (hit) {
+      this.showContact(hitHandX, hitHandY, b);
       if (b.type === 'jelly' && b.hitsReceived < (b.hitsNeeded - 1)) {
         b.hitsReceived++;
         b.squashTimer = 0.32;
@@ -950,17 +936,7 @@ export class BubbleManager {
           this.audio.playJellyBoing();
         }
         this.spawnBurstParticles(b.group.position, b.colorHex, 6);
-        for (const player of trackedPlayers) {
-          if (!player.hands) continue;
-          for (let hIdx = 0; hIdx < player.hands.length; hIdx++) {
-            const hand = player.hands[hIdx];
-            const handPxX = hand.x * w;
-            const handPxY = hand.y * h;
-            if (Math.hypot(handPxX - bubblePxX, handPxY - bubblePxY) <= radiusPx) {
-              b.suppressedHands.add(player.id + '_' + (hand.side || hIdx));
-            }
-          }
-        }
+        for (const tip of tips) if (Math.hypot(tip.px - bubblePxX, tip.py - bubblePxY) <= radiusPx) b.suppressedHands.add(tip.key);
         return false;
       }
 
@@ -993,6 +969,8 @@ export class BubbleManager {
 
     const energyVal = this.activeBubble.energyValue || 1;
     this.lastPoppedEnergy = energyVal;
+    this.completedBubbleCount++;
+    this.rescueAnimal?.followEnergy?.(this.activeBubble.group.position);
 
     // 1. 播放破裂音效 (按泡泡类型触发专属音效)
     if (this.activeBubble.type === 'rainbow') {
@@ -1255,6 +1233,8 @@ export class BubbleManager {
   update(deltaSeconds, timeSeconds) {
     const dt = Math.min(deltaSeconds, 0.06);
 
+    this.interactionClock += dt;
+    this.layoutGraceSeconds = Math.max(0, this.layoutGraceSeconds - dt);
     this.contrastSampler?.update(dt);
     this.handsAgeSeconds=this.pointerSimulation?0:this.handsAgeSeconds+dt;
     for(let i=this.popRings.length-1;i>=0;i--){const ring=this.popRings[i];ring.elapsed+=dt;const t=Math.min(1,ring.elapsed/.34);ring.mesh.scale.setScalar(1+t*.55);ring.mesh.material.opacity=(1-t)*.85;if(t>=1){this.scene.remove(ring.mesh);ring.mesh.geometry.dispose();ring.mesh.material.dispose();this.popRings.splice(i,1);}}
@@ -1293,7 +1273,11 @@ export class BubbleManager {
         ind.backgroundLuminance=ind.backgroundLuminance===undefined?luminance:ind.backgroundLuminance+(luminance-ind.backgroundLuminance)*Math.min(1,dt*8);
         const palette=pointerPalette(ind.backgroundLuminance,ind.contrastMode,ind.playerId);ind.contrastMode=palette.mode;
         const adaptive=new THREE.Color(palette.color);
-        for(const m of [ind.coreMesh,ind.haloMesh,ind.rimMesh])m.material.color.lerp(adaptive,Math.min(1,dt*12));
+        ind.coreMesh.material.color.lerp(adaptive,Math.min(1,dt*12));
+        ind.haloMesh.material.color.setHex(ind.playerId===2?0x65d8ff:0xffce55);
+        ind.rimMesh.material.color.copy(ind.haloMesh.material.color);
+        const ringScale=this.handFlashTimer>0?1.65:this.isNearHand?1.2:1;
+        ind.group.scale.lerp(new THREE.Vector3(ringScale,ringScale,ringScale),1-Math.exp(-dt*18));
         if(ind.darkEdge)ind.darkEdge.material.opacity=ind.whiteEdge.material.opacity=ind.currentOpacity;
         // 重新捕获时平滑淡入至 1.0 (~100ms)
         ind.currentOpacity = Math.min(1.0, (ind.currentOpacity || 0) + dt / 0.10);
@@ -1330,10 +1314,22 @@ export class BubbleManager {
       }
     }
 
+    if (currentBubble && currentBubble.type !== 'coop_heart') {
+      currentBubble.nearSeconds = this.isNearHand ? (currentBubble.nearSeconds || 0) + dt : Math.max(0, (currentBubble.nearSeconds || 0) - dt * .25);
+      if (currentBubble.nearSeconds > 2.5 && !currentBubble.assistTarget) {
+        const tip = this.getInteractionTips(players, 1, 1).find(t => this.playerMode !== 'coop' || t.playerId === currentBubble.ownerId);
+        if (tip) {
+          const vh = 2 * Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * Math.abs(this.camera.position.z);
+          currentBubble.assistTarget = currentBubble.basePos.clone();
+          currentBubble.assistTarget.x += THREE.MathUtils.clamp((tip.x - .5) * vh * this.camera.aspect - currentBubble.basePos.x, -.18, .18);
+          currentBubble.assisted = true;
+        }
+      }
+    }
     // A quiet target may move; never make it flee a hand that is approaching.
     const quiet=this.activeBubble;
     if(quiet) {
-      if(this.idleTimer>quiet.relocateAfterMs&&!this.isNearHand)quiet.relocating=true;
+      if(this.idleTimer>quiet.relocateAfterMs&&!this.isNearHand&&!quiet.leftTouched&&!quiet.rightTouched&&!quiet.merging)quiet.relocating=true;
       if(quiet.relocating){quiet.relocationElapsed+=dt;if(this.isNearHand){quiet.relocating=false;quiet.relocationElapsed=0;quiet.relocateAfterMs=this.idleTimer+2000;}else if(quiet.relocationElapsed>=.18){const previous=this.lastPopPosition;this.lastPopPosition=quiet.basePos.clone();this.updateLayout();this.lastPopPosition=previous;}}
     }
     // 1. 泡泡待机动效
@@ -1403,6 +1399,29 @@ export class BubbleManager {
         b.rainbowRing.material.color.setHSL(hue, 0.9, 0.6);
       }
 
+      if (b.type === 'jelly') {
+        if (!b.layerBeads) {
+          b.layerBeads = [-1, 1].map(sign => {
+            const bead = new THREE.Mesh(new THREE.SphereGeometry(b.baseRadius * .09, 10, 8), new THREE.MeshBasicMaterial({color: 0xffd166, transparent: true, opacity: 1}));
+            bead.position.set(sign * b.baseRadius * .17, b.baseRadius * .55, b.baseRadius * .85);
+            b.group.add(bead); return bead;
+          });
+        }
+        b.layerBeads.forEach((bead, i) => { bead.visible = i >= b.hitsReceived; });
+        b.core.scale.setScalar(b.hitsReceived ? .72 : 1);
+      }
+      if (b.type === 'coop_heart' && !b.merging) {
+        for (const side of ['left', 'right']) {
+          const ready = b[side + 'Touched'];
+          b[side + 'HeartGroup'].scale.setScalar(ready ? 1.12 + Math.sin(timeSeconds * 4) * .035 : 1);
+          b[side + 'Mesh'].material.opacity = ready ? 1 : .7;
+          b[side + 'Glow'].material.opacity = ready ? .8 : .3;
+        }
+      }
+      if (this.isNearHand && b.type !== 'coop_heart' && !b.squashTimer) {
+        scaleX *= 1.025; scaleY *= .975;
+      }
+
       if (b.type === 'coop_heart' && b.merging) {
         b.mergeProgress += dt * 3.0;
         const mp = Math.min(1.0, b.mergeProgress);
@@ -1429,14 +1448,13 @@ export class BubbleManager {
       b.group.position.y = b.basePos.y + hoverY + this.proximityOffset.y;
 
       // 接近加亮 (描边增加约 25% 亮度)
-      if (b.outlineMesh && b.glowMesh) {
+      if (b.type !== 'coop_heart' && b.outlineMesh && b.glowMesh) {
         b.outlineMesh.material.opacity = this.isNearHand ? 1.0 : 0.96;
         b.glowMesh.material.opacity = this.isNearHand ? 0.45 : 0.32;
       }
 
       // 内部小星星缓慢旋转
-      b.core.rotation.x += 0.02;
-      b.core.rotation.y += 0.03;
+      if (b.type !== 'coop_heart') { b.core.rotation.x += dt * 1.2; b.core.rotation.y += dt * 1.8; }
       if(b.relocating){const fade=Math.max(0,1-b.relocationElapsed/.18);b.group.scale.multiplyScalar(.75+.25*fade);b.group.traverse(o=>{if(o.isMesh&&o.material.transparent)o.material.opacity*=fade;});}
     }
 
@@ -1478,6 +1496,8 @@ export class BubbleManager {
 
   // 重置与清理所有泡泡及粒子
   clear() {
+    this.completedBubbleCount = 0;
+    this.layoutGraceSeconds = 0;
     this.resetCombo();
     this.pointerSimulation=false;
     for(const ring of this.popRings){this.scene.remove(ring.mesh);ring.mesh.geometry.dispose();ring.mesh.material.dispose();}this.popRings=[];
