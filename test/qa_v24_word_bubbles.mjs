@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import * as THREE from 'three';
 
-import { WORDS_LIST, WORDS_MAP, getRandomWord, getWordById } from '../src/wordsConfig.js';
+import { WORDS_LIST, WORDS_MAP, getRandomWord, getWordById, getWordCn } from '../src/wordsConfig.js';
 import { BubbleManager } from '../src/bubbleManager.js';
 import { AudioManager } from '../src/audioManager.js';
 import { UIManager } from '../src/uiManager.js';
@@ -27,7 +27,7 @@ function createCamera(w = 1280, h = 720) {
   return camera;
 }
 
-test('1. 单词配置与 21 个图案/发音资源完整性验证', () => {
+test('1. 单词配置与 21 个图案/中英双语发音资源完整性验证', () => {
   assert.equal(WORDS_LIST.length, 21, 'WORDS_LIST 应包含 21 个单词');
   assert.equal(WORDS_MAP.size, 21, 'WORDS_MAP 应索引全部 21 个单词');
 
@@ -38,12 +38,15 @@ test('1. 单词配置与 21 个图案/发音资源完整性验证', () => {
     assert.equal(item.id, id);
     assert.equal(item.word, id);
     assert.ok(item.accent, `${id} 应有高亮主题色`);
+    assert.ok(item.zh && item.zh.length > 0, `${id} 应包含中文释义 zh`);
+    assert.ok(item.wordCn && item.wordCn.length > 0, `${id} 应包含中文释义 wordCn`);
+    assert.equal(getWordCn(id), item.zh, 'getWordCn 应返回正确的中文释义');
 
-    // 检查音频文件
+    // 检查高清双语重复音频文件 (中文->英文->中文->英文)
     const audioPath = path.resolve('public', item.audio.replace(/^\//, ''));
     assert.ok(fs.existsSync(audioPath), `音频文件应存在: ${audioPath}`);
     const audioStat = fs.statSync(audioPath);
-    assert.ok(audioStat.size > 2000, `音频文件 ${id}.mp3 应具备有效体积 (${audioStat.size} 字节)`);
+    assert.ok(audioStat.size > 20000, `四段双语音频文件 ${id}.mp3 应具备充足体积 (${audioStat.size} 字节)`);
 
     // 检查透明 PNG 与矢量 SVG 贴图
     const pngPath = path.resolve('public', item.image.replace(/^\//, ''));
@@ -183,7 +186,22 @@ test('4. AudioManager 单词发音播报、静音控制与容错机制', () => {
   assert.equal(audio.lastPlayedWord, 'table', '非法入参不应影响已记录状态');
 });
 
-test("5. UIManager 浮动单词实物认知卡片（实物图片 + 英文名牌）与 CSS 规范验证", () => {
+test('语音合成备用方案按中英顺序重复两遍', () => {
+  const previousWindow = globalThis.window;
+  const previousUtterance = globalThis.SpeechSynthesisUtterance;
+  const spoken = [];
+  globalThis.window = { speechSynthesis: { speak: utterance => spoken.push([utterance.text, utterance.lang]) } };
+  globalThis.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
+  try {
+    new AudioManager()._speakWordFallback('table');
+    assert.deepEqual(spoken, [['桌子', 'zh-CN'], ['table', 'en-US'], ['桌子', 'zh-CN'], ['table', 'en-US']]);
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window; else globalThis.window = previousWindow;
+    if (previousUtterance === undefined) delete globalThis.SpeechSynthesisUtterance; else globalThis.SpeechSynthesisUtterance = previousUtterance;
+  }
+});
+
+test("5. UIManager 浮动单词实物认知卡片（实物图片 + 中英双语名牌 + 4.5s 驻留周期）与 CSS 规范验证", () => {
   // DOM 模拟测试
   const fakeApp = {
     children: [],
@@ -223,15 +241,23 @@ test("5. UIManager 浮动单词实物认知卡片（实物图片 + 英文名牌�
   assert.ok(card.photo.src.includes("table"), "图片 src 应当指向 table 对应的物品实物图");
   assert.equal(card.photo.alt, "TABLE");
 
-  // 验证醒目英文名牌
-  assert.ok(card.textSpan, "弹窗应当包含单词文本元素");
-  assert.equal(card.textSpan.textContent, "TABLE", "单词文本应当转换为大写展示");
+  // 验证醒目英文名牌与清晰中文名牌
+  assert.ok(card.textSpan, "弹窗应当包含英文单词文本元素");
+  assert.equal(card.textSpan.textContent, "TABLE", "英文单词文本应当转换为大写展示");
+
+  assert.ok(card.cnSpan, "弹窗应当包含中文释义元素");
+  assert.equal(card.cnSpan.textContent, "桌子", "中文释义文本应当正确呈现为桌子");
+
+  // 验证驻留定时器已设定
+  assert.ok(card.dismissTimer, "弹窗应当绑定 4.5 秒驻留销毁定时器");
 
   // 验证 CSS 样式文件规范
   const css = fs.readFileSync("src/style.css", "utf8");
   assert.ok(css.includes(".word-popup-card"), "CSS 应包含 .word-popup-card 规范");
   assert.ok(css.includes(".word-popup-photo"), "CSS 应包含 .word-popup-photo 规范");
-  assert.ok(css.includes(".word-popup-pill"), "CSS 应包含 .word-popup-pill 规范");
+  assert.ok(css.includes(".word-popup-badge"), "CSS 应包含 .word-popup-badge 规范");
+  assert.ok(css.includes(".word-popup-cn"), "CSS 应包含 .word-popup-cn 规范");
+  assert.ok(css.includes("wordCardPop 4.5s"), "CSS 动画时长应调整为 4.5s 驻留展示");
   assert.ok(css.includes("@keyframes wordCardPop"), "CSS 应包含 @keyframes wordCardPop 动画定义");
   assert.ok(css.includes("@keyframes wordPillPop"), "CSS 应包含 @keyframes wordPillPop 动画定义");
   assert.ok(css.includes("--word-accent"), "CSS 应当使用 --word-accent 动态主题色");

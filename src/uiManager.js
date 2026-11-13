@@ -1,4 +1,5 @@
 import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
+import { getWordCn } from './wordsConfig.js';
 /**
  * UI 界面与交互状态管理器
  * 1. 5 个彩色发光圆点进度指示（免识字设计，直观友好）
@@ -735,13 +736,25 @@ export class UIManager {
     photoFrame.appendChild(img);
     popup.appendChild(photoFrame);
 
-    // 2. 醒目大号英文名牌
+    const wordCn = wordData.zh || wordData.wordCn || wordData.chinese || getWordCn(wordId) || "";
+
+    // 2. 醒目中英双语名牌 (大号英文 + 清晰中文)
     const badge = document.createElement("div");
     badge.className = "word-popup-badge";
     const textSpan = document.createElement("span");
     textSpan.className = "word-popup-text";
     textSpan.textContent = wordName;
     badge.appendChild(textSpan);
+
+    if (wordCn) {
+      const cnSpan = document.createElement("span");
+      cnSpan.className = "word-popup-cn";
+      cnSpan.textContent = wordCn;
+      badge.appendChild(cnSpan);
+      popup.cnSpan = cnSpan;
+      popup.textCn = cnSpan;
+    }
+
     popup.appendChild(badge);
 
     popup.photo = img;
@@ -752,10 +765,10 @@ export class UIManager {
       container.appendChild(popup);
     }
 
-    setTimeout(() => {
+    popup.dismissTimer = setTimeout(() => {
       if (typeof popup.remove === "function") {
         popup.remove();
       }
-    }, 1400);
+    }, 4500);
   }}
 

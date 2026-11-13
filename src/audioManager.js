@@ -1,3 +1,4 @@
+import { getWordById, getWordCn } from './wordsConfig.js';
 /**
  * Web Audio API 音频管理器
  * 1. 拟真卡通泡泡破裂声 (多振荡器调频微合成 FM + 水滴瞬态 + Combo 阶梯音阶步步爬升)
@@ -922,11 +923,25 @@ export class AudioManager {
   _speakWordFallback(text) {
     if (typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined") {
       try {
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = "en-US";
-        utter.rate = 0.95;
-        utter.pitch = 1.05;
-        window.speechSynthesis.speak(utter);
+        const id = (typeof text === "string" ? text : text?.id || "").trim().toLowerCase();
+        const cfg = typeof getWordById === "function" ? getWordById(id) : null;
+        const zh = cfg ? (cfg.zh || cfg.wordCn || cfg.chinese || "") : (typeof getWordCn === "function" ? getWordCn(id) : "");
+        const en = cfg?.word || id;
+
+        // 播报规则：先说中文，再说英文，重复两遍（中文 -> 英文 -> 中文 -> 英文）
+        const phrases = [];
+        if (zh) phrases.push({ text: zh, lang: "zh-CN" });
+        if (en) phrases.push({ text: en, lang: "en-US" });
+        if (zh) phrases.push({ text: zh, lang: "zh-CN" });
+        if (en) phrases.push({ text: en, lang: "en-US" });
+
+        for (const item of phrases) {
+          const utter = new SpeechSynthesisUtterance(item.text);
+          utter.lang = item.lang;
+          utter.rate = 1.0;
+          utter.pitch = 1.05;
+          window.speechSynthesis.speak(utter);
+        }
       } catch (e) {}
     }
   }

@@ -8,7 +8,9 @@
     "svg": "/images/words/items/chair.svg",
     "bubbleSvg": "/images/words/chair.svg",
     "audio": "/audio/words/chair.mp3",
-    "accent": "#D35400"
+    "accent": "#D35400",
+    "zh": "椅子",
+    "wordCn": "椅子"
   },
   {
     "id": "table",
@@ -19,7 +21,9 @@
     "svg": "/images/words/items/table.svg",
     "bubbleSvg": "/images/words/table.svg",
     "audio": "/audio/words/table.mp3",
-    "accent": "#2980B9"
+    "accent": "#2980B9",
+    "zh": "桌子",
+    "wordCn": "桌子"
   },
   {
     "id": "pencil",
@@ -30,7 +34,9 @@
     "svg": "/images/words/items/pencil.svg",
     "bubbleSvg": "/images/words/pencil.svg",
     "audio": "/audio/words/pencil.mp3",
-    "accent": "#F39C12"
+    "accent": "#F39C12",
+    "zh": "铅笔",
+    "wordCn": "铅笔"
   },
   {
     "id": "book",
@@ -41,7 +47,9 @@
     "svg": "/images/words/items/book.svg",
     "bubbleSvg": "/images/words/book.svg",
     "audio": "/audio/words/book.mp3",
-    "accent": "#16A085"
+    "accent": "#16A085",
+    "zh": "书本",
+    "wordCn": "书本"
   },
   {
     "id": "crayon",
@@ -52,7 +60,9 @@
     "svg": "/images/words/items/crayon.svg",
     "bubbleSvg": "/images/words/crayon.svg",
     "audio": "/audio/words/crayon.mp3",
-    "accent": "#E74C3C"
+    "accent": "#E74C3C",
+    "zh": "蜡笔",
+    "wordCn": "蜡笔"
   },
   {
     "id": "teacher",
@@ -63,7 +73,9 @@
     "svg": "/images/words/items/teacher.svg",
     "bubbleSvg": "/images/words/teacher.svg",
     "audio": "/audio/words/teacher.mp3",
-    "accent": "#F39C12"
+    "accent": "#F39C12",
+    "zh": "老师",
+    "wordCn": "老师"
   },
   {
     "id": "red",
@@ -74,7 +86,9 @@
     "svg": "/images/words/items/red.svg",
     "bubbleSvg": "/images/words/red.svg",
     "audio": "/audio/words/red.mp3",
-    "accent": "#E74C3C"
+    "accent": "#E74C3C",
+    "zh": "红色",
+    "wordCn": "红色"
   },
   {
     "id": "yellow",
@@ -85,7 +99,9 @@
     "svg": "/images/words/items/yellow.svg",
     "bubbleSvg": "/images/words/yellow.svg",
     "audio": "/audio/words/yellow.mp3",
-    "accent": "#F1C40F"
+    "accent": "#F1C40F",
+    "zh": "黄色",
+    "wordCn": "黄色"
   },
   {
     "id": "blue",
@@ -96,7 +112,9 @@
     "svg": "/images/words/items/blue.svg",
     "bubbleSvg": "/images/words/blue.svg",
     "audio": "/audio/words/blue.mp3",
-    "accent": "#3498DB"
+    "accent": "#3498DB",
+    "zh": "蓝色",
+    "wordCn": "蓝色"
   },
   {
     "id": "green",
@@ -107,7 +125,9 @@
     "svg": "/images/words/items/green.svg",
     "bubbleSvg": "/images/words/green.svg",
     "audio": "/audio/words/green.mp3",
-    "accent": "#2ECC71"
+    "accent": "#2ECC71",
+    "zh": "绿色",
+    "wordCn": "绿色"
   },
   {
     "id": "purple",
@@ -118,7 +138,9 @@
     "svg": "/images/words/items/purple.svg",
     "bubbleSvg": "/images/words/purple.svg",
     "audio": "/audio/words/purple.mp3",
-    "accent": "#9B59B6"
+    "accent": "#9B59B6",
+    "zh": "紫色",
+    "wordCn": "紫色"
   },
   {
     "id": "circle",
@@ -129,7 +151,9 @@
     "svg": "/images/words/items/circle.svg",
     "bubbleSvg": "/images/words/circle.svg",
     "audio": "/audio/words/circle.mp3",
-    "accent": "#E67E22"
+    "accent": "#E67E22",
+    "zh": "圆形",
+    "wordCn": "圆形"
   },
   {
     "id": "triangle",
@@ -140,7 +164,9 @@
     "svg": "/images/words/items/triangle.svg",
     "bubbleSvg": "/images/words/triangle.svg",
     "audio": "/audio/words/triangle.mp3",
-    "accent": "#F1C40F"
+    "accent": "#F1C40F",
+    "zh": "三角形",
+    "wordCn": "三角形"
   },
   {
     "id": "square",
@@ -151,7 +177,9 @@
     "svg": "/images/words/items/square.svg",
     "bubbleSvg": "/images/words/square.svg",
     "audio": "/audio/words/square.mp3",
-    "accent": "#1ABC9C"
+    "accent": "#1ABC9C",
+    "zh": "正方形",
+    "wordCn": "正方形"
   },
   {
     "id": "rectangle",
@@ -162,7 +190,9 @@
     "svg": "/images/words/items/rectangle.svg",
     "bubbleSvg": "/images/words/rectangle.svg",
     "audio": "/audio/words/rectangle.mp3",
-    "accent": "#3498DB"
+    "accent": "#3498DB",
+    "zh": "长方形",
+    "wordCn": "长方形"
   },
   {
     "id": "doll",
@@ -173,7 +203,9 @@
     "svg": "/images/words/items/doll.svg",
     "bubbleSvg": "/images/words/doll.svg",
     "audio": "/audio/words/doll.mp3",
-    "accent": "#E91E63"
+    "accent": "#E91E63",
+    "zh": "洋娃娃",
+    "wordCn": "洋娃娃"
   },
   {
     "id": "ball",
@@ -184,7 +216,9 @@
     "svg": "/images/words/items/ball.svg",
     "bubbleSvg": "/images/words/ball.svg",
     "audio": "/audio/words/ball.mp3",
-    "accent": "#2ECC71"
+    "accent": "#2ECC71",
+    "zh": "球",
+    "wordCn": "球"
   },
   {
     "id": "car",
@@ -195,7 +229,9 @@
     "svg": "/images/words/items/car.svg",
     "bubbleSvg": "/images/words/car.svg",
     "audio": "/audio/words/car.mp3",
-    "accent": "#E74C3C"
+    "accent": "#E74C3C",
+    "zh": "汽车",
+    "wordCn": "汽车"
   },
   {
     "id": "train",
@@ -206,7 +242,9 @@
     "svg": "/images/words/items/train.svg",
     "bubbleSvg": "/images/words/train.svg",
     "audio": "/audio/words/train.mp3",
-    "accent": "#2980B9"
+    "accent": "#2980B9",
+    "zh": "火车",
+    "wordCn": "火车"
   },
   {
     "id": "bike",
@@ -217,7 +255,9 @@
     "svg": "/images/words/items/bike.svg",
     "bubbleSvg": "/images/words/bike.svg",
     "audio": "/audio/words/bike.mp3",
-    "accent": "#16A085"
+    "accent": "#16A085",
+    "zh": "自行车",
+    "wordCn": "自行车"
   },
   {
     "id": "teddy",
@@ -228,6 +268,8 @@
     "svg": "/images/words/items/teddy.svg",
     "bubbleSvg": "/images/words/teddy.svg",
     "audio": "/audio/words/teddy.mp3",
-    "accent": "#D35400"
+    "accent": "#D35400",
+    "zh": "泰迪熊",
+    "wordCn": "泰迪熊"
   }
 ]

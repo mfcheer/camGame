@@ -21,6 +21,9 @@ export const WORDS_LIST = [
   {
     id: 'chair',
     word: 'chair',
+    zh: '椅子',
+    wordCn: '椅子',
+    chinese: '椅子',
     category: 'school',
     itemImage: '/images/words/items/chair.png',
     itemSvg: '/images/words/items/chair.svg',
@@ -34,6 +37,9 @@ export const WORDS_LIST = [
   {
     id: 'table',
     word: 'table',
+    zh: '桌子',
+    wordCn: '桌子',
+    chinese: '桌子',
     category: 'school',
     itemImage: '/images/words/items/table.png',
     itemSvg: '/images/words/items/table.svg',
@@ -47,6 +53,9 @@ export const WORDS_LIST = [
   {
     id: 'pencil',
     word: 'pencil',
+    zh: '铅笔',
+    wordCn: '铅笔',
+    chinese: '铅笔',
     category: 'school',
     itemImage: '/images/words/items/pencil.png',
     itemSvg: '/images/words/items/pencil.svg',
@@ -60,6 +69,9 @@ export const WORDS_LIST = [
   {
     id: 'book',
     word: 'book',
+    zh: '书本',
+    wordCn: '书本',
+    chinese: '书本',
     category: 'school',
     itemImage: '/images/words/items/book.png',
     itemSvg: '/images/words/items/book.svg',
@@ -73,6 +85,9 @@ export const WORDS_LIST = [
   {
     id: 'crayon',
     word: 'crayon',
+    zh: '蜡笔',
+    wordCn: '蜡笔',
+    chinese: '蜡笔',
     category: 'school',
     itemImage: '/images/words/items/crayon.png',
     itemSvg: '/images/words/items/crayon.svg',
@@ -86,6 +101,9 @@ export const WORDS_LIST = [
   {
     id: 'teacher',
     word: 'teacher',
+    zh: '老师',
+    wordCn: '老师',
+    chinese: '老师',
     category: 'school',
     itemImage: '/images/words/items/teacher.png',
     itemSvg: '/images/words/items/teacher.svg',
@@ -101,6 +119,9 @@ export const WORDS_LIST = [
   {
     id: 'red',
     word: 'red',
+    zh: '红色',
+    wordCn: '红色',
+    chinese: '红色',
     category: 'colors',
     itemImage: '/images/words/items/red.png',
     itemSvg: '/images/words/items/red.svg',
@@ -114,6 +135,9 @@ export const WORDS_LIST = [
   {
     id: 'yellow',
     word: 'yellow',
+    zh: '黄色',
+    wordCn: '黄色',
+    chinese: '黄色',
     category: 'colors',
     itemImage: '/images/words/items/yellow.png',
     itemSvg: '/images/words/items/yellow.svg',
@@ -127,6 +151,9 @@ export const WORDS_LIST = [
   {
     id: 'blue',
     word: 'blue',
+    zh: '蓝色',
+    wordCn: '蓝色',
+    chinese: '蓝色',
     category: 'colors',
     itemImage: '/images/words/items/blue.png',
     itemSvg: '/images/words/items/blue.svg',
@@ -140,6 +167,9 @@ export const WORDS_LIST = [
   {
     id: 'green',
     word: 'green',
+    zh: '绿色',
+    wordCn: '绿色',
+    chinese: '绿色',
     category: 'colors',
     itemImage: '/images/words/items/green.png',
     itemSvg: '/images/words/items/green.svg',
@@ -153,6 +183,9 @@ export const WORDS_LIST = [
   {
     id: 'purple',
     word: 'purple',
+    zh: '紫色',
+    wordCn: '紫色',
+    chinese: '紫色',
     category: 'colors',
     itemImage: '/images/words/items/purple.png',
     itemSvg: '/images/words/items/purple.svg',
@@ -168,6 +201,9 @@ export const WORDS_LIST = [
   {
     id: 'circle',
     word: 'circle',
+    zh: '圆形',
+    wordCn: '圆形',
+    chinese: '圆形',
     category: 'shapes',
     itemImage: '/images/words/items/circle.png',
     itemSvg: '/images/words/items/circle.svg',
@@ -181,6 +217,9 @@ export const WORDS_LIST = [
   {
     id: 'triangle',
     word: 'triangle',
+    zh: '三角形',
+    wordCn: '三角形',
+    chinese: '三角形',
     category: 'shapes',
     itemImage: '/images/words/items/triangle.png',
     itemSvg: '/images/words/items/triangle.svg',
@@ -194,6 +233,9 @@ export const WORDS_LIST = [
   {
     id: 'square',
     word: 'square',
+    zh: '正方形',
+    wordCn: '正方形',
+    chinese: '正方形',
     category: 'shapes',
     itemImage: '/images/words/items/square.png',
     itemSvg: '/images/words/items/square.svg',
@@ -207,6 +249,9 @@ export const WORDS_LIST = [
   {
     id: 'rectangle',
     word: 'rectangle',
+    zh: '长方形',
+    wordCn: '长方形',
+    chinese: '长方形',
     category: 'shapes',
     itemImage: '/images/words/items/rectangle.png',
     itemSvg: '/images/words/items/rectangle.svg',
@@ -222,6 +267,9 @@ export const WORDS_LIST = [
   {
     id: 'doll',
     word: 'doll',
+    zh: '洋娃娃',
+    wordCn: '洋娃娃',
+    chinese: '洋娃娃',
     category: 'toys',
     itemImage: '/images/words/items/doll.png',
     itemSvg: '/images/words/items/doll.svg',
@@ -235,6 +283,9 @@ export const WORDS_LIST = [
   {
     id: 'ball',
     word: 'ball',
+    zh: '球',
+    wordCn: '球',
+    chinese: '球',
     category: 'toys',
     itemImage: '/images/words/items/ball.png',
     itemSvg: '/images/words/items/ball.svg',
@@ -248,6 +299,9 @@ export const WORDS_LIST = [
   {
     id: 'car',
     word: 'car',
+    zh: '汽车',
+    wordCn: '汽车',
+    chinese: '汽车',
     category: 'toys',
     itemImage: '/images/words/items/car.png',
     itemSvg: '/images/words/items/car.svg',
@@ -261,6 +315,9 @@ export const WORDS_LIST = [
   {
     id: 'train',
     word: 'train',
+    zh: '火车',
+    wordCn: '火车',
+    chinese: '火车',
     category: 'toys',
     itemImage: '/images/words/items/train.png',
     itemSvg: '/images/words/items/train.svg',
@@ -274,6 +331,9 @@ export const WORDS_LIST = [
   {
     id: 'bike',
     word: 'bike',
+    zh: '自行车',
+    wordCn: '自行车',
+    chinese: '自行车',
     category: 'toys',
     itemImage: '/images/words/items/bike.png',
     itemSvg: '/images/words/items/bike.svg',
@@ -287,6 +347,9 @@ export const WORDS_LIST = [
   {
     id: 'teddy',
     word: 'teddy',
+    zh: '泰迪熊',
+    wordCn: '泰迪熊',
+    chinese: '泰迪熊',
     category: 'toys',
     itemImage: '/images/words/items/teddy.png',
     itemSvg: '/images/words/items/teddy.svg',
@@ -318,4 +381,12 @@ export function getRandomWord(excludeId = null) {
 export function getWordById(id) {
   if (!id) return null;
   return WORDS_MAP.get(String(id).trim().toLowerCase()) || null;
+}
+
+/**
+ * 获取单词中文释义
+ */
+export function getWordCn(id) {
+  const item = getWordById(id);
+  return item ? (item.zh || item.wordCn || item.chinese || '') : '';
 }
