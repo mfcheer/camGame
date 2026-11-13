@@ -22,10 +22,17 @@ export class UIManager {
     const name=document.createElement('div');name.className='animal-speech-name';name.textContent=GAME_CONFIG.animals[id].name;
     const en=document.createElement('div');en.className='animal-speech-en';en.lang='en';en.textContent=phrase.en;
     const zh=document.createElement('div');zh.className='animal-speech-zh';zh.lang='zh-CN';zh.textContent=phrase.zh;
-    body.append(name,en,zh);card.append(portrait,body);card.dataset.phase=phase;
+    const footer=document.createElement('div');footer.className='animal-speech-footer';
+    const hint=document.createElement('span');hint.className='animal-speech-hint';hint.textContent='听朋友说一句';
+    const replay=document.createElement('button');replay.type='button';replay.className='animal-speech-replay';replay.textContent='↻ 再听一次';replay.setAttribute('aria-label','再听一次这句话');replay.addEventListener('click',()=>this.handlers?.onReplaySpeech?.());
+    footer.append(hint,replay);body.append(name,en,zh,footer);card.append(portrait,body);card.dataset.phase=phase;
     (document.getElementById('app')||document.body).appendChild(card);this.animalSpeechCard=card;
   }
-  hideAnimalSpeech(){this.animalSpeechCard?.remove();this.animalSpeechCard=null;}
+  setAnimalSpeechListening(){
+    this.animalSpeechCard?.classList.add('is-listening');
+    const hint=this.animalSpeechCard?.querySelector('.animal-speech-hint');if(hint)hint.textContent='可以跟着说一说';
+  }
+  hideAnimalSpeech(animate=false){if(animate){this.animalSpeechCard?.classList.add('is-leaving');return;}this.animalSpeechCard?.remove();this.animalSpeechCard=null;}
 
   constructor(handlers = {}) {
     this.handlers = handlers; // { onStart, onSelectMode, onTogglePause, onResume, onRestart, onExit, onToggleAudio, onEnableDemo, onRetryCamera }
@@ -256,6 +263,8 @@ export class UIManager {
       if (e.target?.closest?.('#btn-play-again, #btn-victory-restart, #btn-victory-exit')) return;
       this.handlers.onStopAutoNext?.(this.hasVictoryPhoto ? 'keep_photo' : 'keep_result');
     });
+
+    document.getElementById('btn-open-vocabulary')?.addEventListener('click',()=>this.handlers.onOpenVocabulary?.());
 
     // 森林营地图鉴
     this.dom.btnOpenCamp?.addEventListener('click', () => {

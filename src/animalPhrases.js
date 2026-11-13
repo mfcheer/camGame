@@ -1,5 +1,5 @@
 // One short English utterance per arrival/farewell. No quiz, answer gate or extra click.
-const phrase=(id,en,zh,wordIds=[])=>({id,en,zh,wordIds,audio:`/audio/phrases/${id}.mp3`});
+const phrase=(id,en,zh,wordIds=[])=>({id,en,zh,wordIds,audio:`/audio/phrases/natural/${id}.mp3`});
 export const ANIMAL_PHRASES={
   start:[
     phrase('hello-play',"Hello, let's play!",'你好，一起玩吧！'),

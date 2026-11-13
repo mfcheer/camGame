@@ -1,3 +1,5 @@
+import {installNavigationGuard} from './navigationGuard.js';
+import {WordLibrary} from './wordLibrary.js';
 import {AnimalSpeech} from './animalSpeech.js';
 import {getViewport} from './viewport.js';
 import { SceneManager } from './sceneManager.js';
@@ -130,6 +132,8 @@ export class Game {
         onTakePhoto: () => this.beginPhoto(false),
         onCancelPhoto: () => this.cancelPhoto(),
         onReplayWord: () => this.replayWord(),
+        onReplaySpeech: () => this.animalSpeech?.replay(),
+        onOpenVocabulary: () => {if(this.state==='START')this.wordLibrary?.open();},
         onNextFriend: () => this.startNextFriend(),
         onSavePolaroid: () => PolaroidManager.downloadImage(this.currentPolaroidDataUrl, this.currentAnimalName)
       });
@@ -142,6 +146,7 @@ export class Game {
       window.addEventListener('gameviewportchange', () => {this.bubbleManager?.updateLayout();if(this.friendInteraction?.active){this.friendInteraction.updateLayout();this.bubbleManager?.hideHandIndicators();}this.uiManager?.updateLayout?.();this.sceneManager?.render();});
     }
 
+    this.wordLibrary=new WordLibrary(this.audioManager,()=>{if(this.uiManager?.dom?.btnSound)this.uiManager.dom.btnSound.textContent=this.audioManager.isMuted?'🔇':'🔊';});
     this.animalSpeech=new AnimalSpeech(this.audioManager,this.uiManager,this.rescueAnimal);
 
     this.setupPoseCallbacks();
@@ -835,6 +840,7 @@ export class Game {
 
   // 重新开始当前关卡（彻底清除旧庆祝回调）
   handleRestart() {
+    this.wordLibrary?.close();
     this.animalSpeech?.cancel();
     this.cancelWordPresentation();
     this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();
@@ -896,6 +902,7 @@ export class Game {
   // 退出回首页（取消所有异步流程、旧定时器并彻底释放摄像头）
   handleExit() {
     this.bubbleManager?.contrastSampler?.clear();
+    this.wordLibrary?.close();
     this.animalSpeech?.cancel();
     this.cancelWordPresentation();
     this.friendInteraction?.clear();this.uiManager?.hideFriendPlay?.();
@@ -975,6 +982,7 @@ export class Game {
       this.poseDetector.injectDemoHand(normX, normY);
     };
 
+    this.removeNavigationGuard=installNavigationGuard(()=>this.isDemoMode&&['PLAYING','CELEBRATING','PAUSED'].includes(this.state));
     window.addEventListener('mousemove', handlePointer);
     window.addEventListener('touchmove', handlePointer, { passive: true });
     window.addEventListener('touchstart', handlePointer, { passive: true });

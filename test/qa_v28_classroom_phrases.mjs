@@ -35,16 +35,16 @@ test('phrases are short, recorded, grounded in known words and vary without imme
 });
 
 test('greeting waits for actual speech ending and a quiet beat before spawning one target',async()=>{
- const {speech,jobs}=fixture();let spawned=0;speech.start('start','cat',()=>spawned++);step(speech,4);assert.equal(spawned,0);jobs[0].resolve();await tick();step(speech,.3);assert.equal(spawned,0);step(speech,.1);assert.equal(spawned,1);step(speech,8);assert.equal(spawned,1);
+ const {speech,jobs}=fixture();let spawned=0;speech.start('start','cat',()=>spawned++);step(speech,4);assert.equal(spawned,0);jobs[0].resolve();await tick();step(speech,.3);assert.equal(spawned,0);step(speech,1.9);assert.equal(spawned,1);step(speech,8);assert.equal(spawned,1);
 });
 
 test('pause hides/stops speech, freezes time, and replays on resume; stale completion cannot advance',async()=>{
- const {speech,jobs}=fixture();let next=0;speech.start('end','dog',()=>next++);step(speech,.4);speech.setPaused(true);const elapsed=speech.elapsed;jobs[0].resolve();await tick();step(speech,10);assert.equal(speech.elapsed,elapsed);assert.equal(next,0);speech.setPaused(false);step(speech,2);assert.equal(speech.done,false);jobs[1].resolve();await tick();step(speech,.4);assert.equal(next,1);
+ const {speech,jobs}=fixture();let next=0;speech.start('end','dog',()=>next++);step(speech,.4);speech.setPaused(true);const elapsed=speech.elapsed;jobs[0].resolve();await tick();step(speech,10);assert.equal(speech.elapsed,elapsed);assert.equal(next,0);speech.setPaused(false);step(speech,2);assert.equal(speech.done,false);jobs[1].resolve();await tick();step(speech,2.4);assert.equal(next,1);
 });
 
 test('restart and exit discard old speech callbacks; a failed voice cannot trap the child',async()=>{
  const {speech,jobs}=fixture();let old=0,next=0;speech.start('start','bunny',()=>old++);speech.cancel();jobs[0].resolve();await tick();step(speech,10);assert.equal(old,0);
- speech.start('start','frog',()=>next++);step(speech,8.1);assert.equal(next,1);assert.equal(speech.active,false);
+ speech.start('start','frog',()=>next++);step(speech,12.4);assert.equal(next,1);assert.equal(speech.active,false);
 });
 
 test('game starts and ends with the animal, keeps bubbles and hats behind their correct gates',()=>{

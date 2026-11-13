@@ -39,11 +39,11 @@ happy、sunny、fast、slow留作句子或未来动态情境，不加入静态�
 
 解救成功 → 和动物互动 → 动物告别句 → 戴帽子及挥别离场 → 结果。拍照继续仅手动触发。
 
-短句最低展示1.8秒，以真实语音结束为准；8秒仅作为加载/播放异常兜底，避免卡死。播放时背景音乐自动降低音量，共享单词语音通道，不抢播。静音保留短暂字幕展示。暂停隐藏字幕并停止语音，恢复重新读本句；退出或重开取消上一轮回调。关闭首页“听单词、看图片”会同时跳过开场与告别句。
+短句最低展示4秒，以真实语音结束为准，并留1.8秒跟读时间、280ms退场；12秒仅作为加载/播放异常兜底，避免卡死。播放时背景音乐自动降低音量，共享单词语音通道，不抢播。静音保留短暂字幕展示。暂停隐藏字幕并停止语音，恢复重新读本句；退出或重开取消上一轮回调。关闭首页“听单词、看图片”会同时跳过开场与告别句。
 
 ## 素材维护
 
-8张图沿用原生SVG，不调用图片生成服务，源脚本 `scripts/build-classroom-vectors.mjs`。音频源脚本 `scripts/build-classroom-audio.mjs` 在macOS通过现有Samantha/Tingting声音生成；8组双语/英文复习MP3与13条英文短句MP3随项目发布，不依赖运行时语音服务。录音缺失时才使用浏览器语音合成兜底。
+8张图沿用原生SVG，不调用图片生成服务，源脚本 `scripts/build-classroom-vectors.mjs`。音频源脚本 `scripts/build-classroom-audio.mjs` 在macOS通过现有Samantha/Tingting声音生成；8组双语/英文复习MP3与13条英文短句MP3随项目发布，不依赖运行时语音服务。短句现使用离线Kokoro自然语音，生成方法见 [短句配音说明](NATURAL_VOICE.md)；原系统录音保留。录音缺失时才使用浏览器语音合成兜底。
 
 数据分别位于 `src/classroomVocabulary.js`、`src/animalPhrases.js`；运行维护脚本后执行 `node scripts/sync-word-manifest.mjs`。
 
