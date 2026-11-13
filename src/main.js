@@ -8,7 +8,7 @@ import {getViewport} from './viewport.js';
 import { SceneManager } from './sceneManager.js';
 import { HotAirBalloon } from './hotAirBalloon.js';
 import { RescueAnimal } from './rescueAnimal.js';
-import {RescueFriendPlay} from './rescueFriendPlay.js';
+import {HappyPerformance} from './happyPerformance.js';
 import { BubbleManager } from './bubbleManager.js';
 import { AudioManager } from './audioManager.js';
 import { PoseDetector } from './poseDetector.js';
@@ -86,8 +86,7 @@ export class Game {
 
       this.rescueAnimal = new RescueAnimal(this.sceneManager.scene, this.sceneManager.camera);
       this.sceneManager.setRescueAnimal(this.rescueAnimal);
-      this.friendInteraction=new RescueFriendPlay(this.sceneManager.scene,this.sceneManager.camera,this.rescueAnimal,this.audioManager,()=>this.finishFriendPlay());
-      this.friendInteraction.onAction=profile=>this.uiManager?.showFriendPlay?.(profile,true);
+      this.friendInteraction=new HappyPerformance(this.sceneManager.scene,this.sceneManager.camera,this.rescueAnimal,this.audioManager,()=>this.finishFriendPlay());
       this.celebrationAccessories=new CelebrationAccessories(this.sceneManager.scene,this.sceneManager.camera);
       this.rescueAnimal.onEnergyReceived = () => this.sceneManager.triggerLeftFlowerBounce();
       this.rescueAnimal.onReachedExit = () => this.sceneManager.triggerRightArchGlow();
@@ -262,7 +261,7 @@ export class Game {
         }
       }
 
-      if(this.state==='CELEBRATING'&&this.friendInteraction?.active){this.bubbleManager?.updateHandIndicators(players);return;}
+      if(this.state==='CELEBRATING'&&this.friendInteraction?.active){this.bubbleManager?.hideHandIndicators?.();return;}
 
       if (this.state !== 'PLAYING') return;
 
@@ -655,9 +654,9 @@ export class Game {
     this.celebrationSessionId = (this.celebrationSessionId || 0) + 1;
     if(this.friendInteraction){
       this.celebrationRemainingMs=0;
-      const profile=this.friendInteraction.start(this.bubbleManager.playerComfortZones || []);
+      this.friendInteraction.start();
       this.bubbleManager.hideHandIndicators();
-      this.uiManager?.showFriendPlay?.(profile);
+      this.uiManager?.showFriendPlay?.();
       return;
     }
     this.startFarewell();
@@ -891,7 +890,7 @@ export class Game {
     this.voiceQueue?.resume();
     this.animalSpeech?.setPaused(false);
     this.friendInteraction?.setPaused(false);
-    if(this.friendInteraction?.active)this.uiManager?.showFriendPlay?.(this.friendInteraction.profile);
+    if(this.friendInteraction?.active)this.uiManager?.showFriendPlay?.();
     // 恢复为庆祝状态：按剩余有效时长恢复计时器
     if (this.state === 'CELEBRATING' && !this.friendInteraction?.active && (!this.animalSpeech?.active||this.animalSpeech.nonBlocking)) {
       const currentSession = this.celebrationSessionId;
@@ -1049,7 +1048,7 @@ export class Game {
     if (typeof window === 'undefined') return;
 
     const handlePointer = (e) => {
-      if (!this.isDemoMode || !(this.state==='PLAYING'||(this.state==='CELEBRATING'&&this.friendInteraction?.active))) return;
+      if (!this.isDemoMode || this.state!=='PLAYING') return;
 
       if(e.target?.closest?.('button, .word-focus-overlay, .word-library-overlay'))return;
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1212,10 +1211,10 @@ export class Game {
         this.rescueAnimal?.setAnticipation?.(this.state==='PLAYING'&&!!this.bubbleManager?.isNearHand);
         this.rescueAnimal?.setAttentionTarget?.(this.bubbleManager?.activeBubble?.group.position, this.bubbleManager?.energyProjectiles?.at(-1)?.mesh.position);
       }
+      if(this.friendInteraction?.active)this.friendInteraction.update(deltaSeconds);
       this.rescueAnimal?.update(deltaSeconds, this.gameTime);
       this.bubbleManager?.update(deltaSeconds, this.gameTime);
       if(this.state==='PLAYING' && this.bubbleManager?.handsAgeSeconds<.18 && this.bubbleManager.checkHandCollisions(this.bubbleManager.latestTrackedPlayers))this.onBubblePopped();
-      if(this.friendInteraction?.active){const v=getViewport();this.friendInteraction.update(deltaSeconds,this.bubbleManager?.getInteractionTips(this.bubbleManager.latestTrackedPlayers,v.width,v.height)||[]);}
       this.sceneManager?.update(deltaSeconds);
       if(this.celebrationAccessories && typeof window!=='undefined')this.celebrationAccessories.update(deltaSeconds,getViewport().width,getViewport().height);
       if (this.state === 'PLAYING') this.uiManager?.setInteractionHint?.(this.uiManager.wordCue||this.uiManager.animalSpeechCard?'':this.bubbleManager?.getInteractionHint?.()||'');

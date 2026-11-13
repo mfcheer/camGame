@@ -6,7 +6,7 @@ import {Game} from '../src/main.js';
 import {AudioManager} from '../src/audioManager.js';
 import {BubbleManager} from '../src/bubbleManager.js';
 import {RescueAnimal} from '../src/rescueAnimal.js';
-import {RescueFriendPlay} from '../src/rescueFriendPlay.js';
+import {HappyPerformance} from '../src/happyPerformance.js';
 import {WORDS_LIST,getWordById} from '../src/wordsConfig.js';
 const tick=async()=>{await Promise.resolve();await Promise.resolve();};
 const deferred=()=>{let resolve;return {promise:new Promise(r=>resolve=r),resolve:v=>resolve(v)};};
@@ -16,7 +16,7 @@ function fixture(){const events=[];const g=Object.assign(Object.create(Game.prot
  audioManager:{stopWord(){},playEnergyCharge(){},playAnimalSound(){}},
  bubbleManager:{update(){},lastPoppedEnergy:1,spawnNext:(...args)=>events.push(['next',...args])}});return {g,events};}
 function step(g,time){for(let t=0;t<time-1e-6;t+=.02)g.updateFrame(.02);}
-function friend(id){const scene=new T.Scene(),c=camera(),a=new RescueAnimal(scene,c,id),f=new RescueFriendPlay(scene,c,a,{});f.start();return {a,f,step:(time,tips=[])=>{for(let t=0;t<time;t+=.02){a.update(.02,t);f.update(.02,tips);}}};}
+function friend(id){const scene=new T.Scene(),c=camera(),a=new RescueAnimal(scene,c,id),f=new HappyPerformance(scene,c,a,{});f.start();return {a,f,step:(time)=>{for(let t=0;t<time-1e-6;t+=.02){f.update(.02);a.update(.02,t);}}};}
 
 test('every word has a separate non-empty English review recording',()=>{
  for(const w of WORDS_LIST)assert.ok(fs.statSync(`public/audio/words/review/${w.id}.mp3`).size>2000,w.id);
@@ -56,13 +56,21 @@ test('holding the original pop point does not cause an automatic replay; leave a
  for(let i=0;i<30;i++)g.updateWordReplay(.02);assert.equal(replays,0);tips=[];g.updateWordReplay(.1);tips=[{px:100,py:100}];for(let i=0;i<20;i++)g.updateWordReplay(.02);assert.equal(replays,1);
 });
 
-test('visual demonstrations never fabricate an interaction or grant energy',()=>{
- for(const id of ['bunny','cat','dog','frog','dragon','goldenDragon']){const x=friend(id);x.step(5);assert.equal(x.f.hits,0,id);assert.equal(x.a.friendHits,0,id);assert.ok(x.f.visualDemo.group.visible,id);assert.ok(x.f.visualDemo.demoPoint);assert.equal(x.a.energyLevel,0);x.f.setPaused(true);const elapsed=x.f.elapsed;x.step(2);assert.equal(x.f.elapsed,elapsed);assert.equal(x.f.group.visible,false);x.f.clear();assert.equal(x.f.visualDemo.group.visible,false);}
+test('the happy performance plays itself: no input, no score change, pause freezes it',()=>{
+ for(const id of ['bunny','cat','dog','frog','dragon','goldenDragon']){const x=friend(id);x.step(1.2);
+  assert.ok(x.f.active,id);assert.ok(x.f.plan.length>=4&&x.f.plan.length<=5,id);assert.ok(x.f.currentAction(),id);
+  assert.ok(x.a.actionPoseFn,id);assert.equal(x.a.energyLevel,0,id);assert.ok(x.a.friendResponse>0,id);
+  x.f.setPaused(true);const elapsed=x.f.elapsed,action=x.f.currentAction();x.step(2);
+  assert.equal(x.f.elapsed,elapsed,id);assert.equal(x.f.currentAction(),action,id);assert.equal(x.f.group.visible,false,id);
+  x.f.setPaused(false);x.step(15);assert.equal(x.f.active,false,id);assert.equal(x.a.actionPoseFn,null,id);x.f.clear();}
 });
 
-test('a real touch suppresses the hint and unfamiliar friends get extra demonstration time',()=>{
- const x=friend('cat');x.step(1);const target=x.f.targetScreen;x.step(.04,[{x:target.x/390,y:target.y/844,px:target.x,py:target.y}]);assert.equal(x.f.hits,1);assert.equal(x.f.visualDemo.group.visible,false);x.f.start();assert.equal(x.f.firstVisit,false);
- const y=friend('bunny');y.step(8.1);assert.equal(y.f.active,true);y.step(4);assert.equal(y.f.active,false);
+test('each show draws a fresh plan with its signature move and no repeats',()=>{
+ const seen=new Set();
+ for(let i=0;i<6;i++){const x=friend('cat');const ids=x.f.plan.map(p=>p.id);
+  seen.add(ids.join(','));assert.ok(ids.includes('earWiggle'),'signature present');
+  assert.equal(new Set(ids).size,ids.length,'no repeated actions');x.f.clear();}
+ assert.ok(seen.size>1,'plans vary between shows');
 });
 
 function photoFixture(live=true){
@@ -96,12 +104,13 @@ test('a finger already dwelling on replay keeps a short review card open long en
  step(g,.3);assert.equal(g.wordClosingRemaining,0);assert.ok(g.currentWord);step(g,.1);assert.ok(g.wordElapsed<.2);assert.equal(g.wordAudioDone,false);
 });
 
-test('short-screen hints shrink and follow hints leave the animal face clear',()=>{
+test('the performance stage fits short landscape and small portrait screens',()=>{
  for(const id of ['cat','dog','frog','dragon','goldenDragon']){
   const x=friend(id);const original=globalThis.window;
-  try{globalThis.window={innerWidth:667,innerHeight:240};x.f.camera.aspect=667/240;x.f.camera.updateProjectionMatrix();x.f.updateLayout();x.step(1.2);const demo=x.f.visualDemo;
-   assert.ok(demo.hand.scale.x/x.f.unit<=30,id);
-   if(x.f.profile.kind==='follow')assert.ok(demo.contact.position.x>x.f.target.x+50*x.f.unit,id);
+  try{globalThis.window={innerWidth:667,innerHeight:240};x.f.camera.aspect=667/240;x.f.camera.updateProjectionMatrix();x.f.updateLayout();x.f.placeAnimal(1);x.step(.5);
+   assert.ok(x.f.targetScale>0,id);
+   const p=x.a.animalGroup.position.clone().project(x.f.camera);
+   assert.ok(p.x>-1.05&&p.x<1.05&&p.y>-1.1&&p.y<1.1,`${id} animal stays on screen ${p.x.toFixed(2)},${p.y.toFixed(2)}`);
   }finally{if(original===undefined)delete globalThis.window;else globalThis.window=original;}
  }
 });

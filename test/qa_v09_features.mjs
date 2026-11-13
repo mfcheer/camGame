@@ -42,12 +42,12 @@ check('An approaching hand prevents idle relocation; pop rings expire and reset 
  for(let i=0;i<14;i++)b.update(.02,i*.02);assert.equal(b.activeBubble,old);
  b.spawnPopRing(new T.Vector3(),0xffaaaa,.6);for(let i=0;i<25;i++)b.update(.02,i*.02);assert.equal(b.popRings.length,0);b.spawnPopRing(new T.Vector3(),0xffaaaa,.6);b.clear();assert.equal(b.popRings.length,0);
 });
-check('The automatic next round waits 12 seconds and cancels on pause/absence',()=>{
+check('The automatic next round waits 5 seconds and cancels on pause/absence',()=>{
  const previousSet=globalThis.setTimeout,previousClear=globalThis.clearTimeout,previousDoc=globalThis.document;let callback,delay,started=0;
  globalThis.setTimeout=(fn,ms)=>{callback=fn;delay=ms;return 22;};globalThis.clearTimeout=()=>{};
  try{
   const g=Object.assign(Object.create(Game.prototype),{state:'CELEBRATING',resultVisible:true,celebrationSessionId:1,isDemoMode:true,playerMode:'single',uiManager:{setAutoNextCountdown(){},hideVictory(){},setAnimalSelection(){}},prepareAnimal(){},handleRestart(){started++;}});
-  g.startAutoNext();assert.equal(delay,12000);callback();assert.equal(started,1);assert.equal(g.animalSelection,'random');
+  g.startAutoNext();assert.equal(delay,5000);callback();assert.equal(started,1);assert.equal(g.animalSelection,'random');
   g.startAutoNext();g.cancelAutoNext();callback();assert.equal(started,1,'a cancelled timeout already in the event queue must stay cancelled');
   g.startAutoNext();Game.prototype.handleTogglePause.call(g,true);callback();assert.equal(started,1);
   g.state='CELEBRATING';g.isDemoMode=false;g.lastPlayers=[];g.startAutoNext();callback();assert.equal(started,1);

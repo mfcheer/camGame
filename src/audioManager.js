@@ -396,6 +396,24 @@ export class AudioManager {
       gain.connect(this.ctx.destination);
       osc.start(now);
       osc.stop(now + 0.41);
+    } else if (type === 'happy') {
+      // 互动成功：双声上扬“喵！喵！”
+      for (const [offset, f1, f2] of [[0, 600, 980], [0.14, 720, 1080]]) {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f1, now + offset);
+        osc.frequency.exponentialRampToValueAtTime(f2, now + offset + 0.10);
+
+        gain.gain.setValueAtTime(0.01, now + offset);
+        gain.gain.linearRampToValueAtTime(0.20, now + offset + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.20);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.21);
+      }
     } else {
       // 能量回应：软萌短促的上扬“喵~”
       osc.frequency.setValueAtTime(640, now);
@@ -433,6 +451,24 @@ export class AudioManager {
         osc.start(now + offset);
         osc.stop(now + offset + 0.10);
       }
+    } else if (type === 'happy') {
+      // 互动成功：轻快双声“汪！汪！”
+      for (const [offset, pitch] of [[0, 400], [0.11, 450]]) {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(pitch, now + offset);
+        osc.frequency.exponentialRampToValueAtTime(250, now + offset + 0.07);
+
+        gain.gain.setValueAtTime(0.01, now + offset);
+        gain.gain.linearRampToValueAtTime(0.22, now + offset + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.08);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.09);
+      }
     } else {
       // 能量回应：短促轻快“汪！”
       const osc = this.ctx.createOscillator();
@@ -465,6 +501,24 @@ export class AudioManager {
 
         gain.gain.setValueAtTime(0.01, now + offset);
         gain.gain.linearRampToValueAtTime(0.18, now + offset + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.12);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.13);
+      }
+    } else if (type === 'happy') {
+      // 互动成功：上扬双声“呱！呱！”
+      for (const [offset, pStart, pEnd] of [[0, 170, 215], [0.14, 195, 255]]) {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(pStart, now + offset);
+        osc.frequency.exponentialRampToValueAtTime(pEnd, now + offset + 0.10);
+
+        gain.gain.setValueAtTime(0.01, now + offset);
+        gain.gain.linearRampToValueAtTime(0.16, now + offset + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.12);
 
         osc.connect(gain);
@@ -511,6 +565,24 @@ export class AudioManager {
         osc.start(now);
         osc.stop(now + 0.52);
       }
+    } else if (type === 'happy') {
+      // 互动成功：双声轻快上扬龙哨
+      for (const [offset, f1, f2] of [[0, 830, 1240], [0.18, 990, 1480]]) {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f1, now + offset);
+        osc.frequency.exponentialRampToValueAtTime(f2, now + offset + 0.16);
+
+        gain.gain.setValueAtTime(0.01, now + offset);
+        gain.gain.linearRampToValueAtTime(0.16, now + offset + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.28);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.30);
+      }
     } else {
       // 能量回应：轻柔空灵龙鸣
       const osc = this.ctx.createOscillator();
@@ -552,6 +624,25 @@ export class AudioManager {
         osc.start(time);
         osc.stop(time + 0.58);
       });
+    } else if (type === 'happy') {
+      // 互动成功：上行三音铃 (C6-E6-G6)
+      const chord = [1046.50, 1318.51, 1568.00];
+      chord.forEach((freq, idx) => {
+        const time = now + idx * 0.06;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, time);
+
+        gain.gain.setValueAtTime(0.01, time);
+        gain.gain.linearRampToValueAtTime(0.14 / (idx + 1), time + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.38);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(time);
+        osc.stop(time + 0.40);
+      });
     } else {
       // 能量回应：金色天籁风铃
       const chord = [523.25, 1046.50, 1568.00];
@@ -592,6 +683,24 @@ export class AudioManager {
         gain.connect(this.ctx.destination);
         osc.start(now + offset);
         osc.stop(now + offset + 0.10);
+      }
+    } else if (type === 'happy') {
+      // 互动成功：双声欢快啾啾
+      for (const [offset, f1, f2] of [[0, 900, 1350], [0.12, 1150, 1620]]) {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f1, now + offset);
+        osc.frequency.exponentialRampToValueAtTime(f2, now + offset + 0.08);
+
+        gain.gain.setValueAtTime(0.01, now + offset);
+        gain.gain.linearRampToValueAtTime(0.18, now + offset + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.10);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.11);
       }
     } else {
       // 能量回应：轻快短跳唧啾

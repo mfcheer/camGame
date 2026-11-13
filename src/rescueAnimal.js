@@ -136,6 +136,7 @@ export class RescueAnimal {
   startFriendPlay() {
     this.state='FRIEND';this.friendResponse=0;this.friendHits=0;this.anticipating=false;
     this.reactionTimer=0;this.glyphTimer=0;this.hopTimer=0;this.energyAttentionRemaining=0;
+    this.actionPoseFn=null;this.actionPoseT=0;
     this.ropesGroup.visible=false;this.postGroup.visible=false;this.animalGroup.visible=true;this.setOpacity(1);
     this.model.scale.set(1,1,1);this.model.position.y=0;this.model.rotation.set(0,-.12,0);
     this.animalGroup.rotation.set(0,0,0);this.setQuadrupedPosture(0);
@@ -179,6 +180,8 @@ export class RescueAnimal {
       for(const [name,sign]of [['Whisker_L',-1],['Whisker_R',1]]){const w=this.model.getObjectByName(name);if(w)w.rotation.y=sign*Math.sin(t*2.5)*.05*motion;}
     }
     this.updateAttention(dt);this.updateExpression(dt);updateExpressionRig(this,dt);
+    // HappyPerformance 动作覆写层：在 FRIEND 基础姿态之后应用，动画帧内拥有最终决定权。
+    if(this.actionPoseFn)this.actionPoseFn(this.actionPoseT||0);
     if(this.contactShadow){this.contactShadow.visible=true;this.contactShadow.position.set(this.currentX,(this.friendFloor??this.currentY)+.01,.1);this.contactShadow.scale.setScalar(this.animalGroup.scale.y);}
   }
   spawnParticle(pos,dust=false) {
@@ -202,6 +205,7 @@ export class RescueAnimal {
     this.speechListening=false;this.speaking=false;this.speakingTime=0;this.friendFarewell=false;this.escapeOriginX=null;this.friendResponse=0;this.model.position.y=0;
     this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;this.reactionTimer=0;
     this.anticipating=false;this.reactionVariant=0;this.glyphTimer=0;this.emotion='content';this.attentionPhase='player';this.attentionFocus=null;this.targetFocus=null;this.energyFocus=null;this.energyAttentionRemaining=0;resetExpressionRig(this.expressionRig);
+    this.actionPoseFn=null;this.actionPoseT=0;
     if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.y=.048;}
     for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=true;}
     this.currentX=this.startX;this.currentY=this.groundY;

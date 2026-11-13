@@ -125,7 +125,7 @@ check('UIManager: showCamp 生成 6 位动物卡片，正确区分已解救与�
 
 
 // 3. 胜利结算智能驻留与 12 秒倒计时优化（方案 A）
-check('Game: startAutoNext 放宽至 12 秒倒计时，cancelAutoNext(true, "keep_photo") 正确切换友好驻留文案', () => {
+check('Game: startAutoNext 使用 5 秒倒计时，cancelAutoNext(true, "keep_photo") 正确切换友好驻留文案', () => {
   const previousSet = globalThis.setTimeout;
   const previousClear = globalThis.clearTimeout;
   let scheduledDelay = 0;
@@ -147,8 +147,8 @@ check('Game: startAutoNext 放宽至 12 秒倒计时，cancelAutoNext(true, "kee
     });
 
     g.startAutoNext();
-    assert.equal(scheduledDelay, 12000, "自动开始倒计时应由 5 秒放宽到 12 秒");
-    assert.equal(statusMessage, "12 秒后随机遇见下一位朋友");
+    assert.equal(scheduledDelay, 5000, "自动开始倒计时回到 5 秒");
+    assert.equal(statusMessage, "5 秒后随机遇见下一位朋友");
 
     // 智能驻留取消
     g.cancelAutoNext(true, "keep_photo");

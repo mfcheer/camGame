@@ -134,8 +134,6 @@ export class UIManager {
       photoCountdown: document.getElementById('photo-countdown'),
       interactionHint: document.getElementById('interaction-hint'),
       friendPlay: document.getElementById('friend-play'),
-      friendTitle: document.getElementById('friend-play-title'),
-      friendHint: document.getElementById('friend-play-hint'),
       btnFriendDone: document.getElementById('btn-friend-done'),
 
       // 森林营地图鉴
@@ -615,11 +613,9 @@ export class UIManager {
     }, 180);
   }
 
-  showFriendPlay(profile, reacted=false) {
+  showFriendPlay() {
     if(!this.dom.friendPlay)return;
     this.dom.friendPlay.classList.remove('hidden');
-    this.dom.friendTitle.textContent=reacted?profile.reply:profile.title;
-    this.dom.friendHint.textContent=profile.hint;
     this.setInteractionHint('');
   }
 

@@ -1350,16 +1350,6 @@ button{touch-action:manipulation}
 
 /* Success play keeps the child with the animal before the result card. */
 .friend-play { position: absolute; inset: 0; pointer-events: none; z-index: 12; }
-.friend-play-banner {
-  position: absolute; top: calc(var(--hud-bottom, 80px) + 10px); left: 50%; transform: translateX(-50%);
-  width: max-content; max-width: calc(100% - 28px); box-sizing: border-box;
-  display: flex; flex-direction: column; gap: 3px; align-items: center;
-  padding: 10px 20px; border-radius: 20px; text-align: center;
-  background: rgba(255, 253, 246, .96); color: #354c43;
-  border: 1px solid rgba(91, 128, 100, .22); box-shadow: 0 4px 16px rgba(26, 48, 32, .12);
-}
-.friend-play-banner strong { font-size: clamp(15px, 2.6vw, 19px); }
-.friend-play-banner span { font-size: 12px; color: #617368; }
 .friend-done-btn {
   position: absolute; right: calc(var(--safe-right, 0px) + 14px); bottom: calc(var(--safe-bottom, 0px) + 14px);
   pointer-events: auto; border: 1px solid #c6d7c7; border-radius: 22px;
@@ -1367,16 +1357,7 @@ button{touch-action:manipulation}
   min-height: 42px; font-size: 13px; font-weight: 650; cursor: pointer;
 }
 @media (max-height: 420px) and (orientation: landscape) {
-  .friend-play-banner { padding: 6px 16px; gap: 1px; }
-  .friend-play-banner strong { font-size: 15px; }
-  .friend-play-banner span { font-size: 11px; }
   .friend-done-btn { bottom: calc(var(--safe-bottom, 0px) + 8px); min-height: 36px; padding: 7px 14px; }
-}
-
-@media (max-height: 300px) and (orientation: landscape) {
-  .friend-play-banner { padding: 4px 12px; }
-  .friend-play-banner strong { font-size: 14px; }
-  .friend-play-banner span { display: none; }
 }
 
 /* A stable reading card: media completion controls its lifetime, never a CSS timer. */
