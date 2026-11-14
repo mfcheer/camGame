@@ -143,8 +143,8 @@ const ACTIONS=[
     a.leftArm.rotation.z=-.45*bow;a.rightArm.rotation.z=.45*bow;
     a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*.02*m;
   }},
-  {id:'raceRev',dur:1.5,animals:['mcqueen','thomas'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*6)*m;a.bodyMesh.rotation.z=s*.04;a.headGroup.rotation.z=-s*.035;for(const p of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])p.rotation.x=t*Math.PI*4;}},
-  {id:'raceSway',dur:1.5,animals:['mcqueen','thomas'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.model.rotation.z=s*.08;a.headGroup.rotation.z=-s*.05;}},
+  {id:'raceRev',dur:1.5,animals:['mcqueen'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*6)*m;a.bodyMesh.rotation.z=s*.04;a.headGroup.rotation.z=-s*.035;for(const p of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])p.rotation.x=t*Math.PI*4;}},
+  {id:'raceSway',dur:1.5,animals:['mcqueen'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.model.rotation.z=s*.08;a.headGroup.rotation.z=-s*.05;}},
   {id:'bearHug',dur:1.5,animals:['teddy'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.leftArm.rotation.z=-s*.9;a.rightArm.rotation.z=s*.9;a.headGroup.rotation.z=s*.12;}},
   {id:'bearSway',dur:1.6,animals:['teddy'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.bodyMesh.rotation.z=s*.12;a.headGroup.rotation.z=-s*.1;}},
   {id:'jettFly',dur:1.7,animals:['jett'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.animalGroup.position.y+=s*.16;a.model.rotation.z=Math.sin(t*Math.PI*2)*.12*m;for(const [n,d] of [['Wing_L',-1],['Wing_R',1]]){const w=a.model.getObjectByName(n);if(w)w.rotation.z=d*Math.sin(t*Math.PI*4)*.14*m;}}},
@@ -176,8 +176,35 @@ const ACTIONS=[
     a.leftArm.rotation.z=-.5-s*.2*m;a.rightArm.rotation.z=.5+s*.2*m;
     a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*.045*m;
   }},
+  // 托马斯专属演出：鸣笛、喷气、车轮加速、列车摇摆
+  {id:'trainWhistle',dur:1.6,animals:['thomas'],fn:(a,t,m)=>{
+    const p=Math.sin(t*Math.PI);
+    a.headGroup.rotation.x=-.06*p*m;a.headGroup.position.y=p*.02*m;
+    a.bodyMesh.rotation.z=Math.sin(t*Math.PI*2)*.02*m;
+    // Whistle blow: a little body lean + eyebrow lift baked into the face rig.
+    if(a.audio)a.audio.playFriendSound('thomas','happy');
+  }},
+  {id:'steamBurst',dur:1.5,animals:['thomas'],fn:(a,t,m)=>{
+    const puff=Math.abs(Math.sin(t*Math.PI*3))*m;
+    a.bodyMesh.rotation.z=Math.sin(t*Math.PI*3)*.03*m;
+    a.animalGroup.position.y+=puff*.05;
+    // Wheels spin fast during the burst.
+    for(const p of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])p.rotation.x=t*Math.PI*10;
+  }},
+  {id:'wheelRev',dur:1.5,animals:['thomas'],fn:(a,t,m)=>{
+    const s=Math.sin(t*Math.PI*6)*m;
+    a.bodyMesh.rotation.z=s*.035;a.headGroup.rotation.z=-s*.03;
+    for(const p of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])p.rotation.x=t*Math.PI*6;
+  }},
+  {id:'trainSway',dur:1.6,animals:['thomas'],fn:(a,t,m)=>{
+    const s=Math.sin(t*Math.PI*3)*m;
+    a.model.rotation.z=s*.07;a.headGroup.rotation.z=-s*.045;
+    a.animalGroup.position.y+=Math.abs(s)*.02;
+    // Gentle wheel turn while swaying.
+    for(const p of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])p.rotation.x=t*Math.PI*2;
+  }},
 ];
-const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['tailChase','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['raceRev','raceSway']};
+const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['tailChase','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['trainWhistle','steamBurst','wheelRev','trainSway']};
 const FINALE=ACTIONS.find(x=>x.id==='finaleBow');
 
 // 结算后的"开心小演出"：动物自己走到台前随机表演，孩子和家长可以休息。

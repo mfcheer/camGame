@@ -387,7 +387,8 @@ export class AudioManager {
           this._playGoldenDragonSound(type);
           break;
         case 'wolf': case 'chase': this._playDogSound(type); break;
-        case 'jett': case 'thomas': this._playCarFriendSound(type); break;
+        case 'jett': this._playCarFriendSound(type); break;
+        case 'thomas': this._playThomasSound(type); break;
         case 'peppa': this._playPeppaSound(type); break;
         case 'mcqueen': this._playCarFriendSound(type); break;
         case 'teddy': this._playBunnySound(type); break;
@@ -405,6 +406,44 @@ export class AudioManager {
     osc.type='triangle';osc.frequency.setValueAtTime(210,now);osc.frequency.exponentialRampToValueAtTime(type==='escape'?480:340,now+duration*.7);
     gain.gain.setValueAtTime(.001,now);gain.gain.linearRampToValueAtTime(.085,now+.025);gain.gain.exponentialRampToValueAtTime(.001,now+duration);
     osc.connect(gain);gain.connect(this.sfxGainNode||this.ctx.destination);osc.start(now);osc.stop(now+duration+.01);
+  }
+
+  // Thomas the Tank Engine: cheerful two-tone train whistle ("choo-choo!") plus steam puff.
+  _playThomasSound(type) {
+    const now=this.ctx.currentTime;
+    const dest=this.sfxGainNode||this.ctx.destination;
+    // Whistle: two quick ascending notes that sound like a happy train horn.
+    const whistle=(start,freq1,freq2,dur)=>{
+      const o=this.ctx.createOscillator(),g=this.ctx.createGain();
+      o.type='square';o.frequency.setValueAtTime(freq1,start);o.frequency.exponentialRampToValueAtTime(freq2,start+dur*.5);
+      g.gain.setValueAtTime(.001,start);g.gain.linearRampToValueAtTime(.07,start+.02);g.gain.exponentialRampToValueAtTime(.001,start+dur);
+      o.connect(g);g.connect(dest);o.start(start);o.stop(start+dur+.01);
+    };
+    if(type==='escape'||type==='happy'){
+      whistle(now,520,680,.18);
+      whistle(now+.22,600,780,.20);
+      // Steam puff whoosh under the whistle.
+      this._steamPuff(now+.05,.28,.05);
+      this._steamPuff(now+.30,.22,.045);
+    }else{
+      // Pop: short, friendly little chuff.
+      const o=this.ctx.createOscillator(),g=this.ctx.createGain();
+      o.type='triangle';o.frequency.setValueAtTime(300,now);o.frequency.exponentialRampToValueAtTime(180,now+.10);
+      g.gain.setValueAtTime(.001,now);g.gain.linearRampToValueAtTime(.06,now+.012);g.gain.exponentialRampToValueAtTime(.001,now+.12);
+      o.connect(g);g.connect(dest);o.start(now);o.stop(now+.13);
+    }
+  }
+  // Soft filtered-noise steam puff; used to give Thomas his signature "chuff".
+  _steamPuff(start,dur,vol){
+    const now=this.ctx.currentTime;
+    const bufferSize=Math.floor(this.ctx.sampleRate*dur);
+    const buffer=this.ctx.createBuffer(1,bufferSize,this.ctx.sampleRate);
+    const data=buffer.getChannelData(0);
+    for(let i=0;i<bufferSize;i++){const t=i/bufferSize;data[i]=(Math.random()*2-1)*(1-t)*.6;}
+    const src=this.ctx.createBufferSource();src.buffer=buffer;
+    const filter=this.ctx.createBiquadFilter();filter.type='bandpass';filter.frequency.value=900;filter.Q.value=.8;
+    const gain=this.ctx.createGain();gain.gain.setValueAtTime(.001,start);gain.gain.linearRampToValueAtTime(vol,start+.02);gain.gain.exponentialRampToValueAtTime(.001,start+dur);
+    src.connect(filter);filter.connect(gain);gain.connect(this.sfxGainNode||this.ctx.destination);src.start(start);src.stop(start+dur+.02);
   }
 
   _playCatSound(type) {

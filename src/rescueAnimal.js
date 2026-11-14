@@ -202,8 +202,25 @@ export class RescueAnimal {
       }
     }else if(this.animalId==='teddy'){
       this.leftArm.rotation.z=-pulse*.5*motion;this.rightArm.rotation.z=pulse*.5*motion;this.headGroup.rotation.z+=pulse*.12*motion;
-    }else if(['mcqueen','thomas'].includes(this.animalId)){
+    }else if(this.animalId==='mcqueen'){
       this.bodyMesh.rotation.z=pulse*.08*motion;this.headGroup.rotation.z+=pulse*.08*motion;
+    }else if(this.animalId==='thomas'){
+      // Train idle: gentle body sway + periodic steam puffs from the funnel.
+      this.bodyMesh.rotation.z=Math.sin(t*2)*.03*motion+pulse*.06*motion;
+      this.headGroup.rotation.z+=Math.sin(t*2.4)*.02*motion+pulse*.07*motion;
+      this.steamClock=(this.steamClock||0)+dt;
+      if(!this.reducedMotion&&this.steamClock>.55&&this.state==='FRIEND'){
+        this.steamClock=0;
+        this.group.updateMatrixWorld(true);
+        const funnel=this.model.getObjectByName('Train_Funnel');
+        if(funnel){
+          const pos=funnel.getWorldPosition(new THREE.Vector3());
+          pos.y+=.18;
+          const puff=new THREE.Mesh(new THREE.SphereGeometry(.05+Math.random()*.03,8,6),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.55,depthWrite:false}));
+          puff.position.copy(pos);this.scene.add(puff);
+          this.particles.push({mesh:puff,velocity:new THREE.Vector3((Math.random()-.5)*.08,.35+Math.random()*.15,(Math.random()-.5)*.08),life:1.1,maxLife:1.1,dust:true});
+        }
+      }
     }else if(this.animalId==='frog'){
       this.leftArm.rotation.z=-pulse*.3;this.rightArm.rotation.z=pulse*.3;
       this.leftLeg.rotation.x=this.rightLeg.rotation.x=pulse*.12;
@@ -460,6 +477,18 @@ export class RescueAnimal {
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
           for(const wheel of [this.leftArm,this.rightArm,this.leftLeg,this.rightLeg])wheel.rotation.x=-p*Math.PI*14;
           this.model.rotation.z=this.reducedMotion?0:Math.sin(p*25)*.018;
+          if(this.animalId==='thomas'&&!this.reducedMotion){
+            this.steamClock=(this.steamClock||0)+dt;
+            if(this.steamClock>.18){this.steamClock=0;
+              this.group.updateMatrixWorld(true);
+              const funnel=this.model.getObjectByName('Train_Funnel');
+              if(funnel){const pos=funnel.getWorldPosition(new THREE.Vector3());pos.y+=.18;
+                const puff=new THREE.Mesh(new THREE.SphereGeometry(.045+Math.random()*.025,8,6),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.5,depthWrite:false}));
+                puff.position.copy(pos);this.scene.add(puff);
+                this.particles.push({mesh:puff,velocity:new THREE.Vector3((Math.random()-.5)*.1,.3+Math.random()*.12,(Math.random()-.5)*.08),life:.8,maxLife:.8,dust:true});
+              }
+            }
+          }
         }else if(['cat','dog','chase'].includes(this.animalId)) {
           this.setQuadrupedPosture(1);
           const stride=Math.sin(p*Math.PI*(this.animalId==='dog'?24:20));

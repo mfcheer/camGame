@@ -18,7 +18,7 @@ export const CAMP_ANIMALS = [
   { id:'chase',name:'汪汪队 阿奇',preview:'models/chase-preview.png',title:'勇敢巡逻',badge:'🐶',target:10 },
   { id:'jett',name:'超级飞侠 乐迪',preview:'models/jett-preview.png',title:'天空飞行',badge:'✈️',target:12 },
   { id:'peppa',name:'小猪佩奇',preview:'models/peppa-preview.png',title:'快乐跳跳',badge:'🐷',target:8 },
-  { id:'thomas',name:'托马斯火车',preview:'models/thomas-preview.png',title:'快乐列车',badge:'🚂',target:10 }
+  { id:'thomas',name:'托马斯火车',preview:'models/thomas-preview.png',title:'咔嚓列车',badge:'🚂',target:10 }
 ];
 
 export const CAMP_STORAGE_KEY = 'camgame_forest_camp_v1';

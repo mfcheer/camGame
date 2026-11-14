@@ -272,24 +272,107 @@ export function createPeppaModel(){
 }
 export function createThomasModel(){
  const root=new THREE.Group();root.name='Thomas_Train_Rig';
- const blue=mat(0x2879c8,.55,{metalness:.08}),lightBlue=mat(0x4aa1de,.55),black=mat(0x31363d,.78),red=mat(0xcd4040,.7),gray=mat(0xe0e4dc,.75),dark=mat(0x414950,.6),white=mat(0xffffff,.5),gold=mat(0xf1cb49,.6);
+ const blue=mat(0x1f7ac4,.5,{metalness:.1}),blueDark=mat(0x1967a8,.55,{metalness:.1}),
+  black=mat(0x2b2f36,.82),red=mat(0xd23b3b,.7),redDark=mat(0xb02c2c,.75),
+  gray=mat(0xdfe4e0,.78),grayDark=mat(0xbac0bb,.8),
+  dark=mat(0x3a4148,.6),white=mat(0xffffff,.55),
+  gold=mat(0xf0c432,.6,{metalness:.25}),brass=mat(0xd4a84a,.5,{metalness:.35});
  const box=(parent,name,material,pos,size,r=.04)=>mesh(new RoundedBoxGeometry(...size,4,r),material,parent,name,pos);
- const body=pivot(root,'Torso',[0,.32,0]);box(body,'Blue_Train_Chassis',blue,[0,-.02,0],[.70,.27,1.15],.07);box(body,'Red_Buffer_Beam',red,[0,-.09,.59],[.8,.11,.11],.03);
- const boiler=mesh(new THREE.CylinderGeometry(.27,.27,.85,32),blue,body,'Blue_Boiler',[0,.14,.03]);boiler.rotation.x=Math.PI/2;
- box(body,'Blue_Cab',blue,[0,.30,-.41],[.64,.47,.40],.06);box(body,'Cab_Roof',black,[0,.55,-.41],[.68,.07,.42],.025);
- box(body,'Cab_Window',dark,[0,.32,-.203],[.40,.22,.015],.025);
- const funnel=mesh(new THREE.CylinderGeometry(.09,.08,.24,24),black,body,'Train_Funnel',[0,.48,.23]);mesh(new THREE.CylinderGeometry(.103,.103,.035,24),black,body,'Funnel_Rim',[0,.61,.23]);ellipsoid(body,'Steam_Dome',gold,[0,.43,-.12],[.09,.065,.09]);
- for(const s of [-1,1]){
-  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.31,.2,.33]);const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.31,.2,-.34]);
-  for(const p of [arm,leg]){const w=mesh(new THREE.CylinderGeometry(.14,.14,.11,24),blue,p,'Train_Wheel',[s*.04,0,0]);w.rotation.z=Math.PI/2;const hub=mesh(new THREE.CylinderGeometry(.055,.055,.12,20),lightBlue,p,'Wheel_Hub',[s*.04,0,0]);hub.rotation.z=Math.PI/2;}
-  box(body,'Engine_Number_One',gold,[s*.356,.025,-.16],[.012,.20,.045],.005);
-  curve(body,'Running_Board',[[s*.365,-.01,-.47],[s*.365,-.01,.43]],.014,black);
-  ellipsoid(body,'Round_Buffer',black,[s*.28,-.095,.657],[.065,.065,.038]);
+ const body=pivot(root,'Torso',[0,.32,0]);
+ // Boiler (main cylindrical blue body)
+ const boiler=mesh(new THREE.CylinderGeometry(.285,.285,.88,36),blue,body,'Blue_Boiler',[0,.17,.02]);boiler.rotation.x=Math.PI/2;
+ // Red boiler stripes (two thin red bands)
+ for(const z of [-.12,.22]){
+  const stripe=mesh(new THREE.CylinderGeometry(.289,.289,.018,36),red,body,'Boiler_Stripe',[0,.17,z]);stripe.rotation.x=Math.PI/2;
  }
- const head=pivot(root,'Head',[0,.46,.48]);mesh(new THREE.TorusGeometry(.252,.018,10,40),black,head,'Smokebox_Rim',[0,0,.067]);ellipsoid(head,'Round_Train_Face',gray,[0,0,.09],[.25,.25,.07]);
- const eyes=pivot(head,'Eyes',[0,0,0]);for(const s of [-1,1]){const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.09,.06,.15]);ellipsoid(eye,'Eye_White',white,[0,0,0],[.052,.058,.018]);ellipsoid(eye,'Pupil',dark,[0,0,.018],[.021,.027,.01]);pivot(head,s<0?'Ear_L':'Ear_R',[s*.22,.1,0]);}
- for(const s of [-1,1]){const brow=ellipsoid(head,'Train_Brow',dark,[s*.095,.135,.139],[.055,.012,.008]);brow.rotation.z=-s*.12;}
- ellipsoid(head,'Nose',gray,[0,-.025,.17],[.04,.05,.03]);curve(head,'Train_Smile',[[-.12,-.11,.155],[0,-.16,.17],[.12,-.11,.155]],.007,dark);
- const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.13,.17],[.07,.04,.01]);happy.visible=false;const tongue=ellipsoid(head,'Happy_Tongue',red,[0,-.15,.18],[.03,.012,.005]);tongue.visible=false;
- const bow=pivot(root,'Bow',[0,.68,.20]);const tail=pivot(root,'Tail',[0,.4,-.56]);return root;
+ // Chassis / running board base
+ box(body,'Chassis_Base',blueDark,[0,-.06,0],[.62,.16,1.18],.05);
+ // Side tanks (blue boxes on both sides with number 1)
+ for(const s of [-1,1]){
+  box(body,'Side_Tank',blue,[s*.305,.05,-.04],[.075,.24,.60],.03);
+  // Yellow number 1 outlined in red on side tank
+  box(body,'Number_Backplate',red,[s*.348,.05,-.04],[.01,.16,.10],.01);
+  const oneShape=new THREE.Shape();oneShape.moveTo(-.018,.055);oneShape.lineTo(.018,.055);oneShape.lineTo(.018,-.06);oneShape.lineTo(-.018,-.06);oneShape.lineTo(-.018,-.05);oneShape.lineTo(.008,-.05);oneShape.lineTo(.008,.045);oneShape.lineTo(-.018,.045);oneShape.closePath();
+  const numMesh=mesh(new THREE.ExtrudeGeometry(oneShape,{depth:.012,bevelEnabled:false}),gold,body,'Number_One',[s*.35,.05,-.04]);numMesh.rotation.y=s*Math.PI/2;
+ }
+ // Running board (black platform along bottom sides)
+ for(const s of [-1,1]){
+  box(body,'Running_Board',black,[s*.325,-.025,-.02],[.035,.025,.90],.01);
+ }
+ // Red buffer beam at front
+ box(body,'Red_Buffer_Beam',red,[0,-.06,.58],[.76,.14,.12],.035);
+ // Smokebox front ring
+ mesh(new THREE.TorusGeometry(.272,.022,12,44),black,body,'Smokebox_Ring',[0,.17,.47]).rotation.y=Math.PI/2;
+ // Cab (rear cabin)
+ box(body,'Blue_Cab',blue,[0,.34,-.40],[.66,.50,.44],.07);
+ box(body,'Cab_Roof',black,[0,.60,-.40],[.72,.08,.48],.03);
+ // Cab windows (front and sides)
+ box(body,'Cab_Front_Window',dark,[0,.36,-.185],[.42,.24,.018],.03);
+ for(const s of [-1,1]){
+  box(body,'Cab_Side_Window',dark,[s*.336,.36,-.38],[.018,.22,.22],.02);
+ }
+ // Funnel (tall black chimney with rim cap)
+ const funnel=mesh(new THREE.CylinderGeometry(.085,.072,.30,28),black,body,'Train_Funnel',[0,.52,.24]);
+ mesh(new THREE.CylinderGeometry(.098,.098,.04,28),black,body,'Funnel_Cap',[0,.68,.24]);
+ // Whistle (small brass whistle on boiler)
+ mesh(new THREE.CylinderGeometry(.022,.022,.05,16),brass,body,'Train_Whistle_Base',[.18,.50,.06]);
+ mesh(new THREE.SphereGeometry(.026,16,12),brass,body,'Train_Whistle_Ball',[.18,.54,.06]);
+ // Steam dome (brass dome on boiler)
+ ellipsoid(body,'Steam_Dome',brass,[0,.47,-.08],[.10,.072,.10]);
+ mesh(new THREE.CylinderGeometry(.102,.102,.025,24),brass,body,'Dome_Base_Ring',[0,.44,-.08]);
+ // Coupling hook at rear
+ ellipsoid(body,'Rear_Coupling',black,[0,-.04,-.62],[.05,.05,.035]);
+ // Wheels (black with red hubs) — front wheels = Arm, rear wheels = Leg
+ for(const s of [-1,1]){
+  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.31,.14,.30]);
+  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.31,.14,-.30]);
+  for(const [p,isFront] of [[arm,true],[leg,false]]){
+   const wheel=mesh(new THREE.CylinderGeometry(.155,.155,.115,32),black,p,'Train_Wheel',[s*.055,0,0]);wheel.rotation.z=Math.PI/2;
+   // Red hub
+   const hub=mesh(new THREE.CylinderGeometry(.062,.062,.125,24),red,p,'Wheel_Hub',[s*.055,0,0]);hub.rotation.z=Math.PI/2;
+   // Red spokes
+   for(let i=0;i<4;i++){const a=i*Math.PI/4;const spoke=mesh(new THREE.BoxGeometry(.018,.135,.125),red,p,'Wheel_Spoke',[s*.055,0,0]);spoke.rotation.z=Math.PI/2;spoke.rotation.y=a;}
+   // Center pin
+   mesh(new THREE.CylinderGeometry(.018,.018,.135,12),black,p,'Wheel_Pin',[s*.055,0,0]).rotation.z=Math.PI/2;
+  }
+  // Buffers on front beam
+  ellipsoid(body,'Round_Buffer',black,[s*.26,-.06,.655],[.06,.06,.05]);
+  ellipsoid(body,'Buffer_Pad',redDark,[s*.26,-.06,.682],[.045,.045,.015]);
+ }
+ // Smokebox door / face (Head group)
+ const head=pivot(root,'Head',[0,.46,.50]);
+ ellipsoid(head,'Round_Train_Face',gray,[0,0,.09],[.255,.255,.07]);
+ // Smokebox door hinge/details
+ ellipsoid(head,'Smokebox_Hinge',grayDark,[-.18,.0,.145],[.018,.08,.018]);
+ ellipsoid(head,'Smokebox_Door_Knob',gold,[.16,.0,.155],[.025,.025,.012]);
+ // Eyes
+ const eyes=pivot(head,'Eyes',[0,0,0]);
+ for(const s of [-1,1]){
+  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.095,.055,.15]);
+  ellipsoid(eye,'Eye_White',white,[0,0,0],[.056,.062,.02]);
+  ellipsoid(eye,'Pupil',dark,[0,0,.02],[.022,.028,.012]);
+  ellipsoid(eye,'Catchlight',white,[-.01,.015,.03],[.008,.01,.005]);
+  pivot(head,s<0?'Ear_L':'Ear_R',[s*.23,.12,0]);
+ }
+ // Eyebrows (Thomas's signature friendly raised eyebrows) — animated
+ for(const s of [-1,1]){
+  const browPivot=pivot(head,s<0?'Brow_L':'Brow_R',[s*.10,.135,.142]);
+  const brow=ellipsoid(browPivot,'Train_Brow',dark,[0,0,0],[.058,.014,.008]);
+  brow.rotation.z=-s*.10;
+ }
+ // Nose
+ ellipsoid(head,'Nose',gray,[0,-.03,.17],[.042,.052,.032]);
+ // Smile
+ curve(head,'Train_Smile',[[-.125,-.10,.16],[0,-.155,.178],[.125,-.10,.16]],.008,dark);
+ // Happy mouth (open smile for excitement)
+ const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.125,.17],[.075,.045,.012]);happy.visible=false;
+ const tongue=ellipsoid(head,'Happy_Tongue',red,[0,-.15,.182],[.035,.015,.006]);tongue.visible=false;
+ // Cheeks (subtle rosy cheeks)
+ const cheekMat=mat(0xf0a090,.5);
+ for(const s of [-1,1])ellipsoid(head,s<0?'Cheek_L':'Cheek_R',cheekMat,[s*.16,-.06,.155],[.035,.022,.008]);
+ // Bow (top decoration — placed on boiler, doubles as focus target)
+ const bow=pivot(root,'Bow',[0,.72,.16]);
+ // Tail (rear bunker)
+ const tail=pivot(root,'Tail',[0,.40,-.58]);
+ return root;
 }

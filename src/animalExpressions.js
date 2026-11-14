@@ -6,7 +6,7 @@ const FACE={
  dog:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},
  dragon:{width:.052,depth:.044,top:1.50,colour:0x97cbbb},
  goldenDragon:{width:.048,depth:.046,top:1.63,colour:0xeac166},
- teddy:{width:.043,depth:.028,top:1.34,colour:0xe69891},wolf:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},mcqueen:{width:.05,depth:.028,top:1.10,colour:0xffca48},chase:{width:.044,depth:.032,top:1.4,colour:0xffd075},jett:{width:.044,depth:.028,top:1.35,colour:0x97c8eb},peppa:{width:.043,depth:.028,top:1.4,colour:0xf2a1b3},thomas:{width:.045,depth:.025,top:1.15,colour:0x8cc5df}
+ teddy:{width:.043,depth:.028,top:1.34,colour:0xe69891},wolf:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},mcqueen:{width:.05,depth:.028,top:1.10,colour:0xffca48},chase:{width:.044,depth:.032,top:1.4,colour:0xffd075},jett:{width:.044,depth:.028,top:1.35,colour:0x97c8eb},peppa:{width:.043,depth:.028,top:1.4,colour:0xf2a1b3},thomas:{width:.048,depth:.028,top:1.32,colour:0x8cc5df}
 };
 function stroke(parent,points,r,material){const path=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const m=new THREE.Mesh(new THREE.TubeGeometry(path,18,r,6,false),material);parent.add(m);return m;}
 function heart(){const s=new THREE.Shape();s.moveTo(0,-.035);s.bezierCurveTo(-.11,.03,-.055,.10,0,.055);s.bezierCurveTo(.055,.10,.11,.03,0,-.035);return new THREE.ShapeGeometry(s,16);}
@@ -56,7 +56,13 @@ export function createExpressionRig(model,id){
  if(id==='frog'){
   sac=new THREE.Mesh(new THREE.SphereGeometry(1,20,14),new THREE.MeshStandardMaterial({color:0xd4d99a,roughness:.9}));sac.name='Vocal_Sac';sac.position.set(0,-.19,.16);head.add(sac);sac.scale.set(.09,.025,.045);
  }
- return {profile,root,smileEyes,pupils,effects,glyphs,sac,starMat,starEyes,blush};
+ // Thomas's eyebrows are signature to the character — they lift when happy, furrow when curious.
+ let brows=null;
+ if(id==='thomas'){
+  brows=[];
+  for(const side of ['L','R']){const b=model.getObjectByName('Brow_'+side);if(b)brows.push({node:b,base:b.rotation.clone(),pos:b.position.clone()});}
+ }
+ return {profile,root,smileEyes,pupils,effects,glyphs,sac,starMat,starEyes,blush,brows};
 }
 
 export function resetExpressionRig(rig){
@@ -67,6 +73,7 @@ export function resetExpressionRig(rig){
  if(rig.starMat)rig.starMat.opacity=0;
  for(const s of rig.starEyes||[])s.visible=false;
  for(const b of rig.blush||[]){b.visible=false;b.material.opacity=0;}
+ for(const b of rig.brows||[]){b.node.rotation.copy(b.base);b.node.position.copy(b.pos);}
 }
 
 export function updateExpressionRig(animal,dt){
@@ -98,6 +105,17 @@ export function updateExpressionRig(animal,dt){
   const target=glow?.5:0;
   for(const b of rig.blush){b.material.opacity+=(target-b.material.opacity)*(1-Math.exp(-dt*6));b.visible=b.material.opacity>.01;}
  }
+ // Thomas eyebrows: lift high when happy (cheerful raised brows), furrow inward when curious.
+ if(rig.brows){
+  const lift=happy?(glow==='finale'?.16:glow?.12:0):curious?-.05:0;
+  const inward=curious?.5:0;
+  for(let i=0;i<rig.brows.length;i++){
+   const b=rig.brows[i],side=i===0?-1:1;
+   b.node.rotation.x+=(b.base.x+(happy?.04:0)-b.node.rotation.x)*(1-Math.exp(-dt*10));
+   b.node.rotation.y+=(inward*side-b.node.rotation.y)*(1-Math.exp(-dt*10));
+   b.node.position.y+=(b.pos.y+lift-b.node.position.y)*(1-Math.exp(-dt*10));
+  }
+ }
  if(animal.happyTongue&&animal.animalId==='dog'){animal.happyTongue.rotation.z=happy?Math.sin(t*5)*.10:0;animal.happyTongue.scale.y=.048*(happy?1+Math.sin(t*7)*.08:1);}
  const focus=animal.attentionFocus||animal.playerFocus||{x:.5,y:.32};
  const lookX=THREE.MathUtils.clamp((focus.x-.5)*.022,-.012,.012),lookY=THREE.MathUtils.clamp((.4-focus.y)*.025,-.01,.01);
@@ -124,6 +142,7 @@ export function updateExpressionRig(animal,dt){
     for(const [name,sign] of [['Wing_L',-1],['Wing_R',1]]){const wing=animal.model.getObjectByName(name);if(wing)wing.rotation.y=sign*.27;}
     break;
    case 'goldenDragon':animal.tailGroup.rotation.y+=Math.sin(t*2.5-.8)*.035*motion;break;
+   case 'thomas':animal.headGroup.rotation.z+=Math.sin(t*2)*.03*motion;break;
   }
  }
  // Cat slow blinks remain readable while looking back at the player.
@@ -144,6 +163,7 @@ export function updateExpressionRig(animal,dt){
    case 'frog':animal.leftArm.rotation.z-=amount*.12*motion;animal.rightArm.rotation.z+=amount*.12*motion;break;
    case 'dragon':animal.headGroup.rotation.z+=amount*.10*motion;animal.tailGroup.rotation.z+=amount*.12*motion;break;
    case 'goldenDragon':animal.headGroup.rotation.x-=amount*.08*motion;break;
+   case 'thomas':animal.headGroup.rotation.z+=amount*(variant===1?-.10:.07)*motion;break;
   }
  }
 }
