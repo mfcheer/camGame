@@ -1,5 +1,25 @@
 // One short English utterance per arrival/farewell. No quiz, answer gate or extra click.
-const phrase=(id,en,zh,wordIds=[])=>({id,en,zh,wordIds,audio:`/audio/phrases/natural/${id}.mp3`});
+const phrase=(id,en,zh,wordIds=[])=>({
+  id,
+  en,
+  zh,
+  wordIds,
+  audio:`/audio/phrases/natural/${id}.mp3`,
+  audioEn:`/audio/phrases/natural/${id}.mp3`,
+  audioZh:`/audio/phrases/natural/${id}-zh.mp3`
+});
+
+const END_PHRASES=[
+  phrase('thank-you','Thank you, my friend!','谢谢你，我的朋友！'),
+  phrase('nice-day','Have a nice day!','祝你度过愉快的一天！'),
+  phrase('see-you','See you again!','下次再见！'),
+  phrase('goodbye','Goodbye, my friend!','再见，我的朋友！'),
+  phrase('great-job','Great job!','你太棒啦！'),
+  phrase('you-did-it','You did it!','你做到啦！'),
+  phrase('so-much-fun','We had so much fun!','今天玩得真开心！'),
+  phrase('see-you-tomorrow','See you tomorrow!','明天见哦！')
+];
+
 export const ANIMAL_PHRASES={
   start:[
     phrase('hello-play',"Hello, let's play!",'你好，一起玩吧！'),
@@ -12,26 +32,8 @@ export const ANIMAL_PHRASES={
     phrase('like-orange','I like orange!','我喜欢橙色！',['orange']),
     phrase('play-ball',"Let's play with a ball!",'一起玩球吧！',['ball'])
   ],
-  end:[
-    phrase('thank-you','Thank you, my friend!','谢谢你，我的朋友！'),
-    phrase('nice-day','Have a nice day!','祝你度过愉快的一天！'),
-    phrase('see-you','See you again!','下次再见！'),
-    phrase('goodbye','Goodbye, my friend!','再见，我的朋友！'),
-    phrase('great-job','Great job!','你太棒啦！'),
-    phrase('you-did-it','You did it!','你做到啦！'),
-    phrase('so-much-fun','We had so much fun!','今天玩得真开心！'),
-    phrase('see-you-tomorrow','See you tomorrow!','明天见哦！')
-  ],
-  celebrate:[
-    phrase('zh-thank-rescue','谢谢你救了我！','谢谢你救了我！'),
-    phrase('zh-great-job','你太棒啦！','你太棒啦！'),
-    phrase('zh-we-did-it','我们成功啦！','我们成功啦！'),
-    phrase('zh-so-happy','今天玩得真开心！','今天玩得真开心！'),
-    phrase('zh-awesome','你真厉害呀！','你真厉害呀！'),
-    phrase('zh-thank-friend','太感谢你啦，我的好朋友！','太感谢你啦，我的好朋友！'),
-    phrase('zh-free-now','太好啦，我自由啦！','太好啦，我自由啦！'),
-    phrase('zh-super-hero','你真是个小英雄！','你真是个小英雄！')
-  ]
+  end:END_PHRASES,
+  celebrate:END_PHRASES
 };
 const favorites={bunny:['hello-play','like-red','how-are-you'],cat:['play-ball','like-orange','happy-today'],
   frog:['how-are-you','like-green','hello-play'],dog:['play-ball','happy-today','like-blue'],

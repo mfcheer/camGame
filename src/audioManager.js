@@ -1195,7 +1195,7 @@ export class AudioManager {
     const raw = String(wordId || "").trim().toLowerCase();
     const id = getWordById(raw)?.id || raw;
     if (!id) return null;
-    const key = phrase ? `phrase:${id}` : lang === "zh" ? `zh:${id}` : review ? `review:${id}` : id;
+    const key = phrase ? (phrase.audio ? `phrase:${phrase.audio}` : `phrase:${id}`) : lang === "zh" ? `zh:${id}` : review ? `review:${id}` : id;
     if (this._wordAudioBuffers.has(key)) return this._wordAudioBuffers.get(key);
     if (this._wordAudioPromises.has(key)) return this._wordAudioPromises.get(key);
 
@@ -1342,7 +1342,8 @@ export class AudioManager {
     try {
       const cfg=getWordById(id), zh=cfg?.zh||getWordCn(id), en=cfg?.word||id;
       const pair=[{text:zh,lang:'zh-CN'},{text:en,lang:'en-US'}].filter(p=>p.text);
-      const phrases=phrase ? [{text:phrase.en,lang:'en-US'}] : lang==='zh' ? [{text:zh,lang:'zh-CN'}] : review ? [{text:en,lang:'en-US'}] : [...pair,...pair];
+      const isZh = (phrase && (phrase.lang === 'zh' || phrase.primaryLang === 'zh')) || lang === 'zh';
+      const phrases=phrase ? [{text:isZh?(phrase.zh||phrase.text):(phrase.en||phrase.text),lang:isZh?'zh-CN':'en-US'}] : lang==='zh' ? [{text:zh,lang:'zh-CN'}] : review ? [{text:en,lang:'en-US'}] : [...pair,...pair];
       if(!phrases.length){onDone();return;}
       phrases.forEach((phrase,index)=>{
         const utterance=new SpeechSynthesisUtterance(phrase.text);

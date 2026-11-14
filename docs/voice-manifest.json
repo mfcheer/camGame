@@ -5962,5 +5962,181 @@
         "sha256": "96f4ca3e9099ff25726e66558fcc49293440a4f1c3e0613a22c348b27850357c"
       }
     ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "thank-you-zh",
+    "text": "谢谢你，我的朋友！",
+    "zh": "谢谢你，我的朋友！",
+    "en": "Thank you, my friend!",
+    "profile": {
+      "voice": "zf_xiaoxiao",
+      "model": "hexgrad/Kokoro-82M",
+      "lang": "zh"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/thank-you-zh.mp3",
+        "sha256": "51556ebe8a4e4678038a6c1bfac360b2f03cf816c1e877d13d8616ea475d4f3b"
+      },
+      {
+        "path": "public/audio/phrases/thank-you-zh.mp3",
+        "sha256": "51556ebe8a4e4678038a6c1bfac360b2f03cf816c1e877d13d8616ea475d4f3b"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "nice-day-zh",
+    "text": "祝你度过愉快的一天！",
+    "zh": "祝你度过愉快的一天！",
+    "en": "Have a nice day!",
+    "profile": {
+      "voice": "zf_xiaoxiao",
+      "model": "hexgrad/Kokoro-82M",
+      "lang": "zh"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/nice-day-zh.mp3",
+        "sha256": "92a5b8f3340d9a5ab70600b9fc2b4a447c7ade6f6bbbc0bdff91c0d7386ac5b0"
+      },
+      {
+        "path": "public/audio/phrases/nice-day-zh.mp3",
+        "sha256": "92a5b8f3340d9a5ab70600b9fc2b4a447c7ade6f6bbbc0bdff91c0d7386ac5b0"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "see-you-zh",
+    "text": "下次再见！",
+    "zh": "下次再见！",
+    "en": "See you again!",
+    "profile": {
+      "voice": "zf_xiaoxiao",
+      "model": "hexgrad/Kokoro-82M",
+      "lang": "zh"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/see-you-zh.mp3",
+        "sha256": "1bc109d550b7a8a036a866f9ec2307f02eafc3cd02784f93aebac67cec861918"
+      },
+      {
+        "path": "public/audio/phrases/see-you-zh.mp3",
+        "sha256": "1bc109d550b7a8a036a866f9ec2307f02eafc3cd02784f93aebac67cec861918"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "goodbye-zh",
+    "text": "再见，我的朋友！",
+    "zh": "再见，我的朋友！",
+    "en": "Goodbye, my friend!",
+    "profile": {
+      "voice": "zf_xiaoxiao",
+      "model": "hexgrad/Kokoro-82M",
+      "lang": "zh"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/goodbye-zh.mp3",
+        "sha256": "2a7bd1e9c2cb934c52dae044c34e285a4b559e2fbd5a8081ac811b9d76d0d663"
+      },
+      {
+        "path": "public/audio/phrases/goodbye-zh.mp3",
+        "sha256": "2a7bd1e9c2cb934c52dae044c34e285a4b559e2fbd5a8081ac811b9d76d0d663"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "great-job-zh",
+    "text": "你太棒啦！",
+    "zh": "你太棒啦！",
+    "en": "Great job!",
+    "profile": {
+      "voice": "zf_xiaoxiao",
+      "model": "hexgrad/Kokoro-82M",
+      "lang": "zh"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/great-job-zh.mp3",
+        "sha256": "56605e048ade5527e14d5d2772e3f8c61ac7c93e271af67e97b2df134e61d38d"
+      },
+      {
+        "path": "public/audio/phrases/great-job-zh.mp3",
+        "sha256": "56605e048ade5527e14d5d2772e3f8c61ac7c93e271af67e97b2df134e61d38d"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "you-did-it-zh",
+    "text": "你做到啦！",
+    "zh": "你做到啦！",
+    "en": "You did it!",
+    "profile": {
+      "voice": "zf_xiaoxiao",
+      "model": "hexgrad/Kokoro-82M",
+      "lang": "zh"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/you-did-it-zh.mp3",
+        "sha256": "741183fc605c6ecdd9e2afbf0c0e010fbd6a57e878c4078739da8e7651051f12"
+      },
+      {
+        "path": "public/audio/phrases/you-did-it-zh.mp3",
+        "sha256": "741183fc605c6ecdd9e2afbf0c0e010fbd6a57e878c4078739da8e7651051f12"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "so-much-fun-zh",
+    "text": "今天玩得真开心！",
+    "zh": "今天玩得真开心！",
+    "en": "We had so much fun!",
+    "profile": {
+      "voice": "zf_xiaoxiao",
+      "model": "hexgrad/Kokoro-82M",
+      "lang": "zh"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/so-much-fun-zh.mp3",
+        "sha256": "27fe24dc968d69dab0c437c97ba76a96eac0253005089ec5b34c1b4e7f87d25e"
+      },
+      {
+        "path": "public/audio/phrases/so-much-fun-zh.mp3",
+        "sha256": "27fe24dc968d69dab0c437c97ba76a96eac0253005089ec5b34c1b4e7f87d25e"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "see-you-tomorrow-zh",
+    "text": "明天见哦！",
+    "zh": "明天见哦！",
+    "en": "See you tomorrow!",
+    "profile": {
+      "voice": "zf_xiaoxiao",
+      "model": "hexgrad/Kokoro-82M",
+      "lang": "zh"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/see-you-tomorrow-zh.mp3",
+        "sha256": "cef65f5d13bbe0c464a15d8808095c15171f9b6491ffeff6f80035b06ff9f42f"
+      },
+      {
+        "path": "public/audio/phrases/see-you-tomorrow-zh.mp3",
+        "sha256": "cef65f5d13bbe0c464a15d8808095c15171f9b6491ffeff6f80035b06ff9f42f"
+      }
+    ]
   }
 ]

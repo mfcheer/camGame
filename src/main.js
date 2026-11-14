@@ -1,3 +1,4 @@
+import {chooseAnimalPhrase} from './animalPhrases.js';
 import {VoiceQueue} from './voiceQueue.js';
 import {SpeechPolicy} from './speechPolicy.js';
 import {WordFocus} from './wordFocus.js';
@@ -553,7 +554,7 @@ export class Game {
   }
 
   beginRoundGreeting() {
-    this.animalSpeech?.cancel();this.voiceQueue?.cancel();this.voiceQueue?.resume();this.speechPolicy?.beginRound();this.lastPlayWord=null;this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
+    this.currentEndPhrase=null;this.animalSpeech?.cancel();this.voiceQueue?.cancel();this.voiceQueue?.resume();this.speechPolicy?.beginRound();this.lastPlayWord=null;this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
     this.bubbleManager?.beginWordRound?.(this.targetCount);
     if(this.state==='PLAYING')this.bubbleManager.spawnNext(this.collectedCount,true);
   }
@@ -597,7 +598,8 @@ export class Game {
     this.audioManager?.recoverFromGesture?.();
     this.clearPlayWordCue();this.voiceQueue?.cancel();
     const hiPhase=this.state==='PLAYING'?'start':(this.friendInteraction?.active?'celebrate':'end');
-    this.animalSpeech?.start(hiPhase,this.activeAnimalId,()=>{});
+    const phrase=(hiPhase==='celebrate'||hiPhase==='end')?this.currentEndPhrase:null;
+    this.animalSpeech?.start(hiPhase,this.activeAnimalId,()=>{},phrase);
   }
 
   openWordDetail(word=this.lastPlayWord) {
@@ -697,6 +699,10 @@ export class Game {
     this.uiManager?.setPhotoCountdown?.(null);
     if (this.balloon) this.balloon.startTakeoff();
 
+    // 为本轮通关绑定唯一的中英互译短语（庆祝动作播中文，终点离场播对应英文）
+    this.currentEndPhrase = chooseAnimalPhrase('end', animalId, this.lastEndPhraseId);
+    this.lastEndPhraseId = this.currentEndPhrase.id;
+
     // 取消旧庆祝计时器，支持分段与暂停打断恢复
     if (this.celebrationTimer) {
       clearTimeout(this.celebrationTimer);
@@ -708,7 +714,7 @@ export class Game {
       this.friendInteraction.start();
       this.bubbleManager.hideHandIndicators();
       this.uiManager?.showFriendPlay?.();
-      this.animalSpeech?.start('celebrate', this.activeAnimalId||this.rescueAnimal?.animalId||'bunny', ()=>{});
+      this.animalSpeech?.start('celebrate', animalId, ()=>{}, this.currentEndPhrase);
       return;
     }
     this.startFarewell();
@@ -724,8 +730,13 @@ export class Game {
 
   startFarewell() {
     this.voiceQueue?.cancel();this.clearPlayWordCue();
-    // 解救告别：动物离开时自动随机说一句 Thank you / Goodbye 等 end 短语（既有配音资产）。
-    this.animalSpeech?.start('end', this.activeAnimalId||this.rescueAnimal?.animalId||'bunny', ()=>{});
+    const animalId = this.activeAnimalId||this.rescueAnimal?.animalId||'bunny';
+    if(!this.currentEndPhrase){
+      this.currentEndPhrase = chooseAnimalPhrase('end', animalId, this.lastEndPhraseId);
+      this.lastEndPhraseId = this.currentEndPhrase.id;
+    }
+    // 解救告别：动物离开时自动播报与庆祝动作互译的英文 end 短语
+    this.animalSpeech?.start('end', animalId, ()=>{}, this.currentEndPhrase);
     this.beginFarewell();
   }
 

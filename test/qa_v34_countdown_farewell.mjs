@@ -1,3 +1,5 @@
+import {AnimalSpeech} from '../src/animalSpeech.js';
+import fs from 'node:fs';
 import {chooseAnimalPhrase} from '../src/animalPhrases.js';
 // 倒数三套配音、解救告别短语与首页新布局专项（qa_v34）
 import test from 'node:test';
@@ -78,37 +80,95 @@ test('每轮结束的告别短语从 end 短语库随机选择且不与上次重
   assert.ok(seen.has('end'));
 });
 
-test('通关做庆祝动作时自动播报中文庆祝短语，离开至终点时播报英文告别短语',()=>{
+test('通关做庆祝动作时自动播报中文庆祝短语，离开至终点时播报英文告别短语，且二者为同一短语的中英文互译绑定',()=>{
   const speechCalls=[];
   const g=Object.assign(Object.create(Game.prototype),{
     state:'CELEBRATING',activeAnimalId:'krashy',
     friendInteraction:{active:true,start(){},clear(){}},
     bubbleManager:{hideHandIndicators(){}},
     uiManager:{showFriendPlay(){},hideFriendPlay(){}},
-    animalSpeech:{start(phase,id){speechCalls.push([phase,id]);}},
+    animalSpeech:{start(phase,id,onDone,phrase){speechCalls.push({phase,id,phrase});}},
     voiceQueue:{cancel(){}},clearPlayWordCue(){},beginFarewell(){}
   });
-  // 1. 触发庆祝动作时播报中文 celebrate
-  if(g.friendInteraction){
-    g.friendInteraction.start();
-    g.bubbleManager.hideHandIndicators();
-    g.uiManager?.showFriendPlay?.();
-    g.animalSpeech?.start('celebrate', g.activeAnimalId, ()=>{});
-  }
-  assert.deepEqual(speechCalls,[['celebrate','krashy']],'庆祝动作开始时应播报中文短语');
-  // 2. 庆祝动作结束离开走向终点时播报英文 end
+  // 1. 触发胜利庆祝时，选定短语并播报中文 celebrate
+  const animalId = g.activeAnimalId;
+  g.currentEndPhrase = chooseAnimalPhrase('end', animalId, g.lastEndPhraseId);
+  g.lastEndPhraseId = g.currentEndPhrase.id;
+  g.friendInteraction.start();
+  g.bubbleManager.hideHandIndicators();
+  g.uiManager?.showFriendPlay?.();
+  g.animalSpeech?.start('celebrate', animalId, ()=>{}, g.currentEndPhrase);
+
+  assert.equal(speechCalls.length, 1);
+  assert.equal(speechCalls[0].phase, 'celebrate');
+  assert.equal(speechCalls[0].id, 'krashy');
+  assert.ok(speechCalls[0].phrase.zh);
+
+  // 2. 庆祝动作结束离开走到终点时，播报同一短语的英文 end
   g.finishFriendPlay();
-  assert.deepEqual(speechCalls,[['celebrate','krashy'],['end','krashy']],'离开走到终点阶段应播报英文告别短语');
+  assert.equal(speechCalls.length, 2);
+  assert.equal(speechCalls[1].phase, 'end');
+  assert.equal(speechCalls[1].id, 'krashy');
+  assert.equal(speechCalls[1].phrase.id, speechCalls[0].phrase.id, '庆祝中文与告别英文短语ID必须完全相同（1:1互译）');
+  assert.equal(speechCalls[1].phrase.en, speechCalls[0].phrase.en);
+  assert.equal(speechCalls[1].phrase.zh, speechCalls[0].phrase.zh);
 });
 
-test('每轮庆祝短语从 celebrate 库随机选择且不与上次重复',()=>{
+test('每轮告别互译短语从 8 对短语中轮换且不与上次重复，中英文音频文件全部存在且大于 2KB',()=>{
   const chosen=[];
   let prev=null;
   for(let i=0;i<16;i++){
-    const phrase=chooseAnimalPhrase('celebrate','krashy',prev);
-    assert.ok(phrase.id.startsWith('zh-'),'庆祝短语应为中文短语');
+    const phrase=chooseAnimalPhrase('end','krashy',prev);
+    assert.ok(phrase.en,'应包含英文');
+    assert.ok(phrase.zh,'应包含中文');
+    assert.ok(fs.statSync('public' + phrase.audioEn).size > 2000, '英文音频应存在且大于2KB: ' + phrase.audioEn);
+    assert.ok(fs.statSync('public' + phrase.audioZh).size > 2000, '中文音频应存在且大于2KB: ' + phrase.audioZh);
     if(prev)assert.notEqual(phrase.id,prev,'不与上次重复');
     prev=phrase.id;chosen.push(phrase.id);
   }
-  assert.ok(new Set(chosen).size>=4,'应从8句庆祝库中丰富轮换');
+  assert.ok(new Set(chosen).size>=4,'应从8句短语库中丰富轮换');
+});
+
+test('AnimalSpeech 在 celebrate 时播放中文音频并在 end 时播放同一短语的英文音频', () => {
+  const audioCalls = [];
+  const uiCalls = [];
+  const fakeAudio = {
+    playPhrase(phraseObj) {
+      audioCalls.push(phraseObj);
+      return Promise.resolve();
+    },
+    stopPhrase() {}
+  };
+  const fakeUi = {
+    showAnimalSpeech(phrase, animalId, phase) {
+      uiCalls.push({phrase, animalId, phase});
+    },
+    hideAnimalSpeech() {}
+  };
+  const fakeAnimal = {
+    setSpeaking() {},
+    setSpeechListening() {}
+  };
+
+  
+  const speech = new AnimalSpeech(fakeAudio, fakeUi, fakeAnimal);
+  
+
+  const testPhrase = chooseAnimalPhrase('end', 'krashy');
+
+  // 1. celebrate 阶段
+  speech.start('celebrate', 'krashy', () => {}, testPhrase);
+  assert.equal(audioCalls.length, 1);
+  assert.equal(audioCalls[0].id, testPhrase.id);
+  assert.equal(audioCalls[0].lang, 'zh');
+  assert.ok(audioCalls[0].audio.endsWith('-zh.mp3'), '庆祝阶段应播放中文音频: ' + audioCalls[0].audio);
+  assert.equal(uiCalls[0].phase, 'celebrate');
+
+  // 2. end 阶段（传入同一 phrase）
+  speech.start('end', 'krashy', () => {}, testPhrase);
+  assert.equal(audioCalls.length, 2);
+  assert.equal(audioCalls[1].id, testPhrase.id);
+  assert.equal(audioCalls[1].lang, 'en');
+  assert.ok(!audioCalls[1].audio.endsWith('-zh.mp3'), '告别阶段应播放英文音频: ' + audioCalls[1].audio);
+  assert.equal(uiCalls[1].phase, 'end');
 });
