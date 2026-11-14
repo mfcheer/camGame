@@ -3,7 +3,8 @@ import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
 
 const clamp=THREE.MathUtils.clamp;
 const ease=t=>t*t*(3-2*t);
-const REST=.3;
+const REST=.25;
+const SPEED=.8; // 整体播放速度：动作时长按此缩放，单局演出总时长控制在约 5-8 秒。
 
 // 开心小演出动作库：fn(a,t,m) 每帧在 FRIEND 基础姿态之上覆写关节；t 为 0..1 进度，m 为减动幅缩放。
 // fn 内所有曲线在 t=1 时归零，rest 阶段无需残留清理（reset 兜底旋转类覆写）。
@@ -176,15 +177,15 @@ export class HappyPerformance {
     return this.plan.map(p=>p.id);
   }
   buildPlan() {
-    // 4-5 个动作：从该动物的两个招牌动作里随机选一个出场，其余从通用动作池不重复随机抽取，顺序随机；
-    // 结尾固定接谢幕彩蛋。与上一局的节目单保证开场动作不同、整单不完全相同。
+    // 2-3 个动作（×0.8 播放速度，单局约 5-8 秒）：从该动物的两个招牌动作里随机选一个出场，
+    // 其余从通用动作池不重复随机抽取，顺序随机；结尾固定接谢幕彩蛋。与上一局的节目单保证开场动作不同、整单不完全相同。
     const id=this.animal.animalId;
     const pool=ACTIONS.filter(x=>x.animals?.includes(id)||( !x.animals&&x.id!=='finaleBow'));
     const sigs=pool.filter(x=>x.animals);
     const sig=sigs[Math.floor(Math.random()*sigs.length)];
     const others=pool.filter(x=>!Object.is(x,sig));
     for(let i=others.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[others[i],others[j]]=[others[j],others[i]];}
-    const total=4+(Math.random()<.4?1:0);
+    const total=2+(Math.random()<.3?1:0);
     const plan=others.slice(0,total-1);
     plan.splice(Math.floor(Math.random()*(plan.length+1)),0,sig);
     if(this.lastPlan){
@@ -277,7 +278,7 @@ export class HappyPerformance {
     }
     const act=this.plan[this.actionIdx];
     this.actionElapsed+=dt;
-    const t=this.actionElapsed/act.dur;
+    const t=this.actionElapsed/(act.dur*SPEED);
     const finale=act.id==='finaleBow';
     if(finale&&!this.sparkled&&t>.45){
       this.sparkled=true;

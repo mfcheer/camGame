@@ -58,7 +58,7 @@ test('holding the original pop point does not cause an automatic replay; leave a
 
 test('the happy performance plays itself: no input, no score change, pause freezes it',()=>{
  for(const id of ['bunny','cat','dog','frog','dragon','goldenDragon']){const x=friend(id);x.step(1.2);
-  assert.ok(x.f.active,id);assert.ok(x.f.plan.length>=5&&x.f.plan.length<=6,id);assert.ok(x.f.currentAction(),id);
+  assert.ok(x.f.active,id);assert.ok(x.f.plan.length>=3&&x.f.plan.length<=4,id);assert.ok(x.f.currentAction(),id);
   assert.ok(x.a.actionPoseFn,id);assert.equal(x.a.energyLevel,0,id);assert.ok(x.a.friendResponse>0,id);
   x.f.setPaused(true);const elapsed=x.f.elapsed,action=x.f.currentAction();x.step(2);
   assert.equal(x.f.elapsed,elapsed,id);assert.equal(x.f.currentAction(),action,id);assert.equal(x.f.group.visible,false,id);
@@ -84,7 +84,7 @@ test('the finale bursts confetti under a blooming spotlight, with the performer 
  assert.equal(x.a.expressionRig.smileEyes[0].smile.visible,true,'finale closes the eyes in a smile');
  x.step(.6);assert.ok(x.f.confetti.length>0,'confetti falls during the bow');
  assert.ok(x.f.spot.intensity>.9,'spotlight blooms at the finale');
- x.step(1.2);assert.ok(x.f.confetti.some(c=>c.mesh.position.y<x.f.floorY+.6),'confetti descends toward the stage');
+ x.step(.5);assert.ok(x.f.confetti.some(c=>c.mesh.position.y<x.f.floorY+.6),'confetti descends toward the stage');
  x.f.clear();
  assert.equal(x.f.confetti.length,0,'confetti cleaned up');
  assert.equal(x.f.spot.intensity,0,'spotlight extinguished');
