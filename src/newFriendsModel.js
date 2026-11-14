@@ -229,7 +229,8 @@ export function createChaseModel(){
  const root=createDogModel();root.name='Chase_Rescue_Pup';
  const brown=mat(0xa9723e,.95),tan=mat(0xe9b77d,.95),earBrown=mat(0x7c5231,.95),
   navy=mat(0x2453a0,.8),deep=mat(0x1a3c78,.85),sky=mat(0x3f7fd6,.72),
-  gold=mat(0xf3cd52,.55),ink=mat(0x263447,.6),white=mat(0xf5f8ff,.5);
+  gold=mat(0xf3cd52,.55),ink=mat(0x263447,.6),white=mat(0xf5f8ff,.5),
+  mouthDark=mat(0x381520,.95),tonguePink=mat(0xf36e84,.88),teethWhite=mat(0xfbfbf8,.8),whiskerBrown=mat(0x56341d,.85);
  // 毛色：金棕身体 + 浅棕口鼻/胸口/爪尖/尾尖
  for(const name of ['Puppy_Plump_Body','Puppy_Head','Foreleg','Hind_Paw','Wagging_Tail'])root.traverse(o=>{if(o.name===name&&o.isMesh)o.material=brown;});
  for(const name of ['Cream_Chest','Cream_Muzzle','Cream_Forepaw','Cream_Hind_Toes','Cream_Tail_Tip'])root.traverse(o=>{if(o.name===name&&o.isMesh)o.material=tan;});
@@ -270,6 +271,28 @@ export function createChaseModel(){
   const brow=ellipsoid(head,s<0?'Shepherd_Brow_L':'Shepherd_Brow_R',earBrown,[s*.13,.105,.226],[.10,.043,.021]);brow.rotation.z=s*.16;
   ellipsoid(head,'Shepherd_Cheek',tan,[s*.17,-.105,.20],[.105,.09,.045]);
  }
+ // 深度优化阿奇的面部神态与嘴部结构：重构下颌、口鼻雀斑、犬齿与精致小舌，彻底摆脱吊死肉片感
+ const oldHappy=head.getObjectByName('Happy_Mouth');if(oldHappy)head.remove(oldHappy);
+ const oldTongue=head.getObjectByName('Happy_Tongue');if(oldTongue)head.remove(oldTongue);
+ // 德牧立体下颌骨（托住下唇与口腔，侧脸饱满帅气）
+ ellipsoid(head,'Chase_Lower_Jaw',tan,[0,-.176,.288],[.098,.040,.078]);
+ curve(head,'Chase_Lower_Lip',[[-.052,-.165,.324],[0,-.180,.334],[.052,-.165,.324]],.005,earBrown);
+ // 经典口鼻雀斑胡须点（PAW Patrol 标志性特征，左右各 3 点）
+ for(const s of [-1,1]){
+  for(const [x,y] of [[.052,-.095],[.082,-.108],[.058,-.122]])
+   ellipsoid(head,'Chase_Whisker_Dot',whiskerBrown,[s*x,y,.330],[.0045,.0045,.0025]);
+ }
+ // 帅气元气大笑嘴：深李色立体口腔 + 两颗洁白可爱的小上犬牙
+ const happyMouth=pivot(head,'Happy_Mouth',[0,-.146,.334]);happyMouth.visible=false;
+ ellipsoid(happyMouth,'Happy_Mouth_Cavity',mouthDark,[0,0,0],[.065,.046,.016]);
+ for(const s of [-1,1]){
+  const canine=ellipsoid(happyMouth,s<0?'Chase_Canine_L':'Chase_Canine_R',teethWhite,[s*.036,.016,.007],[.006,.011,.006]);
+  canine.rotation.z=s*.15;
+ }
+ // 精致健康萌萌小舌头：严格居中、自然受纳于下唇、舌尖微翘，不再突兀下垂
+ const happyTongue=ellipsoid(head,'Happy_Tongue',tonguePink,[0,-.158,.342],[.034,.022,.012]);
+ happyTongue.rotation.x=-.22;
+ happyTongue.visible=false;
  // 胸前警徽（挂在 Bow 节点，动画兼容）
  const bow=root.getObjectByName('Bow');bow.clear();
  ellipsoid(bow,'Collar_Badge',gold,[0,0,.035],[.06,.068,.02]);
