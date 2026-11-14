@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_panda" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_panda)">
+    
+      <g transform="translate(128, 128)">
+        <!-- Bamboo stem in paws -->
+        <path d="M46 36 L58 -56" stroke="#43A047" stroke-width="8" stroke-linecap="round"/>
+        <path d="M48 2 M51 -18 M54 -38" stroke="#1B5E20" stroke-width="2"/>
+        <path d="M52 -24 C64 -34 76 -30 76 -20 C64 -20 56 -22 52 -24 Z" fill="#66BB6A"/>
+
+        <!-- Black Ears -->
+        <circle cx="-50" cy="-44" r="20" fill="#212121" stroke="#000000" stroke-width="3"/>
+        <circle cx="50" cy="-44" r="20" fill="#212121" stroke="#000000" stroke-width="3"/>
+
+        <!-- Big Round White Head -->
+        <ellipse cx="0" cy="4" rx="66" ry="60" fill="#FFFFFF" stroke="#212121" stroke-width="4.5"/>
+
+        <!-- Iconic Black Eye Patches (angled) -->
+        <ellipse cx="-26" cy="-2" rx="16" ry="19" transform="rotate(-20 -26 -2)" fill="#212121"/>
+        <ellipse cx="26" cy="-2" rx="16" ry="19" transform="rotate(20 26 -2)" fill="#212121"/>
+
+        <!-- Sparkling Pupils inside patches -->
+        <circle cx="-24" cy="-2" r="5.5" fill="#FFFFFF"/>
+        <circle cx="-24" cy="-2" r="3.5" fill="#263238"/>
+        <circle cx="-22" cy="-4" r="1.5" fill="#FFFFFF"/>
+        <circle cx="24" cy="-2" r="5.5" fill="#FFFFFF"/>
+        <circle cx="24" cy="-2" r="3.5" fill="#263238"/>
+        <circle cx="22" cy="-4" r="1.5" fill="#FFFFFF"/>
+
+        <!-- Cute Pink Cheeks -->
+        <ellipse cx="-44" cy="20" rx="9" ry="5" fill="#FFCDD2" opacity="0.8"/>
+        <ellipse cx="44" cy="20" rx="9" ry="5" fill="#FFCDD2" opacity="0.8"/>
+
+        <!-- Inverted Triangle Nose & Smile -->
+        <path d="M-8 16 L8 16 L0 24 Z" fill="#212121" stroke="#000000" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M0 24 L0 30 M-7 30 Q0 36 7 30" fill="none" stroke="#212121" stroke-width="2.5" stroke-linecap="round"/>
+
+        <!-- Little Black Paws at bottom -->
+        <ellipse cx="-34" cy="56" rx="15" ry="11" fill="#212121"/>
+        <ellipse cx="34" cy="56" rx="15" ry="11" fill="#212121"/>
+      </g>
+    
+  </g>
+</svg>

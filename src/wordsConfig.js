@@ -4,16 +4,21 @@ import {CLASSROOM_WORDS} from './classroomVocabulary.js';
 import {EXPANDED_WORDS} from './expandedVocabulary.js';
 import {FRUITS_WORDS} from './fruitsVocabulary.js';
 import {DRINKS_WORDS} from './drinksVocabulary.js';
+import {COMPLEMENTARY_WORDS} from './complementaryVocabulary.js';
 
 /**
- * 少儿英语启蒙单词库：现有主题 + 幼儿园绘本词汇 + 香甜水果词汇
+ * 少儿英语启蒙单词库：现有主题 + 幼儿园绘本词汇 + 香甜水果词汇 + 好喝饮料词汇 + 全分类日常补全词汇
  * 分类涵盖：
- * 1. 教室与文具 (school): chair, table, pencil, book, crayon, teacher
- * 2. 基础颜色 (colors): red, yellow, blue, green, purple
- * 3. 几何图形 (shapes): circle, triangle, square, rectangle
- * 4. 玩具交通 (toys): 基础词与 Toys 绘本词
+ * 1. 教室与文具 (school): chair, table, pencil, book, crayon, teacher, computer, eraser, ruler, schoolbag, scissors, clock, glue
+ * 2. 基础颜色 (colors): red, yellow, blue, green, purple, orange, pink, white, black, brown, gold
+ * 3. 几何图形 (shapes): circle, triangle, square, rectangle, star, heart, oval, diamond
+ * 4. 玩具交通 (toys): 基础词、Toys 绘本词与户外玩具
  * 5. Two 绘本主题 (two_book): 数字、动物与小孩
- * 6. 香甜水果 (fruits): apple, banana, watermelon, grape, strawberry, peach, pear, cherry
+ * 6. 香甜水果 (fruits): apple, banana, watermelon, grape, strawberry, peach, pear, cherry, mango, pineapple
+ * 7. 好喝饮料 (drinks): water, milk, juice, tea, yogurt, soup, soymilk, lemonade
+ * 8. 动物朋友 (animals): 原生动物与绘本动物探索
+ * 9. 身体部位 (body): face, eye, ear, mouth, nose, hair, elbow, hand, foot, tooth
+ * 10. 生活发现 (everyday): egg, envelope, cup, mooncake, weather, happy, bowl, spoon, bed, shoe
  */
 
 export function resolveAssetUrl(urlPath) {
@@ -372,7 +377,7 @@ const BASE_WORDS_LIST = [
   }
 ];
 
-export const WORDS_LIST = mergeVocabulary(BASE_WORDS_LIST, STORYBOOK_WORDS, CLASSROOM_WORDS, EXPANDED_WORDS, FRUITS_WORDS, DRINKS_WORDS);
+export const WORDS_LIST = mergeVocabulary(BASE_WORDS_LIST, STORYBOOK_WORDS, CLASSROOM_WORDS, EXPANDED_WORDS, FRUITS_WORDS, DRINKS_WORDS, COMPLEMENTARY_WORDS);
 
 export const WORDS_MAP = new Map(WORDS_LIST.map(w => [w.id, w]));
 const WORD_ALIASES = new Map(WORDS_LIST.flatMap(word=>word.aliases.map(alias=>[alias,word.id])));

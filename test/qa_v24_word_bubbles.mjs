@@ -30,9 +30,9 @@ function createCamera(w = 1280, h = 720) {
   return camera;
 }
 
-test('1. 单词配置与 89 个图案/中英双语发音资源完整性验证', () => {
-  assert.equal(WORDS_LIST.length, 89, 'WORDS_LIST 应包含 89 个单词');
-  assert.equal(WORDS_MAP.size, 89, 'WORDS_MAP 应索引全部 89 个单词');
+test('1. 单词配置与 110 个图案/中英双语发音资源完整性验证', () => {
+  assert.equal(WORDS_LIST.length, 110, 'WORDS_LIST 应包含 89 个单词');
+  assert.equal(WORDS_MAP.size, 110, 'WORDS_MAP 应索引全部 89 个单词');
 
   // 验证每个指定单词均存在
   for (const id of EXPECTED_WORDS) {
@@ -65,14 +65,16 @@ test('1. 单词配置与 89 个图案/中英双语发音资源完整性验证', 
   for (const w of WORDS_LIST) {
     categories[w.category] = (categories[w.category] || 0) + 1;
   }
-  assert.equal(categories.school, 11, '文具与教室类包含电脑在内共 11 个单词');
-  assert.equal(categories.colors, 10, '色彩类应包含 10 个单词');
-  assert.equal(categories.shapes, 7, '图形类应包含 7 个单词');
-  assert.equal(categories.toys, 19, '玩具类含绘本词共19个');
+  assert.equal(categories.school, 13, '文具与教室类包含电脑闹钟胶水在内共 13 个单词');
+  assert.equal(categories.colors, 11, '色彩类应包含 11 个单词');
+  assert.equal(categories.shapes, 8, '图形类应包含 8 个单词');
+  assert.equal(categories.toys, 21, '玩具类含绘本词共21个');
   assert.equal(categories.two_book, 10, 'Two绘本主题及数字一共10词');
-  assert.equal(categories.everyday,6);
-  assert.equal(categories.body,7);
-  assert.equal(categories.animals,5);
+  assert.equal(categories.everyday, 10);
+  assert.equal(categories.body, 10);
+  assert.equal(categories.animals, 9);
+  assert.equal(categories.fruits, 10);
+  assert.equal(categories.drinks, 8);
 
   // 验证随机抽取与排除机制
   const sample1 = getRandomWord();
@@ -94,7 +96,7 @@ test('2. 气泡内部单词卡片 Mesh 构建与随机/指定生成机制', () =
   const b1 = bm.activeBubble;
   assert.ok(b1, '应当生成活跃泡泡');
   assert.ok(b1.word, '泡泡应当绑定 word 元数据');
-  assert.ok(WORDS_MAP.has(b1.word.id), `绑定的单词 id (${b1.word.id}) 应当属于 89 个词库之一`);
+  assert.ok(WORDS_MAP.has(b1.word.id), `绑定的单词 id (${b1.word.id}) 应当属于 110 个词库之一`);
   assert.ok(b1.cardGroup, '应当包含 cardGroup 容器');
   assert.ok(b1.core, '应当将 cardGroup 挂载为 core');
   assert.equal(b1.cardGroup.userData.word.id, b1.word.id, 'cardGroup 的 userData 应当记录相同单词');

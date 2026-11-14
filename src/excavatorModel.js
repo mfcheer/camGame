@@ -25,7 +25,6 @@ export function createExcavatorModel(){
   const under=pivot(root,'Tail',[0,.32,-.04]);box(under,'Undercarriage',steel,[0,0,0],[.70,.20,.39],.07);
   const body=pivot(root,'Torso',[0,.59,0]);
   box(body,'Yellow_Body',yellow,[0,0,0],[.87,.42,.62],.15);
-  box(body,'Side_Stripe',light,[-.08,-.10,.317],[.43,.062,.017],.014);
   box(body,'Rear_Counterweight',gold,[-.38,.055,-.02],[.18,.37,.60],.07);
   for(const x of [-.25,-.13,-.01])box(body,'Vent',ink,[x,.065,-.315],[.035,.15,.012],.009);
   // Big, friendly cab with a cream windshield frame and two expressive eyes.
@@ -45,7 +44,7 @@ export function createExcavatorModel(){
     ellipsoid(ear,'Roof_Light',s<0?light:pink,[0,.025,0],[.05,.05,.05]);
   }
   curve(head,'Smile',[[-.15,.005,.29],[-.07,-.032,.302],[.01,-.032,.302],[.08,.008,.29]],.009,ink);
-  const happy=ellipsoid(head,'Happy_Mouth',ink,[-.04,-.016,.293],[.077,.034,.014]);happy.visible=false;
+  const happy=ellipsoid(head,'Happy_Mouth',ink,[-.04,-.016,.293],[.063,.027,.014]);happy.visible=false;
   const tongue=ellipsoid(head,'Happy_Tongue',pink,[-.04,-.031,.306],[.031,.013,.009]);tongue.visible=false;
   ellipsoid(head,'Cheek_L',pink,[-.248,-.005,.28],[.052,.023,.009]);
   ellipsoid(head,'Cheek_R',pink,[.165,-.005,.28],[.052,.023,.009]);

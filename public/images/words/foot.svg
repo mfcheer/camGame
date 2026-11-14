@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="shadow_foot" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <radialGradient id="cardGlow_foot" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.96"/>
+      <stop offset="100%" stop-color="#FBE9E7" stop-opacity="0.92"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="128" cy="128" r="114" fill="url(#cardGlow_foot)" filter="url(#shadow_foot)"/>
+  <circle cx="128" cy="128" r="114" fill="none" stroke="#FF7043" stroke-width="6" opacity="0.85"/>
+  <circle cx="128" cy="128" r="106" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.9"/>
+
+  
+      <g transform="translate(128, 126)">
+        <defs>
+          <linearGradient id="footGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFCCBC"/>
+            <stop offset="100%" stop-color="#FFAB91"/>
+          </linearGradient>
+        </defs>
+        <!-- 5 chubby toes at top (big toe to small toe) -->
+        <circle cx="-34" cy="-56" r="14" fill="url(#footGrad)" stroke="#D84315" stroke-width="3.5"/>
+        <circle cx="-8" cy="-60" r="11" fill="url(#footGrad)" stroke="#D84315" stroke-width="3.5"/>
+        <circle cx="14" cy="-56" r="9.5" fill="url(#footGrad)" stroke="#D84315" stroke-width="3.5"/>
+        <circle cx="32" cy="-48" r="8" fill="url(#footGrad)" stroke="#D84315" stroke-width="3.5"/>
+        <circle cx="46" cy="-38" r="6.5" fill="url(#footGrad)" stroke="#D84315" stroke-width="3.5"/>
+
+        <!-- Chubby sole & round heel -->
+        <path d="M-44 -36 C-52 0 -36 38 -24 64 C-14 78 14 78 24 64 C36 40 48 4 48 -24 C46 -38 34 -44 14 -40 C-8 -44 -36 -44 -44 -36 Z" fill="url(#footGrad)" stroke="#D84315" stroke-width="4.5" stroke-linejoin="round"/>
+
+        <!-- Sole highlight pads -->
+        <ellipse cx="-8" cy="-14" rx="20" ry="14" fill="#FFE0B2" opacity="0.6"/>
+        <circle cx="0" cy="50" r="14" fill="#FFE0B2" opacity="0.6"/>
+      </g>
+    
+
+  <g transform="translate(128, 206)">
+    <rect x="-56" y="-18" width="112" height="32" rx="16" fill="#FF7043" stroke="#FFFFFF" stroke-width="2.5" filter="url(#shadow_foot)"/>
+    <text x="0" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Comic Sans MS', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">FOOT</text>
+  </g>
+</svg>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_foot" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_foot)">
+    
+      <g transform="translate(128, 126)">
+        <defs>
+          <linearGradient id="footGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFCCBC"/>
+            <stop offset="100%" stop-color="#FFAB91"/>
+          </linearGradient>
+        </defs>
+        <!-- 5 chubby toes at top (big toe to small toe) -->
+        <circle cx="-34" cy="-56" r="14" fill="url(#footGrad)" stroke="#D84315" stroke-width="3.5"/>
+        <circle cx="-8" cy="-60" r="11" fill="url(#footGrad)" stroke="#D84315" stroke-width="3.5"/>
+        <circle cx="14" cy="-56" r="9.5" fill="url(#footGrad)" stroke="#D84315" stroke-width="3.5"/>
+        <circle cx="32" cy="-48" r="8" fill="url(#footGrad)" stroke="#D84315" stroke-width="3.5"/>
+        <circle cx="46" cy="-38" r="6.5" fill="url(#footGrad)" stroke="#D84315" stroke-width="3.5"/>
+
+        <!-- Chubby sole & round heel -->
+        <path d="M-44 -36 C-52 0 -36 38 -24 64 C-14 78 14 78 24 64 C36 40 48 4 48 -24 C46 -38 34 -44 14 -40 C-8 -44 -36 -44 -44 -36 Z" fill="url(#footGrad)" stroke="#D84315" stroke-width="4.5" stroke-linejoin="round"/>
+
+        <!-- Sole highlight pads -->
+        <ellipse cx="-8" cy="-14" rx="20" ry="14" fill="#FFE0B2" opacity="0.6"/>
+        <circle cx="0" cy="50" r="14" fill="#FFE0B2" opacity="0.6"/>
+      </g>
+    
+  </g>
+</svg>

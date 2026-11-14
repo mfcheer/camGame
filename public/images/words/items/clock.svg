@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_clock" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_clock)">
+    
+      <g transform="translate(128, 128)">
+        <defs>
+          <linearGradient id="clockCase" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4DB6AC"/>
+            <stop offset="100%" stop-color="#00796B"/>
+          </linearGradient>
+        </defs>
+        <!-- Two Brass Bells on Top -->
+        <circle cx="-44" cy="-52" r="16" fill="#FFD54F" stroke="#FFA000" stroke-width="3"/>
+        <circle cx="44" cy="-52" r="16" fill="#FFD54F" stroke="#FFA000" stroke-width="3"/>
+        <!-- Top Handle & Hammer -->
+        <path d="M-18 -58 C-18 -74 18 -74 18 -58" fill="none" stroke="#78909C" stroke-width="4.5" stroke-linecap="round"/>
+        <circle cx="0" cy="-56" r="4" fill="#546E7A"/>
+
+        <!-- Two Feet Pegs at Bottom -->
+        <line x1="-36" y1="52" x2="-48" y2="72" stroke="#546E7A" stroke-width="6" stroke-linecap="round"/>
+        <line x1="36" y1="52" x2="48" y2="72" stroke="#546E7A" stroke-width="6" stroke-linecap="round"/>
+
+        <!-- Clock Round Outer Frame -->
+        <circle cx="0" cy="4" r="62" fill="url(#clockCase)" stroke="#004D40" stroke-width="4.5"/>
+        <!-- Clock White Dial -->
+        <circle cx="0" cy="4" r="48" fill="#FFFFFF" stroke="#004D40" stroke-width="3"/>
+
+        <!-- 12, 3, 6, 9 Dot Markers -->
+        <circle cx="0" cy="-34" r="3.5" fill="#004D40"/>
+        <circle cx="38" cy="4" r="3.5" fill="#004D40"/>
+        <circle cx="0" cy="42" r="3.5" fill="#004D40"/>
+        <circle cx="-38" cy="4" r="3.5" fill="#004D40"/>
+
+        <!-- Hands (pointing to happy 10:10) -->
+        <!-- Hour Hand -->
+        <line x1="0" y1="4" x2="-18" y2="-16" stroke="#D32F2F" stroke-width="4.5" stroke-linecap="round"/>
+        <!-- Minute Hand -->
+        <line x1="0" y1="4" x2="22" y2="-20" stroke="#004D40" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="0" cy="4" r="4.5" fill="#D32F2F"/>
+      </g>
+    
+  </g>
+</svg>

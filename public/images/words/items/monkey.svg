@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_monkey" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_monkey)">
+    
+      <g transform="translate(128, 128)">
+        <defs>
+          <linearGradient id="monkeyFur" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#A1887F"/>
+            <stop offset="100%" stop-color="#6D4C41"/>
+          </linearGradient>
+          <linearGradient id="bananaM" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFEE58"/>
+            <stop offset="100%" stop-color="#FBC02D"/>
+          </linearGradient>
+        </defs>
+        <!-- Big Round Ears with Pink Inside -->
+        <circle cx="-56" cy="-4" r="22" fill="#6D4C41" stroke="#4E342E" stroke-width="4"/>
+        <circle cx="-56" cy="-4" r="13" fill="#FFCCBC"/>
+        <circle cx="56" cy="-4" r="22" fill="#6D4C41" stroke="#4E342E" stroke-width="4"/>
+        <circle cx="56" cy="-4" r="13" fill="#FFCCBC"/>
+
+        <!-- Head Base -->
+        <circle cx="0" cy="0" r="58" fill="url(#monkeyFur)" stroke="#4E342E" stroke-width="4.5"/>
+        <!-- Hair tuft on top -->
+        <path d="M-6 -56 Q0 -68 6 -56 Q0 -62 -6 -56" fill="#4E342E"/>
+
+        <!-- Heart/Peanut Shaped Face -->
+        <path d="M-24 -28 C-44 -28 -44 14 -22 28 C-32 38 -12 50 0 50 C12 50 32 38 22 28 C44 14 44 -28 24 -28 C12 -28 0 -16 0 -16 C0 -16 -12 -28 -24 -28 Z" fill="#FFE0B2" stroke="#4E342E" stroke-width="3"/>
+
+        <!-- Big Expressive Eyes -->
+        <ellipse cx="-16" cy="-4" rx="7" ry="10" fill="#212121"/>
+        <circle cx="-18" cy="-7" r="3" fill="#FFFFFF"/>
+        <ellipse cx="16" cy="-4" rx="7" ry="10" fill="#212121"/>
+        <circle cx="14" cy="-7" r="3" fill="#FFFFFF"/>
+
+        <!-- Little Nostrils -->
+        <circle cx="-5" cy="18" r="2" fill="#4E342E"/>
+        <circle cx="5" cy="18" r="2" fill="#4E342E"/>
+
+        <!-- Wide Happy Smile -->
+        <path d="M-14 26 Q0 38 14 26" fill="none" stroke="#4E342E" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Cute Banana held below -->
+        <path d="M-22 56 C-2 44 26 50 36 68 C22 66 2 64 -18 64 Z" fill="url(#bananaM)" stroke="#F57F17" stroke-width="2"/>
+        <circle cx="28" cy="62" r="7" fill="#6D4C41"/>
+      </g>
+    
+  </g>
+</svg>

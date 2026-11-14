@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_gold" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_gold)">
+    
+      <g transform="translate(128, 128)">
+        <defs>
+          <radialGradient id="goldCoin" cx="35%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#FFF9C4"/>
+            <stop offset="40%" stop-color="#FDD835"/>
+            <stop offset="80%" stop-color="#FBC02D"/>
+            <stop offset="100%" stop-color="#F57F17"/>
+          </radialGradient>
+        </defs>
+        <!-- Radiant Starburst Behind -->
+        <path d="M0 -86 L14 -42 L58 -58 L42 -14 L86 0 L42 14 L58 58 L14 42 L0 86 L-14 42 L-58 58 L-42 14 L-86 0 L-42 -14 L-58 -58 L-14 -42 Z" fill="#FFF59D" opacity="0.7"/>
+
+        <!-- Big Shiny Gold Coin / Medal -->
+        <circle cx="0" cy="0" r="66" fill="url(#goldCoin)" stroke="#E65100" stroke-width="4.5"/>
+        <!-- Inner Coin Ring with Beaded Dots -->
+        <circle cx="0" cy="0" r="54" fill="none" stroke="#FFF9C4" stroke-width="3"/>
+        <circle cx="0" cy="0" r="48" fill="none" stroke="#F57F17" stroke-width="2.5" stroke-dasharray="4,6"/>
+
+        <!-- Center 5-pointed Star Symbol -->
+        <polygon points="0,-34 10,-10 34,-10 14,6 22,30 0,16 -22,30 -14,6 -34,-10 -10,-10" fill="#FFFFFF" stroke="#E65100" stroke-width="2.5" stroke-linejoin="round"/>
+
+        <!-- Shimmering Glint -->
+        <ellipse cx="-28" cy="-28" rx="8" ry="16" transform="rotate(-30 -28 -28)" fill="#FFFFFF" opacity="0.65"/>
+      </g>
+    
+  </g>
+</svg>

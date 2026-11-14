@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="512" height="512">
+  <title>bed</title>
+  <defs>
+    <filter id="softShadow_bed" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <g filter="url(#softShadow_bed)">
+    
+      <g transform="translate(128, 130)">
+        <defs>
+          <linearGradient id="quiltGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#81D4FA"/>
+            <stop offset="100%" stop-color="#29B6F6"/>
+          </linearGradient>
+          <linearGradient id="woodBed" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8D6E63"/>
+            <stop offset="100%" stop-color="#5D4037"/>
+          </linearGradient>
+        </defs>
+        <!-- Wooden Headboard (High Back) -->
+        <rect x="-68" y="-56" width="136" height="60" rx="8" fill="url(#woodBed)" stroke="#3E2723" stroke-width="4"/>
+        <circle cx="0" cy="-40" r="8" fill="#D7CCC8"/>
+
+        <!-- Soft Fluffy White Pillow -->
+        <rect x="-48" y="-30" width="96" height="32" rx="14" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="3"/>
+        <path d="M-12 -14 Q0 -8 12 -14" fill="none" stroke="#CFD8DC" stroke-width="2.5" stroke-linecap="round"/>
+
+        <!-- Cozy Quilt / Blanket -->
+        <path d="M-62 -4 L62 -4 L58 48 L-58 48 Z" fill="url(#quiltGrad)" stroke="#0288D1" stroke-width="4" stroke-linejoin="round"/>
+        <!-- Polka dots on quilt -->
+        <circle cx="-32" cy="14" r="5" fill="#FFFFFF" opacity="0.8"/>
+        <circle cx="0" cy="14" r="5" fill="#FFFFFF" opacity="0.8"/>
+        <circle cx="32" cy="14" r="5" fill="#FFFFFF" opacity="0.8"/>
+        <circle cx="-16" cy="34" r="5" fill="#FFFFFF" opacity="0.8"/>
+        <circle cx="16" cy="34" r="5" fill="#FFFFFF" opacity="0.8"/>
+
+        <!-- Bed Legs -->
+        <rect x="-64" y="48" width="12" height="24" rx="4" fill="#5D4037" stroke="#3E2723" stroke-width="3"/>
+        <rect x="52" y="48" width="12" height="24" rx="4" fill="#5D4037" stroke="#3E2723" stroke-width="3"/>
+      </g>
+    
+  </g>
+</svg>

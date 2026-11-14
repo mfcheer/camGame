@@ -1936,5 +1936,490 @@
         "kind": "common-drinks"
       }
     ]
+  },
+  {
+    "id": "mango",
+    "word": "mango",
+    "zh": "芒果",
+    "category": "fruits",
+    "image": "/images/words/learning/mango.svg",
+    "bubbleImage": "/images/words/learning/mango.svg",
+    "svg": "/images/words/learning/mango.svg",
+    "bubbleSvg": "/images/words/mango.svg",
+    "audio": "/audio/words/mango.mp3",
+    "reviewAudio": "/audio/words/review/mango.mp3",
+    "accent": "#F39C12",
+    "aliases": [
+      "mangoes",
+      "mangos"
+    ],
+    "sources": [
+      {
+        "bookId": "fruits-discovery",
+        "form": "mango",
+        "kind": "common-fruits"
+      }
+    ]
+  },
+  {
+    "id": "pineapple",
+    "word": "pineapple",
+    "zh": "菠萝",
+    "category": "fruits",
+    "image": "/images/words/learning/pineapple.svg",
+    "bubbleImage": "/images/words/learning/pineapple.svg",
+    "svg": "/images/words/learning/pineapple.svg",
+    "bubbleSvg": "/images/words/pineapple.svg",
+    "audio": "/audio/words/pineapple.mp3",
+    "reviewAudio": "/audio/words/review/pineapple.mp3",
+    "accent": "#F1C40F",
+    "aliases": [
+      "pineapples"
+    ],
+    "sources": [
+      {
+        "bookId": "fruits-discovery",
+        "form": "pineapple",
+        "kind": "common-fruits"
+      }
+    ]
+  },
+  {
+    "id": "soymilk",
+    "word": "soymilk",
+    "zh": "豆浆",
+    "category": "drinks",
+    "image": "/images/words/learning/soymilk.svg",
+    "bubbleImage": "/images/words/learning/soymilk.svg",
+    "svg": "/images/words/learning/soymilk.svg",
+    "bubbleSvg": "/images/words/soymilk.svg",
+    "audio": "/audio/words/soymilk.mp3",
+    "reviewAudio": "/audio/words/review/soymilk.mp3",
+    "accent": "#F7DC6F",
+    "aliases": [
+      "soymilks",
+      "soy-milk"
+    ],
+    "sources": [
+      {
+        "bookId": "drinks-discovery",
+        "form": "soymilk",
+        "kind": "common-drinks"
+      }
+    ]
+  },
+  {
+    "id": "lemonade",
+    "word": "lemonade",
+    "zh": "柠檬水",
+    "category": "drinks",
+    "image": "/images/words/learning/lemonade.svg",
+    "bubbleImage": "/images/words/learning/lemonade.svg",
+    "svg": "/images/words/learning/lemonade.svg",
+    "bubbleSvg": "/images/words/lemonade.svg",
+    "audio": "/audio/words/lemonade.mp3",
+    "reviewAudio": "/audio/words/review/lemonade.mp3",
+    "accent": "#F4D03F",
+    "aliases": [
+      "lemonades"
+    ],
+    "sources": [
+      {
+        "bookId": "drinks-discovery",
+        "form": "lemonade",
+        "kind": "common-drinks"
+      }
+    ]
+  },
+  {
+    "id": "lion",
+    "word": "lion",
+    "zh": "狮子",
+    "category": "animals",
+    "image": "/images/words/learning/lion.svg",
+    "bubbleImage": "/images/words/learning/lion.svg",
+    "svg": "/images/words/learning/lion.svg",
+    "bubbleSvg": "/images/words/lion.svg",
+    "audio": "/audio/words/lion.mp3",
+    "reviewAudio": "/audio/words/review/lion.mp3",
+    "accent": "#E67E22",
+    "aliases": [
+      "lions"
+    ],
+    "sources": [
+      {
+        "bookId": "animals-discovery",
+        "form": "lion",
+        "kind": "common-animals"
+      }
+    ]
+  },
+  {
+    "id": "panda",
+    "word": "panda",
+    "zh": "熊猫",
+    "category": "animals",
+    "image": "/images/words/learning/panda.svg",
+    "bubbleImage": "/images/words/learning/panda.svg",
+    "svg": "/images/words/learning/panda.svg",
+    "bubbleSvg": "/images/words/panda.svg",
+    "audio": "/audio/words/panda.mp3",
+    "reviewAudio": "/audio/words/review/panda.mp3",
+    "accent": "#2C3E50",
+    "aliases": [
+      "pandas"
+    ],
+    "sources": [
+      {
+        "bookId": "animals-discovery",
+        "form": "panda",
+        "kind": "common-animals"
+      }
+    ]
+  },
+  {
+    "id": "monkey",
+    "word": "monkey",
+    "zh": "猴子",
+    "category": "animals",
+    "image": "/images/words/learning/monkey.svg",
+    "bubbleImage": "/images/words/learning/monkey.svg",
+    "svg": "/images/words/learning/monkey.svg",
+    "bubbleSvg": "/images/words/monkey.svg",
+    "audio": "/audio/words/monkey.mp3",
+    "reviewAudio": "/audio/words/review/monkey.mp3",
+    "accent": "#A0522D",
+    "aliases": [
+      "monkeys"
+    ],
+    "sources": [
+      {
+        "bookId": "animals-discovery",
+        "form": "monkey",
+        "kind": "common-animals"
+      }
+    ]
+  },
+  {
+    "id": "pig",
+    "word": "pig",
+    "zh": "小猪",
+    "category": "animals",
+    "image": "/images/words/learning/pig.svg",
+    "bubbleImage": "/images/words/learning/pig.svg",
+    "svg": "/images/words/learning/pig.svg",
+    "bubbleSvg": "/images/words/pig.svg",
+    "audio": "/audio/words/pig.mp3",
+    "reviewAudio": "/audio/words/review/pig.mp3",
+    "accent": "#FF85A2",
+    "aliases": [
+      "pigs"
+    ],
+    "sources": [
+      {
+        "bookId": "animals-discovery",
+        "form": "pig",
+        "kind": "common-animals"
+      }
+    ]
+  },
+  {
+    "id": "hand",
+    "word": "hand",
+    "zh": "手",
+    "category": "body",
+    "image": "/images/words/learning/hand.svg",
+    "bubbleImage": "/images/words/learning/hand.svg",
+    "svg": "/images/words/learning/hand.svg",
+    "bubbleSvg": "/images/words/hand.svg",
+    "audio": "/audio/words/hand.mp3",
+    "reviewAudio": "/audio/words/review/hand.mp3",
+    "accent": "#F5B7B1",
+    "aliases": [
+      "hands"
+    ],
+    "sources": [
+      {
+        "bookId": "body-discovery",
+        "form": "hand",
+        "kind": "common-body"
+      }
+    ]
+  },
+  {
+    "id": "foot",
+    "word": "foot",
+    "zh": "脚",
+    "category": "body",
+    "image": "/images/words/learning/foot.svg",
+    "bubbleImage": "/images/words/learning/foot.svg",
+    "svg": "/images/words/learning/foot.svg",
+    "bubbleSvg": "/images/words/foot.svg",
+    "audio": "/audio/words/foot.mp3",
+    "reviewAudio": "/audio/words/review/foot.mp3",
+    "accent": "#F5B7B1",
+    "aliases": [
+      "feet"
+    ],
+    "sources": [
+      {
+        "bookId": "body-discovery",
+        "form": "foot",
+        "kind": "common-body"
+      }
+    ]
+  },
+  {
+    "id": "tooth",
+    "word": "tooth",
+    "zh": "牙齿",
+    "category": "body",
+    "image": "/images/words/learning/tooth.svg",
+    "bubbleImage": "/images/words/learning/tooth.svg",
+    "svg": "/images/words/learning/tooth.svg",
+    "bubbleSvg": "/images/words/tooth.svg",
+    "audio": "/audio/words/tooth.mp3",
+    "reviewAudio": "/audio/words/review/tooth.mp3",
+    "accent": "#5DADE2",
+    "aliases": [
+      "teeth"
+    ],
+    "sources": [
+      {
+        "bookId": "body-discovery",
+        "form": "tooth",
+        "kind": "common-body"
+      }
+    ]
+  },
+  {
+    "id": "bowl",
+    "word": "bowl",
+    "zh": "碗",
+    "category": "everyday",
+    "image": "/images/words/learning/bowl.svg",
+    "bubbleImage": "/images/words/learning/bowl.svg",
+    "svg": "/images/words/learning/bowl.svg",
+    "bubbleSvg": "/images/words/bowl.svg",
+    "audio": "/audio/words/bowl.mp3",
+    "reviewAudio": "/audio/words/review/bowl.mp3",
+    "accent": "#3498DB",
+    "aliases": [
+      "bowls"
+    ],
+    "sources": [
+      {
+        "bookId": "everyday-discovery",
+        "form": "bowl",
+        "kind": "common-everyday"
+      }
+    ]
+  },
+  {
+    "id": "spoon",
+    "word": "spoon",
+    "zh": "勺子",
+    "category": "everyday",
+    "image": "/images/words/learning/spoon.svg",
+    "bubbleImage": "/images/words/learning/spoon.svg",
+    "svg": "/images/words/learning/spoon.svg",
+    "bubbleSvg": "/images/words/spoon.svg",
+    "audio": "/audio/words/spoon.mp3",
+    "reviewAudio": "/audio/words/review/spoon.mp3",
+    "accent": "#E67E22",
+    "aliases": [
+      "spoons"
+    ],
+    "sources": [
+      {
+        "bookId": "everyday-discovery",
+        "form": "spoon",
+        "kind": "common-everyday"
+      }
+    ]
+  },
+  {
+    "id": "bed",
+    "word": "bed",
+    "zh": "床",
+    "category": "everyday",
+    "image": "/images/words/learning/bed.svg",
+    "bubbleImage": "/images/words/learning/bed.svg",
+    "svg": "/images/words/learning/bed.svg",
+    "bubbleSvg": "/images/words/bed.svg",
+    "audio": "/audio/words/bed.mp3",
+    "reviewAudio": "/audio/words/review/bed.mp3",
+    "accent": "#9B59B6",
+    "aliases": [
+      "beds"
+    ],
+    "sources": [
+      {
+        "bookId": "everyday-discovery",
+        "form": "bed",
+        "kind": "common-everyday"
+      }
+    ]
+  },
+  {
+    "id": "shoe",
+    "word": "shoe",
+    "zh": "鞋子",
+    "category": "everyday",
+    "image": "/images/words/learning/shoe.svg",
+    "bubbleImage": "/images/words/learning/shoe.svg",
+    "svg": "/images/words/learning/shoe.svg",
+    "bubbleSvg": "/images/words/shoe.svg",
+    "audio": "/audio/words/shoe.mp3",
+    "reviewAudio": "/audio/words/review/shoe.mp3",
+    "accent": "#E74C3C",
+    "aliases": [
+      "shoes"
+    ],
+    "sources": [
+      {
+        "bookId": "everyday-discovery",
+        "form": "shoe",
+        "kind": "common-everyday"
+      }
+    ]
+  },
+  {
+    "id": "clock",
+    "word": "clock",
+    "zh": "闹钟",
+    "category": "school",
+    "image": "/images/words/learning/clock.svg",
+    "bubbleImage": "/images/words/learning/clock.svg",
+    "svg": "/images/words/learning/clock.svg",
+    "bubbleSvg": "/images/words/clock.svg",
+    "audio": "/audio/words/clock.mp3",
+    "reviewAudio": "/audio/words/review/clock.mp3",
+    "accent": "#1ABC9C",
+    "aliases": [
+      "clocks"
+    ],
+    "sources": [
+      {
+        "bookId": "school-discovery",
+        "form": "clock",
+        "kind": "common-school"
+      }
+    ]
+  },
+  {
+    "id": "glue",
+    "word": "glue",
+    "zh": "胶水",
+    "category": "school",
+    "image": "/images/words/learning/glue.svg",
+    "bubbleImage": "/images/words/learning/glue.svg",
+    "svg": "/images/words/learning/glue.svg",
+    "bubbleSvg": "/images/words/glue.svg",
+    "audio": "/audio/words/glue.mp3",
+    "reviewAudio": "/audio/words/review/glue.mp3",
+    "accent": "#E91E63",
+    "aliases": [
+      "glues"
+    ],
+    "sources": [
+      {
+        "bookId": "school-discovery",
+        "form": "glue",
+        "kind": "common-school"
+      }
+    ]
+  },
+  {
+    "id": "shovel",
+    "word": "shovel",
+    "zh": "小铲子",
+    "category": "toys",
+    "image": "/images/words/learning/shovel.svg",
+    "bubbleImage": "/images/words/learning/shovel.svg",
+    "svg": "/images/words/learning/shovel.svg",
+    "bubbleSvg": "/images/words/shovel.svg",
+    "audio": "/audio/words/shovel.mp3",
+    "reviewAudio": "/audio/words/review/shovel.mp3",
+    "accent": "#E74C3C",
+    "aliases": [
+      "shovels"
+    ],
+    "sources": [
+      {
+        "bookId": "toys-discovery",
+        "form": "shovel",
+        "kind": "common-toys"
+      }
+    ]
+  },
+  {
+    "id": "pinwheel",
+    "word": "pinwheel",
+    "zh": "风车",
+    "category": "toys",
+    "image": "/images/words/learning/pinwheel.svg",
+    "bubbleImage": "/images/words/learning/pinwheel.svg",
+    "svg": "/images/words/learning/pinwheel.svg",
+    "bubbleSvg": "/images/words/pinwheel.svg",
+    "audio": "/audio/words/pinwheel.mp3",
+    "reviewAudio": "/audio/words/review/pinwheel.mp3",
+    "accent": "#3498DB",
+    "aliases": [
+      "pinwheels"
+    ],
+    "sources": [
+      {
+        "bookId": "toys-discovery",
+        "form": "pinwheel",
+        "kind": "common-toys"
+      }
+    ]
+  },
+  {
+    "id": "diamond",
+    "word": "diamond",
+    "zh": "菱形",
+    "category": "shapes",
+    "image": "/images/words/learning/diamond.svg",
+    "bubbleImage": "/images/words/learning/diamond.svg",
+    "svg": "/images/words/learning/diamond.svg",
+    "bubbleSvg": "/images/words/diamond.svg",
+    "audio": "/audio/words/diamond.mp3",
+    "reviewAudio": "/audio/words/review/diamond.mp3",
+    "accent": "#9B59B6",
+    "aliases": [
+      "diamonds"
+    ],
+    "sources": [
+      {
+        "bookId": "shapes-discovery",
+        "form": "diamond",
+        "kind": "common-shapes"
+      }
+    ]
+  },
+  {
+    "id": "gold",
+    "word": "gold",
+    "zh": "金色",
+    "category": "colors",
+    "image": "/images/words/learning/gold.svg",
+    "bubbleImage": "/images/words/learning/gold.svg",
+    "svg": "/images/words/learning/gold.svg",
+    "bubbleSvg": "/images/words/gold.svg",
+    "audio": "/audio/words/gold.mp3",
+    "reviewAudio": "/audio/words/review/gold.mp3",
+    "accent": "#F1C40F",
+    "aliases": [
+      "golds"
+    ],
+    "sources": [
+      {
+        "bookId": "colors-discovery",
+        "form": "gold",
+        "kind": "common-colors"
+      }
+    ]
   }
 ]

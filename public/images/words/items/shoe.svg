@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_shoe" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_shoe)">
+    
+      <g transform="translate(128, 130)">
+        <defs>
+          <linearGradient id="shoeBody" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#EF5350"/>
+            <stop offset="100%" stop-color="#C62828"/>
+          </linearGradient>
+        </defs>
+        <!-- Thick White Rubber Sole -->
+        <path d="M-68 36 C-68 28 -40 24 0 24 C40 24 72 26 74 42 C74 54 -68 54 -68 36 Z" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="3.5" stroke-linejoin="round"/>
+        <line x1="-50" y1="44" x2="56" y2="44" stroke="#CFD8DC" stroke-width="2.5"/>
+
+        <!-- Shoe Upper (Chubby toddler sneaker) -->
+        <path d="M-62 26 C-62 -14 -42 -44 -18 -44 C-4 -44 8 -24 32 -10 C56 4 68 18 68 30 Z" fill="url(#shoeBody)" stroke="#B71C1C" stroke-width="4" stroke-linejoin="round"/>
+
+        <!-- Round White Toe Cap -->
+        <path d="M30 6 C48 14 66 22 66 32 L26 32 C26 20 28 12 30 6 Z" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2.5"/>
+
+        <!-- Yellow Velcro Strap with Star -->
+        <rect x="-24" y="-18" width="46" height="18" rx="6" fill="#FDD835" stroke="#F57F17" stroke-width="3"/>
+        <!-- Cute Little Star on Velcro -->
+        <path d="M0 -15 L2 -10 L7 -10 L3 -6 L5 -1 L0 -4 L-5 -1 L-3 -6 L-7 -10 L-2 -10 Z" fill="#E65100"/>
+
+        <!-- Ankle Opening & Cushion -->
+        <ellipse cx="-20" cy="-40" rx="14" ry="8" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2.5"/>
+      </g>
+    
+  </g>
+</svg>

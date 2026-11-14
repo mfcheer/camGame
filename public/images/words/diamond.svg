@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="shadow_diamond" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <radialGradient id="cardGlow_diamond" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.96"/>
+      <stop offset="100%" stop-color="#F3E5F5" stop-opacity="0.92"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="128" cy="128" r="114" fill="url(#cardGlow_diamond)" filter="url(#shadow_diamond)"/>
+  <circle cx="128" cy="128" r="114" fill="none" stroke="#8E24AA" stroke-width="6" opacity="0.85"/>
+  <circle cx="128" cy="128" r="106" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.9"/>
+
+  
+      <g transform="translate(128, 128)">
+        <defs>
+          <linearGradient id="diamondGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#BA68C8"/>
+            <stop offset="50%" stop-color="#9C27B0"/>
+            <stop offset="100%" stop-color="#7B1FA2"/>
+          </linearGradient>
+        </defs>
+        <!-- Diamond Shape (Equal sides, kite / rhombus) -->
+        <polygon points="0,-78 62,0 0,78 -62,0" fill="url(#diamondGrad)" stroke="#4A148C" stroke-width="4.5" stroke-linejoin="round"/>
+
+        <!-- Facet shine lines -->
+        <polygon points="0,-74 58,0 0,0" fill="#E1BEE7" opacity="0.5"/>
+        <polygon points="0,0 -58,0 0,-74" fill="#FFFFFF" opacity="0.35"/>
+        <line x1="0" y1="-74" x2="0" y2="74" stroke="#FFFFFF" stroke-width="3" opacity="0.7"/>
+        <line x1="-58" y1="0" x2="58" y2="0" stroke="#FFFFFF" stroke-width="3" opacity="0.7"/>
+
+        <!-- Sparkles -->
+        <circle cx="28" cy="-26" r="4" fill="#FFFFFF" opacity="0.9"/>
+        <circle cx="-18" cy="28" r="3" fill="#FFFFFF" opacity="0.8"/>
+      </g>
+    
+
+  <g transform="translate(128, 206)">
+    <rect x="-56" y="-18" width="112" height="32" rx="16" fill="#8E24AA" stroke="#FFFFFF" stroke-width="2.5" filter="url(#shadow_diamond)"/>
+    <text x="0" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Comic Sans MS', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">DIAMOND</text>
+  </g>
+</svg>
