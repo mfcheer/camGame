@@ -841,7 +841,7 @@ html,body{overscroll-behavior:none}
 .start-foot-row{display:flex;gap:8px;align-items:flex-start;margin-top:5px}
 .start-foot-row .sound-home-btn{position:static;flex:0 0 44px;width:44px;height:42px;font-size:19px;z-index:auto}
 .start-help-pill{flex:1 1 0;min-width:0;margin-top:0}
-.start-help-pill summary{border:2px solid #d9e3c4;border-radius:12px;background:#f6f9ec;padding:9px 6px;min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#45614d;list-style:none}
+.start-help-pill summary{border:2px solid #d9e3c4;border-radius:12px;background:#f6f9ec;padding:9px 6px;min-height:42px;height:42px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#45614d;list-style:none}
 .start-help-pill summary::-webkit-details-marker{display:none}
 .start-help-pill summary:hover{background:#eaf3db;border-color:#b5c99b}
 .start-help-pill[open] summary{background:#eaf3db;border-color:#b5c99b}
@@ -924,7 +924,7 @@ button{touch-action:manipulation}
   .start-feature-row .vocabulary-entry-count,.start-feature-row .camp-badge-count{font-size:9px}
   .start-foot-row{gap:6px}
   .start-foot-row .sound-home-btn{height:38px;flex-basis:40px;width:40px;font-size:16px}
-  .start-help-pill summary{padding:7px 4px;min-height:38px;font-size:11px}
+  .start-help-pill summary{padding:7px 4px;min-height:38px;height:38px;font-size:11px}
   .start-help-pill[open]{max-height:82px}
   .card:not(.start-card){padding:12px 18px;border-width:2px;max-width:560px}
   .card h2{font-size:20px;margin-bottom:6px}.card p{font-size:12px;line-height:1.4;margin-bottom:9px}
@@ -1600,7 +1600,7 @@ button{touch-action:manipulation}
  .start-actions>.btn-secondary {order:3;}
  .start-actions .start-foot-row {order:4;gap:6px;}
  .start-foot-row .sound-home-btn {height:34px;flex-basis:38px;width:38px;}
- .start-help-pill summary {padding:5px 4px;min-height:34px;font-size:11px;}
+ .start-help-pill summary {padding:5px 4px;min-height:34px;height:34px;font-size:11px;}
  .start-help-pill[open]{max-height:82px}
 }
 
