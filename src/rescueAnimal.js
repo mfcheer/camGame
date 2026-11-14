@@ -299,7 +299,7 @@ export class RescueAnimal {
     this.anticipating=false;this.reactionVariant=0;this.glyphTimer=0;this.emotion='content';this.attentionPhase='player';this.attentionFocus=null;this.targetFocus=null;this.energyFocus=null;this.energyAttentionRemaining=0;resetExpressionRig(this.expressionRig);
     this.receiveTimer=0;this.receivePower=1;this.comboMoveTimer=0;this.recoilTimer=0;this.moodWorried=0;this.moodExcited=0;
     this.actionPoseFn=null;this.actionPoseT=0;this.performanceGlow=null;
-    if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.y=.048;if(this.animalId==='chase')this.happyTongue.scale.set(1,1,1);}
+    if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.y=.048;if(this.animalId==='chase')this.happyTongue.scale.set(.034,.022,.012);}
     for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R','Pig_Smile','Wolf_Mouth','Wolf_Smile','Wolf_Grin_Teeth']){const m=this.model.getObjectByName(name);if(m)m.visible=true;}
     this.currentX=this.startX;this.currentY=this.groundY;
     this.group.visible=true;this.animalGroup.visible=true;this.postGroup.visible=true;this.ropesGroup.visible=true;this.setOpacity(1);
