@@ -228,46 +228,61 @@ export function createJettModel(){
 
 export function createPeppaModel(){
  const root=new THREE.Group();root.name='Peppa_Pig_Rig';
- const pink=mat(0xf6aebb,.92),light=mat(0xffc3ce,.9),red=mat(0xd64550,.9),dark=mat(0x4a3038,.5),cheek=mat(0xef8ba3,.9),white=mat(0xfffdf8,.7),shoe=mat(0x352c31,.8);
- // 红色 A 字连衣裙：下摆外扩、肩部收窄，剪出裙装轮廓
- const body=pivot(root,'Torso',[0,.45,0]);
- sculpt([[0,-.10,0,.30,.26,.21],[0,.02,0,.235,.225,.175],[0,.15,0,.175,.175,.15]],.06,red,body,'Red_Dress');
- // 金黄滚边：下摆金环 + 领口金线 + 波浪纹，参考图的中式红裙
- const trim=mat(0xf5c542,.85);
- const hem=mesh(new THREE.TorusGeometry(.27,.016,10,48),trim,body,'Dress_Hem_Band',[0,-.055,0]);hem.rotation.x=Math.PI/2;
- curve(body,'Dress_Collar_Trim',[[-.155,.145,.155],[0,.19,.175],[.155,.145,.155]],.012,trim);
- curve(body,'Dress_Wave_Trim',[[-.19,.02,.205],[-.095,.07,.215],[0,.02,.225],[.095,.07,.215],[.19,.02,.205]],.009,trim);
- for(const x of [-.09,0,.09])ellipsoid(body,'Dress_Flower_Dot',trim,[x,.115,.16],[.02,.02,.008]);
- // 圆头：左右完全对称，不再歪向一侧
- const head=pivot(root,'Head',[0,.995,0]);
- ellipsoid(head,'Pink_Pig_Head',pink,[0,0,0],[.27,.245,.235]);
- // 猪鼻：居中前突，双鼻孔朝前对称分布
- ellipsoid(head,'Pig_Snout',light,[0,-.02,.20],[.15,.115,.105]);
- for(const s of [-1,1])ellipsoid(head,'Nostril',cheek,[s*.05,-.012,.297],[.02,.028,.012]);
- for(const s of [-1,1])ellipsoid(head,'Rosy_Cheek',cheek,[s*.19,-.075,.175],[.052,.042,.012]);
- // 小圆耳朵：贴头顶微微外倾，告别兔耳感
- for(const s of [-1,1]){const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.115,.205,-.01]);ear.rotation.z=-s*.26;ellipsoid(ear,'Pig_Ear',pink,[0,.036,0],[.05,.075,.032]);ellipsoid(ear,'Inner_Ear',light,[0,.04,.024],[.026,.048,.008]);}
- // 眼睛：鼻梁上方左右对称
- const eyes=pivot(head,'Eyes',[0,0,0]);for(const s of [-1,1]){const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.095,.085,.185]);ellipsoid(eye,'Eye_White',white,[0,0,0],[.052,.06,.026]);ellipsoid(eye,'Pupil',dark,[0,0,.024],[.024,.03,.01]);ellipsoid(eye,'Catchlight',white,[-.006,.011,.034],[.007,.008,.003]);}
- // 嘴巴：鼻下居中微笑
- curve(head,'Pig_Smile',[[-.075,-.14,.225],[0,-.175,.235],[.075,-.14,.225]],.006,dark);
- const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.16,.235],[.065,.038,.012]);happy.visible=false;
- const tongue=ellipsoid(head,'Happy_Tongue',cheek,[0,-.172,.248],[.03,.013,.005]);tongue.visible=false;
+ // 按官方卡通形象从零设计：纸片人比例——大圆头直接坐在裙子上（无脖子）、
+ // 扁宽梯形红裙、细枝手臂水平外伸、细腿配黑扁鞋；眼高聚拢、猪鼻上移前突。
+ const pink=mat(0xf6aebb,.92),light=mat(0xffc9d4,.9),red=mat(0xd64550,.9),dark=mat(0x4a3038,.5),cheek=mat(0xef8ba3,.9),white=mat(0xfffdf8,.7),shoe=mat(0x352c31,.8),trim=mat(0xf5c542,.85);
+ // 扁宽梯形红裙：纸片人式的扁平正面，下摆外扩
+ const body=pivot(root,'Torso',[0,.38,0]);
+ sculpt([[0,-.12,0,.27,.22,.15],[0,.03,0,.20,.19,.13],[0,.15,0,.14,.15,.12]],.05,red,body,'Red_Dress');
+ // 金黄滚边（参考图的中式红裙）：下摆金环 + 领口金线 + 波浪纹 + 花点
+ const hem=mesh(new THREE.TorusGeometry(.245,.015,10,48),trim,body,'Dress_Hem_Band',[0,-.05,0]);hem.rotation.x=Math.PI/2;
+ curve(body,'Dress_Collar_Trim',[[-.125,.13,.125],[0,.175,.145],[.125,.13,.125]],.011,trim);
+ curve(body,'Dress_Wave_Trim',[[-.155,.02,.16],[-.078,.065,.17],[0,.02,.178],[.078,.065,.17],[.155,.02,.16]],.008,trim);
+ for(const x of [-.075,0,.075])ellipsoid(body,'Dress_Flower_Dot',trim,[x,.105,.125],[.018,.018,.008]);
+ // 大圆头：比裙子还宽，佩奇的标志性大头比例
+ const head=pivot(root,'Head',[0,.90,.01]);
+ ellipsoid(head,'Pink_Pig_Head',pink,[0,0,0],[.31,.27,.26]);
+ // 猪鼻：上移到脸中上部水平前突（加大突出感），双竖椭圆鼻孔在鼻头前端
+ ellipsoid(head,'Pig_Snout',light,[0,.055,.26],[.165,.12,.14]);
+ for(const s of [-1,1])ellipsoid(head,'Nostril',cheek,[s*.058,.058,.385],[.024,.038,.014]);
+ for(const s of [-1,1])ellipsoid(head,'Rosy_Cheek',cheek,[s*.21,-.03,.185],[.05,.04,.012]);
+ // 眼睛：小巧圆润、高高聚在头顶下方（官方形象的眼睛位置）
+ const eyes=pivot(head,'Eyes',[0,0,0]);
  for(const s of [-1,1]){
-  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.23,.60,.02]);
-  const upper=ellipsoid(arm,'Pig_Arm',pink,[s*.06,-.075,0],[.05,.105,.05]);upper.rotation.z=-s*.55;
-  ellipsoid(arm,'Pig_Hand',light,[s*.115,-.135,.02],[.052,.048,.05]);
-  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.115,.19,0]);
-  ellipsoid(leg,'Pig_Leg',pink,[0,-.055,0],[.043,.09,.043]);
-  ellipsoid(leg,'Black_Shoe',shoe,[0,-.135,.048],[.085,.05,.115]);
+  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.082,.165,.21]);
+  ellipsoid(eye,'Eye_White',white,[0,0,0],[.053,.062,.023]);
+  ellipsoid(eye,'Pupil',dark,[0,.004,.021],[.022,.029,.009]);
+  ellipsoid(eye,'Catchlight',white,[-.005,.013,.031],[.007,.008,.003]);
+ }
+ // 小圆耳朵：立起贴头顶，间距收窄
+ for(const s of [-1,1]){
+  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.10,.25,-.01]);ear.rotation.z=-s*.08;
+  ellipsoid(ear,'Pig_Ear',pink,[0,.04,0],[.046,.075,.028]);
+  ellipsoid(ear,'Inner_Ear',light,[0,.043,.022],[.024,.05,.008]);
+ }
+ // 嘴巴：猪鼻正下方的小微笑
+ curve(head,'Pig_Smile',[[-.055,-.02,.29],[0,-.055,.30],[.055,-.02,.29]],.006,dark);
+ const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.03,.30],[.06,.035,.012]);happy.visible=false;
+ const tongue=ellipsoid(head,'Happy_Tongue',cheek,[0,-.042,.31],[.026,.011,.005]);tongue.visible=false;
+ // 细枝手臂：从裙肩水平外伸（参考图的张开手臂），末端圆手
+ for(const s of [-1,1]){
+  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.175,.50,.01]);
+  ellipsoid(arm,'Pig_Arm',pink,[s*.085,-.01,0],[.115,.038,.038]);
+  ellipsoid(arm,'Pig_Hand',light,[s*.165,-.012,.005],[.05,.048,.048]);
+ }
+ // 细腿 + 黑扁鞋
+ for(const s of [-1,1]){
+  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.09,.16,0]);
+  ellipsoid(leg,'Pig_Leg',pink,[0,-.045,0],[.036,.08,.036]);
+  ellipsoid(leg,'Black_Shoe',shoe,[0,-.115,.04],[.075,.045,.105]);
  }
  // 卷卷尾巴：绕一圈的小螺旋
- const tail=pivot(root,'Tail',[0,.42,-.18]);
- curve(tail,'Curly_Pig_Tail',[[0,0,0],[.05,.03,-.015],[.085,.075,-.02],[.07,.115,-.02],[.03,.115,-.02],[.02,.08,-.02],[.045,.055,-.02]],.013,pink);
+ const tail=pivot(root,'Tail',[0,.36,-.15]);
+ curve(tail,'Curly_Pig_Tail',[[0,0,0],[.045,.028,-.014],[.078,.068,-.018],[.062,.105,-.018],[.026,.105,-.018],[.018,.072,-.018],[.038,.048,-.018]],.012,pink);
  // 头侧小红花（参考图造型）：五瓣红花金黄花蕊
- const bow=pivot(root,'Bow',[.225,1.06,.10]);
- for(let i=0;i<5;i++){const a=i/5*Math.PI*2;const petal=ellipsoid(bow,'Flower_Petal',red,[Math.cos(a)*.048,Math.sin(a)*.048,.02],[.034,.034,.013]);petal.rotation.z=a;}
- ellipsoid(bow,'Flower_Center',trim,[0,0,.03],[.02,.02,.008]);
+ const bow=pivot(root,'Bow',[.155,1.12,.06]);
+ for(let i=0;i<5;i++){const a=i/5*Math.PI*2;const petal=ellipsoid(bow,'Flower_Petal',red,[Math.cos(a)*.044,Math.sin(a)*.044,.02],[.032,.032,.012]);petal.rotation.z=a;}
+ ellipsoid(bow,'Flower_Center',trim,[0,0,.029],[.019,.019,.008]);
  return root;
 }
 export function createThomasModel(){
