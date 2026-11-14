@@ -46,7 +46,8 @@ test('manual reading interrupts automatic speech, keeps bilingual options and re
   const {queue,policy,jobs,calls}=fixture(true);queue.playAutomaticWord('egg');policy.update(1);
   const manual=queue.playManualWord('cup',{review:false});assert.deepEqual(calls[1],{id:'cup',options:{review:false}});
   await tick();assert.equal(queue.current.value,'cup');policy.update(2);jobs[1]();await manual;policy.beginRound();
-  policy.update(3);await queue.playAutomaticWord('cat');assert.equal(calls.length,2);
+  // 微避让缩短为 0.25s：手动读词结束 3s 活跃时间后，自动播报立即放行（不再受旧 4s 组间隔限制）。
+  policy.update(3);const next=queue.playAutomaticWord('cat');assert.equal(calls.length,3);jobs[2]();await next;
 });
 
 test('pause discards automatic speech and old completion; resuming never starts it again',async()=>{
@@ -64,8 +65,11 @@ test('disabling automatic English stops its current word and cue immediately wit
 });
 
 test('the final hit speaks during play, while pet stage has no automatic voice',async()=>{
-  const {g,calls}=fixture(true);g.collectedCount=5;await g.presentPlayWord(getWordById('egg'));assert.equal(calls.length,1);
-  g.state='CELEBRATING';g.collectedCount=0;await g.presentPlayWord(getWordById('cat'));assert.equal(calls.length,1);
+  const {g,calls,jobs}=fixture(true);g.collectedCount=5;
+  // 放开通关泡泡播报：最后一块泡泡在 PLAYING 内正常播放中英成对语音。
+  const spoken=g.presentPlayWord(getWordById('egg'));assert.equal(calls.length,1);
+  jobs[0]();await tick();jobs[1]();await spoken;
+  g.state='CELEBRATING';g.collectedCount=0;await g.presentPlayWord(getWordById('cat'));assert.equal(calls.length,2);
 });
 
 test('only active game and pet time count toward quiet intervals, not paused, home or results time',()=>{
