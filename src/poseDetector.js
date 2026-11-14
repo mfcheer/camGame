@@ -17,7 +17,7 @@ import { HandAssociator, mapVideoPoint } from './handTracking.js';
  * 静止微动时 cutoff 降低至 ~1.0Hz 滤除抖动；快速移动时动态提升跟踪频率，降低快速移动时的滤波延迟
  */
 export class OneEuroFilter1D {
-  constructor(minCutoff = 1.0, beta = 0.007, dCutoff = 1.0, jumpThreshold = 0.35) {
+  constructor(minCutoff = 1.0, beta = 0.045, dCutoff = 1.0, jumpThreshold = 0.35) {
     this.jumpThreshold = jumpThreshold;
     this.rawPrev = null;
     this.minCutoff = minCutoff;
@@ -74,7 +74,7 @@ export class OneEuroFilter1D {
 }
 
 export class HandPositionFilter {
-  constructor(minCutoff = 1.2, beta = 0.015, dCutoff = 1.0, jumpThreshold = 0.35) {
+  constructor(minCutoff = 1.2, beta = 0.045, dCutoff = 1.0, jumpThreshold = 0.35) {
     this.filterX = new OneEuroFilter1D(minCutoff, beta, dCutoff, jumpThreshold);
     this.filterY = new OneEuroFilter1D(minCutoff, beta, dCutoff, jumpThreshold);
   }
@@ -315,7 +315,7 @@ export class PoseDetector {
   async initHands(vision, delegate) {
     this.handLandmarker = await HandLandmarker.createFromOptions(vision, {
       baseOptions:{modelAssetPath:assetUrl('models/hand_landmarker.task'),delegate},runningMode:'VIDEO',
-      numHands:this.playerMode==='coop'?4:2,minHandDetectionConfidence:.5,minHandPresenceConfidence:.5,minTrackingConfidence:.5
+      numHands:this.playerMode==='coop'?4:2,minHandDetectionConfidence:.4,minHandPresenceConfidence:.4,minTrackingConfidence:.4
     });
     this.useDedicatedHands = true;
   }
@@ -341,7 +341,7 @@ export class PoseDetector {
           this.metrics.inferenceMs=data.inferenceMs;this.metrics.resultAgeMs=performance.now()-data.timestamp;
           this.metrics.frames++;
           // A late inference may fade the old marker, but cannot hit a new bubble.
-          if(this.metrics.resultAgeMs>180)this.processLandmarks(data.pose,{landmarks:[]},data.timestamp);
+          if(this.metrics.resultAgeMs>350)this.processLandmarks(data.pose,{landmarks:[]},data.timestamp);
           else this.processLandmarks(data.pose,data.hands,data.timestamp);
         }else if(data.type==='frame-error'){
           this.workerBusy=false;
@@ -478,7 +478,7 @@ export class PoseDetector {
       if(this.worker&&!this.workerBusy) {
         this.workerBusy=true;this.lastVideoTime=this.video.currentTime;this.lastInferenceAt=now;
         const session=this.trackingSession;
-        const scale=Math.min(1,960/(this.video.videoWidth||1280));
+        const scale=Math.min(1,640/(this.video.videoWidth||1280));
         createImageBitmap(this.video,{resizeWidth:Math.round((this.video.videoWidth||1280)*scale),resizeHeight:Math.round((this.video.videoHeight||720)*scale)}).then(bitmap=>{
           if(!this.isRunning||session!==this.trackingSession){bitmap.close();this.workerBusy=false;return;}
           this.worker.postMessage({type:'frame',bitmap,timestamp:now,session,mode:this.playerMode},[bitmap]);
@@ -763,7 +763,7 @@ export class PoseDetector {
         currentHandKeys.add(filterKey);
         let filter = this.handFilters.get(filterKey);
         if (!filter) {
-          filter = new HandPositionFilter(1.6, 0.018, 1.0, Math.max(winW,winH)*.35);
+          filter = new HandPositionFilter(1.6, 0.045, 1.0, Math.max(winW,winH)*.35);
           this.handFilters.set(filterKey, filter);
         }
         if(filter.missing && Math.hypot(hand.x*winW-(filter.lastInputX??0),hand.y*winH-(filter.lastInputY??0))>Math.max(winW,winH)*.06)filter.reset();

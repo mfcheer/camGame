@@ -29,29 +29,45 @@ export class HandAssociator {
       if(tip.x<0||tip.x>1||tip.y<0||tip.y>1)continue;
       const palm=Math.hypot(lm[5].x-lm[17].x,lm[5].y-lm[17].y);
       if(palm<.008||palm>.45)continue;
-      candidates.push({index,tip,wrist,z:lm[8].z||0,label:result.handedness?.[index]?.[0]?.categoryName});
+      const palmCenter = lm[9] ? map(lm[9]) : null;
+      const middleTip = lm[12] ? map(lm[12]) : null;
+      const thumbTip = lm[4] ? map(lm[4]) : null;
+      candidates.push({index,tip,wrist,palmCenter,middleTip,thumbTip,z:lm[8].z||0,label:result.handedness?.[index]?.[0]?.categoryName});
     }
     const pairs=[];
     for(const c of candidates)for(const s of slots) {
       const current=s.wrist?Math.hypot(c.wrist.x-s.wrist.x,c.wrist.y-s.wrist.y):Infinity;
       const temporal=s.old?Math.hypot(c.wrist.x-s.old.x,c.wrist.y-s.old.y):Infinity;
-      if(current>.28&&temporal>.16)continue;
+      const maxCurrent = players.length === 1 ? 0.48 : 0.28;
+      const maxTemporal = players.length === 1 ? 0.35 : 0.16;
+      if(current > maxCurrent && temporal > maxTemporal)continue;
       pairs.push({c,s,cost:Math.min(current,temporal+.025)});
     }
     pairs.sort((a,b)=>a.cost-b.cost);
     const usedHands=new Set(),usedSlots=new Set();
     const accept=(c,s)=>{
       usedHands.add(c.index);usedSlots.add(s.key);
-      s.player.hands.push({side:s.side,x:c.tip.x,y:c.tip.y,z:c.z,isIndexTip:true,source:'hand-21',observed:true});
+      s.player.hands.push({
+        side:s.side,
+        x:c.tip.x,
+        y:c.tip.y,
+        z:c.z,
+        isIndexTip:true,
+        source:'hand-21',
+        observed:true,
+        palm:c.palmCenter,
+        middleTip:c.middleTip,
+        thumbTip:c.thumbTip
+      });
       this.previous.set(s.key,{...c.wrist,timestamp});
     };
     for(const {c,s} of pairs)if(!usedHands.has(c.index)&&!usedSlots.has(s.key))accept(c,s);
     // A single selected body can still use a fully detected hand when the pose
-    // wrist is occluded. Multi-person ambiguity is deliberately not guessed.
+    // wrist is occluded or moving quickly. Multi-person ambiguity is deliberately not guessed.
     if(players.length===1)for(const c of candidates)if(!usedHands.has(c.index)) {
-      const options=slots.filter(s=>!usedSlots.has(s.key)&&!s.wrist);
+      const options=slots.filter(s=>!usedSlots.has(s.key));
       options.sort((a,b)=>Math.abs((a.wrist?.x??a.player.centerX)-c.wrist.x)-Math.abs((b.wrist?.x??b.player.centerX)-c.wrist.x));
-      if(options[0]&&Math.abs(c.wrist.x-players[0].centerX)<.38)accept(c,options[0]);
+      if(options[0]&&Math.abs(c.wrist.x-players[0].centerX)<.48)accept(c,options[0]);
     }
     for(const [key,old] of this.previous)if(timestamp-old.timestamp>250)this.previous.delete(key);
     return players;

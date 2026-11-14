@@ -1066,7 +1066,11 @@ export class BubbleManager {
         const x = displayed ? (displayed.x + 1) * .5 : hand.x;
         const y = displayed ? (1 - displayed.y) * .5 : hand.y;
         if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
-        tips.push({ playerId: player.id, source: hand.source, key: player.id + '_' + (hand.side || i), x, y, px: x * w, py: y * h });
+        const extraPoints = [];
+        if (hand.palm) extraPoints.push({ x: hand.palm.x, y: hand.palm.y, px: hand.palm.x * w, py: hand.palm.y * h });
+        if (hand.middleTip) extraPoints.push({ x: hand.middleTip.x, y: hand.middleTip.y, px: hand.middleTip.x * w, py: hand.middleTip.y * h });
+        if (hand.thumbTip) extraPoints.push({ x: hand.thumbTip.x, y: hand.thumbTip.y, px: hand.thumbTip.x * w, py: hand.thumbTip.y * h });
+        tips.push({ playerId: player.id, source: hand.source, key: player.id + '_' + (hand.side || i), x, y, px: x * w, py: y * h, extraPoints });
       }
     }
     return tips;
@@ -1116,7 +1120,13 @@ export class BubbleManager {
       this.isNearHand=false;
       for(const tip of tips){
         if(tip.playerId!==1&&tip.playerId!==2)continue;
-        const dist=Math.min(...targets.map(p=>Math.hypot(tip.px-p.x,tip.py-p.y)));
+        let dist=Math.min(...targets.map(p=>Math.hypot(tip.px-p.x,tip.py-p.y)));
+        if(tip.extraPoints && tip.extraPoints.length > 0){
+          for(const ep of tip.extraPoints){
+            const d=Math.min(...targets.map(p=>Math.hypot(ep.px-p.x,ep.py-p.y)));
+            if(d<dist)dist=d;
+          }
+        }
         if(dist<threshold*1.65)this.isNearHand=true;
         if(dist>threshold*1.12)b.suppressedHands.delete(tip.key);
         if(isProtected){if(dist<=threshold)b.suppressedHands.add(tip.key);continue;}
@@ -1159,7 +1169,17 @@ export class BubbleManager {
     }
 
     for (const tip of tips) {
-      const dist = Math.hypot(tip.px - bubblePxX, tip.py - bubblePxY);
+      let dist = Math.hypot(tip.px - bubblePxX, tip.py - bubblePxY);
+      let hitPt = tip;
+      if (tip.extraPoints && tip.extraPoints.length > 0) {
+        for (const ep of tip.extraPoints) {
+          const d = Math.hypot(ep.px - bubblePxX, ep.py - bubblePxY);
+          if (d < dist) {
+            dist = d;
+            hitPt = ep;
+          }
+        }
+      }
       if (this.playerMode === 'coop' && b.ownerId && tip.playerId !== b.ownerId) {
         // The demo has one physical pointer that changes player at the midline.
         // Moving it outside a jelly must release that pointer's previous role.
@@ -1171,7 +1191,7 @@ export class BubbleManager {
       if (isProtected) { if (inside) b.suppressedHands.add(tip.key); continue; }
       if (dist > radiusPx * 1.12) b.suppressedHands.delete(tip.key);
       if (inside && !b.suppressedHands.has(tip.key)) {
-        hit = true; hitHandX = tip.x; hitHandY = tip.y;
+        hit = true; hitHandX = hitPt.x; hitHandY = hitPt.y;
         b.suppressedHands.add(tip.key);
         break;
       }
@@ -1549,7 +1569,7 @@ export class BubbleManager {
     for (const ind of this.handIndicators) {
       if(ind.active && this.handsAgeSeconds>=.18){ind.active=false;ind.fadeTimer=.18;}
       if (ind.active) {
-        if(ind.targetPosition)ind.group.position.lerp(ind.targetPosition,1-Math.exp(-dt/.022));
+        if(ind.targetPosition)ind.group.position.lerp(ind.targetPosition,1-Math.exp(-dt/.014));
         const screen=ind.group.position.clone().project(this.camera);
         const w=typeof window!=='undefined'?getViewport().width:1280,h=typeof window!=='undefined'?getViewport().height:720;
         const luminance=this.contrastSampler?.sample((screen.x+1)/2,(1-screen.y)/2,w,h)??.76;

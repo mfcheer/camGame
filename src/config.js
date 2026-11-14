@@ -78,7 +78,7 @@ export const GAME_CONFIG = {
   // 视觉与碰撞体验参数（专门针对 3 岁半幼儿优化）
   gameplay: {
     bubbleRadiusScreenFraction: 0.10, // 泡泡基准大小（占屏幕宽高的较小边的比例，大而易触碰）
-    touchDistanceMultiplier: 1.35,     // 容错判定范围，只要手靠近泡泡边缘即算成功
+    touchDistanceMultiplier: 1.45,     // 容错判定范围，只要手靠近泡泡边缘即算成功
     spawnCooldownMs: 900,              // 泡泡破裂后下一个泡泡生成的延迟，避免原地狂刷
     idleHelpDelayMs: 6500,             // 幼儿停留 6.5 秒未碰到时触发提示（变大、靠近、虚线手势引导）
     celebrationDurationMs: 5000,       // 起飞庆祝与动画时长（4~6秒之间）
