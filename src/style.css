@@ -40,11 +40,52 @@ html, body {
 }
 
 /* 彻底抑制并隐藏浏览器原生播放控件及 WebKit 居中大播放按钮 (半透明圆圈带三角形 ▶️) */
-#webcam-video::-webkit-media-controls,
-#webcam-video::-webkit-media-controls-start-playback-button,
-#webcam-video::-webkit-media-controls-play-button,
-#webcam-video::-webkit-media-controls-panel,
-#webcam-video::-webkit-media-controls-enclosure,
+/* 分开书写各伪元素规则，防止某些浏览器因不支持列表中某个非标伪元素而废弃整组规则 */
+#webcam-video::-webkit-media-controls {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+#webcam-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+#webcam-video::-webkit-media-controls-play-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+#webcam-video::-webkit-media-controls-panel {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+#webcam-video::-webkit-media-controls-enclosure {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
 #webcam-video::-webkit-media-controls-overlay-play-button {
   display: none !important;
   -webkit-appearance: none !important;

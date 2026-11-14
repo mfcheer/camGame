@@ -368,6 +368,7 @@ export class PoseDetector {
           this.video.setAttribute("playsinline", "");
           this.video.setAttribute("webkit-playsinline", "");
           this.video.setAttribute("x5-playsinline", "");
+          this.video.playsInline = true;
           this.video.muted = true;
           this.video.defaultMuted = true;
         } catch (_) {}

@@ -468,6 +468,9 @@ export class Game {
       return;
     }
     if (!cameraReady) return;
+    if (this.videoElement && this.videoElement.paused && this.videoElement.srcObject) {
+      try { this.videoElement.play()?.catch?.(() => {}); } catch (_) {}
+    }
 
     // 初始核对校准门禁状态
     const calib = this.poseDetector.getCalibrationStatus(this.playerMode);
@@ -503,6 +506,9 @@ export class Game {
       this.bubbleManager.setPlayerComfortZones(this.poseDetector.lockedPlayers);
     }
 
+    if (this.videoElement && this.videoElement.paused && this.videoElement.srcObject) {
+      try { this.videoElement.play()?.catch?.(() => {}); } catch (_) {}
+    }
     this.cancelAutoCountdown();
     this.state = 'PLAYING';
     this.prePauseState = 'PLAYING';
@@ -1090,6 +1096,8 @@ export class Game {
       am.startBGM?.('home');
     };
     window.addEventListener('pointerdown', kick, { passive: true });
+    window.addEventListener('touchstart', kick, { passive: true });
+    window.addEventListener('click', kick, { passive: true });
     window.addEventListener('keydown', kick);
   }
 
