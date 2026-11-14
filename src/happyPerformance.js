@@ -231,6 +231,24 @@ const ACTIONS=[
     a.model.getObjectByName('Bucket').rotation.z=.35*wave*m;
     a.headGroup.rotation.z=-.06*wave*m;
   }},
+  {id:'busHonk',dur:1.6,animals:['tayo'],fn:(a,t,m)=>{
+    const s=Math.sin(t*Math.PI*6)*m;
+    a.bodyMesh.rotation.z=s*.035;
+    a.headGroup.rotation.z=-s*.03;
+    const honk=Math.abs(Math.sin(t*Math.PI*4))*m;
+    a.animalGroup.position.y+=honk*.06;
+    for(const p of [a.leftEarGroup,a.rightEarGroup])if(p)p.rotation.z=s*.15;
+  }},
+  {id:'busHop',dur:1.6,animals:['tayo'],fn:(a,t,m)=>{
+    const s=Math.sin(t*Math.PI*4)*m;
+    a.model.rotation.x=s*.08;
+    for(const p of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])p.rotation.x=t*Math.PI*3;
+  }},
+  {id:'busWiggle',dur:1.5,animals:['tayo'],fn:(a,t,m)=>{
+    const s=Math.sin(t*Math.PI*3)*m;
+    a.model.rotation.y=s*.12;
+    a.model.rotation.z=s*.05;
+  }},
   {id:'scoopDig',dur:1.7,animals:['excavator'],fn:(a,t,m)=>{
     const dip=Math.sin(t*Math.PI),curl=Math.sin(t*Math.PI*2);
     a.model.getObjectByName('Boom_Base').rotation.z=-.20*dip*m;
@@ -239,7 +257,7 @@ const ACTIONS=[
     a.bodyMesh.rotation.z=.025*curl*m;
   }},
 ];
-const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['wolfChinScheming','wolfCackle','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['trainWhistle','steamBurst','wheelRev','trainSway'],excavator:['bucketWave','scoopDig']};
+const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['wolfChinScheming','wolfCackle','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['trainWhistle','steamBurst','wheelRev','trainSway'],excavator:['bucketWave','scoopDig'],tayo:['busHonk','busHop','busWiggle']};
 const FINALE=ACTIONS.find(x=>x.id==='finaleBow');
 
 // 结算后的"开心小演出"：动物自己走到台前随机表演，孩子和家长可以休息。
@@ -277,7 +295,7 @@ export class HappyPerformance {
     const sigs=(SIGNATURES[id]||[]).map(name=>ACTIONS.find(x=>x.id===name)).filter(Boolean);
     for(let i=sigs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[sigs[i],sigs[j]]=[sigs[j],sigs[i]];}
     const plan=sigs.slice(0,2);
-    const allowed=['mcqueen','thomas','excavator'].includes(id)?['sway','laugh','nodDance']:['hop3','spin','bow','sway','laugh','wave','jellyWobble','starJump','nodDance'];
+    const allowed=['mcqueen','thomas','excavator','tayo'].includes(id)?['sway','laugh','nodDance']:['hop3','spin','bow','sway','laugh','wave','jellyWobble','starJump','nodDance'];
     if(Math.random()<.3){const options=ACTIONS.filter(x=>allowed.includes(x.id));plan.push(options[Math.floor(Math.random()*options.length)]);}
     for(let i=plan.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[plan[i],plan[j]]=[plan[j],plan[i]];}
     if(this.lastPlan){

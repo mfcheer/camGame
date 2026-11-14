@@ -613,3 +613,119 @@ export function createThomasModel(){
  const tail=pivot(root,'Tail',[0,.40,-.58]);
  return root;
 }
+
+// 韩国人气动画《小公交车太友》（Tayo the Little Bus）
+// 标志性蓝色 120 号小巴士，白车顶、大挡风玻璃灵动大眼、黄色 120 路线徽章、亲切笑嘴与四轮大巴士轮毂
+export function createTayoModel(){
+ const root=new THREE.Group();root.name='Tayo_Bus_Rig';
+ const box=(parent,name,material,pos,size,r=.04)=>mesh(new RoundedBoxGeometry(...size,4,r),material,parent,name,pos);
+ const blue=mat(0x1a73e8,.45,{metalness:.12}),
+       navy=mat(0x1358b8,.5,{metalness:.12}),
+       roof=mat(0xf8fafc,.4),
+       dark=mat(0x212529,.85),
+       glass=mat(0xd0ebff,.35),
+       windowTint=mat(0x263238,.85),
+       yellow=mat(0xffd600,.55),
+       red=mat(0xe53935,.6),
+       rubber=mat(0x212121,.95),
+       silver=mat(0xe0e0e0,.45,{metalness:.4}),
+       pupilDark=mat(0x1a237e,.9),
+       mouthDark=mat(0x381520,.95),
+       tonguePink=mat(0xf36e84,.88),
+       white=mat(0xffffff,.7);
+ // 底盘与车身 (Torso)
+ const body=pivot(root,'Torso',[0,.34,0]);
+ box(body,'Blue_Bus_Body',blue,[0,.06,0],[.68,.44,1.06],.07);
+ box(body,'White_Bus_Roof',roof,[0,.30,.01],[.67,.08,1.04],.04);
+ box(body,'Bus_AC_Unit',roof,[0,.36,-.08],[.38,.05,.32],.02);
+ box(body,'Lower_Bumper_Skirt',navy,[0,-.17,0],[.685,.08,1.065],.03);
+ box(body,'Front_Bumper',navy,[0,-.13,.54],[.70,.12,.08],.035);
+ box(body,'Rear_Bumper',navy,[0,-.13,-.54],[.70,.12,.08],.035);
+ // 前脸与车头驾驶舱 (Head)
+ const head=pivot(root,'Head',[0,.52,.40]);
+ box(head,'Bus_Windshield',glass,[0,-.02,.135],[.58,.24,.02],.025);
+ // 招牌黄色路线牌 120 (Route_Display_Box & Route_Badge_120)
+ box(head,'Route_Display_Box',dark,[0,.125,.135],[.42,.065,.015],.015);
+ const routeBadge=pivot(head,'Route_Badge_120',[0,.125,.145]);
+ curve(routeBadge,'Route_Num_1',[[-.07,-.02,0],[-.07,.02,0]],.005,yellow);
+ curve(routeBadge,'Route_Num_2',[[-.02,.02,0],[.015,.02,0],[.015,0,0],[-.02,-.02,0],[.02,-.02,0]],.0045,yellow);
+ curve(routeBadge,'Route_Num_0',[[.055,-.02,0],[.055,.02,0],[.095,.02,0],[.095,-.02,0],[.055,-.02,0]],.0045,yellow);
+ // 挡风玻璃上的大眼睛 (Eyes)
+ const eyes=pivot(head,'Eyes',[0,0,0]);
+ for(const s of [-1,1]){
+  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.14,-.015,.150]);
+  ellipsoid(eye,'Eye_White',white,[0,0,0],[.072,.090,.012]);
+  ellipsoid(eye,'Iris',mat(0x1976d2,.45),[s*.005,-.008,.009],[.056,.068,.010]);
+  ellipsoid(eye,'Pupil',pupilDark,[s*.005,-.010,.016],[.036,.046,.008]);
+  ellipsoid(eye,'Catchlight',white,[-.016,.024,.023],[.015,.018,.005]);
+  ellipsoid(eye,'Catchlight_Small',white,[.016,-.020,.021],[.007,.008,.003]);
+  curve(head,s<0?'Brow_L':'Brow_R',[[s*.065,.10,.148],[s*.14,.12,.148],[s*.20,.095,.144]],.006,navy);
+ }
+ // 太友可爱的耳朵形后视镜 (Ear_L / Ear_R)
+ for(const s of [-1,1]){
+  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.33,.02,.08]);
+  mesh(new THREE.CylinderGeometry(.008,.008,.06,12),dark,ear,'Mirror_Stalk',[s*.03,0,0]);
+  box(ear,s<0?'Mirror_L':'Mirror_R',blue,[s*.07,0,0],[.038,.09,.06],.015);
+  box(ear,'Mirror_Glass',silver,[s*.07,0,-.018],[.030,.078,.005],.008);
+ }
+ // 亲切笑容嘴部 (Bus_Mouth, Smile, Happy_Mouth)
+ const mouth=pivot(head,'Bus_Mouth',[0,-.21,.148]);
+ curve(mouth,'Smile',[[-.15,.005,0],[-.08,-.03,.004],[0,-.04,.006],[.08,-.03,.004],[.15,.005,0]],.008,dark);
+ const happy=pivot(mouth,'Happy_Mouth',[0,-.025,.005]);happy.visible=false;
+ ellipsoid(happy,'Happy_Mouth_Cavity',mouthDark,[0,0,0],[.115,.042,.012]);
+ const happyTongue=ellipsoid(happy,'Happy_Tongue',tonguePink,[0,-.018,.008],[.050,.016,.008]);
+ happyTongue.rotation.x=-.2;
+ for(const s of [-1,1]){
+  ellipsoid(happy,s<0?'Tooth_L':'Tooth_R',white,[s*.035,.016,.006],[.008,.010,.006]);
+ }
+ // 前大灯与转向灯 (Headlights & Turn Signals)
+ for(const s of [-1,1]){
+  ellipsoid(body,s<0?'Headlight_L':'Headlight_R',yellow,[s*.26,-.07,.535],[.052,.052,.014]);
+  ellipsoid(body,s<0?'Turn_Signal_L':'Turn_Signal_R',mat(0xff922b,.6),[s*.31,-.07,.525],[.016,.034,.010]);
+ }
+ // 侧面大车窗与乘客门
+ for(let i=0;i<3;i++){
+  const z=.24-i*.24;
+  box(body,'Side_Window_L_'+i,windowTint,[-.342,.10,z],[.015,.18,.20],.02);
+ }
+ box(body,'Bus_Door',windowTint,[.342,-.01,.22],[.015,.34,.22],.015);
+ curve(body,'Bus_Door_Seam',[[.351,-.17,.22],[.351,.15,.22]],.004,dark);
+ for(let i=0;i<2;i++){
+  const z=-.04-i*.24;
+  box(body,'Side_Window_R_'+i,windowTint,[.342,.10,z],[.015,.18,.20],.02);
+ }
+ // 两侧白色 120 路线徽章
+ for(const s of [-1,1]){
+  const badge=pivot(body,s<0?'Side_Badge_L':'Side_Badge_R',[s*.343,-.08,0]);
+  ellipsoid(badge,'Badge_Plate',white,[0,0,0],[.01,.07,.10]);
+  curve(badge,'Side_Num_1',[[s*.008,0,-.04],[s*.008,.03,-.04]],.004,blue);
+  curve(badge,'Side_Num_2',[[s*.008,.03,-.015],[s*.008,.03,.01],[s*.008,.01,.01],[s*.008,-.01,-.015],[s*.008,-.01,.01]],.004,blue);
+  curve(badge,'Side_Num_0',[[s*.008,-.01,.035],[s*.008,.03,.035],[s*.008,.03,.065],[s*.008,-.01,.065],[s*.008,-.01,.035]],.004,blue);
+ }
+ // 车轮 (4个公交车轮：前轮=Arm_L/R，后轮=Leg_L/R)
+ for(const s of [-1,1]){
+  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.34,.16,.30]);
+  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.34,.16,-.30]);
+  for(const [p,name] of [[arm,'Front_Wheel'],[leg,'Rear_Wheel']]){
+   const wheel=mesh(new THREE.CylinderGeometry(.16,.16,.11,28),rubber,p,name,[s*.04,0,0]);
+   wheel.rotation.z=Math.PI/2;
+   const hub=mesh(new THREE.CylinderGeometry(.082,.082,.118,24),blue,p,'Wheel_Hub',[s*.04,0,0]);
+   hub.rotation.z=Math.PI/2;
+   const rim=mesh(new THREE.TorusGeometry(.080,.012,12,24),silver,p,'Wheel_Rim',[s*.04,0,0]);
+   rim.rotation.y=Math.PI/2;
+  }
+ }
+ // 车尾与尾气管 (Tail)
+ const tail=pivot(root,'Tail',[0,.20,-.53]);
+ box(tail,'Rear_Window',windowTint,[0,.14,-.01],[.56,.18,.015],.02);
+ for(const s of [-1,1]){
+  box(tail,s<0?'Tail_Light_L':'Tail_Light_R',red,[s*.27,-.02,-.01],[.05,.09,.015],.015);
+ }
+ const exhaust=mesh(new THREE.CylinderGeometry(.018,.018,.08,16),silver,tail,'Exhaust_Pipe',[.20,-.08,-.02]);
+ exhaust.rotation.x=Math.PI/2;
+ // 车头车牌号 / 领结节点 (Bow)
+ const bow=pivot(root,'Bow',[0,.21,.54]);
+ box(bow,'Front_License_Plate',white,[0,0,0],[.16,.06,.015],.01);
+ curve(bow,'Plate_Text_120',[[-.05,0,.008],[.05,0,.008]],.005,blue);
+ return root;
+}

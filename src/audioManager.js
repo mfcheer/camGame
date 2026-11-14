@@ -395,6 +395,7 @@ export class AudioManager {
         case 'chase': this._playChaseSound(type); break;
         case 'jett': this._playJettSound(type); break;
         case 'thomas': this._playThomasSound(type); break;
+        case 'tayo': this._playTayoSound(type); break;
         case 'excavator': this._playExcavatorSound(type); break;
         case 'peppa': this._playPeppaSound(type); break;
         case 'mcqueen': this._playCarFriendSound(type); break;
@@ -430,6 +431,10 @@ export class AudioManager {
   _playChaseSound(type){this._playFriendNotes([390,520,650],type,'triangle',.075);}
   _playJettSound(type){this._playFriendNotes([540,720,960],type,'sine',.085);}
   _playTeddySound(type){this._playFriendNotes([440,550,660],type,'sine',.065);}
+  _playTayoSound(type) {
+    // Cheerful two-tone bus beep-beep horn
+    this._playFriendNotes([330, 440, 550], type, 'triangle', .075);
+  }
 
   // Thomas the Tank Engine: cheerful two-tone train whistle ("choo-choo!") plus steam puff.
   _playThomasSound(type) {
