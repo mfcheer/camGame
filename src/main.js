@@ -78,7 +78,7 @@ export class Game {
       this.sceneManager = new SceneManager(this.canvasContainer);
     }
     this.audioManager = new AudioManager({onBGMStart: () => this.uiManager?.markBGMActive?.()});
-    this.speechPolicy = new SpeechPolicy();
+    this.speechPolicy = new SpeechPolicy(undefined, { defaultEnabled: true });
     this.voiceQueue = new VoiceQueue(this.audioManager, this.speechPolicy);
     if (this.sceneManager) {
       this.balloon = new HotAirBalloon(this.sceneManager.scene);
@@ -153,6 +153,9 @@ export class Game {
       if (!this.audioManager.isMuted) this.uiManager?.markAudioAwaiting?.();
       const wordMode=document.getElementById('word-mode');
       if(wordMode){
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('camgame:autoEnglish:v1') === null) {
+          this.speechPolicy.setAutomatic(true);
+        }
         wordMode.checked=this.speechPolicy.automaticEnabled;
         wordMode.addEventListener('change',()=>this.setAutomaticEnglish(wordMode.checked));
       }
@@ -1106,6 +1109,14 @@ export class Game {
     window.addEventListener('touchstart', kick, { passive: true });
     window.addEventListener('click', kick, { passive: true });
     window.addEventListener('keydown', kick);
+    window.addEventListener('pointermove', kick, { passive: true, once: true });
+    try {
+      const am = this.audioManager;
+      if (am && !am.isMuted && !am.isBGMPlaying) {
+        am.init?.();
+        am.startBGM?.('home');
+      }
+    } catch (_) {}
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && !this.isDemoMode && this.videoElement?.srcObject && this.videoElement.paused) {
         try { this.videoElement.play()?.catch?.(() => {}); } catch (_) {}

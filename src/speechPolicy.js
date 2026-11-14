@@ -1,10 +1,15 @@
 // Speech frequency uses active game time, never wall-clock time spent in another app.
 export const AUTO_ENGLISH_KEY = 'camgame:autoEnglish:v1';
 export class SpeechPolicy {
-  constructor(storage, {minInterval = 0.25, maxPerRound = Infinity} = {}) {
+  constructor(storage, {minInterval = 0.25, maxPerRound = Infinity, defaultEnabled = false} = {}) {
     try { this.storage = storage === undefined ? globalThis.localStorage : storage; } catch {}
-    this.automaticEnabled = false;
-    try { this.automaticEnabled = this.storage?.getItem(AUTO_ENGLISH_KEY) === 'true'; } catch {}
+    this.automaticEnabled = defaultEnabled;
+    try {
+      const stored = this.storage?.getItem(AUTO_ENGLISH_KEY);
+      if (stored !== null && stored !== undefined) {
+        this.automaticEnabled = stored === 'true';
+      }
+    } catch {}
     this.activeSeconds = 0;
     this.lastSpeechEnd = -Infinity;
     this.spokenThisRound = 0;
