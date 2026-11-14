@@ -563,7 +563,6 @@ html, body {
 
 /* Animal selection uses renders of the actual playable models. */
 .start-card { max-width: 700px; max-height: calc(100dvh - 28px); overflow-y:auto; padding: 20px 24px; }
-.sound-home-btn { position: absolute; top: calc(var(--safe-top, 0px) + 12px); right: calc(var(--safe-right, 0px) + 12px); width: 44px; height: 44px; font-size: 20px; z-index: 5; }
 .start-card h1 { font-size: 26px; }
 .start-card p { margin-bottom: 8px; font-size: 13.5px; }
 .animal-picker { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin: 8px 0 12px; }
@@ -571,11 +570,11 @@ html, body {
 .animal-choice.selected { border-color:#6b9f87; background:#edf7e8; box-shadow:0 3px 0 #b2cbaa; }
 .animal-choice:hover { background:#eaf3e5; }
 .animal-choice:focus-visible { outline:3px solid #d8a248; outline-offset:3px; }
-.animal-choice > img,.random-friends { width:100%; height:88px; object-fit:contain; }
+.animal-choice > img,.random-friends { width:100%; height:104px; object-fit:contain; }
 .animal-choice strong { font-size:16px; }
 .animal-choice span { font-size:12px; color:#6b7d71; }
 .random-friends { display:flex; justify-content:center; }
-.random-friends img { width:60%; height:88px; object-fit:contain; }
+.random-friends img { width:60%; height:104px; object-fit:contain; }
 .random-friends img + img { margin-left:-28%; transform:translate(6px,5px) rotate(9deg); }
 .progress-dots-container[data-compact="true"] { gap:10px; }
 .progress-dots-container[data-compact="true"] .progress-dot { width:var(--energy-dot-size,26px); height:var(--energy-dot-size,26px); font-size:14px; }
@@ -591,7 +590,7 @@ html, body {
   .animal-picker { gap:6px; }
   .animal-choice strong { font-size:14px; }
   .animal-choice span { font-size:10px; }
-  .animal-choice > img,.random-friends,.random-friends img { height:72px; }
+  .animal-choice > img,.random-friends,.random-friends img { height:80px; }
 }
 
 /* Keep the player's face and AR reward visible during the result countdown. */
@@ -611,10 +610,10 @@ html, body {
 .random-choice .random-friends { width:210px; height:38px; }
 .random-choice .random-friends img { width:38px; height:38px; }
 .random-choice .random-friends img+img { margin-left:-8px; transform:none; }
-.animal-choice > img { height:86px; }
+.animal-choice > img { height:104px; }
 @media(max-width:540px) {
  .animal-picker { grid-template-columns:repeat(2,minmax(0,1fr)); }
- .animal-choice > img { height:74px; }
+ .animal-choice > img { height:80px; }
  .animal-choice.random-choice { gap:8px; flex-wrap:wrap; }
  .random-choice .random-friends { width:130px; }
 }
@@ -731,6 +730,26 @@ html,body{overscroll-behavior:none}
 .start-help summary{cursor:pointer;text-align:center;padding:4px;min-height:26px}
 .start-help[open]{max-height:130px;overflow-y:auto}
 .start-help .privacy-tip{margin-top:8px}
+/* 首页功能三合一排：单词小花园 · 自动听英语 · 营地（等宽自适应，窄屏不挤压形变） */
+.start-feature-row{display:flex;gap:8px;margin:0 0 9px}
+.start-feature-row>*{flex:1 1 0;min-width:0;margin:0}
+.start-feature-row .vocabulary-entry-btn{justify-content:center;margin-bottom:0}
+.start-feature-row .feature-label,.start-feature-row .vocabulary-entry-count,.start-feature-row .camp-btn-text,.start-feature-row .camp-badge-count{white-space:nowrap}
+.start-feature-row .vocabulary-entry-count{margin-left:0}
+.start-feature-row .word-mode-toggle{flex-wrap:nowrap;justify-content:center;align-items:center;padding:9px 8px;margin:0;white-space:nowrap}
+.start-feature-row .word-mode-toggle strong{white-space:nowrap}
+.start-feature-row .word-mode-toggle span{display:none}
+.start-feature-row .camp-entry-btn{justify-content:center;margin:0}
+.start-feature-row .camp-badge-count{margin-left:2px}
+/* 最底一排：静音 · 玩法 · 隐私 */
+.start-foot-row{display:flex;gap:8px;align-items:flex-start;margin-top:5px}
+.start-foot-row .sound-home-btn{position:static;flex:0 0 44px;width:44px;height:42px;font-size:19px;z-index:auto}
+.start-help-pill{flex:1 1 0;min-width:0;margin-top:0}
+.start-help-pill summary{border:2px solid #d9e3c4;border-radius:12px;background:#f6f9ec;padding:9px 6px;min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#45614d;list-style:none}
+.start-help-pill summary::-webkit-details-marker{display:none}
+.start-help-pill summary:hover{background:#eaf3db;border-color:#b5c99b}
+.start-help-pill[open] summary{background:#eaf3db;border-color:#b5c99b}
+.start-help-pill .start-help-body{padding:7px 4px 2px;line-height:1.5}
 #game-hud{top:calc(var(--safe-top) + 12px);padding-left:calc(var(--safe-left) + 20px);padding-right:calc(var(--safe-right) + 20px)}
 #demo-mode-banner{top:calc(var(--hud-bottom) + 6px);left:calc(var(--safe-left) + 12px)}
 .combo-badge{top:calc(var(--hud-bottom) + 6px)}
@@ -791,7 +810,7 @@ button{touch-action:manipulation}
   .start-card p{font-size:11px;line-height:1.35;margin-bottom:5px}
   .animal-picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:2px 0 0}
   .animal-choice{padding:3px 2px 4px;border-radius:10px;gap:1px;min-width:0}
-  .animal-choice>img{height:40px}.animal-choice strong{font-size:11px}.animal-choice span{font-size:9px}
+  .animal-choice>img{height:46px}.animal-choice strong{font-size:11px}.animal-choice span{font-size:9px}
   .animal-choice.random-choice{min-height:28px;padding:1px 4px;gap:6px;flex-wrap:nowrap}
   .random-choice .random-friends{width:110px;height:23px}.random-choice .random-friends img{width:23px;height:23px}
   .random-choice>span{display:none}
@@ -799,6 +818,17 @@ button{touch-action:manipulation}
   .start-actions>.btn-primary{padding:11px 5px;font-size:16px;margin-bottom:7px;min-height:44px}
   .start-actions>.btn-secondary{padding:8px 4px;font-size:12px;margin-bottom:0;min-height:40px}
   .start-help summary{font-size:11px}.start-help[open]{max-height:82px}
+  /* 功能三合一排紧凑形态：隐藏图标、缩小字号，避免文字竖排断行与徽章溢出 */
+  .start-feature-row{gap:5px;margin:0 0 7px}
+  .start-feature-row .vocabulary-entry-btn>span:first-child,.start-feature-row .camp-btn-icon{display:none}
+  .start-feature-row .vocabulary-entry-btn,.start-feature-row .camp-entry-btn{padding:6px 4px;font-size:10px;gap:3px;min-height:36px;border-radius:11px}
+  .start-feature-row .word-mode-toggle{padding:6px 4px;font-size:10px;min-height:36px;gap:3px}
+  .start-feature-row .word-mode-toggle input{width:15px;height:15px}
+  .start-feature-row .vocabulary-entry-count,.start-feature-row .camp-badge-count{font-size:9px}
+  .start-foot-row{gap:6px}
+  .start-foot-row .sound-home-btn{height:38px;flex-basis:40px;width:40px;font-size:16px}
+  .start-help-pill summary{padding:7px 4px;min-height:38px;font-size:11px}
+  .start-help-pill[open]{max-height:82px}
   .card:not(.start-card){padding:12px 18px;border-width:2px;max-width:560px}
   .card h2{font-size:20px;margin-bottom:6px}.card p{font-size:12px;line-height:1.4;margin-bottom:9px}
   .card>.btn-primary,.card>.btn-secondary{padding:9px 10px;font-size:14px;margin-bottom:6px;min-height:40px}
@@ -808,7 +838,7 @@ button{touch-action:manipulation}
   #victory-modal .card{padding:10px 14px}.victory-actions button{padding:8px 10px;font-size:13px;min-height:38px;white-space:nowrap}
 }
 @media(max-height:640px) and (max-aspect-ratio:1/1){
-  .animal-choice>img{height:48px}.mode-btn{display:flex;flex-direction:column;align-items:center;padding:5px 3px}.mode-btn .mode-icon{font-size:18px}
+  .animal-choice>img{height:54px}.mode-btn{display:flex;flex-direction:column;align-items:center;padding:5px 3px}.mode-btn .mode-icon{font-size:18px}
 }
 .start-intro #animal-brief{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-height:2.9em}
 .combo-badge:not(.hidden) ~ #demo-mode-banner{display:none}
@@ -1466,13 +1496,14 @@ button{touch-action:manipulation}
  .start-actions {display:flex;flex-direction:column;align-self:stretch;min-height:0;}
  .start-actions>* {flex-shrink:0;}
  .start-actions .mode-selector {order:0;}
- .start-actions .word-mode-toggle {order:1;min-height:34px;padding:4px 9px;font-size:12px;margin:2px 0 8px;}
- .start-actions .word-mode-toggle span {display:none;}
+ .start-actions .start-feature-row {order:1;gap:6px;margin:2px 0 7px;}
+ .start-actions .start-feature-row .word-mode-toggle {min-height:34px;padding:4px 6px;font-size:12px;}
  .start-actions>.btn-primary {order:2;}
  .start-actions>.btn-secondary {order:3;}
- .start-actions .vocabulary-entry-btn {order:4;}
- .start-actions .camp-entry-btn {order:5;}
- .start-actions .start-help {order:6;}
+ .start-actions .start-foot-row {order:4;gap:6px;}
+ .start-foot-row .sound-home-btn {height:34px;flex-basis:38px;width:38px;}
+ .start-help-pill summary {padding:5px 4px;min-height:34px;font-size:11px;}
+ .start-help-pill[open]{max-height:82px}
 }
 
 /* The picture is also the explicit replay control. */

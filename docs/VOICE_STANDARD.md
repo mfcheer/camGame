@@ -65,6 +65,7 @@ node scripts/sync-word-manifest.mjs
 - 完整学习音频：`public/audio/words/{id}.mp3`，仅在主动点“听中文和英文”时播放，中文→英文→中文→英文。
 - 少量自动英语/主动英文重听/首页点读：`public/audio/words/review/{id}.mp3`，英文一次。
 - 自动中文发音：`public/audio/words/zh/{id}.mp3`，中文一次（Tingting、210字/分钟，尾部180ms留白，其余同母带标准）。2026-11-14起与英文review成对使用：每轮同一词卡一次英文、一次中文，顺序随机；生成命令 `python3 scripts/build-natural-phrases.py --kind zh-words`（只需macOS say + ffmpeg，无需模型）。
+- 倒计时人声：`public/audio/countdown/{en,zh}/{3,2,1,go}.mp3`，与既有合成提示音三套并存，每次开局随机选一套（英文 Kokoro af_heart 0.92 速、中文 Tingting 210字/分钟，首尾按母带标准裁剪留白）。生成命令 `python3 scripts/build-natural-phrases.py --kind countdown`。
 - WAV与临时中文：`output/speech/`，忽略并且不发布。
 - 制作清单：`docs/voice-manifest.json`，记录原文、声线配置、相对路径与实际文件SHA256。生成脚本更新清单；不要把历史系统录音错误标为自然语音。
 

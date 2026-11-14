@@ -4,7 +4,7 @@ export function libraryWords(category='all'){return WORDS_LIST.filter(w=>categor
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text)node.textContent=text;return node;};
 
 export class WordLibrary {
-  constructor(audio,onMuteChange=()=>{},voice=audio){if(typeof document!=='undefined'){const count=document.querySelector('.vocabulary-entry-count');if(count)count.textContent=`${WORDS_LIST.length} 个词 · 看图点读 →`;}this.audio=audio;this.voice=voice;this.onMuteChange=onMuteChange;this.category='all';this.token=0;}
+  constructor(audio,onMuteChange=()=>{},voice=audio){if(typeof document!=='undefined'){const count=document.querySelector('.vocabulary-entry-count');if(count)count.textContent=`${WORDS_LIST.length} 词`;}this.audio=audio;this.voice=voice;this.onMuteChange=onMuteChange;this.category='all';this.token=0;}
   open(){
     if(this.overlay||typeof document==='undefined')return;
     this.returnFocus=document.activeElement;this.home=document.getElementById('start-screen');if(this.home)this.home.inert=true;

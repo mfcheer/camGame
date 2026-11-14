@@ -9,7 +9,7 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--kind', choices=['phrases', 'words', 'zh-words'], default='phrases')
+parser.add_argument('--kind', choices=['phrases', 'words', 'zh-words', 'countdown'], default='phrases')
 parser.add_argument('--only', nargs='+', help='Canonical ids; omit to inspect/build the complete selected bank')
 parser.add_argument('--force', action='store_true', help='Regenerate the explicitly selected existing audio')
 parser.add_argument('--dry-run', action='store_true', help='Print the plan without downloading models or writing files')
@@ -17,8 +17,18 @@ args = parser.parse_args()
 if args.force and not args.only:
     parser.error('--force requires --only, to avoid replacing the complete accepted voice library')
 profile = json.loads((root/'scripts/voice-profile.json').read_text())
+# Countdown voice sets: one English (Kokoro) and one Chinese (Tingting) 3-2-1-GO per game start.
+COUNTDOWN_ENTRIES = [
+    {'id': '3', 'en': 'three', 'zh': '三'},
+    {'id': '2', 'en': 'two', 'zh': '二'},
+    {'id': '1', 'en': 'one', 'zh': '一'},
+    {'id': 'go', 'en': 'Go!', 'zh': '出发！'},
+]
 query = "import {ANIMAL_PHRASES} from './src/animalPhrases.js'; console.log(JSON.stringify(Object.values(ANIMAL_PHRASES).flat()));" if args.kind == 'phrases' else "import {WORDS_LIST} from './src/wordsConfig.js'; console.log(JSON.stringify(WORDS_LIST));"
-entries = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', query], cwd=root))
+if args.kind == 'countdown':
+    entries = [dict(e) for e in COUNTDOWN_ENTRIES]
+else:
+    entries = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', query], cwd=root))
 if args.only:
     unknown = set(args.only) - {entry['id'] for entry in entries}
     if unknown:
@@ -30,6 +40,8 @@ def targets(entry):
         return [root/'public'/entry['audio'].lstrip('/')]
     if args.kind == 'zh-words':
         return [root/'public/audio/words/zh'/f"{entry['id']}.mp3"]
+    if args.kind == 'countdown':
+        return [root/'public/audio/countdown/en'/f"{entry['id']}.mp3", root/'public/audio/countdown/zh'/f"{entry['id']}.mp3"]
     return [root/'public'/entry['audio'].lstrip('/'), root/'public/audio/words/review'/f"{entry['id']}.mp3"]
 
 work = [entry for entry in entries if args.force or not all(path.exists() for path in targets(entry))]
@@ -61,6 +73,21 @@ if args.kind == 'zh-words':
         print('Saved '+entry['id'], flush=True)
     raise SystemExit(0)
 
+# Countdown Chinese set uses macOS `say` (Tingting) only; the English set below uses Kokoro.
+if args.kind == 'countdown':
+    rate = profile['output_sample_rate']
+    output = root/'output/speech'/'countdown'
+    output.mkdir(parents=True, exist_ok=True)
+    trim = f"aformat=sample_rates={rate}:channel_layouts=mono,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-45dB,areverse,apad=pad_dur={profile['tail_silence_seconds']},asetpts=N/SR/TB"
+    encode = ['-ar', str(rate), '-b:a', profile['output_bitrate']]
+    for entry in work:
+        cn = output/f"{entry['id']}-zh.aiff"
+        subprocess.run(['/usr/bin/say', '-v', profile['chinese_voice'], '-r', str(profile['chinese_rate']), '-o', str(cn), entry['zh']], check=True)
+        zh_path = targets(entry)[1]
+        zh_path.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(cn), '-af', f"{trim},{profile['master_filter']}", *encode, str(zh_path)], check=True)
+        print('Saved zh '+entry['id'], flush=True)
+
 import numpy as np
 import soundfile as sf
 import torch
@@ -70,7 +97,7 @@ from huggingface_hub import hf_hub_download
 weights = Path(hf_hub_download(profile['model'], 'kokoro-v1_0.pth'))
 if hashlib.sha256(weights.read_bytes()).hexdigest() != profile['model_sha256']:
     raise RuntimeError('Kokoro model checksum changed; keep the accepted model and review the download before generating.')
-output = root/'output/speech'/('animal-phrases' if args.kind == 'phrases' else 'natural-words')
+output = root/'output/speech'/('animal-phrases' if args.kind == 'phrases' else 'countdown' if args.kind == 'countdown' else 'natural-words')
 output.mkdir(parents=True, exist_ok=True)
 torch.set_num_threads(4)
 pipeline = KPipeline(lang_code=profile['language'], repo_id=profile['model'], device='cpu')
@@ -78,7 +105,7 @@ manifest_path = root/'docs/voice-manifest.json'
 records = json.loads(manifest_path.read_text()) if manifest_path.exists() else []
 
 for entry in work:
-    text = entry['en'] if args.kind == 'phrases' else entry['word']
+    text = entry['en'] if args.kind in ('phrases', 'countdown') else entry['word']
     chunks = [audio.numpy() for _, _, audio in pipeline(text, voice=profile['voice'], speed=profile['speed'])]
     rate = profile['model_sample_rate']
     waveform = np.concatenate([np.zeros(round(rate*profile['head_silence_seconds'])), *chunks, np.zeros(round(rate*profile['tail_silence_seconds']))])
@@ -90,6 +117,10 @@ for entry in work:
     encode = ['-ar', str(profile['output_sample_rate']), '-b:a', profile['output_bitrate']]
     if args.kind == 'phrases':
         subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(wav), '-af', profile['master_filter'], *encode, str(paths[0])], check=True)
+    elif args.kind == 'countdown':
+        # Kokoro chunks carry their own lead-in/out; trim to the same head/tail standard as zh clips.
+        trim = f"aformat=sample_rates={rate}:channel_layouts=mono,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-45dB,areverse,apad=pad_dur={profile['tail_silence_seconds']},asetpts=N/SR/TB"
+        subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(wav), '-af', f"{trim},{profile['master_filter']}", *encode, str(paths[0])], check=True)
     else:
         # Keep the accepted zh/en/zh/en teaching sequence. Chinese uses the established system voice.
         cn = output/f"{entry['id']}-zh.aiff"

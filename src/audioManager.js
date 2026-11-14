@@ -769,8 +769,11 @@ export class AudioManager {
     } catch (e) {}
   }
 
-  // 5. 自动就位 3-2-1 倒计时提示音
-  playCountdown(num = 3) {
+  // 5. 自动就位 3-2-1 倒计时提示音。lang: 'synth' 合成音 / 'zh' 中文人声 / 'en' 英文人声，每次开局随机选一套。
+  playCountdown(num = 3, lang = 'synth') {
+    if (lang === 'zh' || lang === 'en') {
+      return this.playPhrase({id:`countdown-${lang}-${num}`, audio:`/audio/countdown/${lang}/${num}.mp3`, en:String(num)});
+    }
     if (this.isMuted || !this.ctx) return;
     this.init();
     if (!this.ctx || typeof this.ctx.createOscillator !== 'function') return;
@@ -798,8 +801,11 @@ export class AudioManager {
     } catch (e) {}
   }
 
-  // 6. 倒计时结束 GO! 欢快清脆起跑和弦
-  playCountdownGo() {
+  // 6. 倒计时结束 GO!：合成套用和弦，中文人声"出发！"、英文人声"Go!"
+  playCountdownGo(lang = 'synth') {
+    if (lang === 'zh' || lang === 'en') {
+      return this.playPhrase({id:`countdown-${lang}-go`, audio:`/audio/countdown/${lang}/go.mp3`, en:'Go!'});
+    }
     if (this.isMuted || !this.ctx) return;
     this.init();
     if (!this.ctx || typeof this.ctx.createOscillator !== 'function') return;

@@ -329,7 +329,7 @@ export class Game {
     };
   }
 
-  // 免手触自动 3-2-1 倒计时开局
+  // 免手触自动 3-2-1 倒计时开局。每次开局随机选一套配音：合成音 / 中文人声 / 英文人声。
   startAutoCountdown() {
     if (this.isAutoCountingDown || this.state !== 'CALIBRATING') return;
     this.isAutoCountingDown = true;
@@ -337,6 +337,8 @@ export class Game {
     this.isCountdownGracePeriod = false;
     this.autoCountdownSessionId = (this.autoCountdownSessionId || 0) + 1;
     const session = this.autoCountdownSessionId;
+    const voiceSet = this.countdownVoiceSet = ['synth', 'zh', 'en'][Math.floor(Math.random() * 3)];
+    const step = voiceSet === 'synth' ? 750 : 1000;
 
     this.clearCountdownTimers();
 
@@ -344,7 +346,7 @@ export class Game {
       this.uiManager.showCountdownOverlay('3', '🎯 人脸和小手已就位，准备出发！');
     }
     if (this.audioManager && this.audioManager.playCountdown) {
-      this.audioManager.playCountdown(3);
+      this.audioManager.playCountdown(3, voiceSet);
     }
 
     const t1 = setTimeout(() => {
@@ -353,9 +355,9 @@ export class Game {
         this.uiManager.showCountdownOverlay('2', '🎯 保持站好，倒数开始！');
       }
       if (this.audioManager && this.audioManager.playCountdown) {
-        this.audioManager.playCountdown(2);
+        this.audioManager.playCountdown(2, voiceSet);
       }
-    }, 750);
+    }, step);
     this.countdownTimers.push(t1);
 
     const t2 = setTimeout(() => {
@@ -364,9 +366,9 @@ export class Game {
         this.uiManager.showCountdownOverlay('1', '🎯 1... 准备碰泡泡！');
       }
       if (this.audioManager && this.audioManager.playCountdown) {
-        this.audioManager.playCountdown(1);
+        this.audioManager.playCountdown(1, voiceSet);
       }
-    }, 1500);
+    }, step * 2);
     this.countdownTimers.push(t2);
 
     const t3 = setTimeout(() => {
@@ -375,9 +377,9 @@ export class Game {
         this.uiManager.showCountdownOverlay('GO! 🚀', '✨ 出发！伸手碰泡泡解救小动物！');
       }
       if (this.audioManager && this.audioManager.playCountdownGo) {
-        this.audioManager.playCountdownGo();
+        this.audioManager.playCountdownGo(voiceSet);
       }
-    }, 2250);
+    }, step * 3);
     this.countdownTimers.push(t3);
 
     const t4 = setTimeout(() => {
@@ -400,6 +402,7 @@ export class Game {
     this.countdownLostDuration = 0;
     this.isCountdownGracePeriod = false;
     this.clearCountdownTimers();
+    if (this.countdownVoiceSet && this.countdownVoiceSet !== 'synth') this.audioManager?.stopWord?.();
     if (this.uiManager && this.uiManager.hideCountdownOverlay) {
       this.uiManager.hideCountdownOverlay();
     }
@@ -679,7 +682,9 @@ export class Game {
   }
 
   startFarewell() {
-    this.voiceQueue?.cancel();this.animalSpeech?.cancel();this.clearPlayWordCue();
+    this.voiceQueue?.cancel();this.clearPlayWordCue();
+    // 解救告别：动物离开时自动随机说一句 Thank you / Goodbye 等 end 短语（既有配音资产）。
+    this.animalSpeech?.start('end', this.activeAnimalId||this.rescueAnimal?.animalId||'bunny', ()=>{});
     this.beginFarewell();
   }
 

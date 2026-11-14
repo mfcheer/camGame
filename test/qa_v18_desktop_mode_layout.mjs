@@ -51,7 +51,7 @@ check('CSS 规范：电脑端 .start-card 放宽至 700px 且 padding 收敛至 
 
 check('CSS 规范：小动物选择区获得更多纵向高度，动物立绘高度放宽且随机按钮高度自适应', () => {
   assert.ok(cssContent.includes('.animal-picker { grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px; margin: 8px 0 10px; }'), '动物选择网格 6 列平铺且边距收敛');
-  assert.ok(cssContent.includes('.animal-choice > img { height:86px; }'), '立绘高度放宽至 86px 舒展展示');
+  assert.ok(cssContent.includes('.animal-choice > img { height:104px; }'), '立绘高度放宽至 104px 舒展展示（首页两排按钮腾出纵向空间）');
   assert.ok(cssContent.includes('.animal-choice.random-choice { grid-column:1/-1; flex-direction:row; justify-content:center; gap:14px; min-height:46px; padding:4px 12px; margin-bottom: 2px; }'), '随机按钮高度微调至 46px');
 });
 

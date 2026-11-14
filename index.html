@@ -96,29 +96,28 @@
 
     <!-- 1. 开始欢迎屏幕 -->
     <div id="start-screen" class="modal-overlay">
-      <button id="btn-sound-home" class="icon-btn sound-home-btn" type="button" title="声音开关" aria-label="声音开关">🔊</button>
       <div class="card start-card">
         <header class="start-intro"><h1><img class="app-logo" src="%BASE_URL%icons/icon-192.png" alt="" aria-hidden="true" />彩虹小队 · 森林大解救</h1>
         <p id="animal-brief">选一位森林朋友，用食指送给它彩虹能量。</p></header>
         <div class="start-choices">
         <div class="animal-picker" role="group" aria-label="选择动物">
           <button class="animal-choice selected" data-animal="bunny" aria-pressed="true">
-            <img src="%BASE_URL%models/bunny-preview.png" alt="小白兔萌萌" /><strong>小兔 萌萌</strong><span>5 能量 · 安稳入门</span>
+            <img src="%BASE_URL%models/bunny-preview.png" alt="小白兔萌萌" /><strong>小兔 萌萌</strong><span>6 能量 · 安稳入门</span>
           </button>
           <button class="animal-choice" data-animal="cat" aria-pressed="false">
-            <img src="%BASE_URL%models/cat-preview.png" alt="橘猫橘子" /><strong>橘猫 橘子</strong><span>8 能量 · 慢漂追踪</span>
+            <img src="%BASE_URL%models/cat-preview.png" alt="橘猫橘子" /><strong>橘猫 橘子</strong><span>10 能量 · 慢漂追踪</span>
           </button>
           <button class="animal-choice" data-animal="frog" aria-pressed="false">
-            <img src="%BASE_URL%models/frog-preview.png" alt="小青蛙呱呱" /><strong>青蛙 呱呱</strong><span>6 能量 · 荷叶弹跳</span>
+            <img src="%BASE_URL%models/frog-preview.png" alt="小青蛙呱呱" /><strong>青蛙 呱呱</strong><span>8 能量 · 荷叶弹跳</span>
           </button>
           <button class="animal-choice" data-animal="dog" aria-pressed="false">
-            <img src="%BASE_URL%models/dog-preview.png" alt="小狗旺旺" /><strong>小狗 旺旺</strong><span>10 能量 · 轻快连击</span>
+            <img src="%BASE_URL%models/dog-preview.png" alt="小狗旺旺" /><strong>小狗 旺旺</strong><span>14 能量 · 轻快连击</span>
           </button>
           <button class="animal-choice" data-animal="dragon" aria-pressed="false">
-            <img src="%BASE_URL%models/dragon-preview.png" alt="飞龙翼翼" /><strong>飞龙 翼翼</strong><span>12 能量 · 云间弧线</span>
+            <img src="%BASE_URL%models/dragon-preview.png" alt="飞龙翼翼" /><strong>飞龙 翼翼</strong><span>16 能量 · 云间弧线</span>
           </button>
           <button class="animal-choice" data-animal="goldenDragon" aria-pressed="false">
-            <img src="%BASE_URL%models/goldenDragon-preview.png" alt="金龙小金" /><strong>金龙 小金</strong><span>9 能量 · 祥云游动</span>
+            <img src="%BASE_URL%models/goldenDragon-preview.png" alt="金龙小金" /><strong>金龙 小金</strong><span>12 能量 · 祥云游动</span>
           </button>
           <button class="animal-choice random-choice" data-animal="random" aria-pressed="false">
             <div class="random-friends"><img src="%BASE_URL%models/bunny-preview.png" alt="" /><img src="%BASE_URL%models/cat-preview.png" alt="" /><img src="%BASE_URL%models/frog-preview.png" alt="" /><img src="%BASE_URL%models/dog-preview.png" alt="" /><img src="%BASE_URL%models/dragon-preview.png" alt="" /><img src="%BASE_URL%models/goldenDragon-preview.png" alt="" /></div><strong>随机朋友</strong><span>六位朋友 · 开局揭晓</span>
@@ -127,12 +126,16 @@
 
         </div>
         <div class="start-actions">
-        <button id="btn-open-camp" class="camp-entry-btn" type="button">
-          <span class="camp-btn-icon">⛺</span>
-          <span class="camp-btn-text">我的小营地 · 森林图鉴</span>
-          <span id="camp-badge-count" class="camp-badge-count">0/6</span>
-        </button>
-        <button id="btn-open-vocabulary" class="vocabulary-entry-btn" type="button"><span aria-hidden="true">📖</span><span>单词小花园</span><span class="vocabulary-entry-count">47 个词 · 看图点读 →</span></button>
+        <!-- 功能三合一排：单词小花园 · 自动听英语 · 营地 -->
+        <div class="start-feature-row">
+          <button id="btn-open-vocabulary" class="vocabulary-entry-btn" type="button"><span aria-hidden="true">📖</span><span class="feature-label">单词小花园</span><span class="vocabulary-entry-count">75 词</span></button>
+          <label class="word-mode-toggle" title="开启后每轮同一词卡读一英一中各一次"><input id="word-mode" type="checkbox" /><strong>自动听英语</strong></label>
+          <button id="btn-open-camp" class="camp-entry-btn" type="button">
+            <span class="camp-btn-icon">⛺</span>
+            <span class="camp-btn-text">我的营地</span>
+            <span id="camp-badge-count" class="camp-badge-count">0/6</span>
+          </button>
+        </div>
         <!-- 模式选择 -->
         <div class="mode-selector">
           <button id="btn-mode-single" class="mode-btn selected">
@@ -147,19 +150,21 @@
           </button>
         </div>
 
-        <label class="word-mode-toggle"><input id="word-mode" type="checkbox" aria-describedby="word-mode-note" /><strong>自动听英语</strong><span id="word-mode-note">每轮最多读一个词 · 关闭也能看图点读</span></label>
         <button id="btn-start-game" class="btn-primary">开始游戏 🎈</button>
-        <button id="btn-demo-mode" class="btn-secondary">💻 电脑鼠标/触控板模拟体验</button>
+        <button id="btn-demo-mode" class="btn-secondary">💻 电脑模拟体验</button>
 
-        <details class="start-help"><summary>玩法提示与隐私保护</summary>
-        <div class="auto-start-pill">
-          ✨ <strong>免触碰倒计时开局</strong>：点击开始后站在镜头前站好露出双手，将自动 3-2-1 倒计时开局！
+        <!-- 最底一排：静音 · 玩法 · 隐私 -->
+        <div class="start-foot-row">
+          <button id="btn-sound-home" class="icon-btn sound-home-btn" type="button" title="声音开关" aria-label="声音开关">🔊</button>
+          <details class="start-help start-help-pill">
+            <summary>玩法</summary>
+            <div class="start-help-body">✨ 点击开始后站到镜头前，露出小手自动 3-2-1 开局；伸出食指碰破泡泡即可。开启「自动听英语」后，每轮同一词卡读一英一中各一次。点 📖 听词，点 💬 听朋友说话。</div>
+          </details>
+          <details class="start-help start-help-pill">
+            <summary>隐私</summary>
+            <div class="start-help-body privacy-tip">🔒 摄像头画面只在你的设备上本地识别，不录制、不存储、不上传任何影像。</div>
+          </details>
         </div>
-
-        <p class="voice-note">默认自由玩，不自动说话。点 📖 看图听词，点 💬 听朋友说一句；英文为合成配音。</p>
-        <div class="privacy-tip">
-          🔒 <strong>隐私保护承诺</strong>：所有摄像头动作均在您的本地设备离线识别，绝不录制、不存储、不上传任何影像。
-        </div></details>
         </div>
       </div>
     </div>

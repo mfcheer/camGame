@@ -3358,5 +3358,133 @@
         "sha256": "9d0e9d9b4ca027bab9c8cb33b8ea61665a6daed45546d3d5723b8f8e37c07482"
       }
     ]
+  },
+  {
+    "kind": "countdown",
+    "id": "3",
+    "text": "three",
+    "zh": "三",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/countdown/en/3.mp3",
+        "sha256": "22a422fa0def141ec6bcab0badec67c4b50d0aa11c77c9e4e1e5c6185e733663"
+      },
+      {
+        "path": "public/audio/countdown/zh/3.mp3",
+        "sha256": "46d15c04099f350bfddfb87887bf4f397d129b3fd327bb678dcc8901d6bd53f5"
+      }
+    ]
+  },
+  {
+    "kind": "countdown",
+    "id": "2",
+    "text": "two",
+    "zh": "二",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/countdown/en/2.mp3",
+        "sha256": "d6f92285b79195f85d5a0769bdd0a5e927bb82fdd73ad9761f76813b4c141eee"
+      },
+      {
+        "path": "public/audio/countdown/zh/2.mp3",
+        "sha256": "a589d87bfb15f90e0e835503a63c8a125f0e8a5b9a366d89bd31ff7a3c01d040"
+      }
+    ]
+  },
+  {
+    "kind": "countdown",
+    "id": "1",
+    "text": "one",
+    "zh": "一",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/countdown/en/1.mp3",
+        "sha256": "97473b33319667a3800daf24710e273b1c8f09e0a569033233c643aad65e0c23"
+      },
+      {
+        "path": "public/audio/countdown/zh/1.mp3",
+        "sha256": "6d19791153f7ec3ea96425f3866e4114d792004df06a52c0c0a7d204551b6ecd"
+      }
+    ]
+  },
+  {
+    "kind": "countdown",
+    "id": "go",
+    "text": "Go!",
+    "zh": "出发！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/countdown/en/go.mp3",
+        "sha256": "fae5db95474c7f12174850fd694fac7d3ef1cfe2b43380763cb1e19c814a5e02"
+      },
+      {
+        "path": "public/audio/countdown/zh/go.mp3",
+        "sha256": "8758d722b63c82a423873caaef83ce9303c9fc04124501784f9109518a71e872"
+      }
+    ]
   }
 ]
