@@ -1,5 +1,5 @@
 import {WORDS_LIST,resolveAssetUrl} from './wordsConfig.js';
-export const WORD_CATEGORIES=[['all','全部'],['toys','玩具乐园'],['school','小小教室'],['colors','彩虹颜色'],['shapes','形状积木'],['two_book','绘本朋友'],['everyday','生活发现']];
+export const WORD_CATEGORIES=[['all','全部'],['toys','玩具乐园'],['school','小小教室'],['colors','彩虹颜色'],['shapes','形状积木'],['two_book','绘本朋友'],['animals','动物朋友'],['body','身体部位'],['everyday','生活发现']];
 export function libraryWords(category='all'){return WORDS_LIST.filter(w=>category==='all'||w.category===category);}
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text)node.textContent=text;return node;};
 

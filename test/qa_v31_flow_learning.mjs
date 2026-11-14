@@ -41,8 +41,9 @@ test('the bubble speaker can use the flow queue without also calling the legacy 
  const camera=new T.PerspectiveCamera(48,1,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();let legacy=0,flow=0;const b=new BubbleManager(new T.Scene(),camera,{playPop(){},playWord:()=>legacy++},null);b.wordAudioHandler=word=>{assert.equal(word.id,'egg');flow++;};b.createBubble(0,'normal','egg');b.popBubble(.5,.5);assert.equal(flow,1);assert.equal(legacy,0);
 });
 
-test('each rescue uses three distinct concepts and keeps all three before natural repetition',()=>{
- const camera=new T.PerspectiveCamera(48,1,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();for(let round=0;round<20;round++){const b=new BubbleManager(new T.Scene(),camera,{},null),ids=[];for(let n=0;n<12;n++){const w=b.chooseRoundWord();assert.notEqual(w.id,ids.at(-1));ids.push(w.id);b.lastWordId=w.id;}assert.equal(b.wordPool.length,3);assert.equal(new Set(ids.slice(0,3)).size,3);assert.equal(new Set(ids).size,3);}
+test('a round keeps one word while consecutive rounds avoid recent words',()=>{
+ const camera=new T.PerspectiveCamera(48,1,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();const b=new BubbleManager(new T.Scene(),camera,{},null),ids=[];
+ for(let n=0;n<15;n++){b.clear();b.beginWordRound();const w=b.chooseRoundWord();assert.equal(b.chooseRoundWord(),w);assert.ok(!ids.slice(-3).includes(w.id));ids.push(w.id);}
 });
 
 test('opening a word detail deliberately pauses, clears auto-resume voice and never scores',()=>{
@@ -51,5 +52,5 @@ test('opening a word detail deliberately pauses, clears auto-resume voice and ne
 
  test('round startup preloads only its three short English recordings without consuming the first word',()=>{
  const camera=new T.PerspectiveCamera(48,1,.1,100);camera.position.z=7.5;const bm=new BubbleManager(new T.Scene(),camera,{},null),calls=[];bm.spawnNext=()=>{};
- const g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',collectedCount:0,speechPolicy:{automaticEnabled:true,beginRound(){}},bubbleManager:bm,audioManager:{preloadWordAudios:(ids,options)=>calls.push({ids,options})}});g.beginRoundGreeting();assert.equal(calls.length,1);assert.equal(calls[0].ids.length,3);assert.equal(calls[0].options.review,true);assert.equal(bm.wordQueue.length,3);assert.ok(calls[0].ids.includes(bm.chooseRoundWord().id));
+ const g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',collectedCount:0,speechPolicy:{automaticEnabled:true,beginRound(){}},bubbleManager:bm,audioManager:{preloadWordAudios:(ids,options)=>calls.push({ids,options})}});g.beginRoundGreeting();assert.equal(calls.length,1);assert.equal(calls[0].ids.length,3);assert.equal(calls[0].options.review,true);assert.equal(bm.wordQueue.length,2);assert.ok(calls[0].ids.includes(bm.chooseRoundWord().id));
  });

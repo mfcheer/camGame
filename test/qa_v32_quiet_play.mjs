@@ -34,7 +34,7 @@ test('rapid pops speak while busy drops the rest; the pair follow-up still speak
   assert.equal(calls.length,1);assert.equal(queue.pendingWord,null);assert.equal(g.cueWord.id,'egg');assert.equal(policy.spokenThisRound,1);
   policy.update(2);jobs[0]();await first;assert.equal(g.wordCueRemaining,.65);
   // After the short pair gap a later pop completes the pair; a third chance is blocked.
-  policy.update(2.6);await g.presentPlayWord(getWordById('cup'));assert.equal(calls.length,2);assert.equal(policy.spokenThisRound,2);
+  policy.update(2.6);const second=g.presentPlayWord(getWordById('cup'));assert.equal(calls.length,2);assert.equal(policy.spokenThisRound,2);jobs[1]();await second;
   policy.update(12);await g.presentPlayWord(getWordById('cat'));assert.equal(calls.length,2);
 });
 
@@ -54,7 +54,7 @@ test('the round plans one word in a random language order and every bubble carri
   const langs=[];
   const audio={playWord(id,options){langs.push(options.lang);return Promise.resolve();},stopWord(){}};
   g.voiceQueue=new VoiceQueue(audio,g.speechPolicy);
-  return g.presentPlayWord(getWordById('egg')).then(()=>g.presentPlayWord(getWordById('egg'))).then(()=>{
+  return g.presentPlayWord(getWordById('egg')).then(()=>{g.speechPolicy.update(2.6);return g.presentPlayWord(getWordById('egg'));}).then(()=>{
     assert.deepEqual(langs,['zh','en']);
     const camera=new T.PerspectiveCamera(48,1,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();
     const bubbles=new BubbleManager(new T.Scene(),camera,{},null);

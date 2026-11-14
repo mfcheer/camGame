@@ -11,7 +11,7 @@ function audio(){const a=new AudioManager(),sources=[];a.init=()=>{};a.ctx={stat
 
  test('voice profile and manifest preserve all accepted natural clips and their source text',()=>{
  const p=JSON.parse(fs.readFileSync('scripts/voice-profile.json'));assert.equal(p.voice,'af_heart');assert.equal(p.speed,.92);assert.equal(p.kokoro_version,'0.9.4');assert.equal(p.output_sample_rate,44100);
- const entries=JSON.parse(fs.readFileSync('docs/voice-manifest.json'));assert.equal(entries.length,13);for(const e of entries)for(const asset of e.assets)assert.equal(crypto.createHash('sha256').update(fs.readFileSync(asset.path)).digest('hex'),asset.sha256);
+ const entries=JSON.parse(fs.readFileSync('docs/voice-manifest.json'));assert.equal(entries.filter(e=>e.kind==='phrases').length,13);for(const e of entries)for(const asset of e.assets)assert.equal(crypto.createHash('sha256').update(fs.readFileSync(asset.path)).digest('hex'),asset.sha256);
  assert.match(fs.readFileSync('AGENTS.md','utf8'),/VOICE_STANDARD/);assert.match(execFileSync('python3',['scripts/build-natural-phrases.py','--only','hello-play','--dry-run'],{encoding:'utf8'}),/KEEP hello-play/);
  });
 

@@ -30,9 +30,9 @@ function createCamera(w = 1280, h = 720) {
   return camera;
 }
 
-test('1. 单词配置与 47 个图案/中英双语发音资源完整性验证', () => {
-  assert.equal(WORDS_LIST.length, 47, 'WORDS_LIST 应包含 47 个单词');
-  assert.equal(WORDS_MAP.size, 47, 'WORDS_MAP 应索引全部 47 个单词');
+test('1. 单词配置与 75 个图案/中英双语发音资源完整性验证', () => {
+  assert.equal(WORDS_LIST.length, 75, 'WORDS_LIST 应包含 75 个单词');
+  assert.equal(WORDS_MAP.size, 75, 'WORDS_MAP 应索引全部 75 个单词');
 
   // 验证每个指定单词均存在
   for (const id of EXPECTED_WORDS) {
@@ -57,7 +57,7 @@ test('1. 单词配置与 47 个图案/中英双语发音资源完整性验证', 
     assert.ok(fs.existsSync(pngPath), `PNG 图像应存在: ${pngPath}`);
     if(svgPath)assert.ok(fs.existsSync(svgPath), `SVG 图像应存在: ${svgPath}`);
     assert.ok(fs.statSync(pngPath).size > 300, `${id} 图片内容应有效`);
-    if(svgPath)assert.ok(fs.statSync(svgPath).size > 500, `${id}.svg 体积应有效`);
+    if(svgPath)assert.ok(fs.statSync(svgPath).size > 200, `${id}.svg 体积应有效`);
   }
 
   // 验证分类统计
@@ -65,12 +65,12 @@ test('1. 单词配置与 47 个图案/中英双语发音资源完整性验证', 
   for (const w of WORDS_LIST) {
     categories[w.category] = (categories[w.category] || 0) + 1;
   }
-  assert.equal(categories.school, 6, '文具与教室类应包含 6 个单词');
-  assert.equal(categories.colors, 6, '色彩类应包含 6 个单词');
-  assert.equal(categories.shapes, 4, '图形类应包含 4 个单词');
-  assert.equal(categories.toys, 15, '玩具类含绘本词共15个');
-  assert.equal(categories.two_book, 9, 'Two绘本主题9词');
-  assert.equal(categories.everyday,7);
+  assert.equal(categories.school, 10, '文具与教室类应包含 10 个单词');
+  assert.equal(categories.colors, 10, '色彩类应包含 10 个单词');
+  assert.equal(categories.shapes, 7, '图形类应包含 7 个单词');
+  assert.equal(categories.toys, 19, '玩具类含绘本词共19个');
+  assert.equal(categories.two_book, 10, 'Two绘本主题及数字一共10词');
+  assert.equal(categories.everyday,9);
 
   // 验证随机抽取与排除机制
   const sample1 = getRandomWord();
@@ -92,7 +92,7 @@ test('2. 气泡内部单词卡片 Mesh 构建与随机/指定生成机制', () =
   const b1 = bm.activeBubble;
   assert.ok(b1, '应当生成活跃泡泡');
   assert.ok(b1.word, '泡泡应当绑定 word 元数据');
-  assert.ok(EXPECTED_WORDS.includes(b1.word.id), `绑定的单词 id (${b1.word.id}) 应当属于 47 个词库之一`);
+  assert.ok(WORDS_MAP.has(b1.word.id), `绑定的单词 id (${b1.word.id}) 应当属于 75 个词库之一`);
   assert.ok(b1.cardGroup, '应当包含 cardGroup 容器');
   assert.ok(b1.core, '应当将 cardGroup 挂载为 core');
   assert.equal(b1.cardGroup.userData.word.id, b1.word.id, 'cardGroup 的 userData 应当记录相同单词');

@@ -14,9 +14,9 @@ function fixture(){const jobs=[],events=[],audio={playPhrase:p=>{const job=defer
 function step(s,time){for(let t=0;t<time;t+=.02)s.update(.02);}
 
 test('teacher messages add exactly eight imageable words, without repeated lessons or metadata',()=>{
- assert.equal(WORDS_LIST.length,47);assert.equal(CLASSROOM_NEW_WORDS.length,8);
- const imported=mergeVocabulary(WORDS_LIST,CLASSROOM_WORDS,CLASSROOM_WORDS);assert.equal(imported.length,47);
- for(const id of ['happy','sunny','fast','slow','tuesday','nov','tap','play'])assert.equal(getWordById(id),null);
+ assert.equal(WORDS_LIST.length,75);assert.equal(CLASSROOM_NEW_WORDS.length,8);
+ const imported=mergeVocabulary(WORDS_LIST,CLASSROOM_WORDS,CLASSROOM_WORDS);assert.equal(imported.length,75);
+ for(const id of ['sunny','fast','slow','tuesday','nov','tap','play'])assert.equal(getWordById(id),null);
  for(const id of ['egg','elbow','envelope','elephant','cup','computer','mooncake','orange'])assert.equal(getWordById(id).word,id);
  assert.equal(getWordById('orange').zh,'橙色');assert.equal(getWordById('orange').category,'colors');
  assert.equal(getWordById('car').sources.filter(s=>s.kind==='teacher-message').length,2);
@@ -26,7 +26,7 @@ test('teacher messages add exactly eight imageable words, without repeated lesso
 test('all imported cards and bilingual/review audio exist, all themes support four distinct concepts',()=>{
  for(const w of CLASSROOM_NEW_WORDS)for(const asset of [w.image,w.audio,w.reviewAudio])assert.ok(fs.statSync('public'+asset).size>300,asset);
  for(const category of new Set(WORDS_LIST.map(w=>w.category)))assert.ok(new Set(WORDS_LIST.filter(w=>w.category===category).map(w=>w.conceptId||w.id)).size>=4,category);
- const manifest=JSON.parse(fs.readFileSync('public/images/words/words-manifest.json'));assert.equal(manifest.length,47);
+ const manifest=JSON.parse(fs.readFileSync('public/images/words/words-manifest.json'));assert.equal(manifest.length,75);
 });
 
 test('phrases are short, recorded, grounded in known words and vary without immediate repetition',()=>{

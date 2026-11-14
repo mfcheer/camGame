@@ -150,6 +150,11 @@
         "form": "red",
         "date": "2026-10-12",
         "kind": "teacher-message"
+      },
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "red",
+        "kind": "teacher-photo"
       }
     ]
   },
@@ -194,6 +199,11 @@
         "form": "blue",
         "date": "2026-10-12",
         "kind": "teacher-message"
+      },
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "blue",
+        "kind": "teacher-photo"
       }
     ]
   },
@@ -253,6 +263,11 @@
         "form": "circle",
         "date": "2026-09-16",
         "kind": "teacher-message"
+      },
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "circle",
+        "kind": "teacher-photo"
       }
     ]
   },
@@ -1121,6 +1136,480 @@
         "form": "orange",
         "date": "2026-10-12",
         "kind": "teacher-message"
+      }
+    ]
+  },
+  {
+    "id": "star",
+    "word": "star",
+    "zh": "星形",
+    "category": "shapes",
+    "image": "/images/words/learning/star.svg",
+    "bubbleImage": "/images/words/learning/star.svg",
+    "svg": "/images/words/learning/star.svg",
+    "bubbleSvg": "/images/words/learning/star.svg",
+    "audio": "/audio/words/star.mp3",
+    "reviewAudio": "/audio/words/review/star.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "heart",
+    "word": "heart",
+    "zh": "心形",
+    "category": "shapes",
+    "image": "/images/words/learning/heart.svg",
+    "bubbleImage": "/images/words/learning/heart.svg",
+    "svg": "/images/words/learning/heart.svg",
+    "bubbleSvg": "/images/words/learning/heart.svg",
+    "audio": "/audio/words/heart.mp3",
+    "reviewAudio": "/audio/words/review/heart.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "oval",
+    "word": "oval",
+    "zh": "椭圆形",
+    "category": "shapes",
+    "image": "/images/words/learning/oval.svg",
+    "bubbleImage": "/images/words/learning/oval.svg",
+    "svg": "/images/words/learning/oval.svg",
+    "bubbleSvg": "/images/words/learning/oval.svg",
+    "audio": "/audio/words/oval.mp3",
+    "reviewAudio": "/audio/words/review/oval.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "pink",
+    "word": "pink",
+    "zh": "粉色",
+    "category": "colors",
+    "image": "/images/words/learning/pink.svg",
+    "bubbleImage": "/images/words/learning/pink.svg",
+    "svg": "/images/words/learning/pink.svg",
+    "bubbleSvg": "/images/words/learning/pink.svg",
+    "audio": "/audio/words/pink.mp3",
+    "reviewAudio": "/audio/words/review/pink.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "white",
+    "word": "white",
+    "zh": "白色",
+    "category": "colors",
+    "image": "/images/words/learning/white.svg",
+    "bubbleImage": "/images/words/learning/white.svg",
+    "svg": "/images/words/learning/white.svg",
+    "bubbleSvg": "/images/words/learning/white.svg",
+    "audio": "/audio/words/white.mp3",
+    "reviewAudio": "/audio/words/review/white.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "black",
+    "word": "black",
+    "zh": "黑色",
+    "category": "colors",
+    "image": "/images/words/learning/black.svg",
+    "bubbleImage": "/images/words/learning/black.svg",
+    "svg": "/images/words/learning/black.svg",
+    "bubbleSvg": "/images/words/learning/black.svg",
+    "audio": "/audio/words/black.mp3",
+    "reviewAudio": "/audio/words/review/black.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "brown",
+    "word": "brown",
+    "zh": "棕色",
+    "category": "colors",
+    "image": "/images/words/learning/brown.svg",
+    "bubbleImage": "/images/words/learning/brown.svg",
+    "svg": "/images/words/learning/brown.svg",
+    "bubbleSvg": "/images/words/learning/brown.svg",
+    "audio": "/audio/words/brown.mp3",
+    "reviewAudio": "/audio/words/review/brown.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "eraser",
+    "word": "eraser",
+    "zh": "橡皮",
+    "category": "school",
+    "image": "/images/words/learning/eraser.svg",
+    "bubbleImage": "/images/words/learning/eraser.svg",
+    "svg": "/images/words/learning/eraser.svg",
+    "bubbleSvg": "/images/words/learning/eraser.svg",
+    "audio": "/audio/words/eraser.mp3",
+    "reviewAudio": "/audio/words/review/eraser.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "ruler",
+    "word": "ruler",
+    "zh": "尺子",
+    "category": "school",
+    "image": "/images/words/learning/ruler.svg",
+    "bubbleImage": "/images/words/learning/ruler.svg",
+    "svg": "/images/words/learning/ruler.svg",
+    "bubbleSvg": "/images/words/learning/ruler.svg",
+    "audio": "/audio/words/ruler.mp3",
+    "reviewAudio": "/audio/words/review/ruler.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "schoolbag",
+    "word": "schoolbag",
+    "zh": "书包",
+    "category": "school",
+    "image": "/images/words/learning/schoolbag.svg",
+    "bubbleImage": "/images/words/learning/schoolbag.svg",
+    "svg": "/images/words/learning/schoolbag.svg",
+    "bubbleSvg": "/images/words/learning/schoolbag.svg",
+    "audio": "/audio/words/schoolbag.mp3",
+    "reviewAudio": "/audio/words/review/schoolbag.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "scissors",
+    "word": "scissors",
+    "zh": "剪刀",
+    "category": "school",
+    "image": "/images/words/learning/scissors.svg",
+    "bubbleImage": "/images/words/learning/scissors.svg",
+    "svg": "/images/words/learning/scissors.svg",
+    "bubbleSvg": "/images/words/learning/scissors.svg",
+    "audio": "/audio/words/scissors.mp3",
+    "reviewAudio": "/audio/words/review/scissors.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "puzzle",
+    "word": "puzzle",
+    "zh": "拼图",
+    "category": "toys",
+    "image": "/images/words/learning/puzzle.svg",
+    "bubbleImage": "/images/words/learning/puzzle.svg",
+    "svg": "/images/words/learning/puzzle.svg",
+    "bubbleSvg": "/images/words/learning/puzzle.svg",
+    "audio": "/audio/words/puzzle.mp3",
+    "reviewAudio": "/audio/words/review/puzzle.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "balloon",
+    "word": "balloon",
+    "zh": "气球",
+    "category": "toys",
+    "image": "/images/words/learning/balloon.svg",
+    "bubbleImage": "/images/words/learning/balloon.svg",
+    "svg": "/images/words/learning/balloon.svg",
+    "bubbleSvg": "/images/words/learning/balloon.svg",
+    "audio": "/audio/words/balloon.mp3",
+    "reviewAudio": "/audio/words/review/balloon.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "slide",
+    "word": "slide",
+    "zh": "滑梯",
+    "category": "toys",
+    "image": "/images/words/learning/slide.svg",
+    "bubbleImage": "/images/words/learning/slide.svg",
+    "svg": "/images/words/learning/slide.svg",
+    "bubbleSvg": "/images/words/learning/slide.svg",
+    "audio": "/audio/words/slide.mp3",
+    "reviewAudio": "/audio/words/review/slide.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "swing",
+    "word": "swing",
+    "zh": "秋千",
+    "category": "toys",
+    "image": "/images/words/learning/swing.svg",
+    "bubbleImage": "/images/words/learning/swing.svg",
+    "svg": "/images/words/learning/swing.svg",
+    "bubbleSvg": "/images/words/learning/swing.svg",
+    "audio": "/audio/words/swing.mp3",
+    "reviewAudio": "/audio/words/review/swing.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "rabbit",
+    "word": "rabbit",
+    "zh": "兔子",
+    "category": "animals",
+    "image": "/images/words/learning/rabbit.svg",
+    "bubbleImage": "/images/words/learning/rabbit.svg",
+    "svg": "/images/words/learning/rabbit.svg",
+    "bubbleSvg": "/images/words/learning/rabbit.svg",
+    "audio": "/audio/words/rabbit.mp3",
+    "reviewAudio": "/audio/words/review/rabbit.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "duck",
+    "word": "duck",
+    "zh": "鸭子",
+    "category": "animals",
+    "image": "/images/words/learning/duck.svg",
+    "bubbleImage": "/images/words/learning/duck.svg",
+    "svg": "/images/words/learning/duck.svg",
+    "bubbleSvg": "/images/words/learning/duck.svg",
+    "audio": "/audio/words/duck.mp3",
+    "reviewAudio": "/audio/words/review/duck.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "frog",
+    "word": "frog",
+    "zh": "青蛙",
+    "category": "animals",
+    "image": "/images/words/learning/frog.svg",
+    "bubbleImage": "/images/words/learning/frog.svg",
+    "svg": "/images/words/learning/frog.svg",
+    "bubbleSvg": "/images/words/learning/frog.svg",
+    "audio": "/audio/words/frog.mp3",
+    "reviewAudio": "/audio/words/review/frog.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "sheep",
+    "word": "sheep",
+    "zh": "绵羊",
+    "category": "animals",
+    "image": "/images/words/learning/sheep.svg",
+    "bubbleImage": "/images/words/learning/sheep.svg",
+    "svg": "/images/words/learning/sheep.svg",
+    "bubbleSvg": "/images/words/learning/sheep.svg",
+    "audio": "/audio/words/sheep.mp3",
+    "reviewAudio": "/audio/words/review/sheep.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "face",
+    "word": "face",
+    "zh": "脸",
+    "category": "body",
+    "image": "/images/words/learning/face.svg",
+    "bubbleImage": "/images/words/learning/face.svg",
+    "svg": "/images/words/learning/face.svg",
+    "bubbleSvg": "/images/words/learning/face.svg",
+    "audio": "/audio/words/face.mp3",
+    "reviewAudio": "/audio/words/review/face.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "face",
+        "kind": "teacher-photo"
+      }
+    ]
+  },
+  {
+    "id": "eye",
+    "word": "eye",
+    "zh": "眼睛",
+    "category": "body",
+    "image": "/images/words/learning/eye.svg",
+    "bubbleImage": "/images/words/learning/eye.svg",
+    "svg": "/images/words/learning/eye.svg",
+    "bubbleSvg": "/images/words/learning/eye.svg",
+    "audio": "/audio/words/eye.mp3",
+    "reviewAudio": "/audio/words/review/eye.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "eye",
+        "kind": "teacher-photo"
+      }
+    ]
+  },
+  {
+    "id": "ear",
+    "word": "ear",
+    "zh": "耳朵",
+    "category": "body",
+    "image": "/images/words/learning/ear.svg",
+    "bubbleImage": "/images/words/learning/ear.svg",
+    "svg": "/images/words/learning/ear.svg",
+    "bubbleSvg": "/images/words/learning/ear.svg",
+    "audio": "/audio/words/ear.mp3",
+    "reviewAudio": "/audio/words/review/ear.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "ear",
+        "kind": "teacher-photo"
+      }
+    ]
+  },
+  {
+    "id": "mouth",
+    "word": "mouth",
+    "zh": "嘴巴",
+    "category": "body",
+    "image": "/images/words/learning/mouth.svg",
+    "bubbleImage": "/images/words/learning/mouth.svg",
+    "svg": "/images/words/learning/mouth.svg",
+    "bubbleSvg": "/images/words/learning/mouth.svg",
+    "audio": "/audio/words/mouth.mp3",
+    "reviewAudio": "/audio/words/review/mouth.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "mouth",
+        "kind": "teacher-photo"
+      }
+    ]
+  },
+  {
+    "id": "nose",
+    "word": "nose",
+    "zh": "鼻子",
+    "category": "body",
+    "image": "/images/words/learning/nose.svg",
+    "bubbleImage": "/images/words/learning/nose.svg",
+    "svg": "/images/words/learning/nose.svg",
+    "bubbleSvg": "/images/words/learning/nose.svg",
+    "audio": "/audio/words/nose.mp3",
+    "reviewAudio": "/audio/words/review/nose.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "nose",
+        "kind": "teacher-photo"
+      }
+    ]
+  },
+  {
+    "id": "hair",
+    "word": "hair",
+    "zh": "头发",
+    "category": "body",
+    "image": "/images/words/learning/hair.svg",
+    "bubbleImage": "/images/words/learning/hair.svg",
+    "svg": "/images/words/learning/hair.svg",
+    "bubbleSvg": "/images/words/learning/hair.svg",
+    "audio": "/audio/words/hair.mp3",
+    "reviewAudio": "/audio/words/review/hair.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "hair",
+        "kind": "teacher-photo"
+      }
+    ]
+  },
+  {
+    "id": "weather",
+    "word": "weather",
+    "zh": "天气",
+    "category": "everyday",
+    "image": "/images/words/learning/weather.svg",
+    "bubbleImage": "/images/words/learning/weather.svg",
+    "svg": "/images/words/learning/weather.svg",
+    "bubbleSvg": "/images/words/learning/weather.svg",
+    "audio": "/audio/words/weather.mp3",
+    "reviewAudio": "/audio/words/review/weather.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "weather",
+        "kind": "teacher-photo"
+      }
+    ]
+  },
+  {
+    "id": "one",
+    "word": "one",
+    "zh": "一",
+    "category": "two_book",
+    "image": "/images/words/learning/one.svg",
+    "bubbleImage": "/images/words/learning/one.svg",
+    "svg": "/images/words/learning/one.svg",
+    "bubbleSvg": "/images/words/learning/one.svg",
+    "audio": "/audio/words/one.mp3",
+    "reviewAudio": "/audio/words/review/one.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "one",
+        "kind": "teacher-photo"
+      }
+    ]
+  },
+  {
+    "id": "happy",
+    "word": "happy",
+    "zh": "开心",
+    "category": "everyday",
+    "image": "/images/words/learning/happy.svg",
+    "bubbleImage": "/images/words/learning/happy.svg",
+    "svg": "/images/words/learning/happy.svg",
+    "bubbleSvg": "/images/words/learning/happy.svg",
+    "audio": "/audio/words/happy.mp3",
+    "reviewAudio": "/audio/words/review/happy.mp3",
+    "accent": "#688f83",
+    "aliases": [],
+    "sources": [
+      {
+        "bookId": "classroom-next-lesson",
+        "form": "happy",
+        "kind": "teacher-photo"
       }
     ]
   }

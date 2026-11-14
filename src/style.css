@@ -1605,3 +1605,9 @@ html, body, .card, .start-choices, .start-actions, .word-library-grid, .word-lib
 }
 @media(prefers-reduced-motion:reduce) {.play-word-cue {animation:none;}}
 #demo-mode-banner.learning-covered {visibility:hidden;}
+
+/* Keep an expanded vocabulary category list usable on small screens. */
+@media (max-width: 600px) and (min-height: 321px) {
+ .word-library-filters { flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+ .word-library-filter { flex: 0 0 auto; white-space: nowrap; }
+}

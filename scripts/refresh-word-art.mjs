@@ -5,7 +5,7 @@ const dir='public/images/words/learning';
 await fs.mkdir(dir,{recursive:true});
 const colors={red:'#E74547',yellow:'#F6CA35',blue:'#3986E7',green:'#42AA68',purple:'#975ACB'};
 for(const word of WORDS_LIST){
-  if(word.id==='teacher')continue; // Dedicated generated illustration, optimized separately.
+  if(['teacher','circle','orange'].includes(word.id))continue; // Preserve dedicated, deliberately distinct art.
   try{await fs.access(`public/images/words/items/${word.id}.svg`);}catch{continue;} // Book art has its own sources.
   let svg;
   if(word.category==='colors'||word.category==='shapes'){

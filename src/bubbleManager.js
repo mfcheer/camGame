@@ -83,6 +83,7 @@ export class BubbleManager {
     this.lastPoppedEnergy = 1;
     this.onSpecialPop = null;
     this.lastWordId = null;
+    this.recentWordIds = [];
     this.wordMode = true;
     this.roundSeenWords = new Set();
     this.hasLearnedTouch = false;
@@ -555,24 +556,29 @@ export class BubbleManager {
       return items;
     };
     if (this.roundWord) return this.roundWord;
-    // Three familiar words per rescue; meet each one before repeating.
+    // Choose among the category's eligible words, avoiding the last few rounds.
     if (!this.wordPool.length) {
-      const categories=[...new Set(WORDS_LIST.map(word=>word.category))];
+      const categories=[...new Set(WORDS_LIST.filter(word=>!this.recentWordIds.includes(word.conceptId||word.id)).map(word=>word.category))];
       const category=categories[Math.floor(Math.random()*categories.length)];
       const concepts=new Set();
-      this.wordPool=shuffle(WORDS_LIST.filter(word=>word.category===category)).filter(word=>{
+      const categoryWords=WORDS_LIST.filter(word=>word.category===category);
+      const fresh=categoryWords.filter(word=>!this.recentWordIds.includes(word.conceptId||word.id));
+      this.wordPool=shuffle(fresh.length?fresh:categoryWords).filter(word=>{
         const concept=word.conceptId||word.id;
         if(concepts.has(concept))return false;
         concepts.add(concept);return true;
       }).slice(0,3);
     }
     if (!this.wordQueue?.length) {
-      this.wordQueue=shuffle([...this.wordPool]);
+      const fresh=this.wordPool.filter(word=>!this.recentWordIds.includes(word.conceptId||word.id));
+      if(!fresh.length){this.wordPool=[];return this.chooseRoundWord();}
+      this.wordQueue=shuffle([...fresh]);
       if(this.wordQueue.length>1 && this.wordQueue[0].id===this.lastWordId) {
         [this.wordQueue[0],this.wordQueue[1]]=[this.wordQueue[1],this.wordQueue[0]];
       }
     }
     this.roundWord=this.wordQueue.shift();
+    if(this.roundWord){this.recentWordIds.push(this.roundWord.conceptId||this.roundWord.id);if(this.recentWordIds.length>5)this.recentWordIds.shift();}
     return this.roundWord;
   }
 
