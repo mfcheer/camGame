@@ -50,7 +50,8 @@ const STAGE_TRACKS = {
 };
 
 export class AudioManager {
-  constructor() {
+  constructor({onBGMStart = null} = {}) {
+    this.onBGMStart = onBGMStart;
     this.ctx = null;
     this.isMuted = false;
     // 声音偏好跨会话持久化（Safari 无痕等异常静默降级）
@@ -1244,6 +1245,10 @@ export class AudioManager {
     }
 
     this._startBGMSequencer();
+    // 音乐真正发声时通知 UI（消除"待激活"呼吸提示）；静音/无 ctx 的早退分支不会到达这里。
+    if (typeof this.onBGMStart === 'function') {
+      try { this.onBGMStart(); } catch (e) {}
+    }
   }
 
   stopBGM(fadeDuration = 0.6) {

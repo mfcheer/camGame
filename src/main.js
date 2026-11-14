@@ -75,7 +75,7 @@ export class Game {
     if (this.canvasContainer) {
       this.sceneManager = new SceneManager(this.canvasContainer);
     }
-    this.audioManager = new AudioManager();
+    this.audioManager = new AudioManager({onBGMStart: () => this.uiManager?.markBGMActive?.()});
     this.speechPolicy = new SpeechPolicy();
     this.voiceQueue = new VoiceQueue(this.audioManager, this.speechPolicy);
     if (this.sceneManager) {
@@ -147,6 +147,8 @@ export class Game {
       });
       this.uiManager?.updateCampBadge?.(this.campManager);
       this.uiManager?.syncSoundButtons?.(this.audioManager.isMuted);
+      // BGM 因浏览器自动播放策略尚未开播时，给声音按钮加"待激活"呼吸提示。
+      if (!this.audioManager.isMuted) this.uiManager?.markAudioAwaiting?.();
       const wordMode=document.getElementById('word-mode');
       if(wordMode){
         wordMode.checked=this.speechPolicy.automaticEnabled;
@@ -393,7 +395,9 @@ export class Game {
       if (!success) {
         this.cancelAutoCountdown('哎呀，没有看到小手呢~ 请重新站回镜头前哦');
       }
-    }, 2700);
+      // 人声套 GO 音频约 0.6-0.7s：开局须晚于 GO 触发足够时长，避免 beginRoundGreeting 的
+      // voiceQueue.cancel→stopWord 切断「出发！/Go!」尾音；合成套维持原 2700ms 节奏。
+    }, step * 3 + (voiceSet === 'synth' ? 450 : 750));
     this.countdownTimers.push(t4);
   }
 

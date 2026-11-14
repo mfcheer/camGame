@@ -421,6 +421,26 @@ export class UIManager {
     const glyph = isMuted ? '🔇' : '🔊';
     if (this.dom.btnSound) this.dom.btnSound.textContent = glyph;
     if (this.dom.btnSoundHome) this.dom.btnSoundHome.textContent = glyph;
+    // 静音即不存在"待播放"的期待，撤掉呼吸提示。
+    if (isMuted) this.markBGMActive();
+  }
+
+  // BGM 因自动播放策略尚未开播：按钮呼吸提示"点一下有音乐"。
+  markAudioAwaiting() {
+    for (const b of [this.dom.btnSound, this.dom.btnSoundHome]) {
+      if (!b) continue;
+      b.classList.add('awaiting-audio');
+      b.title = '点一下播放音乐';
+    }
+  }
+
+  // BGM 已真正发声：撤掉呼吸提示。
+  markBGMActive() {
+    for (const b of [this.dom.btnSound, this.dom.btnSoundHome]) {
+      if (!b) continue;
+      b.classList.remove('awaiting-audio');
+      b.title = '声音开关';
+    }
   }
 
   showPause() {

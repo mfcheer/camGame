@@ -52,17 +52,18 @@ try{
     results.push({viewport:`${w}x${h}`,rowsAligned:true,noOverlap:true,animalImgH:Math.round(imgH)});
   }
 
-  // 3. 倒计时人声路由：演示模式进入游戏后，驱动一次真实倒数验证音频链路
+  // 3. 倒计时人声路由：保持校准态驱动一次真实倒数，验证三/二/一/GO 完整播出（stub 开局避免状态跃迁）
   await page.setViewportSize({width:1194,height:834});
   await page.evaluate(()=>{window.phraseLog=[];const a=gameInstance.audioManager,o=a.playPhrase.bind(a);a.playPhrase=p=>{phraseLog.push(p.id);return o(p);};});
   await page.locator('#btn-demo-mode').tap();
   await page.waitForFunction(()=>gameInstance.state==='PLAYING'&&gameInstance.bubbleManager.activeBubble,null,{timeout:25000});
-  const usedSet=await page.evaluate(()=>{const s=gameInstance.state;gameInstance.state='CALIBRATING';gameInstance.startAutoCountdown();gameInstance.state=s;return gameInstance.countdownVoiceSet;});
+  const usedSet=await page.evaluate(()=>{window._prev={state:gameInstance.state,ready:gameInstance.handleReadyToPlay};gameInstance.state='CALIBRATING';gameInstance.handleReadyToPlay=()=>false;gameInstance.startAutoCountdown();return gameInstance.countdownVoiceSet;});
   assert.ok(['synth','zh','en'].includes(usedSet),'开局应随机选定倒数配音套');
   if(usedSet!=='synth'){
-    await page.waitForFunction(set=>window.phraseLog.filter(id=>id.startsWith(`countdown-${set}`)).length>=2,usedSet,{timeout:9000});
+    await page.waitForFunction(set=>window.phraseLog.filter(id=>id.startsWith(`countdown-${set}`)).length>=4,usedSet,{timeout:12000});
+    assert.ok(await page.evaluate(set=>window.phraseLog.includes(`countdown-${set}-go`),usedSet),`${usedSet} 套 GO 人声应在开局前触发`);
   }
-  await page.evaluate(()=>{gameInstance.clearCountdownTimers();gameInstance.cancelAutoCountdown();});
+  await page.evaluate(()=>{gameInstance.cancelAutoCountdown();gameInstance.state=window._prev.state;gameInstance.handleReadyToPlay=window._prev.ready;gameInstance.uiManager?.hideCalibration?.();gameInstance.uiManager?.hideCountdownOverlay?.();});
   results.push({countdownVoiceSet:usedSet});
 
   // 4. 完整解救一轮：演出结束后自动播报告别短语

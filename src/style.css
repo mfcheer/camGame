@@ -1642,3 +1642,15 @@ html, body, .card, .start-choices, .start-actions, .word-library-grid, .word-lib
  .word-library-filters { flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
  .word-library-filter { flex: 0 0 auto; white-space: nowrap; }
 }
+
+/* 矮竖屏手机（高≤780px）：首页卡片整体滚动，动物选择区不再被内部滚动折叠线拦腰截断 */
+@media(max-width:540px) and (max-height:780px){
+  .start-card{overflow-y:auto}
+  .start-choices{flex:0 0 auto;overflow:visible;padding-bottom:0}
+}
+/* 功能排营地按钮与相邻按钮等高（旧 540px 边距规则会让它缩短 10px、底边错位） */
+.start-actions .start-feature-row .camp-entry-btn{margin:0}
+/* BGM 待激活提示：浏览器要求首次交互后才可播放，首页/游戏静音按钮轻微呼吸提示"点一下有音乐" */
+.awaiting-audio{animation:sound-await 2.4s ease-in-out infinite}
+@keyframes sound-await{0%,100%{transform:scale(1);box-shadow:0 6px 18px rgba(0,0,0,.15)}50%{transform:scale(1.08);box-shadow:0 6px 24px rgba(74,222,128,.5)}}
+@media(prefers-reduced-motion:reduce){.awaiting-audio{animation:none}}

@@ -16,6 +16,30 @@ test('每次开局随机选一套倒数配音：3-2-1 与 GO 用同一套',()=>{
   g.clearCountdownTimers();g.cancelAutoCountdown();
 });
 
+test('三套配音下 GO 触发必须早于开局，且人声 GO 留足播出时间再开局',()=>{
+  const idx={synth:0,zh:1,en:2};
+  const origRandom=Math.random;
+  const g=Object.assign(Object.create(Game.prototype),{state:'CALIBRATING',isAutoCountingDown:false,countdownTimers:[],autoCountdownSessionId:0,
+    countdownReadyDuration:0,countdownLostDuration:0,
+    audioManager:{playCountdown(){},playCountdownGo(){},stopWord(){}},
+    uiManager:{}});
+  try{
+    for(const set of ['synth','zh','en']){
+      Math.random=()=>(idx[set]+.5)/3;
+      g.countdownTimers=[];g.isAutoCountingDown=false;g.autoCountdownSessionId++;
+      g.startAutoCountdown();
+      assert.equal(g.countdownVoiceSet,set,`应强制选定 ${set} 套`);
+      assert.equal(g.countdownTimers.length,4,'倒数应有 4 个定时器（3/2/1/GO + 开局）');
+      const delays=g.countdownTimers.map(t=>t._idleTimeout);
+      const goDelay=Math.max(...delays.slice(0,3));
+      const startDelay=Math.max(...delays);
+      assert.ok(goDelay<startDelay,`${set} 套 GO(${goDelay}ms)必须早于开局(${startDelay}ms)，否则开局清理会吞掉 GO`);
+      if(set!=='synth')assert.ok(startDelay-goDelay>=700,`${set} 套 GO 人声约 0.6-0.7s，开局前应留 ≥700ms 播出时间，实际 ${startDelay-goDelay}ms`);
+      g.clearCountdownTimers();
+    }
+  }finally{Math.random=origRandom;g.clearCountdownTimers();g.cancelAutoCountdown();}
+});
+
 test('中文/英文倒数走词通道播放对应音频，合成套不占用词通道',()=>{
   const a=Object.create(AudioManager.prototype);const clips=[];
   a.playPhrase=p=>{clips.push(p.audio);return Promise.resolve();};
