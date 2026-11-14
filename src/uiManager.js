@@ -74,6 +74,7 @@ export class UIManager {
 
       // 顶部条与控制
       btnSound: document.getElementById('btn-sound'),
+      btnSoundHome: document.getElementById('btn-sound-home'),
       btnPause: document.getElementById('btn-pause'),
       modeBadge: document.getElementById('mode-badge'),
       progressDots: Array.from(document.querySelectorAll('.progress-dot')),
@@ -193,14 +194,18 @@ export class UIManager {
       });
     }
 
-    // 音效开关
-    this.dom.btnSound.addEventListener('click', () => {
-      if (this.handlers.onToggleAudio) {
-        const isMuted = this.handlers.onToggleAudio();
-        this.soundMuted = isMuted;
-        this.dom.btnSound.textContent = isMuted ? '🔇' : '🔊';
-      }
-    });
+    // 音效开关（游戏内 HUD 与首页各一枚，图标保持同步）
+    const bindSoundToggle = (btn) => {
+      btn?.addEventListener('click', () => {
+        if (this.handlers.onToggleAudio) {
+          const isMuted = this.handlers.onToggleAudio();
+          this.soundMuted = isMuted;
+          this.syncSoundButtons(isMuted);
+        }
+      });
+    };
+    bindSoundToggle(this.dom.btnSound);
+    bindSoundToggle(this.dom.btnSoundHome);
 
     // 暂停
     this.dom.btnPause.addEventListener('click', () => {
@@ -410,6 +415,12 @@ export class UIManager {
   hideHUD() {
     this.dom.hud.classList.add('hidden');
     this.hideCombo();
+  }
+
+  syncSoundButtons(isMuted) {
+    const glyph = isMuted ? '🔇' : '🔊';
+    if (this.dom.btnSound) this.dom.btnSound.textContent = glyph;
+    if (this.dom.btnSoundHome) this.dom.btnSoundHome.textContent = glyph;
   }
 
   showPause() {

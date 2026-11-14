@@ -40,6 +40,12 @@ const STAGE_TRACKS = {
     melody: [659.25, 0, 830.61, 987.77, 0, 1108.73, 987.77, 0, 830.61, 0, 659.25, 830.61, 987.77, 0, 0, 0],
     bass: [164.81, 0, 0, 0, 123.47, 0, 0, 0, 138.59, 0, 0, 0, 164.81, 0, 0, 0],
     noteDuration: 0.36
+  },
+  home: {
+    // 首页欢迎：慢速八音盒摇篮曲（C大调），稀疏温柔，等待选朋友时的安静陪伴
+    melody: [523.25, 0, 0, 659.25, 0, 0, 783.99, 0, 0, 659.25, 0, 523.25, 0, 0, 392.00, 0],
+    bass: [130.81, 0, 0, 0, 98.00, 0, 0, 0, 130.81, 0, 0, 0, 98.00, 0, 0, 0],
+    noteDuration: 0.5
   }
 };
 
@@ -47,6 +53,10 @@ export class AudioManager {
   constructor() {
     this.ctx = null;
     this.isMuted = false;
+    // 声音偏好跨会话持久化（Safari 无痕等异常静默降级）
+    try {
+      if (typeof localStorage !== 'undefined' && localStorage.getItem('camgame.muted') === '1') this.isMuted = true;
+    } catch (e) {}
     this.initialized = false;
 
     // BGM 状态
@@ -189,6 +199,9 @@ export class AudioManager {
         }
       } catch (e) {}
     }
+    try {
+      if (typeof localStorage !== 'undefined') localStorage.setItem('camgame.muted', this.isMuted ? '1' : '0');
+    } catch (e) {}
   }
 
   // 1. 泡泡碰破音效 (拟真卡通水泡“啵~💦”与 Combo 阶梯音阶爬升)
@@ -1175,6 +1188,7 @@ export class AudioManager {
 
   // 7. 多场景童话 BGM 系统
   startBGM(stageId = 'forest') {
+    const wasPlaying = this.isBGMPlaying;
     this.currentStageId = stageId || 'forest';
     this.isBGMPlaying = true;
     this.isBGMPaused = false;
@@ -1183,8 +1197,8 @@ export class AudioManager {
     this.init();
     if (!this.ctx || typeof this.ctx.createOscillator !== 'function') return;
 
-    // 平滑淡入 (Fade In: 1.5s)
-    if (this.bgmGainNode && typeof this.ctx.currentTime === 'number') {
+    // 平滑淡入 (Fade In: 1.5s)；已在播放（如首页音乐切场景）时保持当前音量无缝换旋律
+    if (this.bgmGainNode && typeof this.ctx.currentTime === 'number' && !wasPlaying) {
       try {
         const now = this.ctx.currentTime;
         this.bgmGainNode.gain.cancelScheduledValues(now);

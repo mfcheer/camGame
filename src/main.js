@@ -127,7 +127,7 @@ export class Game {
         onResume: () => this.handleResume(),
         onRestart: () => this.handleRestart(),
         onExit: () => this.handleExit(),
-        onToggleAudio: () => { const muted=this.audioManager.toggleMute(); if(muted&&this.currentWord)this.wordAudioDone=true; return muted; },
+        onToggleAudio: () => { const muted=this.audioManager.toggleMute(); if(muted&&this.currentWord)this.wordAudioDone=true; if(!muted&&this.state==='START'&&!this.audioManager.isBGMPlaying){this.audioManager.init?.();this.audioManager.startBGM?.('home');} return muted; },
         onEnableDemo: (mode) => this.handleEnableDemo(mode),
         onRetryCamera: () => this.handleRetryCamera(),
         onOpenCamp: () => this.uiManager.showCamp(this.campManager, this.audioManager),
@@ -145,6 +145,7 @@ export class Game {
         onSavePolaroid: () => PolaroidManager.downloadImage(this.currentPolaroidDataUrl, this.currentAnimalName)
       });
       this.uiManager?.updateCampBadge?.(this.campManager);
+      this.uiManager?.syncSoundButtons?.(this.audioManager.isMuted);
       const wordMode=document.getElementById('word-mode');
       if(wordMode){
         wordMode.checked=this.speechPolicy.automaticEnabled;
@@ -157,8 +158,8 @@ export class Game {
     }
 
     const manualVoice={playWord:(id,options)=>this.voiceQueue.playManualWord(id,options),stopWord:()=>this.voiceQueue.cancel()};
-    this.wordLibrary=new WordLibrary(this.audioManager,()=>{if(this.uiManager?.dom?.btnSound)this.uiManager.dom.btnSound.textContent=this.audioManager.isMuted?'🔇':'🔊';},manualVoice);
-    this.wordFocus=new WordFocus(this.audioManager,()=>this.handleResume(),()=>{if(this.uiManager?.dom?.btnSound)this.uiManager.dom.btnSound.textContent=this.audioManager.isMuted?'🔇':'🔊';},manualVoice);
+    this.wordLibrary=new WordLibrary(this.audioManager,()=>this.uiManager?.syncSoundButtons?.(this.audioManager.isMuted),manualVoice);
+    this.wordFocus=new WordFocus(this.audioManager,()=>this.handleResume(),()=>this.uiManager?.syncSoundButtons?.(this.audioManager.isMuted),manualVoice);
     this.animalSpeech=new AnimalSpeech(this.voiceQueue,this.uiManager,this.rescueAnimal);this.animalSpeech.nonBlocking=true;
     if(this.uiManager)this.uiManager.flowLearning=true;
     if(this.bubbleManager)this.bubbleManager.getLearningObstacles=()=>this.uiManager?.getLearningObstacles?.()||[];
@@ -170,6 +171,7 @@ export class Game {
     this.setupPoseCallbacks();
     this.setupBackgroundListener();
     this.setupDemoMouseTouchInput();
+    this.setupHomeAmbientMusic();
     this.setupOrientationHandler();
 
     // 启动主渲染循环 (仅在真实浏览器环境)
@@ -551,7 +553,7 @@ export class Game {
 
   hearAnimal() {
     if(!['PLAYING','CELEBRATING'].includes(this.state)||this.resultVisible||this.wordFocus?.overlay)return;
-    if(this.audioManager?.isMuted){this.audioManager.toggleMute();if(this.uiManager?.dom?.btnSound)this.uiManager.dom.btnSound.textContent='🔊';}
+    if(this.audioManager?.isMuted){this.audioManager.toggleMute();this.uiManager?.syncSoundButtons?.(false);}
     this.audioManager?.recoverFromGesture?.();
     this.clearPlayWordCue();this.voiceQueue?.cancel();
     this.animalSpeech?.start(this.state==='PLAYING'?'start':'end',this.activeAnimalId,()=>{});
@@ -1042,6 +1044,21 @@ export class Game {
   async handleRetryCamera() {
     await this.poseDetector.init();
     return this.handleStart(this.playerMode);
+  }
+
+  // 首页欢迎音乐：浏览器自动播放限制下，用户第一次触碰屏幕时淡入 home 旋律；
+  // 进入游戏后由 startBGM(场景id) 无缝接管。
+  setupHomeAmbientMusic() {
+    if (typeof window === 'undefined') return;
+    const kick = () => {
+      if (this.state !== 'START') return;
+      const am = this.audioManager;
+      if (!am || am.isMuted || am.isBGMPlaying) return;
+      am.init?.();
+      am.startBGM?.('home');
+    };
+    window.addEventListener('pointerdown', kick, { passive: true });
+    window.addEventListener('keydown', kick);
   }
 
   // 模拟模式下的鼠标与触摸交互输入
