@@ -30,9 +30,9 @@ function createCamera(w = 1280, h = 720) {
   return camera;
 }
 
-test('1. 单词配置与 75 个图案/中英双语发音资源完整性验证', () => {
-  assert.equal(WORDS_LIST.length, 75, 'WORDS_LIST 应包含 75 个单词');
-  assert.equal(WORDS_MAP.size, 75, 'WORDS_MAP 应索引全部 75 个单词');
+test('1. 单词配置与 83 个图案/中英双语发音资源完整性验证', () => {
+  assert.equal(WORDS_LIST.length, 83, 'WORDS_LIST 应包含 83 个单词');
+  assert.equal(WORDS_MAP.size, 83, 'WORDS_MAP 应索引全部 83 个单词');
 
   // 验证每个指定单词均存在
   for (const id of EXPECTED_WORDS) {
@@ -94,7 +94,7 @@ test('2. 气泡内部单词卡片 Mesh 构建与随机/指定生成机制', () =
   const b1 = bm.activeBubble;
   assert.ok(b1, '应当生成活跃泡泡');
   assert.ok(b1.word, '泡泡应当绑定 word 元数据');
-  assert.ok(WORDS_MAP.has(b1.word.id), `绑定的单词 id (${b1.word.id}) 应当属于 75 个词库之一`);
+  assert.ok(WORDS_MAP.has(b1.word.id), `绑定的单词 id (${b1.word.id}) 应当属于 83 个词库之一`);
   assert.ok(b1.cardGroup, '应当包含 cardGroup 容器');
   assert.ok(b1.core, '应当将 cardGroup 挂载为 core');
   assert.equal(b1.cardGroup.userData.word.id, b1.word.id, 'cardGroup 的 userData 应当记录相同单词');

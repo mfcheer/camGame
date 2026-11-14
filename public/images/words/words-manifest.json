@@ -1612,5 +1612,189 @@
         "kind": "teacher-photo"
       }
     ]
+  },
+  {
+    "id": "apple",
+    "word": "apple",
+    "zh": "苹果",
+    "category": "fruits",
+    "image": "/images/words/learning/apple.svg",
+    "bubbleImage": "/images/words/learning/apple.svg",
+    "svg": "/images/words/learning/apple.svg",
+    "bubbleSvg": "/images/words/apple.svg",
+    "audio": "/audio/words/apple.mp3",
+    "reviewAudio": "/audio/words/review/apple.mp3",
+    "accent": "#E74C3C",
+    "aliases": [
+      "apples"
+    ],
+    "sources": [
+      {
+        "bookId": "fruits-discovery",
+        "form": "apple",
+        "kind": "common-fruits"
+      }
+    ]
+  },
+  {
+    "id": "banana",
+    "word": "banana",
+    "zh": "香蕉",
+    "category": "fruits",
+    "image": "/images/words/learning/banana.svg",
+    "bubbleImage": "/images/words/learning/banana.svg",
+    "svg": "/images/words/learning/banana.svg",
+    "bubbleSvg": "/images/words/banana.svg",
+    "audio": "/audio/words/banana.mp3",
+    "reviewAudio": "/audio/words/review/banana.mp3",
+    "accent": "#F1C40F",
+    "aliases": [
+      "bananas"
+    ],
+    "sources": [
+      {
+        "bookId": "fruits-discovery",
+        "form": "banana",
+        "kind": "common-fruits"
+      }
+    ]
+  },
+  {
+    "id": "watermelon",
+    "word": "watermelon",
+    "zh": "西瓜",
+    "category": "fruits",
+    "image": "/images/words/learning/watermelon.svg",
+    "bubbleImage": "/images/words/learning/watermelon.svg",
+    "svg": "/images/words/learning/watermelon.svg",
+    "bubbleSvg": "/images/words/watermelon.svg",
+    "audio": "/audio/words/watermelon.mp3",
+    "reviewAudio": "/audio/words/review/watermelon.mp3",
+    "accent": "#27AE60",
+    "aliases": [
+      "watermelons"
+    ],
+    "sources": [
+      {
+        "bookId": "fruits-discovery",
+        "form": "watermelon",
+        "kind": "common-fruits"
+      }
+    ]
+  },
+  {
+    "id": "grape",
+    "word": "grape",
+    "zh": "葡萄",
+    "category": "fruits",
+    "image": "/images/words/learning/grape.svg",
+    "bubbleImage": "/images/words/learning/grape.svg",
+    "svg": "/images/words/learning/grape.svg",
+    "bubbleSvg": "/images/words/grape.svg",
+    "audio": "/audio/words/grape.mp3",
+    "reviewAudio": "/audio/words/review/grape.mp3",
+    "accent": "#8E44AD",
+    "aliases": [
+      "grapes"
+    ],
+    "sources": [
+      {
+        "bookId": "fruits-discovery",
+        "form": "grape",
+        "kind": "common-fruits"
+      }
+    ]
+  },
+  {
+    "id": "strawberry",
+    "word": "strawberry",
+    "zh": "草莓",
+    "category": "fruits",
+    "image": "/images/words/learning/strawberry.svg",
+    "bubbleImage": "/images/words/learning/strawberry.svg",
+    "svg": "/images/words/learning/strawberry.svg",
+    "bubbleSvg": "/images/words/strawberry.svg",
+    "audio": "/audio/words/strawberry.mp3",
+    "reviewAudio": "/audio/words/review/strawberry.mp3",
+    "accent": "#FF4757",
+    "aliases": [
+      "strawberries"
+    ],
+    "sources": [
+      {
+        "bookId": "fruits-discovery",
+        "form": "strawberry",
+        "kind": "common-fruits"
+      }
+    ]
+  },
+  {
+    "id": "peach",
+    "word": "peach",
+    "zh": "桃子",
+    "category": "fruits",
+    "image": "/images/words/learning/peach.svg",
+    "bubbleImage": "/images/words/learning/peach.svg",
+    "svg": "/images/words/learning/peach.svg",
+    "bubbleSvg": "/images/words/peach.svg",
+    "audio": "/audio/words/peach.mp3",
+    "reviewAudio": "/audio/words/review/peach.mp3",
+    "accent": "#FFAAA6",
+    "aliases": [
+      "peaches"
+    ],
+    "sources": [
+      {
+        "bookId": "fruits-discovery",
+        "form": "peach",
+        "kind": "common-fruits"
+      }
+    ]
+  },
+  {
+    "id": "pear",
+    "word": "pear",
+    "zh": "梨",
+    "category": "fruits",
+    "image": "/images/words/learning/pear.svg",
+    "bubbleImage": "/images/words/learning/pear.svg",
+    "svg": "/images/words/learning/pear.svg",
+    "bubbleSvg": "/images/words/pear.svg",
+    "audio": "/audio/words/pear.mp3",
+    "reviewAudio": "/audio/words/review/pear.mp3",
+    "accent": "#70C1B3",
+    "aliases": [
+      "pears"
+    ],
+    "sources": [
+      {
+        "bookId": "fruits-discovery",
+        "form": "pear",
+        "kind": "common-fruits"
+      }
+    ]
+  },
+  {
+    "id": "cherry",
+    "word": "cherry",
+    "zh": "樱桃",
+    "category": "fruits",
+    "image": "/images/words/learning/cherry.svg",
+    "bubbleImage": "/images/words/learning/cherry.svg",
+    "svg": "/images/words/learning/cherry.svg",
+    "bubbleSvg": "/images/words/cherry.svg",
+    "audio": "/audio/words/cherry.mp3",
+    "reviewAudio": "/audio/words/review/cherry.mp3",
+    "accent": "#C0392B",
+    "aliases": [
+      "cherries"
+    ],
+    "sources": [
+      {
+        "bookId": "fruits-discovery",
+        "form": "cherry",
+        "kind": "common-fruits"
+      }
+    ]
   }
 ]

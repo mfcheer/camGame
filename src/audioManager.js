@@ -48,6 +48,12 @@ const STAGE_TRACKS = {
     noteDuration: 0.5
   }
 };
+const CHARACTER_MUSIC={
+  bunny:['sine',1],cat:['triangle',.88],frog:['sine',1.12],dog:['triangle',.94],
+  dragon:['sine',1.16],goldenDragon:['sine',1.24],mcqueen:['triangle',.72],
+  wolf:['triangle',.92],teddy:['sine',1.28],chase:['triangle',.82],
+  jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96]
+};
 
 export class AudioManager {
   constructor({onBGMStart = null} = {}) {
@@ -387,12 +393,12 @@ export class AudioManager {
           this._playGoldenDragonSound(type);
           break;
         case 'wolf': this._playWolfSound(type); break;
-        case 'chase': this._playDogSound(type); break;
-        case 'jett': this._playCarFriendSound(type); break;
+        case 'chase': this._playChaseSound(type); break;
+        case 'jett': this._playJettSound(type); break;
         case 'thomas': this._playThomasSound(type); break;
         case 'peppa': this._playPeppaSound(type); break;
         case 'mcqueen': this._playCarFriendSound(type); break;
-        case 'teddy': this._playBunnySound(type); break;
+        case 'teddy': this._playTeddySound(type); break;
         case 'bunny':
         default:
           this._playBunnySound(type);
@@ -408,6 +414,18 @@ export class AudioManager {
     gain.gain.setValueAtTime(.001,now);gain.gain.linearRampToValueAtTime(.085,now+.025);gain.gain.exponentialRampToValueAtTime(.001,now+duration);
     osc.connect(gain);gain.connect(this.sfxGainNode||this.ctx.destination);osc.start(now);osc.stop(now+duration+.01);
   }
+  _playFriendNotes(notes,type,wave='sine',volume=.08){
+    const now=this.ctx.currentTime,dest=this.sfxGainNode||this.ctx.destination;
+    for(const [index,freq] of notes.slice(0,type==='energy'?1:type==='happy'?2:notes.length).entries()){
+      const start=now+index*.105,dur=.15,osc=this.ctx.createOscillator(),gain=this.ctx.createGain();
+      osc.type=wave;osc.frequency.setValueAtTime(freq,start);osc.frequency.exponentialRampToValueAtTime(freq*1.07,start+dur*.7);
+      gain.gain.setValueAtTime(.001,start);gain.gain.linearRampToValueAtTime(volume,start+.024);gain.gain.exponentialRampToValueAtTime(.001,start+dur);
+      osc.connect(gain);gain.connect(dest);osc.start(start);osc.stop(start+dur+.01);
+    }
+  }
+  _playChaseSound(type){this._playFriendNotes([390,520,650],type,'triangle',.075);}
+  _playJettSound(type){this._playFriendNotes([540,720,960],type,'sine',.085);}
+  _playTeddySound(type){this._playFriendNotes([440,550,660],type,'sine',.065);}
 
   // Thomas the Tank Engine: cheerful two-tone train whistle ("choo-choo!") plus steam puff.
   _playThomasSound(type) {
@@ -416,8 +434,8 @@ export class AudioManager {
     // Whistle: two quick ascending notes that sound like a happy train horn.
     const whistle=(start,freq1,freq2,dur)=>{
       const o=this.ctx.createOscillator(),g=this.ctx.createGain();
-      o.type='square';o.frequency.setValueAtTime(freq1,start);o.frequency.exponentialRampToValueAtTime(freq2,start+dur*.5);
-      g.gain.setValueAtTime(.001,start);g.gain.linearRampToValueAtTime(.07,start+.02);g.gain.exponentialRampToValueAtTime(.001,start+dur);
+      o.type='sine';o.frequency.setValueAtTime(freq1,start);o.frequency.exponentialRampToValueAtTime(freq2,start+dur*.5);
+      g.gain.setValueAtTime(.001,start);g.gain.linearRampToValueAtTime(.065,start+.02);g.gain.exponentialRampToValueAtTime(.001,start+dur);
       o.connect(g);g.connect(dest);o.start(start);o.stop(start+dur+.01);
     };
     if(type==='escape'||type==='happy'){
@@ -514,7 +532,7 @@ export class AudioManager {
       osc.frequency.exponentialRampToValueAtTime(340, now + 0.46);
 
       gain.gain.setValueAtTime(0.01, now);
-      gain.gain.linearRampToValueAtTime(0.24, now + 0.06);
+      gain.gain.linearRampToValueAtTime(0.13, now + 0.06);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
 
       osc.connect(gain);
@@ -531,7 +549,7 @@ export class AudioManager {
         osc.frequency.exponentialRampToValueAtTime(pitch * 1.35, now + offset + 0.08);
 
         gain.gain.setValueAtTime(0.01, now + offset);
-        gain.gain.linearRampToValueAtTime(0.18, now + offset + 0.02);
+        gain.gain.linearRampToValueAtTime(0.10, now + offset + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.09);
 
         osc.connect(gain);
@@ -797,13 +815,13 @@ export class AudioManager {
       :[[0,.22]];
     for(const [off,len] of oinks){
       const osc=this.ctx.createOscillator(),lp=this.ctx.createBiquadFilter(),gain=this.ctx.createGain();
-      osc.type='sawtooth';lp.type='lowpass';
+      osc.type='triangle';lp.type='lowpass';
       lp.frequency.setValueAtTime(650,now+off);lp.frequency.exponentialRampToValueAtTime(380,now+off+len);
       osc.frequency.setValueAtTime(150,now+off);
       osc.frequency.exponentialRampToValueAtTime(92,now+off+len*.55);
       osc.frequency.exponentialRampToValueAtTime(128,now+off+len);
       gain.gain.setValueAtTime(.001,now+off);
-      gain.gain.linearRampToValueAtTime(.17,now+off+.025);
+      gain.gain.linearRampToValueAtTime(.12,now+off+.025);
       gain.gain.exponentialRampToValueAtTime(.001,now+off+len);
       osc.connect(lp);lp.connect(gain);gain.connect(this.sfxGainNode||this.ctx.destination);
       osc.start(now+off);osc.stop(now+off+len+.01);
@@ -1400,6 +1418,7 @@ export class AudioManager {
     this.currentStageId = stageId;
     this.bgmStep = 0;
   }
+  setAnimalTheme(animalId){this.currentAnimalTheme=CHARACTER_MUSIC[animalId]?animalId:'bunny';}
 
   pauseBGM() {
     this.isBGMPaused = true;
@@ -1504,13 +1523,15 @@ export class AudioManager {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
 
-      osc.type = isBass ? 'triangle' : 'sine';
+      const [timbre,articulation]=CHARACTER_MUSIC[this.currentAnimalTheme]||CHARACTER_MUSIC.bunny;
+      osc.type = isBass ? 'triangle' : timbre;
       osc.frequency.setValueAtTime(freq, now);
 
-      const peakGain = isBass ? 0.30 : 0.22;
+      const peakGain = isBass ? 0.30 : timbre==='triangle'?.18:.22;
+      const noteLength=isBass?duration:duration*articulation;
       gain.gain.setValueAtTime(0.001, now);
       gain.gain.linearRampToValueAtTime(peakGain, now + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + noteLength);
 
       osc.connect(gain);
       if (this.bgmFilterNode) {
@@ -1522,7 +1543,7 @@ export class AudioManager {
       }
 
       osc.start(now);
-      osc.stop(now + duration + 0.02);
+      osc.stop(now + noteLength + 0.02);
     } catch (e) {}
   }
 }

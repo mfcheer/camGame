@@ -203,7 +203,7 @@ const ACTIONS=[
     a.headGroup.rotation.x=-.06*p*m;a.headGroup.position.y=p*.02*m;
     a.bodyMesh.rotation.z=Math.sin(t*Math.PI*2)*.02*m;
     // Whistle blow: a little body lean + eyebrow lift baked into the face rig.
-    if(a.audio)a.audio.playFriendSound('thomas','happy');
+    // One whistle is scheduled by beginAction, not on every animation frame.
   }},
   {id:'steamBurst',dur:1.5,animals:['thomas'],fn:(a,t,m)=>{
     const puff=Math.abs(Math.sin(t*Math.PI*3))*m;
@@ -258,17 +258,14 @@ export class HappyPerformance {
     return this.plan.map(p=>p.id);
   }
   buildPlan() {
-    // 2-3 个动作（×0.8 播放速度，单局约 5-8 秒）：从该动物的两个招牌动作里随机选一个出场，
-    // 其余从通用动作池不重复随机抽取，顺序随机；结尾固定接谢幕彩蛋。与上一局的节目单保证开场动作不同、整单不完全相同。
+    // 两个角色招牌动作，偶尔加一个通用动作；车辆避开拟人跳跃。
     const id=this.animal.animalId;
-    const pool=ACTIONS.filter(x=>x.animals?.includes(id)||( !x.animals&&x.id!=='finaleBow'));
-    const sigs=pool.filter(x=>x.animals);
-    const sig=sigs[Math.floor(Math.random()*sigs.length)];
-    const others=pool.filter(x=>!Object.is(x,sig));
-    for(let i=others.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[others[i],others[j]]=[others[j],others[i]];}
-    const total=2+(Math.random()<.3?1:0);
-    const plan=others.slice(0,total-1);
-    plan.splice(Math.floor(Math.random()*(plan.length+1)),0,sig);
+    const sigs=(SIGNATURES[id]||[]).map(name=>ACTIONS.find(x=>x.id===name)).filter(Boolean);
+    for(let i=sigs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[sigs[i],sigs[j]]=[sigs[j],sigs[i]];}
+    const plan=sigs.slice(0,2);
+    const allowed=['mcqueen','thomas'].includes(id)?['sway','laugh','nodDance']:['hop3','spin','bow','sway','laugh','wave','jellyWobble','starJump','nodDance'];
+    if(Math.random()<.3){const options=ACTIONS.filter(x=>allowed.includes(x.id));plan.push(options[Math.floor(Math.random()*options.length)]);}
+    for(let i=plan.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[plan[i],plan[j]]=[plan[j],plan[i]];}
     if(this.lastPlan){
       if(plan[0].id===this.lastPlan[0]){const j=1+Math.floor(Math.random()*(plan.length-1));[plan[0],plan[j]]=[plan[j],plan[0]];}
       if(plan.map(p=>p.id).join()===this.lastPlan.join()){[plan[plan.length-1],plan[0]]=[plan[0],plan[plan.length-1]];}

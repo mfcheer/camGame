@@ -1,24 +1,24 @@
 /**
  * 森林营地图鉴管理器 (CampManager)
- * 1. 纯本地 LocalStorage 存储 6 位动物朋友的解救记录
+ * 1. 纯本地 LocalStorage 存储全部动物朋友的解救记录
  * 2. 统计已解救种类数量与各动物累计解救次数
  * 3. 驱动营地图鉴界面状态点亮与专属小萌音播放
  */
 
 export const CAMP_ANIMALS = [
-  { id: 'bunny', name: '小兔 萌萌', preview: 'models/bunny-preview.png', title: '森林伙伴', badge: '🐰', target: 5 },
-  { id: 'cat', name: '橘猫 橘子', preview: 'models/cat-preview.png', title: '阳光橘猫', badge: '🐱', target: 8 },
-  { id: 'frog', name: '青蛙 呱呱', preview: 'models/frog-preview.png', title: '池塘跳将', badge: '🐸', target: 6 },
-  { id: 'dog', name: '小狗 旺旺', preview: 'models/dog-preview.png', title: '活力小狗', badge: '🐶', target: 10 },
-  { id: 'dragon', name: '飞龙 翼翼', preview: 'models/dragon-preview.png', title: '云谷飞龙', badge: '🐲', target: 12 },
-  { id: 'goldenDragon', name: '金龙 小金', preview: 'models/goldenDragon-preview.png', title: '祥云金龙', badge: '🐉', target: 9 },
-  { id:'mcqueen',name:'闪电麦昆',preview:'models/mcqueen-preview.png',title:'闪电赛车',badge:'🏎️',target:10 },
-  { id:'wolf',name:'灰太狼大王',preview:'models/wolf-preview.png?v=20261114',title:'青青草原之王',badge:'🐺',target:12 },
-  { id:'teddy',name:'泰迪熊 抱抱',preview:'models/teddy-preview.png',title:'温暖抱抱',badge:'🧸',target:8 },
-  { id:'chase',name:'汪汪队 阿奇',preview:'models/chase-preview.png?v=20261114',title:'勇敢巡逻',badge:'🐶',target:10 },
-  { id:'jett',name:'超级飞侠 乐迪',preview:'models/jett-preview.png?v=20261114',title:'天空飞行',badge:'✈️',target:12 },
-  { id:'peppa',name:'小猪佩奇',preview:'models/peppa-preview.png?v=20261114',title:'快乐跳跳',badge:'🐷',target:8 },
-  { id:'thomas',name:'托马斯火车',preview:'models/thomas-preview.png?v=20261114',title:'咔嚓列车',badge:'🚂',target:10 }
+  { id: 'bunny', name: '小兔 萌萌', preview: 'models/bunny-preview.png?v=20261114r2', title: '森林伙伴', badge: '🐰', target: 6 },
+  { id: 'cat', name: '橘猫 橘子', preview: 'models/cat-preview.png?v=20261114r2', title: '阳光橘猫', badge: '🐱', target: 10 },
+  { id: 'frog', name: '青蛙 呱呱', preview: 'models/frog-preview.png?v=20261114r2', title: '池塘跳将', badge: '🐸', target: 8 },
+  { id: 'dog', name: '小狗 旺旺', preview: 'models/dog-preview.png?v=20261114r2', title: '活力小狗', badge: '🐶', target: 14 },
+  { id: 'dragon', name: '飞龙 翼翼', preview: 'models/dragon-preview.png?v=20261114r2', title: '云谷飞龙', badge: '🐲', target: 16 },
+  { id: 'goldenDragon', name: '金龙 小金', preview: 'models/goldenDragon-preview.png?v=20261114r2', title: '祥云金龙', badge: '🐉', target: 12 },
+  { id:'mcqueen',name:'闪电麦昆',preview:'models/mcqueen-preview.png?v=20261114r2',title:'闪电赛车',badge:'🏎️',target:10 },
+  { id:'wolf',name:'灰太狼大王',preview:'models/wolf-preview.png?v=20261114r2',title:'青青草原之王',badge:'🐺',target:12 },
+  { id:'teddy',name:'泰迪熊 抱抱',preview:'models/teddy-preview.png?v=20261114r2',title:'温暖抱抱',badge:'🧸',target:8 },
+  { id:'chase',name:'汪汪队 阿奇',preview:'models/chase-preview.png?v=20261114r2',title:'勇敢巡逻',badge:'🐶',target:10 },
+  { id:'jett',name:'超级飞侠 乐迪',preview:'models/jett-preview.png?v=20261114r2',title:'天空飞行',badge:'✈️',target:12 },
+  { id:'peppa',name:'小猪佩奇',preview:'models/peppa-preview.png?v=20261114r2',title:'快乐跳跳',badge:'🐷',target:8 },
+  { id:'thomas',name:'托马斯火车',preview:'models/thomas-preview.png?v=20261114r2',title:'咔嚓列车',badge:'🚂',target:10 }
 ];
 
 export const CAMP_STORAGE_KEY = 'camgame_forest_camp_v1';

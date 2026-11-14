@@ -2,15 +2,17 @@ import {mergeVocabulary,normalizeWordKey} from './vocabularyMerge.js';
 import {STORYBOOK_WORDS} from './storybookVocabulary.js';
 import {CLASSROOM_WORDS} from './classroomVocabulary.js';
 import {EXPANDED_WORDS} from './expandedVocabulary.js';
+import {FRUITS_WORDS} from './fruitsVocabulary.js';
 
 /**
- * 少儿英语启蒙单词库：现有主题 + 幼儿园绘本词汇
+ * 少儿英语启蒙单词库：现有主题 + 幼儿园绘本词汇 + 香甜水果词汇
  * 分类涵盖：
  * 1. 教室与文具 (school): chair, table, pencil, book, crayon, teacher
  * 2. 基础颜色 (colors): red, yellow, blue, green, purple
  * 3. 几何图形 (shapes): circle, triangle, square, rectangle
  * 4. 玩具交通 (toys): 基础词与 Toys 绘本词
  * 5. Two 绘本主题 (two_book): 数字、动物与小孩
+ * 6. 香甜水果 (fruits): apple, banana, watermelon, grape, strawberry, peach, pear, cherry
  */
 
 export function resolveAssetUrl(urlPath) {
@@ -369,7 +371,7 @@ const BASE_WORDS_LIST = [
   }
 ];
 
-export const WORDS_LIST = mergeVocabulary(BASE_WORDS_LIST, STORYBOOK_WORDS, CLASSROOM_WORDS, EXPANDED_WORDS);
+export const WORDS_LIST = mergeVocabulary(BASE_WORDS_LIST, STORYBOOK_WORDS, CLASSROOM_WORDS, EXPANDED_WORDS, FRUITS_WORDS);
 
 export const WORDS_MAP = new Map(WORDS_LIST.map(w => [w.id, w]));
 const WORD_ALIASES = new Map(WORDS_LIST.flatMap(word=>word.aliases.map(alias=>[alias,word.id])));

@@ -196,12 +196,27 @@ export class RescueAnimal {
       if(['dog','wolf','chase'].includes(this.animalId)){
         this.tailGroup.rotation.y=Math.sin(t*(r>0?11:5))*(r>0?.65:.3)*motion;
         this.headGroup.rotation.z-=pulse*.12*motion;
+        if(this.animalId==='wolf'){
+          this.rightArm.rotation.z=.65+pulse*.35*motion;
+          this.leftArm.rotation.z=-.42;
+          this.headGroup.rotation.z+=Math.sin(t*1.3)*.05*motion;
+        }
       }else{
         this.leftEarGroup.rotation.z=.1+pulse*.16*motion;this.rightEarGroup.rotation.z=-.1-pulse*.11*motion;
         this.model.position.y=pulse*.055*motion;
       }
     }else if(this.animalId==='teddy'){
       this.leftArm.rotation.z=-pulse*.5*motion;this.rightArm.rotation.z=pulse*.5*motion;this.headGroup.rotation.z+=pulse*.12*motion;
+    }else if(this.animalId==='peppa'){
+      this.rightArm.rotation.z=.30+Math.sin(t*5)*pulse*.35*motion;
+      this.headGroup.rotation.z+=Math.sin(t*2.5)*.05*motion;
+      this.model.position.y=Math.abs(Math.sin(t*3))*pulse*.035*motion;
+    }else if(this.animalId==='jett'){
+      this.rightArm.rotation.z=.55+pulse*.50*motion;
+      this.headGroup.rotation.z+=Math.sin(t*2.8)*.04*motion;
+      for(const [name,sign] of [['Wing_L',-1],['Wing_R',1]]){
+        const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=sign*(.08+Math.sin(t*3)*.06*motion);
+      }
     }else if(this.animalId==='mcqueen'){
       this.bodyMesh.rotation.z=pulse*.08*motion;this.headGroup.rotation.z+=pulse*.08*motion;
     }else if(this.animalId==='thomas'){

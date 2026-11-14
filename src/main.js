@@ -999,6 +999,7 @@ export class Game {
   applyAnimal(id) {
     this.activeAnimalId = id;
     this.sceneManager?.setAnimalTheme?.(id);
+    this.audioManager?.setAnimalTheme?.(id);
     const profile = GAME_CONFIG.animals[id];
     this.targetCount = profile.targetBubbles;
     if (this.rescueAnimal && this.rescueAnimal.animalId !== id) this.rescueAnimal.setAnimal?.(id);

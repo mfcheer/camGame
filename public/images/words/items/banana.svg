@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_banana" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_banana)">
+    
+      <g transform="translate(128, 128) rotate(-15)">
+        <defs>
+          <linearGradient id="bananaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFF176"/>
+            <stop offset="50%" stop-color="#F1C40F"/>
+            <stop offset="100%" stop-color="#F39C12"/>
+          </linearGradient>
+        </defs>
+        <path d="M-72 -56 L-84 -70 L-72 -76 L-62 -62 Z" fill="#7CB342" stroke="#558B2F" stroke-width="3"/>
+        <path d="M-66 -58 C-10 -72 68 -24 82 52 C84 62 76 68 68 62 C50 0 -12 -38 -64 -44 Z" fill="url(#bananaGrad)" stroke="#B7950B" stroke-width="4.5" stroke-linejoin="round"/>
+        <path d="M-64 -44 C-12 -36 46 8 64 56" fill="none" stroke="#F5B041" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M80 50 L90 62 L82 66 L74 58 Z" fill="#5D4037" stroke="#3E2723" stroke-width="2.5"/>
+        <path d="M-48 -54 C-6 -56 52 -18 64 36" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.65"/>
+      </g>
+    
+  </g>
+</svg>

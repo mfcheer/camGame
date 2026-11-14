@@ -142,6 +142,12 @@ export function updateExpressionRig(animal,dt){
     for(const [name,sign] of [['Wing_L',-1],['Wing_R',1]]){const wing=animal.model.getObjectByName(name);if(wing)wing.rotation.y=sign*.27;}
     break;
    case 'goldenDragon':animal.tailGroup.rotation.y+=Math.sin(t*2.5-.8)*.035*motion;break;
+   case 'wolf':animal.headGroup.rotation.z+=.10*motion;animal.leftEarGroup.rotation.z=.22;animal.tailGroup.rotation.y=Math.sin(t*3)*.13*motion;break;
+   case 'teddy':animal.headGroup.rotation.z+=.08*motion;animal.leftArm.rotation.z=-.12*motion;animal.rightArm.rotation.z=.12*motion;break;
+   case 'chase':animal.headGroup.rotation.z+=.10*motion;animal.rightEarGroup.rotation.z=-.18;animal.tailGroup.rotation.y=Math.sin(t*7)*.30*motion;break;
+   case 'jett':animal.headGroup.rotation.z+=Math.sin(t*2)*.05*motion;break;
+   case 'peppa':animal.headGroup.rotation.z+=.07*motion;animal.leftArm.rotation.z=-.16*motion;break;
+   case 'mcqueen':animal.headGroup.rotation.z+=Math.sin(t*2)*.035*motion;break;
    case 'thomas':animal.headGroup.rotation.z+=Math.sin(t*2)*.03*motion;break;
   }
  }
@@ -163,6 +169,12 @@ export function updateExpressionRig(animal,dt){
    case 'frog':animal.leftArm.rotation.z-=amount*.12*motion;animal.rightArm.rotation.z+=amount*.12*motion;break;
    case 'dragon':animal.headGroup.rotation.z+=amount*.10*motion;animal.tailGroup.rotation.z+=amount*.12*motion;break;
    case 'goldenDragon':animal.headGroup.rotation.x-=amount*.08*motion;break;
+   case 'wolf':animal.headGroup.rotation.z+=amount*.09*motion;animal.tailGroup.rotation.y=Math.sin(t*5)*.28*motion;break;
+   case 'teddy':animal.leftArm.rotation.z-=amount*.35*motion;animal.rightArm.rotation.z+=amount*.35*motion;break;
+   case 'chase':animal.headGroup.rotation.z+=amount*(variant===1?-.14:.11)*motion;animal.tailGroup.rotation.y=Math.sin(t*9)*.48*motion;break;
+   case 'jett':animal.headGroup.rotation.z+=amount*.08*motion;animal.leftArm.rotation.z-=amount*.25*motion;animal.rightArm.rotation.z+=amount*.25*motion;break;
+   case 'peppa':animal.headGroup.rotation.z+=amount*.11*motion;animal.leftArm.rotation.z-=amount*.18*motion;animal.rightArm.rotation.z+=amount*.18*motion;break;
+   case 'mcqueen':animal.bodyMesh.rotation.z+=Math.sin(t*8)*amount*.025*motion;break;
    case 'thomas':animal.headGroup.rotation.z+=amount*(variant===1?-.10:.07)*motion;break;
   }
  }

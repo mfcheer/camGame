@@ -35,7 +35,7 @@ export function createWolfModel(){
        white=mat(0xffffff,.4),      // 牙齿、大眼珠、高光
        ink=mat(0x191c20,.45),       // 黑鼻头、粗黑一字眉、瞳孔、胡茬、缝合线
        pink=mat(0xd58782,.88),      // 耳内粉肉色
-       scarLine=mat(0x24282c,.55),  // 脸颊刀疤主线
+       scarLine=mat(0x899197,.82),  // 浅色缝线，避免幼儿视角过于阴沉
        tailTip=mat(0xc6cdd3,.92);   // 尾尖浅灰色
 
  const body=pivot(root,"Torso",[0,.38,0]);
@@ -102,6 +102,7 @@ export function createWolfModel(){
  hat.rotation.set(-.16,.05,-.26); // 歪扣在头顶
  ellipsoid(hat,"Hat_Crown",hatOrange,[0,.035,0],[.24,.085,.27]);
  ellipsoid(hat,"Hat_Brim",hatOrange,[0,-.008,.02],[.25,.036,.28]);
+ ellipsoid(hat,"Hat_Front_Patch",hatPatch,[.15,.048,.19],[.07,.026,.06]);
  // 标志性米黄大补丁 (Hat_Patch)
  const patch=ellipsoid(hat,"Hat_Patch",hatPatch,[.04,.095,-.01],[.12,.024,.13]);
  patch.rotation.y=.25;
@@ -126,10 +127,10 @@ export function createWolfModel(){
  for(const s of [-1,1]){
   const eye=pivot(eyes,s<0?"Eye_L":"Eye_R",[s*.13,.06,.215]);
   eye.rotation.z=-s*.08;
-  ellipsoid(eye,"Wolf_Eye",white,[0,0,0],[.052,.062,.026]);
+  ellipsoid(eye,"Wolf_Eye",white,[0,0,0],[.058,.068,.026]);
   const eyelid=ellipsoid(eye,"Upper_Eyelid",fur,[0,.028,.015],[.058,.036,.022]);
-  eyelid.rotation.z=s*.08;
-  ellipsoid(eye,"Pupil",ink,[0,-.006,.023],[.026,.034,.011]);
+  eyelid.rotation.z=s*.08;eyelid.visible=false;
+  ellipsoid(eye,"Pupil",ink,[0,-.006,.023],[.029,.037,.011]);
   ellipsoid(eye,"Catchlight",white,[-.012,.010,.032],[.010,.012,.005]);
  }
 
@@ -140,17 +141,17 @@ export function createWolfModel(){
 
  // 右脸斜向缝合刀疤 (Face_Stitch)
  const scarGroup=pivot(head,"Face_Stitch",[.195,-.02,.215]);
- curve(scarGroup,"Scar_Spine",[[-.035,.10,.01],[0,0,.02],[.045,-.10,.01]],.0045,scarLine);
+ curve(scarGroup,"Scar_Spine",[[-.035,.10,.01],[0,0,.02],[.045,-.10,.01]],.003,scarLine);
  for(let i=0;i<5;i++){
   const y=.08-i*.042, x=-.03+i*.018;
-  curve(scarGroup,`Stitch_Cross_${i}`,[[x-.022,y+.008,.022],[x+.022,y-.008,.022]],.0035,ink);
+  curve(scarGroup,`Stitch_Cross_${i}`,[[x-.022,y+.008,.022],[x+.022,y-.008,.022]],.003,scarLine);
  }
 
  // 招牌大嘴裂笑与两颗洁白小狼牙
- const mouthGroup=pivot(head,"Wolf_Grin",[0,-.13,.26]);
- mesh(new RoundedBoxGeometry(.30,.062,.035,2,.014),white,mouthGroup,"Wolf_Grin_Teeth",[0,0,.01]);
- curve(mouthGroup,"Wolf_Mouth",[[-.17,.022,.02],[0,.012,.038],[.17,.022,.02]],.005,ink);
- curve(mouthGroup,"Wolf_Smile",[[-.17,.022,.02],[0,-.032,.034],[.17,.022,.02]],.005,ink);
+ const mouthGroup=pivot(head,"Wolf_Grin",[0,-.15,.405]);
+ mesh(new RoundedBoxGeometry(.22,.035,.026,2,.012),white,mouthGroup,"Wolf_Grin_Teeth",[0,-.005,.01]);
+ curve(mouthGroup,"Wolf_Mouth",[[-.14,.012,.02],[0,.008,.038],[.14,.012,.02]],.004,ink);
+ curve(mouthGroup,"Wolf_Smile",[[-.14,.012,.02],[0,-.03,.034],[.14,.012,.02]],.004,ink);
  for(const s of [-1,1]){
   const fang=mesh(new THREE.ConeGeometry(.016,.042,12),white,mouthGroup,s<0?"Fang_L":"Fang_R",[s*.118,-.012,.034]);
   fang.rotation.x=Math.PI; // 尖牙向下
@@ -168,8 +169,8 @@ export function createWolfModel(){
   curve(head,"Wolf_Stubble",[[x1,y1,z1],[x2,y2,z2]],.0028,ink);
  }
 
- const happy=ellipsoid(head,"Happy_Mouth",ink,[0,-.165,.36],[.065,.045,.015]);happy.visible=false;
- const tongue=ellipsoid(head,"Happy_Tongue",pink,[0,-.18,.38],[.032,.018,.006]);tongue.visible=false;
+ const happy=ellipsoid(head,"Happy_Mouth",ink,[0,-.17,.448],[.065,.045,.015]);happy.visible=false;
+ const tongue=ellipsoid(head,"Happy_Tongue",pink,[0,-.185,.463],[.032,.018,.006]);tongue.visible=false;
 
  // 蓬松灰白狼尾
  const tail=pivot(root,"Tail",[.20,.30,-.17]);
@@ -187,25 +188,29 @@ export function createMcqueenModel(){
  const red=mat(0xd5202b,.34,{metalness:.12}),bright=mat(0xf02d2d,.38),yellow=mat(0xffd43c,.5),dark=mat(0x262d36,.8),rubber=mat(0x292a30,.96),silver=mat(0xcad7da,.5,{metalness:.4}),glass=mat(0xf4fbf5,.3),iris=mat(0x4283bb,.3);
  const box=(parent,name,material,pos,size,r=.08)=>mesh(new RoundedBoxGeometry(...size,4,r),material,parent,name,pos);
  const body=pivot(root,'Torso',[0,.31,0]);
- box(body,'Red_Racing_Body',red,[0,0,0],[.84,.34,1.30],.14);
- box(body,'Front_Hood',bright,[0,.16,.38],[.76,.10,.51],.06);
- box(body,'Front_Bumper',red,[0,-.05,.68],[.78,.12,.12],.04);
- box(body,'Rear_Spoiler',red,[0,.30,-.57],[.86,.07,.20],.035);
+ sculpt([[0,0,0,.40,.19,.64],[0,.07,.36,.38,.16,.37],[0,.09,-.40,.37,.16,.30]],.08,red,body,'Red_Racing_Body');
+ const hood=ellipsoid(body,'Front_Hood',bright,[0,.17,.38],[.36,.075,.38]);hood.rotation.x=-.07;
+ box(body,'Front_Bumper',red,[0,-.06,.66],[.76,.13,.13],.06);
+ box(body,'Rear_Spoiler',red,[0,.29,-.57],[.82,.055,.18],.025);
+ for(const s of [-1,1]){ellipsoid(body,'Wheel_Fender',red,[s*.32,.02,.35],[.14,.17,.25]);ellipsoid(body,'Rear_Fender',red,[s*.32,.025,-.38],[.14,.16,.25]);}
  for(const side of [-1,1]){
   const arm=pivot(root,side<0?'Arm_L':'Arm_R',[side*.34,.25,.38]);const leg=pivot(root,side<0?'Leg_L':'Leg_R',[side*.34,.25,-.38]);
   for(const [p,name] of [[arm,'Front_Wheel'],[leg,'Rear_Wheel']]){
    const wheel=mesh(new THREE.CylinderGeometry(.17,.17,.14,28),rubber,p,name,[side*.045,0,0]);wheel.rotation.z=Math.PI/2;
-   const hub=mesh(new THREE.CylinderGeometry(.084,.084,.148,24),silver,p,'Wheel_Hub',[side*.045,0,0]);hub.rotation.z=Math.PI/2;
-   const cap=mesh(new THREE.CylinderGeometry(.033,.033,.155,20),red,p,'Wheel_Cap',[side*.045,0,0]);cap.rotation.z=Math.PI/2;
+   const hub=mesh(new THREE.CylinderGeometry(.084,.084,.148,24),red,p,'Wheel_Hub',[side*.045,0,0]);hub.rotation.z=Math.PI/2;
+   const cap=mesh(new THREE.CylinderGeometry(.033,.033,.155,20),silver,p,'Wheel_Cap',[side*.045,0,0]);cap.rotation.z=Math.PI/2;
   }
   ellipsoid(body,'Headlight',yellow,[side*.28,.10,.655],[.09,.026,.012]);
  }
- const head=pivot(root,'Head',[0,.54,-.13]);
- box(head,'Cabin',red,[0,.02,0],[.64,.37,.62],.12);
- box(head,'Windshield',glass,[0,.035,.295],[.56,.25,.035],.04);
+ const head=pivot(root,'Head',[0,.64,-.13]);
+ box(head,'Cabin',red,[0,.02,-.035],[.64,.32,.58],.13);
+ const windGeo=new THREE.BufferGeometry();windGeo.setAttribute('position',new THREE.Float32BufferAttribute([-.29,.14,.24,.29,.14,.24,-.28,-.12,.43,.29,.14,.24,.28,-.12,.43,-.28,-.12,.43],3));windGeo.computeVertexNormals();
+ const windMat=mat(0xc7e9f2,.35);windMat.side=THREE.DoubleSide;
+ mesh(windGeo,windMat,head,'Windshield');
+ box(head,'Windshield_Lower_Trim',red,[0,-.13,.39],[.61,.025,.04],.01);
  const eyes=pivot(head,'Eyes',[0,0,0]);
  for(const side of [-1,1]){
-  const eye=pivot(eyes,side<0?'Eye_L':'Eye_R',[side*.13,.04,.32]);
+  const eye=pivot(eyes,side<0?'Eye_L':'Eye_R',[side*.13,.035,.405]);
   ellipsoid(eye,'Iris',iris,[0,0,0],[.063,.09,.018]);ellipsoid(eye,'Pupil',dark,[0,0,.016],[.034,.06,.012]);ellipsoid(eye,'Catchlight',glass,[-.012,.025,.027],[.014,.018,.006]);
   pivot(head,side<0?'Ear_L':'Ear_R',[side*.3,.15,0]);
  }
@@ -218,18 +223,17 @@ export function createMcqueenModel(){
  curve(body,'Race_Number_9',[[-.18,.224,.45],[-.18,.224,.38],[-.12,.224,.38],[-.12,.224,.45],[-.18,.224,.45],[-.12,.224,.45],[-.12,.224,.53]],.008,white);
  curve(body,'Race_Number_5',[[.16,.224,.38],[.10,.224,.38],[.10,.224,.45],[.16,.224,.45],[.16,.224,.53],[.10,.224,.53]],.008,white);
  // Bold side lightning makes the racer recognisable from the side as it drives away.
- for(const side of [-1,1]){const stripe=mesh(new THREE.ShapeGeometry(bolt),yellow,body,'Side_Lightning',[side*.427,.04,.04]);stripe.rotation.y=side*Math.PI/2;stripe.rotation.z=-Math.PI/2;stripe.scale.setScalar(1.5);}
+ for(const side of [-1,1]){
+  const stripe=mesh(new THREE.ShapeGeometry(bolt),yellow,body,'Side_Lightning',[side*.427,.04,.04]);stripe.rotation.y=side*Math.PI/2;stripe.rotation.z=-Math.PI/2;stripe.scale.setScalar(1.5);
+  const x=side*.445;
+  curve(body,'Side_Number_9',[[x,.14,-.28],[x,.14,-.20],[x,.09,-.20],[x,.09,-.28],[x,.14,-.28],[x,.09,-.20],[x,.02,-.20],[x,.02,-.28]],.007,white);
+  curve(body,'Side_Number_5',[[x,.14,-.08],[x,.14,.01],[x,.09,.01],[x,.09,-.08],[x,.02,-.08],[x,.02,.01]],.007,white);
+ }
  const bow=pivot(root,'Bow',[0,.50,.52]);
  pivot(root,'Tail',[0,.4,-.65]);return root;
 }
 
-// A blue-uniform rescue pup: floppy dark ears, proper police cap and a fitted jacket.
-function chaseFloppyEar(){
- const g=new THREE.SphereGeometry(1,24,28),p=g.attributes.position;
- for(let i=0;i<p.count;i++){const t=(1-p.getY(i))/2;
-  p.setXYZ(i,p.getX(i)*(.105+.055*t),-.36*t,p.getZ(i)*.062+.05*Math.sin(t*Math.PI));}
- g.computeVertexNormals();return g;
-}
+// Upright shepherd ears and the police uniform distinguish Chase from the house puppy.
 export function createChaseModel(){
  const root=createDogModel();root.name='Chase_Rescue_Pup';
  const brown=mat(0xa9723e,.95),tan=mat(0xe9b77d,.95),earBrown=mat(0x7c5231,.95),
@@ -240,11 +244,12 @@ export function createChaseModel(){
  for(const name of ['Cream_Chest','Cream_Muzzle','Cream_Forepaw','Cream_Hind_Toes','Cream_Tail_Tip'])root.traverse(o=>{if(o.name===name&&o.isMesh)o.material=tan;});
  const patch=root.getObjectByName('Honey_Eye_Patch');if(patch)patch.visible=false;
  const chest=root.getObjectByName('Cream_Chest');if(chest)chest.visible=false;
- // 标志性大垂耳：深棕色，从头两侧自然垂到脸颊
+ // 竖立牧羊犬耳朵，从帽檐两侧形成清楚的剪影。
  for(const side of ['L','R']){
   const earPivot=root.getObjectByName('Ear_'+side);earPivot.clear();earPivot.rotation.set(0,0,0);
-  const s=side==='L'?-1:1;earPivot.rotation.z=s*.16;
-  mesh(chaseFloppyEar(),earBrown,earPivot,'Chase_Floppy_Ear');
+  const s=side==='L'?-1:1;earPivot.rotation.z=-s*.12;
+  const outer=mesh(new THREE.ConeGeometry(.105,.30,24),earBrown,earPivot,'Shepherd_Point_Ear',[0,.11,-.015],[1,1,.60]);outer.rotation.z=-s*.08;
+  const inner=mesh(new THREE.ConeGeometry(.064,.205,24),tan,earPivot,'Shepherd_Inner_Ear',[0,.115,.052],[1,1,.22]);inner.rotation.z=-s*.08;
  }
  // 合身蓝色警服：外壳式夹克包住背部和两侧，浅蓝胸襟 + 纽扣 + 肩章
  const body=root.getObjectByName('Torso');
@@ -270,6 +275,10 @@ export function createChaseModel(){
  ellipsoid(hatNode,'Badge_Center',deep,[0,.03,.236],[.024,.03,.008]);
  for(const [x,y,r] of [[0,.042,.007],[-.014,.056,.006],[.014,.056,.006],[-.011,.036,.006],[.011,.036,.006]])
   ellipsoid(hatNode,'Cap_Paw',gold,[x,y,.242],[r,r*1.1,.004]);
+ for(const s of [-1,1]){
+  const brow=ellipsoid(head,s<0?'Shepherd_Brow_L':'Shepherd_Brow_R',earBrown,[s*.13,.105,.226],[.10,.043,.021]);brow.rotation.z=s*.16;
+  ellipsoid(head,'Shepherd_Cheek',tan,[s*.17,-.105,.20],[.105,.09,.045]);
+ }
  // 胸前警徽（挂在 Bow 节点，动画兼容）
  const bow=root.getObjectByName('Bow');bow.clear();
  ellipsoid(bow,'Collar_Badge',gold,[0,0,.035],[.06,.068,.02]);
@@ -363,28 +372,23 @@ export function createPeppaModel(){
  const root=new THREE.Group();root.name='Peppa_Pig_Rig';
  // 按官方卡通形象从零设计：纸片人比例——大圆头直接坐在裙子上（无脖子）、
  // 扁宽梯形红裙、细枝手臂水平外伸、细腿配黑扁鞋；眼高聚拢、猪鼻上移前突。
- const pink=mat(0xf6aebb,.92),light=mat(0xffc9d4,.9),red=mat(0xd64550,.9),dark=mat(0x4a3038,.5),cheek=mat(0xef8ba3,.9),white=mat(0xfffdf8,.7),shoe=mat(0x352c31,.8),trim=mat(0xf5c542,.85);
+ const pink=mat(0xf6aebb,.92),light=mat(0xffc9d4,.9),red=mat(0xd93442,.9),dark=mat(0x4a3038,.5),cheek=mat(0xef8ba3,.9),white=mat(0xfffdf8,.7),shoe=mat(0x352c31,.8);
  // 扁宽梯形红裙：纸片人式的扁平正面，下摆外扩
  const body=pivot(root,'Torso',[0,.38,0]);
- sculpt([[0,-.12,0,.27,.22,.15],[0,.03,0,.20,.19,.13],[0,.15,0,.14,.15,.12]],.05,red,body,'Red_Dress');
- // 金黄滚边（参考图的中式红裙）：下摆金环 + 领口金线 + 波浪纹 + 花点
- const hem=mesh(new THREE.TorusGeometry(.245,.015,10,48),trim,body,'Dress_Hem_Band',[0,-.05,0]);hem.rotation.x=Math.PI/2;
- curve(body,'Dress_Collar_Trim',[[-.125,.13,.125],[0,.175,.145],[.125,.13,.125]],.011,trim);
- curve(body,'Dress_Wave_Trim',[[-.155,.02,.16],[-.078,.065,.17],[0,.02,.178],[.078,.065,.17],[.155,.02,.16]],.008,trim);
- for(const x of [-.075,0,.075])ellipsoid(body,'Dress_Flower_Dot',trim,[x,.105,.125],[.018,.018,.008]);
+ sculpt([[0,-.13,0,.28,.22,.15],[0,.02,0,.20,.20,.13],[0,.16,0,.13,.11,.11]],.035,red,body,'Red_Dress');
  // 大圆头：比裙子还宽，佩奇的标志性大头比例
  const head=pivot(root,'Head',[0,.90,.01]);
- ellipsoid(head,'Pink_Pig_Head',pink,[0,0,0],[.31,.27,.26]);
+ sculpt([[.035,0,0,.285,.265,.24],[-.15,.035,.11,.17,.14,.19],[-.24,.045,.24,.105,.105,.12]],.045,pink,head,'Pink_Pig_Head');
  // 猪鼻：上移到脸中上部水平前突（加大突出感），双竖椭圆鼻孔在鼻头前端
- ellipsoid(head,'Pig_Snout',light,[0,.055,.26],[.165,.12,.14]);
- for(const s of [-1,1])ellipsoid(head,'Nostril',cheek,[s*.058,.058,.385],[.024,.038,.014]);
- for(const s of [-1,1])ellipsoid(head,'Rosy_Cheek',cheek,[s*.21,-.03,.185],[.05,.04,.012]);
+ const snout=ellipsoid(head,'Pig_Snout',light,[-.265,.035,.335],[.102,.095,.055]);snout.rotation.y=-.18;
+ for(const x of [-.305,-.237])ellipsoid(head,'Nostril',cheek,[x,.042,.386],[.016,.028,.009]);
+ ellipsoid(head,'Rosy_Cheek',cheek,[.16,-.075,.205],[.064,.053,.013]);
  // 眼睛：小巧圆润、高高聚在头顶下方（官方形象的眼睛位置）
  const eyes=pivot(head,'Eyes',[0,0,0]);
- for(const s of [-1,1]){
-  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.082,.165,.21]);
+ for(const [side,x] of [['L',-.055],['R',.105]]){
+  const eye=pivot(eyes,'Eye_'+side,[x,.165,.215]);
   ellipsoid(eye,'Eye_White',white,[0,0,0],[.053,.062,.023]);
-  ellipsoid(eye,'Pupil',dark,[0,.004,.021],[.022,.029,.009]);
+  ellipsoid(eye,'Pupil',dark,[-.008,.004,.021],[.022,.029,.009]);
   ellipsoid(eye,'Catchlight',white,[-.005,.013,.031],[.007,.008,.003]);
  }
  // 小圆耳朵：立起贴头顶，间距收窄
@@ -394,9 +398,9 @@ export function createPeppaModel(){
   ellipsoid(ear,'Inner_Ear',light,[0,.043,.022],[.024,.05,.008]);
  }
  // 嘴巴：猪鼻正下方的小微笑
- curve(head,'Pig_Smile',[[-.055,-.02,.29],[0,-.055,.30],[.055,-.02,.29]],.006,dark);
- const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.03,.30],[.06,.035,.012]);happy.visible=false;
- const tongue=ellipsoid(head,'Happy_Tongue',cheek,[0,-.042,.31],[.026,.011,.005]);tongue.visible=false;
+ curve(head,'Pig_Smile',[[-.10,-.105,.255],[-.02,-.14,.27],[.065,-.095,.25]],.006,dark);
+ const happy=ellipsoid(head,'Happy_Mouth',dark,[-.02,-.125,.268],[.063,.033,.012]);happy.visible=false;
+ const tongue=ellipsoid(head,'Happy_Tongue',cheek,[-.02,-.14,.28],[.026,.011,.005]);tongue.visible=false;
  // 细枝手臂：从裙肩水平外伸（参考图的张开手臂），末端圆手
  for(const s of [-1,1]){
   const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.175,.50,.01]);
@@ -412,10 +416,7 @@ export function createPeppaModel(){
  // 卷卷尾巴：绕一圈的小螺旋
  const tail=pivot(root,'Tail',[0,.36,-.15]);
  curve(tail,'Curly_Pig_Tail',[[0,0,0],[.045,.028,-.014],[.078,.068,-.018],[.062,.105,-.018],[.026,.105,-.018],[.018,.072,-.018],[.038,.048,-.018]],.012,pink);
- // 头侧小红花（参考图造型）：五瓣红花金黄花蕊
- const bow=pivot(root,'Bow',[.155,1.12,.06]);
- for(let i=0;i<5;i++){const a=i/5*Math.PI*2;const petal=ellipsoid(bow,'Flower_Petal',red,[Math.cos(a)*.044,Math.sin(a)*.044,.02],[.032,.032,.012]);petal.rotation.z=a;}
- ellipsoid(bow,'Flower_Center',trim,[0,0,.029],[.019,.019,.008]);
+ pivot(root,'Bow',[.155,1.12,.06]);
  return root;
 }
 export function createThomasModel(){
@@ -450,7 +451,7 @@ export function createThomasModel(){
  // Red buffer beam at front
  box(body,'Red_Buffer_Beam',red,[0,-.06,.58],[.76,.14,.12],.035);
  // Smokebox front ring
- mesh(new THREE.TorusGeometry(.272,.022,12,44),black,body,'Smokebox_Ring',[0,.17,.47]).rotation.y=Math.PI/2;
+ mesh(new THREE.TorusGeometry(.272,.022,12,44),black,body,'Smokebox_Ring',[0,.17,.47]);
  // Cab (rear cabin)
  box(body,'Blue_Cab',blue,[0,.34,-.40],[.66,.50,.44],.07);
  box(body,'Cab_Roof',black,[0,.60,-.40],[.72,.08,.48],.03);

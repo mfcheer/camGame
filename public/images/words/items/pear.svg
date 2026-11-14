@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_pear" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_pear)">
+    
+      <g transform="translate(128, 126)">
+        <defs>
+          <radialGradient id="pearGrad" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#F9FBE7"/>
+            <stop offset="40%" stop-color="#D4E157"/>
+            <stop offset="85%" stop-color="#9CCC65"/>
+            <stop offset="100%" stop-color="#7CB342"/>
+          </radialGradient>
+          <linearGradient id="pearLeaf" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2ECC71"/>
+            <stop offset="100%" stop-color="#27AE60"/>
+          </linearGradient>
+        </defs>
+        <path d="M0 -62 C2 -82 16 -92 24 -96 C20 -90 14 -76 10 -60" fill="#795548" stroke="#5D4037" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M14 -76 C36 -92 64 -80 64 -64 C48 -58 28 -66 14 -76 Z" fill="url(#pearLeaf)" stroke="#1E8449" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M0 -54 C-24 -54 -38 -24 -42 4 C-46 32 -74 36 -74 54 C-74 82 -38 92 0 92 C38 92 74 82 74 54 C74 36 46 32 42 4 C38 -24 24 -54 0 -54 Z" fill="url(#pearGrad)" stroke="#558B2F" stroke-width="4.5" stroke-linejoin="round"/>
+        <g fill="#827717" opacity="0.4">
+          <circle cx="-26" cy="46" r="1.8"/>
+          <circle cx="-42" cy="62" r="1.8"/>
+          <circle cx="-14" cy="72" r="1.8"/>
+          <circle cx="18" cy="54" r="1.8"/>
+          <circle cx="38" cy="66" r="1.8"/>
+          <circle cx="48" cy="48" r="1.8"/>
+          <circle cx="-18" cy="18" r="1.8"/>
+          <circle cx="22" cy="22" r="1.8"/>
+        </g>
+        <path d="M-22 -34 C-34 -14 -36 16 -50 44" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="-18" cy="-28" r="5" fill="#FFFFFF" opacity="0.75"/>
+      </g>
+    
+  </g>
+</svg>
