@@ -364,6 +364,13 @@ export class PoseDetector {
 
       this.stream = stream;
       if (this.video) {
+        try {
+          this.video.setAttribute("playsinline", "");
+          this.video.setAttribute("webkit-playsinline", "");
+          this.video.setAttribute("x5-playsinline", "");
+          this.video.muted = true;
+          this.video.defaultMuted = true;
+        } catch (_) {}
         this.video.srcObject = this.stream;
       }
 
@@ -376,12 +383,26 @@ export class PoseDetector {
           resolve();
           return;
         }
-        this.video.onloadedmetadata = () => {
-          if (this.cameraRequestId === reqId) {
-            try { this.video.play(); } catch (e) {}
+        let resolved = false;
+        const tryPlayAndResolve = () => {
+          if (resolved) return;
+          resolved = true;
+          if (this.cameraRequestId === reqId && this.video) {
+            try {
+              const p = this.video.play();
+              if (p && typeof p.catch === "function") p.catch(() => {});
+            } catch (_) {}
           }
           resolve();
         };
+
+        this.video.onloadedmetadata = () => {
+          tryPlayAndResolve();
+        };
+
+        if (this.video.readyState >= 1) {
+          tryPlayAndResolve();
+        }
       });
 
       if (this.cameraRequestId !== reqId) {
@@ -806,6 +827,12 @@ export class PoseDetector {
       this.isRunning = true;
       this.setStatus('running', '检测已恢复');
       if (!this.isDemoMode) {
+        if (this.video && this.video.paused && this.video.srcObject) {
+          try {
+            const p = this.video.play();
+            if (p && typeof p.catch === "function") p.catch(() => {});
+          } catch (_) {}
+        }
         this.detectLoop();
       }
     }

@@ -425,6 +425,9 @@ export class Game {
 
   // 开始流程：点击开始 -> 开启摄像头与模型 -> 进入校准
   async handleStart(mode) {
+    if (this.videoElement && this.videoElement.paused && this.videoElement.srcObject) {
+      try { this.videoElement.play()?.catch?.(() => {}); } catch (_) {}
+    }
     this.prepareAnimal();
     this.lifecycleSessionId = (this.lifecycleSessionId || 0) + 1;
     const session = this.lifecycleSessionId;
@@ -1071,6 +1074,9 @@ export class Game {
   setupHomeAmbientMusic() {
     if (typeof window === 'undefined') return;
     const kick = () => {
+      if (this.videoElement && this.videoElement.paused && this.videoElement.srcObject) {
+        try { this.videoElement.play()?.catch?.(() => {}); } catch (_) {}
+      }
       if (this.state !== 'START') return;
       const am = this.audioManager;
       if (!am || am.isMuted || am.isBGMPlaying) return;

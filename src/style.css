@@ -36,6 +36,23 @@ html, body {
   transform: scaleX(-1); /* 水平镜像，如同照镜子 */
   z-index: 1;
   background: linear-gradient(180deg, #DDF4FF 0%, #EAFBF1 58%, #BDE9D0 100%);
+  pointer-events: none;
+}
+
+/* 彻底抑制并隐藏浏览器原生播放控件及 WebKit 居中大播放按钮 (半透明圆圈带三角形 ▶️) */
+#webcam-video::-webkit-media-controls,
+#webcam-video::-webkit-media-controls-start-playback-button,
+#webcam-video::-webkit-media-controls-play-button,
+#webcam-video::-webkit-media-controls-panel,
+#webcam-video::-webkit-media-controls-enclosure,
+#webcam-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Three.js 3D 渲染层 */
