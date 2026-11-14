@@ -76,8 +76,8 @@ try{
   await page.waitForFunction(()=>gameInstance.state==='CELEBRATING',null,{timeout:20000});
   // 等演出结束进入告别（friendInteraction 不再 active）
   await page.waitForFunction(()=>gameInstance.state==='CELEBRATING'&&!gameInstance.friendInteraction?.active,null,{timeout:25000});
-  await page.waitForFunction(()=>(window.phraseLog||[]).some(id=>['thank-you','nice-day','see-you','goodbye'].includes(id)),null,{timeout:12000});
-  const farewellId=await page.evaluate(()=>(window.phraseLog||[]).find(id=>['thank-you','nice-day','see-you','goodbye'].includes(id)));
+  await page.waitForFunction(()=>(window.phraseLog||[]).some(id=>['thank-you','nice-day','see-you','goodbye','great-job','you-did-it','so-much-fun','see-you-tomorrow'].includes(id)),null,{timeout:12000});
+  const farewellId=await page.evaluate(()=>(window.phraseLog||[]).find(id=>['thank-you','nice-day','see-you','goodbye','great-job','you-did-it','so-much-fun','see-you-tomorrow'].includes(id)));
   const subtitle=await page.evaluate(()=>!!document.querySelector('.animal-speech'));
   await page.screenshot({path:out+'farewell-speech.png'});
   results.push({countdownVoiceSet:usedSet,farewellPhrase:farewellId,farewellSubtitle:subtitle});

@@ -16,7 +16,11 @@ export const ANIMAL_PHRASES={
     phrase('thank-you','Thank you, my friend!','谢谢你，我的朋友！'),
     phrase('nice-day','Have a nice day!','祝你度过愉快的一天！'),
     phrase('see-you','See you again!','下次再见！'),
-    phrase('goodbye','Goodbye, my friend!','再见，我的朋友！')
+    phrase('goodbye','Goodbye, my friend!','再见，我的朋友！'),
+    phrase('great-job','Great job!','你太棒啦！'),
+    phrase('you-did-it','You did it!','你做到啦！'),
+    phrase('so-much-fun','We had so much fun!','今天玩得真开心！'),
+    phrase('see-you-tomorrow','See you tomorrow!','明天见哦！')
   ]
 };
 const favorites={bunny:['hello-play','like-red','how-are-you'],cat:['play-ball','like-orange','happy-today'],

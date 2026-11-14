@@ -5586,5 +5586,117 @@
         "sha256": "60556214c0e31c096397587f2754fe43d5b72a3357fcf044f5b986568bdfd550"
       }
     ]
+  },
+  {
+    "kind": "phrases",
+    "id": "great-job",
+    "text": "Great job!",
+    "zh": "你太棒啦！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/great-job.mp3",
+        "sha256": "d38bfe215fa41ff803cc5dab509aeafede023967b5a2b9fec82f95d0ad76490f"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "you-did-it",
+    "text": "You did it!",
+    "zh": "你做到啦！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/you-did-it.mp3",
+        "sha256": "0c25211cfecf760004edf4632a43e70bd35f70dad82ac71795960bd4f0d9cd45"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "so-much-fun",
+    "text": "We had so much fun!",
+    "zh": "今天玩得真开心！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/so-much-fun.mp3",
+        "sha256": "1933b5ee094661ebb8eb18398f70967cf4703d25a61d684ef90b2fcc3a981e4a"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "see-you-tomorrow",
+    "text": "See you tomorrow!",
+    "zh": "明天见哦！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/see-you-tomorrow.mp3",
+        "sha256": "5d2e77ba43843ab7e56d715d3a71b35fb72e393449fe8e0f3d271b575a3ac499"
+      }
+    ]
   }
 ]
