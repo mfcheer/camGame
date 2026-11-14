@@ -52,7 +52,7 @@ const CHARACTER_MUSIC={
   bunny:['sine',1],cat:['triangle',.88],frog:['sine',1.12],dog:['triangle',.94],
   dragon:['sine',1.16],goldenDragon:['sine',1.24],mcqueen:['triangle',.72],
   wolf:['triangle',.92],teddy:['sine',1.28],chase:['triangle',.82],
-  jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96],excavator:['triangle',.82]
+  jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96],excavator:['triangle',.82],tayo:['triangle',.86]
 };
 
 export class AudioManager {
