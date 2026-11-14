@@ -15,9 +15,9 @@ export const CAMP_ANIMALS = [
   { id:'mcqueen',name:'闪电麦昆',preview:'models/mcqueen-preview.png',title:'闪电赛车',badge:'🏎️',target:10 },
   { id:'wolf',name:'灰太狼大王',preview:'models/wolf-preview.png',title:'青青草原之王',badge:'🐺',target:12 },
   { id:'teddy',name:'泰迪熊 抱抱',preview:'models/teddy-preview.png',title:'温暖抱抱',badge:'🧸',target:8 },
-  { id:'chase',name:'汪汪队 阿奇',preview:'models/chase-preview.png',title:'勇敢巡逻',badge:'🐶',target:10 },
-  { id:'jett',name:'超级飞侠 乐迪',preview:'models/jett-preview.png',title:'天空飞行',badge:'✈️',target:12 },
-  { id:'peppa',name:'小猪佩奇',preview:'models/peppa-preview.png',title:'快乐跳跳',badge:'🐷',target:8 },
+  { id:'chase',name:'汪汪队 阿奇',preview:'models/chase-preview.png?v=20261114',title:'勇敢巡逻',badge:'🐶',target:10 },
+  { id:'jett',name:'超级飞侠 乐迪',preview:'models/jett-preview.png?v=20261114',title:'天空飞行',badge:'✈️',target:12 },
+  { id:'peppa',name:'小猪佩奇',preview:'models/peppa-preview.png?v=20261114',title:'快乐跳跳',badge:'🐷',target:8 },
   { id:'thomas',name:'托马斯火车',preview:'models/thomas-preview.png',title:'快乐列车',badge:'🚂',target:10 }
 ];
 
