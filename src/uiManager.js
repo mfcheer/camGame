@@ -33,10 +33,17 @@ export class UIManager {
     this.animalSpeechCard?.classList.add('is-listening');
     const hint=this.animalSpeechCard?.querySelector('.animal-speech-hint');if(hint)hint.textContent='可以跟着说一说';
   }
-  showWordCue(word){
-    this.clearWordCue();const cue=document.createElement('button');cue.type='button';cue.className='play-word-cue';cue.setAttribute('aria-label',`看看 ${word.word} 的图片和读音`);
+  showWordCue(word, options = {}){
+    this.clearWordCue();
+    const cue=document.createElement('button');cue.type='button';
+    const lang = options?.lang || (options?.review ? 'en' : 'zh');
+    cue.className=`play-word-cue is-lang-${lang}`;
+    cue.setAttribute('aria-label',`看看 ${word.word} 的图片和读音`);
     const image=document.createElement('img');image.src=resolveAssetUrl(word.itemImage||word.image);image.alt='';
-    const text=document.createElement('span'),en=document.createElement('strong'),zh=document.createElement('span');en.textContent=word.word;en.lang='en';zh.textContent=word.zh;zh.lang='zh-CN';text.append(en,zh);cue.append(image,text);
+    const text=document.createElement('span'),en=document.createElement('strong'),zh=document.createElement('span');
+    en.textContent=word.word;en.lang='en';zh.textContent=word.zh;zh.lang='zh-CN';
+    if(lang === 'zh') text.append(zh,en); else text.append(en,zh);
+    cue.append(image,text);
     cue.addEventListener('click',()=>this.handlers.onOpenWord?.(word));document.body.append(cue);this.wordCue=cue;this.updateLearningChrome();
   }
   updateLearningChrome(){const busy=!!this.wordCue||!!this.animalSpeechCard;this.dom?.demoModeBanner?.classList.toggle('learning-covered',busy);if(busy)this.setInteractionHint?.('');}

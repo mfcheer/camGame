@@ -106,7 +106,6 @@ export class Game {
       this.bubbleManager.onComboChange = (combo) => this.handleComboChange(combo);
       this.bubbleManager.onSpecialPop = () => this.onBubblePopped();
       this.bubbleManager.wordAudioHandler=(word,options)=>this.presentPlayWord(word,options);
-      this.bubbleManager.onWordPop=(word,hitX,hitY,audioDone,options)=>this.presentWord(word,hitX,hitY,audioDone,options);
       this.bubbleManager.onWordPoolReady=words=>{if(this.speechPolicy?.automaticEnabled)this.audioManager?.preloadWordAudios?.(words.map(w=>w.id),{review:true});};
     }
 
@@ -787,7 +786,7 @@ export class Game {
       videoElement: this.videoElement,
       webglCanvas: this.sceneManager?.renderer?.domElement,
       animalId, animalName: this.currentAnimalName, targetBubbles: this.targetCount,
-      animalEmoji: {bunny:'🐰',cat:'🐱',frog:'🐸',dog:'🐶',dragon:'🐲',goldenDragon:'🐉',vampire:'🧛',wolf:'🐺',teddy:'🧸'}[animalId] || '🐾'
+      animalEmoji: {bunny:'🐰',cat:'🐱',frog:'🐸',dog:'🐶',dragon:'🐲',goldenDragon:'🐉',mcqueen:'🏎️',wolf:'🐺',teddy:'🧸'}[animalId] || '🐾'
     });
     this.audioManager?.playCameraShutter?.();
     this.uiManager?.triggerCameraFlash?.();
