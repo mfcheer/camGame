@@ -74,6 +74,37 @@ test('each show draws a fresh plan with a signature move, a finale, and no repea
  assert.ok(seen.size>1,'plans vary between shows');
 });
 
+test('the finale bursts confetti under a blooming spotlight, with the performer glowing',()=>{
+ const x=friend('bunny');x.step(1.2);
+ assert.equal(x.a.performanceGlow,'star','actions light star eyes');
+ assert.equal(x.a.expressionRig.smileEyes[0].eye.visible,false,'eyes hidden for star pupils');
+ assert.ok(x.a.expressionRig.starMat.opacity>.2,'star pupils brighten');
+ let guard=0;while(x.f.currentAction()!=='finaleBow'&&guard++<120)x.step(.1);
+ assert.equal(x.a.performanceGlow,'finale','the finale bow glows gratefully');
+ assert.equal(x.a.expressionRig.smileEyes[0].smile.visible,true,'finale closes the eyes in a smile');
+ x.step(.6);assert.ok(x.f.confetti.length>0,'confetti falls during the bow');
+ assert.ok(x.f.spot.intensity>.9,'spotlight blooms at the finale');
+ x.step(1.2);assert.ok(x.f.confetti.some(c=>c.mesh.position.y<x.f.floorY+.6),'confetti descends toward the stage');
+ x.f.clear();
+ assert.equal(x.f.confetti.length,0,'confetti cleaned up');
+ assert.equal(x.f.spot.intensity,0,'spotlight extinguished');
+ assert.equal(x.a.performanceGlow,null,'glow reset');
+ x.a.reset();
+ assert.equal(x.a.expressionRig.smileEyes[0].eye.visible,true,'eyes restored after reset');
+});
+
+test('floppy parts chase their pose through a spring, and reset clears the velocity',()=>{
+ const floppy={bunny:4,cat:4,dog:4};
+ for(const id of ['bunny','cat','dog']){
+  const x=friend(id);assert.equal(x.a.springs.length,floppy[id],id+' spring parts');
+  for(let k=0;k<200;k++)x.step(.05);
+  for(const s of x.a.springs){assert.ok(Number.isFinite(s.pos)&&Math.abs(s.pos)<1.5,id+' spring stays bounded');assert.ok(Math.abs(s.vel)<8,id+' spring velocity bounded');}
+  x.f.clear();x.a.reset();
+  for(const s of x.a.springs){assert.equal(s.vel,0,id+' reset zeroes spring velocity');}
+ }
+ const y=friend('dragon');assert.equal(y.a.springs.length,0,'dragon wings stay spring-free');
+});
+
 function photoFixture(live=true){
  const events=[];const g=Object.assign(Object.create(Game.prototype),{state:'CELEBRATING',rescueAnimal:{state:'ESCAPED'},photoRemaining:null,resultVisible:false,
  hasLiveCamera:()=>live,cancelAutoNext:()=>events.push('stop-auto'),

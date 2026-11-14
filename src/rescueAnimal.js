@@ -36,6 +36,7 @@ export class RescueAnimal {
     this.targetEnergy=this.profile.targetBubbles;
     const request=this.assetRequest=(this.assetRequest||0)+1;
     this.installModel(ANIMAL_MODELS[this.animalId]());this.assetStatus='native';
+    this.createSpringFollowers();
     if(reset){this.reset();if(typeof window!=='undefined')this.updateLayout(getViewport().width,getViewport().height,this.camera);}
     if(typeof window!=='undefined'&&typeof window.fetch==='function') {
       this.assetStatus='loading';
@@ -62,6 +63,26 @@ export class RescueAnimal {
     this.happyMouth=model.getObjectByName('Happy_Mouth');this.happyTongue=model.getObjectByName('Happy_Tongue');
     if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue)this.happyTongue.visible=false;
     this.bowMaterials=[];this.bowtieGroup.traverse(o=>{if(o.isMesh)this.bowMaterials.push(o.material);});
+  }
+  createSpringFollowers() {
+    // Floppy parts chase their pose target with a slightly underdamped spring: head turns,
+    // ears/tails arrive a beat later with a little overshoot. Reduced motion goes direct.
+    const parts={bunny:[['leftEarGroup','z'],['rightEarGroup','z'],['leftEarGroup','x'],['rightEarGroup','x']],
+      cat:[['leftEarGroup','z'],['rightEarGroup','z'],['tailGroup','z'],['tailGroup','y']],
+      dog:[['leftEarGroup','x'],['rightEarGroup','x'],['tailGroup','y'],['tailGroup','z']]};
+    this.springs=(parts[this.animalId]||[]).map(([name,axis])=>({
+      get:()=>this[name].rotation[axis],apply:v=>this[name].rotation[axis]=v,pos:0,vel:0}));
+    for(const s of this.springs)s.pos=s.get();
+  }
+  updateSprings(dt) {
+    if(this.reducedMotion||!this.springs)return;
+    const h=Math.min(dt,.033);
+    for(const s of this.springs){
+      // Semi-implicit Euler toward the pose value set this frame; underdamped on purpose.
+      s.vel+=(s.get()-s.pos)*140*h-s.vel*14*h;
+      s.pos+=s.vel*h;
+      s.apply(s.pos);
+    }
   }
   createContactShadow() {
     const size=32,data=new Uint8Array(size*size*4);
@@ -136,7 +157,7 @@ export class RescueAnimal {
   startFriendPlay() {
     this.state='FRIEND';this.friendResponse=0;this.friendHits=0;this.anticipating=false;
     this.reactionTimer=0;this.glyphTimer=0;this.hopTimer=0;this.energyAttentionRemaining=0;
-    this.actionPoseFn=null;this.actionPoseT=0;
+    this.actionPoseFn=null;this.actionPoseT=0;this.performanceGlow=null;
     this.ropesGroup.visible=false;this.postGroup.visible=false;this.animalGroup.visible=true;this.setOpacity(1);
     this.model.scale.set(1,1,1);this.model.position.y=0;this.model.rotation.set(0,-.12,0);
     this.animalGroup.rotation.set(0,0,0);this.setQuadrupedPosture(0);
@@ -183,6 +204,7 @@ export class RescueAnimal {
     // HappyPerformance 动作覆写层：在 FRIEND 基础姿态之后应用，动画帧内拥有最终决定权。
     if(this.actionPoseFn)this.actionPoseFn(this.actionPoseT||0);
     if(this.contactShadow){this.contactShadow.visible=true;this.contactShadow.position.set(this.currentX,(this.friendFloor??this.currentY)+.01,.1);this.contactShadow.scale.setScalar(this.animalGroup.scale.y);}
+    this.updateSprings(dt);
   }
   spawnParticle(pos,dust=false) {
     if(this.particles.length>=16)return;
@@ -205,7 +227,7 @@ export class RescueAnimal {
     this.speechListening=false;this.speaking=false;this.speakingTime=0;this.friendFarewell=false;this.escapeOriginX=null;this.friendResponse=0;this.model.position.y=0;
     this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;this.reactionTimer=0;
     this.anticipating=false;this.reactionVariant=0;this.glyphTimer=0;this.emotion='content';this.attentionPhase='player';this.attentionFocus=null;this.targetFocus=null;this.energyFocus=null;this.energyAttentionRemaining=0;resetExpressionRig(this.expressionRig);
-    this.actionPoseFn=null;this.actionPoseT=0;
+    this.actionPoseFn=null;this.actionPoseT=0;this.performanceGlow=null;
     if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.y=.048;}
     for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=true;}
     this.currentX=this.startX;this.currentY=this.groundY;
@@ -215,6 +237,7 @@ export class RescueAnimal {
     this.leftEarGroup.rotation.set(0,0,.13);this.rightEarGroup.rotation.set(0,0,-.13);this.eyesGroup.scale.set(1,1,1);
     this.bodyMesh.rotation.set(0,0,0);
     for(const name of ['Whisker_L','Whisker_R'])this.model.getObjectByName(name)?.rotation.set(0,0,0);
+    for(const s of this.springs||[]){s.pos=s.get();s.vel=0;}
     this.model.scale.set(1,1,1);this.model.rotation.set(0,-.16,0);this.setQuadrupedPosture(0);
     for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=sign*.18;}
     for(const c of this.ropeCoils){Object.assign(c,{loosened:false,falling:false,fallTimer:0});c.group.visible=true;c.group.position.set(0,0,0);c.group.scale.set(1,1,1);c.mesh.material.opacity=1;}
@@ -258,7 +281,7 @@ export class RescueAnimal {
     }
     if(!['TRAPPED','FRIEND'].includes(this.state))this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,0,Math.min(1,dt*8));
     if(this.speaking){this.speakingTime+=dt;this.headGroup.rotation.x+=Math.sin(this.speakingTime*5)*.035;}
-    const happy=this.speaking||this.speechListening||reaction>.1||this.state==='WAVING'||this.state==='CHEERING';
+    const happy=this.speaking||this.speechListening||this.performanceGlow||reaction>.1||this.state==='WAVING'||this.state==='CHEERING';
     if(this.happyMouth)this.happyMouth.visible=happy;
     if(this.happyTongue)this.happyTongue.visible=happy;
     if(this.happyMouth)for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=!happy;}
@@ -423,5 +446,6 @@ export class RescueAnimal {
     this.updateExpression(dt);updateExpressionRig(this,dt);
     this.currentY=this.animalGroup.position.y;
     if(this.contactShadow){this.contactShadow.position.set(this.currentX,this.groundY+.014,.09);this.contactShadow.scale.setScalar(this.modelScale*(1+jump*.5));if(this.state!=='ESCAPED')this.contactShadow.visible=true;}
+    this.updateSprings(dt);
   }
 }

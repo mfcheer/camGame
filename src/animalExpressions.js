@@ -30,12 +30,32 @@ export function createExpressionRig(model,id){
   const material=new THREE.MeshBasicMaterial({color:i===1?0xe8bf6d:profile.colour,side:THREE.DoubleSide,transparent:true,opacity:0,depthWrite:false});
   const m=new THREE.Mesh(i===1?star():heart(),material);effects.add(m);glyphs.push(m);
  }
+ // Performance excitement: star pupils replace the eyes; a bunny also blushes through its cheeks.
+ const starMat=new THREE.MeshBasicMaterial({color:0xffd778,side:THREE.DoubleSide,transparent:true,opacity:0,depthWrite:false});
+ const starEyes=[];
+ for(const side of ['L','R']){
+  const eye=model.getObjectByName('Eye_'+side);
+  const s=new THREE.Mesh(star(),starMat);s.name='Star_Eye_'+side;
+  s.position.copy(eye.position);s.position.z+=profile.depth+.006;s.rotation.copy(eye.rotation);
+  s.scale.setScalar(1.25);s.visible=false;root.add(s);starEyes.push(s);
+ }
+ let blush=null;
+ if(id==='bunny'){
+  const blushMat=new THREE.MeshBasicMaterial({color:0xf29b8e,transparent:true,opacity:0,depthWrite:false});
+  blush=[];
+  for(const side of ['L','R']){
+   const cheek=model.getObjectByName('Cheek_'+side);
+   const b=new THREE.Mesh(new THREE.CircleGeometry(.032,14),blushMat);
+   b.position.copy(cheek.position);b.position.z+=.008;b.rotation.y=side==='L'?-.3:.3;
+   b.visible=false;root.add(b);blush.push(b);
+  }
+ }
  // A frog's vocal sac is a separate, subtle expression rather than a generic mammal tongue.
  let sac=null;
  if(id==='frog'){
   sac=new THREE.Mesh(new THREE.SphereGeometry(1,20,14),new THREE.MeshStandardMaterial({color:0xd4d99a,roughness:.9}));sac.name='Vocal_Sac';sac.position.set(0,-.19,.16);head.add(sac);sac.scale.set(.09,.025,.045);
  }
- return {profile,root,smileEyes,pupils,effects,glyphs,sac};
+ return {profile,root,smileEyes,pupils,effects,glyphs,sac,starMat,starEyes,blush};
 }
 
 export function resetExpressionRig(rig){
@@ -43,20 +63,39 @@ export function resetExpressionRig(rig){
  for(const {node,base}of rig.pupils)node.position.copy(base);
  rig.effects.visible=false;for(const m of rig.glyphs)m.material.opacity=0;
  if(rig.sac)rig.sac.scale.set(.09,.025,.045);
+ if(rig.starMat)rig.starMat.opacity=0;
+ for(const s of rig.starEyes||[])s.visible=false;
+ for(const b of rig.blush||[]){b.visible=false;b.material.opacity=0;}
 }
 
 export function updateExpressionRig(animal,dt){
  const rig=animal.expressionRig;if(!rig)return;
  const t=animal.idleTime,reaction=animal.reactionTimer||0,variant=animal.reactionVariant||0;
+ const glow=animal.performanceGlow||null;
  const greeting=animal.state==='WAVING'||animal.state==='CHEERING';
- const happy=!!animal.speaking||!!animal.speechListening||reaction>.10||greeting,curious=!happy&&animal.anticipating;
- animal.emotion=greeting?'grateful':happy?(variant===1?'delighted':'happy'):curious?'curious':'content';
+ const happy=glow||!!animal.speaking||!!animal.speechListening||reaction>.10||greeting,curious=!happy&&animal.anticipating;
+ animal.emotion=glow==='finale'?'grateful':glow?'delighted':greeting?'grateful':happy?(variant===1?'delighted':'happy'):curious?'curious':'content';
  // Slow blink for cats; puppy wink; other friends use upturned smiling eyelids.
  const smileWindow=greeting||(reaction<1.02&&reaction>.42);
  const closeBoth=happy&&(animal.animalId!=='cat'||reaction<1.05)&&!(animal.animalId==='dog'&&variant===1);
  for(let i=0;i<rig.smileEyes.length;i++){
-  const {eye,smile}=rig.smileEyes[i];const close=happy&&smileWindow&&(closeBoth||(animal.animalId==='dog'&&variant===1&&i===1));
-  eye.visible=!close;smile.visible=close;eye.scale.y=curious?1.12:happy&&!close?.90:1;
+  const {eye,smile}=rig.smileEyes[i];
+  if(glow==='star'){eye.visible=false;smile.visible=false;eye.scale.y=1;}
+  else if(glow==='finale'){eye.visible=false;smile.visible=true;eye.scale.y=1;}
+  else{
+   const close=happy&&smileWindow&&(closeBoth||(animal.animalId==='dog'&&variant===1&&i===1));
+   eye.visible=!close;smile.visible=close;eye.scale.y=curious?1.12:happy&&!close?.90:1;
+  }
+ }
+ // Star pupils glow with a soft pulse while performing; blush fades in only for the bunny.
+ if(rig.starMat){
+  const target=glow==='star'?.85+Math.sin(t*6)*.15:0;
+  rig.starMat.opacity+=(target-rig.starMat.opacity)*(1-Math.exp(-dt*10));
+  for(const s of rig.starEyes||[])s.visible=glow==='star'||rig.starMat.opacity>.05;
+ }
+ if(rig.blush){
+  const target=glow?.5:0;
+  for(const b of rig.blush){b.material.opacity+=(target-b.material.opacity)*(1-Math.exp(-dt*6));b.visible=b.material.opacity>.01;}
  }
  if(animal.happyTongue&&animal.animalId==='dog'){animal.happyTongue.rotation.z=happy?Math.sin(t*5)*.10:0;animal.happyTongue.scale.y=.048*(happy?1+Math.sin(t*7)*.08:1);}
  const focus=animal.attentionFocus||animal.playerFocus||{x:.5,y:.32};

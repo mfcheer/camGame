@@ -26,7 +26,8 @@ check('Selecting new animals sets their own goals before the game starts',()=>{
 });
 check('Frog launches in larger jumps; puppy uses an alternating four-footed gait and wag',()=>{
  const frog=new RescueAnimal(new T.Scene(),camera(),'frog'),dog=new RescueAnimal(new T.Scene(),camera(),'dog');
- frog.startEscape();frog.update(1.1,1.1);dog.startEscape();dog.update(1.1,1.1);
+ frog.startEscape();dog.startEscape();
+ for(let i=0;i<22;i++){frog.update(.05,1.1);dog.update(.05,1.1);}
  assert.ok(frog.currentY-frog.groundY>.12);assert.ok(dog.currentY-dog.groundY<.06);
  assert.equal(frog.leftLeg.rotation.x,frog.rightLeg.rotation.x);assert.ok(dog.leftLeg.rotation.x*dog.rightLeg.rotation.x<0);assert.ok(dog.leftArm.position.z>dog.leftLeg.position.z+.5);assert.ok(Math.abs(dog.tailGroup.rotation.y)>.1);
 });

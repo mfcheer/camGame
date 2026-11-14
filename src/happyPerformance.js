@@ -154,7 +154,10 @@ export class HappyPerformance {
     this.group=new THREE.Group();this.group.name='Happy_Performance';this.group.visible=false;scene.add(this.group);
     this.platform=new THREE.Mesh(new THREE.CylinderGeometry(1,1.05,.08,40),new THREE.MeshStandardMaterial({color:0xeadbb6,roughness:1}));
     this.group.add(this.platform);
-    this.plan=null;this.actionIdx=-1;
+    // Stage spotlight: barely lit during the show, blooms at the finale bow.
+    this.spot=new THREE.SpotLight(0xfff1cf,0,12,.6,.7,1.1);this.spot.castShadow=false;
+    this.spot.position.set(0,2.4,1.5);this.group.add(this.spot,this.spot.target);this.spot.target.position.set(0,0,0);
+    this.plan=null;this.actionIdx=-1;this.confetti=[];
   }
   start() {
     this.clear();
@@ -208,6 +211,8 @@ export class HappyPerformance {
     const platformWidth=Math.max(.32,this.localSize.x*this.targetScale*.62);
     this.platform.scale.set(platformWidth,1,.38);
     this.platform.position.set(this.centerX,this.floorY-.045,0);
+    this.spot.position.set(this.centerX,this.floorY+2.4,1.5);
+    this.spot.target.position.set(this.centerX,this.floorY,0);
     if(instant){this.entryPosition.set(this.centerX,this.rootY,.06);this.entryScale=this.targetScale;this.placeAnimal(1);}
   }
   placeAnimal(entrance) {
@@ -221,17 +226,44 @@ export class HappyPerformance {
   }
   beginAction(i) {
     if(i>=this.plan.length){this.finish();return;}
-    this.actionIdx=i;this.actionElapsed=0;this.resting=false;
+    this.actionIdx=i;this.actionElapsed=0;this.resting=false;this.sparkled=false;
     const act=this.plan[i];
     const m=this.animal.reducedMotion?.25:1;
     this.animal.actionPoseFn=t=>act.fn(this.animal,t,m);
     this.animal.actionPoseT=0;
+    this.animal.performanceGlow=act.id==='finaleBow'?'finale':'star';
     this.audio?.playAnimalSound?.(this.animal.animalId,'happy');
+    if(act.id==='finaleBow')this.spawnConfetti();
     this.animal.friendReact(act.id==='finaleBow'?3:i+1);
+  }
+  spawnConfetti() {
+    if(this.animal.reducedMotion)return;
+    const colors=[0xe8735c,0xf2b64b,0x7bb37a,0x6ea8d8,0xd77fa9];
+    const spread=Math.max(.55,this.localSize.x*this.targetScale*.85);
+    if(!this.confettiGeo)this.confettiGeo=new THREE.PlaneGeometry(.05,.034);
+    for(let i=0;i<28;i++){
+      const material=new THREE.MeshBasicMaterial({color:colors[i%5],side:THREE.DoubleSide,transparent:true,opacity:.95,depthWrite:false});
+      const mesh=new THREE.Mesh(this.confettiGeo,material);
+      mesh.position.set(this.centerX+(Math.random()-.5)*spread,this.floorY+1.05+Math.random()*.55,(Math.random()-.5)*.35);
+      mesh.rotation.set(Math.random()*Math.PI*2,Math.random()*Math.PI*2,Math.random()*Math.PI*2);
+      this.group.add(mesh);
+      this.confetti.push({mesh,vy:.5+Math.random()*.35,sw:Math.random()*Math.PI*2,sway:.8+Math.random()*.8,spin:(Math.random()-.5)*7,age:0});
+    }
+  }
+  updateConfetti(dt) {
+    for(let i=this.confetti.length-1;i>=0;i--){
+      const c=this.confetti[i];c.age+=dt;c.sw+=dt*c.sway;
+      c.mesh.position.y-=c.vy*dt;
+      c.mesh.position.x+=Math.sin(c.sw)*.28*dt;
+      c.mesh.rotation.x+=c.spin*dt;c.mesh.rotation.z+=c.spin*.6*dt;
+      c.mesh.material.opacity=Math.max(0,.95-c.age*.45);
+      if(c.age>2.2||c.mesh.position.y<this.floorY-.02){this.group.remove(c.mesh);c.mesh.material.dispose();this.confetti.splice(i,1);}
+    }
   }
   update(dt) {
     if(!this.active||this.paused)return;
     this.elapsed+=dt;
+    this.updateConfetti(dt);
     const entrance=clamp(this.elapsed/.8,0,1);
     this.placeAnimal(entrance);
     if(entrance<1)return;
@@ -240,16 +272,27 @@ export class HappyPerformance {
       this.animal.actionPoseFn=null;
       this.restElapsed-=dt;
       if(this.restElapsed<=0)this.beginAction(this.actionIdx+1);
+      if(this.active)this.rampSpotlight(dt,false);
       return;
     }
     const act=this.plan[this.actionIdx];
     this.actionElapsed+=dt;
     const t=this.actionElapsed/act.dur;
+    const finale=act.id==='finaleBow';
+    if(finale&&!this.sparkled&&t>.45){
+      this.sparkled=true;
+      if(!this.animal.reducedMotion)for(let k=0;k<6;k++)this.animal.spawnParticle(this.animal.getTargetPosition());
+    }
+    this.rampSpotlight(dt,finale);
     if(t>=1){
       act.reset?.(this.animal);
       this.animal.actionPoseFn=null;
       this.resting=true;this.restElapsed=REST;this.actionElapsed=0;
     }else this.animal.actionPoseT=t;
+  }
+  rampSpotlight(dt,finale) {
+    const target=finale?1.25:(this.animal.reducedMotion?.35:.5);
+    this.spot.intensity+=(target-this.spot.intensity)*(1-Math.exp(-dt*4));
   }
   setPaused(paused){this.paused=paused;this.group.visible=this.active&&!paused;}
   currentAction(){return this.plan&&this.actionIdx>=0&&this.actionIdx<this.plan.length?this.plan[this.actionIdx].id:null;}
@@ -258,7 +301,9 @@ export class HappyPerformance {
   clear() {
     const act=this.plan&&this.actionIdx>=0&&this.actionIdx<this.plan.length?this.plan[this.actionIdx]:null;
     act?.reset?.(this.animal);
-    this.animal.actionPoseFn=null;this.animal.actionPoseT=0;
+    this.animal.actionPoseFn=null;this.animal.actionPoseT=0;this.animal.performanceGlow=null;
+    for(const c of this.confetti){this.group.remove(c.mesh);c.mesh.material.dispose();}
+    this.confetti=[];this.spot.intensity=0;
     this.active=false;this.paused=false;this.group.visible=false;this.plan=null;this.actionIdx=-1;
   }
 }
