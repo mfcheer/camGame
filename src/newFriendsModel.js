@@ -732,18 +732,18 @@ export function createTayoModel(){
 
 export function createTriceratopsModel() {
  const root=new THREE.Group();root.name="Triceratops_Dino_Rig";
- const dinoGreen=mat(0x5ca848,.92),
-       bellyCream=mat(0xfff9db,.95),
-       frillGreen=mat(0x4a9238,.92),
-       frillAmber=mat(0xffb74d,.85),
-       frillRidge=mat(0x76c05d,.92),
-       hornIvory=mat(0xfffae8,.85,{roughness:.3}),
-       beakGold=mat(0xffe082,.9),
-       clawIvory=mat(0xfffde8,.85),
-       spineDark=mat(0x3e7b2f,.9),
+ const dinoOrange=mat(0xf59e0b,.88),   // 暖阳金橙色主色
+       bellyCream=mat(0xfffae0,.95),   // 柔软温和的香草奶黄腹部
+       frillOrange=mat(0xf97316,.88),  // 活力落日橙大颈盾
+       frillGold=mat(0xfde047,.90),    // 颈盾边缘亮金黄圆珠花边
+       spotYellow=mat(0xfef08a,.85),   // 颈盾与身上的明亮暖黄斑纹
+       spotCaramel=mat(0xd97706,.88),  // 焦糖暖褐背部斑点与甲片
+       hornIvory=mat(0xfffae8,.82,{roughness:.25}), // 温润光滑的象牙白犄角
+       beakGold=mat(0xfcd34d,.88),     // 角质小嘴
+       clawIvory=mat(0xfffde8,.85),    // 爪子
        dark=mat(0x2d2420,.45),
        eyeDark=mat(0x212121,.9),
-       eyeIris=mat(0x2e7d32,.75),
+       eyeIris=mat(0x1e3a8a,.8),       // 澄澈温和的深蓝眼珠
        mouthDark=mat(0x381520,.95),
        tonguePink=mat(0xf36e84,.88),
        blush=mat(0xff8a80,.55),
@@ -751,23 +751,23 @@ export function createTriceratopsModel() {
 
  // 躯干与饱满恐龙肚皮 (Torso)
  const body=pivot(root,"Torso",[0,.42,0]);
- ellipsoid(body,"Dino_Plump_Body",dinoGreen,[0,0,0],[.32,.26,.38]);
+ ellipsoid(body,"Dino_Plump_Body",dinoOrange,[0,0,0],[.32,.26,.38]);
  ellipsoid(body,"Cream_Belly",bellyCream,[0,-.10,.04],[.24,.18,.30]);
  // 背部圆润小骨板 / 刺甲
  for(let i=0;i<4;i++){
   const z=.16-i*.12;
-  ellipsoid(body,"Spine_Plate_"+i,spineDark,[0,.24,z],[.035,.065,.05]);
+  ellipsoid(body,"Spine_Plate_"+i,spotCaramel,[0,.24,z],[.035,.065,.05]);
  }
  // 臀部可爱小斑点
  for(const s of [-1,1]){
-  ellipsoid(body,s<0?"Hip_Spot_L":"Hip_Spot_R",frillAmber,[s*.22,.08,-.10],[.05,.05,.015]);
-  ellipsoid(body,s<0?"Back_Spot_L":"Back_Spot_R",frillAmber,[s*.15,.16,.02],[.038,.038,.012]);
+  ellipsoid(body,s<0?"Hip_Spot_L":"Hip_Spot_R",spotYellow,[s*.22,.08,-.10],[.05,.05,.015]);
+  ellipsoid(body,s<0?"Back_Spot_L":"Back_Spot_R",spotCaramel,[s*.15,.16,.02],[.038,.038,.012]);
  }
 
  // 头部与大颈盾 (Head)
  const head=pivot(root,"Head",[0,.72,.18]);
- ellipsoid(head,"Dino_Head",dinoGreen,[0,0,0],[.25,.22,.24]);
- ellipsoid(head,"Dino_Snout",dinoGreen,[0,-.07,.16],[.17,.13,.16]);
+ ellipsoid(head,"Dino_Head",dinoOrange,[0,0,0],[.25,.22,.24]);
+ ellipsoid(head,"Dino_Snout",dinoOrange,[0,-.07,.16],[.17,.13,.16]);
  ellipsoid(head,"Cream_Cheeks",bellyCream,[0,-.10,.14],[.18,.10,.14]);
  // 可爱鹦鹉形角质小喙 (Dino_Beak)
  ellipsoid(head,"Dino_Beak",beakGold,[0,-.13,.30],[.085,.070,.065]);
@@ -775,17 +775,17 @@ export function createTriceratopsModel() {
  // 标志性大颈盾 (Neck_Frill)
  const frill=pivot(head,"Neck_Frill",[0,.14,-.06]);
  frill.rotation.x=-.32;
- ellipsoid(frill,"Frill_Shield_Base",frillGreen,[0,.14,0],[.42,.32,.038]);
+ ellipsoid(frill,"Frill_Shield_Base",frillOrange,[0,.14,0],[.42,.32,.038]);
  // 颈盾波浪花边装饰珠 (Frill_Rim_Scallops)
  for(let i=0;i<9;i++){
   const angle=Math.PI*(.1+.8*(i/8));
   const rx=Math.cos(angle)*.40,ry=.14+Math.sin(angle)*.30;
-  ellipsoid(frill,"Frill_Bead_"+i,frillRidge,[rx,ry,.005],[.042,.042,.028]);
+  ellipsoid(frill,"Frill_Bead_"+i,frillGold,[rx,ry,.005],[.042,.042,.028]);
  }
  // 颈盾太阳斑纹
  for(const s of [-1,1]){
-  ellipsoid(frill,s<0?"Frill_Spot_L1":"Frill_Spot_R1",frillAmber,[s*.18,.22,.022],[.075,.095,.012]);
-  ellipsoid(frill,s<0?"Frill_Spot_L2":"Frill_Spot_R2",frillAmber,[s*.28,.12,.022],[.055,.070,.012]);
+  ellipsoid(frill,s<0?"Frill_Spot_L1":"Frill_Spot_R1",spotYellow,[s*.18,.22,.022],[.075,.095,.012]);
+  ellipsoid(frill,s<0?"Frill_Spot_L2":"Frill_Spot_R2",spotYellow,[s*.28,.12,.022],[.055,.070,.012]);
  }
 
  // 标志性三只圆钝犄角 (Horn_Brow_L / Horn_Brow_R / Horn_Nose)
@@ -815,11 +815,11 @@ export function createTriceratopsModel() {
   ellipsoid(eye,"Catchlight",white,[-.012,.016,.020],[.012,.014,.006]);
   ellipsoid(eye,"Catchlight_Small",white,[.012,-.014,.018],[.006,.007,.004]);
   // 眉骨与腮红
-  ellipsoid(head,s<0?"Brow_L":"Brow_R",dinoGreen,[s*.16,.10,.16],[.065,.024,.035]);
+  ellipsoid(head,s<0?"Brow_L":"Brow_R",dinoOrange,[s*.16,.10,.16],[.065,.024,.035]);
   ellipsoid(head,s<0?"Blush_L":"Blush_R",blush,[s*.18,-.08,.20],[.045,.030,.012]);
   // 耳侧枢轴（供耳部灵动微摇）
   const ear=pivot(head,s<0?"Ear_L":"Ear_R",[s*.28,.04,-.04]);
-  ellipsoid(ear,"Frill_Ear_Flank",frillGreen,[0,0,0],[.045,.065,.025]);
+  ellipsoid(ear,"Frill_Ear_Flank",frillOrange,[0,0,0],[.045,.065,.025]);
  }
 
  // 微笑嘴巴与下颌 (Mouth / Smile / Happy_Mouth)
@@ -835,15 +835,15 @@ export function createTriceratopsModel() {
  // 四肢粗壮稳健小恐龙腿 (Arm_L/R 前腿, Leg_L/R 后腿)
  for(const s of [-1,1]){
   const arm=pivot(root,s<0?"Arm_L":"Arm_R",[s*.22,.36,.16]);
-  mesh(new THREE.CylinderGeometry(.095,.115,.28,16),dinoGreen,arm,"Foreleg",[0,-.12,0]);
-  ellipsoid(arm,"Forefoot",dinoGreen,[0,-.26,.04],[.11,.065,.12]);
+  mesh(new THREE.CylinderGeometry(.095,.115,.28,16),dinoOrange,arm,"Foreleg",[0,-.12,0]);
+  ellipsoid(arm,"Forefoot",dinoOrange,[0,-.26,.04],[.11,.065,.12]);
   for(let j=0;j<3;j++){
    const angle=(j-1)*.35;
    ellipsoid(arm,"Toenail_F_"+j,clawIvory,[Math.sin(angle)*.08,-.28,.04+Math.cos(angle)*.09],[.022,.022,.035]);
   }
   const leg=pivot(root,s<0?"Leg_L":"Leg_R",[s*.24,.36,-.16]);
-  mesh(new THREE.CylinderGeometry(.105,.125,.28,16),dinoGreen,leg,"Hindleg",[0,-.12,0]);
-  ellipsoid(leg,"Hindfoot",dinoGreen,[0,-.26,.04],[.12,.070,.13]);
+  mesh(new THREE.CylinderGeometry(.105,.125,.28,16),dinoOrange,leg,"Hindleg",[0,-.12,0]);
+  ellipsoid(leg,"Hindfoot",dinoOrange,[0,-.26,.04],[.12,.070,.13]);
   for(let j=0;j<3;j++){
    const angle=(j-1)*.35;
    ellipsoid(leg,"Toenail_H_"+j,clawIvory,[Math.sin(angle)*.09,-.28,.04+Math.cos(angle)*.10],[.024,.024,.038]);
@@ -852,14 +852,14 @@ export function createTriceratopsModel() {
 
  // 圆润粗壮恐龙小尾巴 (Tail)
  const tail=pivot(root,"Tail",[0,.36,-.28]);
- ellipsoid(tail,"Dino_Tail",dinoGreen,[0,-.06,-.18],[.11,.11,.24]);
- ellipsoid(tail,"Tail_Tip",dinoGreen,[0,-.12,-.36],[.065,.065,.14]);
- for(let i=0;i<3;i++)ellipsoid(tail,"Tail_Spine_"+i,spineDark,[0,.03,-.10-i*.10],[.025,.045,.035]);
+ ellipsoid(tail,"Dino_Tail",dinoOrange,[0,-.06,-.18],[.11,.11,.24]);
+ ellipsoid(tail,"Tail_Tip",dinoOrange,[0,-.12,-.36],[.065,.065,.14]);
+ for(let i=0;i<3;i++)ellipsoid(tail,"Tail_Spine_"+i,spotCaramel,[0,.03,-.10-i*.10],[.025,.045,.035]);
 
  // 装饰领花 (Bow)
  const bow=pivot(root,"Bow",[0,.54,.30]);
- const flowerMat=mat(0xffb74d,.85);
- ellipsoid(bow,"Bow_Center",bellyCream,[0,0,.01],[.035,.035,.02]);
+ const flowerMat=mat(0xfde047,.90);
+ ellipsoid(bow,"Bow_Center",spotCaramel,[0,0,.01],[.035,.035,.02]);
  for(let i=0;i<5;i++){
   const a=i*Math.PI*2/5;
   ellipsoid(bow,"Flower_Petal_"+i,flowerMat,[Math.cos(a)*.05,Math.sin(a)*.05,0],[.028,.028,.015]);

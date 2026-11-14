@@ -475,12 +475,19 @@ export class RescueAnimal {
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
           this.headGroup.rotation.z=Math.sin(p*Math.PI)*.10;
         }else if(this.animalId==='triceratops'){
-          const stride=Math.sin(p*Math.PI*22);
+          this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
+          this.headGroup.rotation.x=-Math.sin(p*Math.PI)*.14;
+          this.headGroup.rotation.z=Math.sin(p*Math.PI*2)*.06;
+          this.tailGroup.rotation.y=Math.sin(p*Math.PI*2)*.22;
+          this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);
+          this.leftLeg.rotation.set(0,0,0);this.rightLeg.rotation.set(0,0,0);
+        }else if(this.animalId==='triceratops'){
+          const stride=Math.sin(p*Math.PI*20);
           this.model.scale.set(1,1,1);jump=this.reducedMotion?0:Math.abs(stride)*.035;
           this.currentY=this.groundY+jump;this.animalGroup.position.y=this.currentY;
-          this.leftArm.rotation.x=stride*.38;this.rightArm.rotation.x=-stride*.38;
-          this.leftLeg.rotation.x=-stride*.35;this.rightLeg.rotation.x=stride*.35;
-          this.tailGroup.rotation.y=Math.sin(p*Math.PI*18)*.22;this.headGroup.rotation.x=-.04+Math.sin(p*Math.PI*22)*.06;
+          this.leftArm.rotation.x=stride*.36;this.rightArm.rotation.x=-stride*.36;
+          this.leftLeg.rotation.x=-stride*.32;this.rightLeg.rotation.x=stride*.32;
+          this.tailGroup.rotation.y=Math.sin(p*Math.PI*16)*.22;this.headGroup.rotation.x=-.04+Math.sin(p*Math.PI*20)*.05;
         }else if(['cat','dog','chase'].includes(this.animalId)) {
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
           this.headGroup.rotation.z=Math.sin(p*Math.PI)*.12;
@@ -488,13 +495,18 @@ export class RescueAnimal {
           if(this.animalId==='dog'){this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=Math.sin(p*Math.PI*2)*.12;this.model.scale.y=1+Math.sin(p*Math.PI)*.025;}
           this.tailGroup.rotation.z=Math.sin(p*Math.PI*2)*.22;
         }else jump=this.animateHop(p,this.reducedMotion?.025:(this.animalId==='frog'?.22:.14)*boost);
-        this.leftArm.rotation.z=-Math.sin(p*Math.PI)*.45;this.rightArm.rotation.z=Math.sin(p*Math.PI)*.45;
+        if(!['thomas','excavator','mcqueen','tayo','triceratops'].includes(this.animalId)){this.leftArm.rotation.z=-Math.sin(p*Math.PI)*.45;this.rightArm.rotation.z=Math.sin(p*Math.PI)*.45;}
         for(const m of this.bowMaterials){m.emissive=new THREE.Color(0xe6a94e);m.emissiveIntensity=Math.sin(p*Math.PI)*.6;}
       }else {
         this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;this.headGroup.rotation.x=0;
         if(this.moodExcited>0&&!this.reducedMotion)this.model.position.y=Math.abs(Math.sin(this.idleTime*5))*.015*this.moodExcited;
-        this.leftArm.rotation.set(-.12,0,.17);this.rightArm.rotation.set(-.12,0,-.17);
-        this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
+        if(this.animalId==='triceratops'){
+          this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);
+          this.leftLeg.rotation.set(0,0,0);this.rightLeg.rotation.set(0,0,0);
+        }else{
+          this.leftArm.rotation.set(-.12,0,.17);this.rightArm.rotation.set(-.12,0,-.17);
+          this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
+        }
         this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=0;
         this.tailGroup.rotation.z=['cat','dog','chase'].includes(this.animalId)?Math.sin(this.idleTime*(this.animalId==='dog'?5:1.9))*(this.animalId==='dog'?.25:.12):0;
       }
@@ -505,7 +517,14 @@ export class RescueAnimal {
         if(this.animalId==='goldenDragon'){
           jump=this.reducedMotion?0:Math.sin(t/.65*Math.PI)*.10;this.animalGroup.position.y=this.groundY+jump;
           this.model.scale.set(1,1,1);
-        }else if(['excavator','thomas','tayo'].includes(this.animalId)){
+        }else if(['excavator','thomas','tayo','triceratops'].includes(this.animalId)){
+          if(this.animalId==='triceratops'){
+            this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
+            this.headGroup.rotation.x=-Math.sin(t/.65*Math.PI)*.16;
+            this.tailGroup.rotation.y=Math.sin(t/.65*Math.PI*3)*.25;
+            this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);
+            this.leftLeg.rotation.set(0,0,0);this.rightLeg.rotation.set(0,0,0);
+          }else
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
           this.bodyMesh.rotation.z=Math.sin(t/.65*Math.PI)*.035;
         }else if(['cat','dog','chase'].includes(this.animalId)) {
@@ -514,7 +533,7 @@ export class RescueAnimal {
           this.leftArm.rotation.x=this.rightArm.rotation.x=-stretch*.6;this.tailGroup.rotation.z=-stretch*.3;
         }else jump=this.animateHop(t/.65,this.reducedMotion?.05:(this.animalId==='frog'?.43:.34));
         this.animalGroup.rotation.y=THREE.MathUtils.lerp(.15,Math.PI/2,smooth(t/.65));
-        if(!['thomas','excavator','mcqueen','tayo'].includes(this.animalId)){this.leftArm.rotation.z=-.45;this.rightArm.rotation.z=.45;}
+        if(!['thomas','excavator','mcqueen','tayo','triceratops'].includes(this.animalId)){this.leftArm.rotation.z=-.45;this.rightArm.rotation.z=.45;}
       }else if(t<3.15) {
         this.state='ESCAPING';const p=(t-.65)/2.5;const count=this.animalId==='frog'?4:5;
         const hopPos=p*count;const phase=hopPos%1;
@@ -561,7 +580,7 @@ export class RescueAnimal {
         this.setQuadrupedPosture(1-smooth(clamp((t-3.15)/.22,0,1)));
         this.headGroup.rotation.z=-.1;
         if(['cat','dog','chase'].includes(this.animalId))this.tailGroup.rotation.z=Math.sin((t-3.15)*12)*.3;
-        if(['thomas','excavator','tayo'].includes(this.animalId)){this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);}
+        if(['thomas','excavator','tayo','triceratops'].includes(this.animalId)){this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);if(this.animalId==='triceratops'){this.headGroup.rotation.x=Math.sin((t-3.15)*10)*.12;this.tailGroup.rotation.y=Math.sin((t-3.15)*12)*.3;}}
         else{this.leftArm.rotation.set(0,0,-1.7+Math.sin((t-3.15)*20)*.22);this.rightArm.rotation.set(0,0,-.1);}
         this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
         this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=0;
