@@ -26,30 +26,29 @@ export function createTeddyModel(){
 }
 export function createWolfModel(){
  const root=new THREE.Group();root.name="Friendly_Wolf_Rig";
- const fur=mat(0x566068,.90), // 灰太狼经典深灰毛皮
-       darkFur=mat(0x3e454b,.92),
-       bellyFur=mat(0x66727a,.90), // 浅灰肚皮
-       hatOrange=mat(0xc05a2b,.86), // 打补丁帽子：红褐/暖橙色
-       hatPatch=mat(0xdfb768,.85),  // 补丁：米黄/浅土黄色
-       scarfYellow=mat(0xf3c439,.82), // 破黄色围巾
-       white=mat(0xffffff,.4),      // 牙齿、大眼珠、高光
-       ink=mat(0x191c20,.45),       // 黑鼻头、粗黑一字眉、瞳孔、胡茬、缝合线
-       pink=mat(0xd58782,.88),      // 耳内粉肉色
-       scarLine=mat(0x899197,.82),  // 浅色缝线，避免幼儿视角过于阴沉
-       tailTip=mat(0xc6cdd3,.92);   // 尾尖浅灰色
+ const fur=mat(0x525c65,.88),
+       darkFur=mat(0x3a4248,.92),
+       bellyFur=mat(0x76828c,.88),
+       stubbleFur=mat(0x434c54,.90),
+       hatOrange=mat(0xc45c2c,.85),
+       hatPatch=mat(0xdfba68,.85),
+       scarfYellow=mat(0xf3c439,.82),
+       white=mat(0xffffff,.4),
+       ink=mat(0x191c20,.45),
+       pink=mat(0xd58782,.88),
+       scarLine=mat(0x9ca5ac,.82),
+       tailTip=mat(0xcad1d8,.92);
 
  const body=pivot(root,"Torso",[0,.38,0]);
  ellipsoid(body,"Wolf_Chest",fur,[0,.025,0],[.27,.33,.22]);
  ellipsoid(body,"Wolf_Tummy",bellyFur,[0,.01,.06],[.23,.28,.17]);
- ellipsoid(body,"Silver_Bib",bellyFur,[0,.03,.19],[.16,.21,.04]); // 保持兼容
+ ellipsoid(body,"Silver_Bib",bellyFur,[0,.03,.19],[.16,.21,.04]);
 
- // 标志性“×”字小肚脐眼与肚脐凹
  const belly=pivot(body,"Belly_Cross",[0,-.09,.225]);
  curve(belly,"Cross_1",[[-.026,.026,.005],[.026,-.026,.005]],.0045,ink);
  curve(belly,"Cross_2",[[-.026,-.026,.005],[.026,.026,.005]],.0045,ink);
  ellipsoid(belly,"Navel_Ring",mat(0x3e464c,.95),[0,0,0],[.032,.032,.006]);
 
- // 破旧黄色围巾（系于脖颈处，下缀褶皱三角小巾）
  const scarf=pivot(root,"Yellow_Scarf",[0,.64,.04]);
  mesh(new THREE.TorusGeometry(.20,.042,12,28),scarfYellow,scarf,"Scarf_Collar",[0,0,0]);
  const bib=ellipsoid(scarf,"Scarf_Bib",scarfYellow,[0,-.07,.185],[.10,.13,.038]);
@@ -61,7 +60,7 @@ export function createWolfModel(){
   ellipsoid(arm,"Wolf_Arm",fur,[s*.025,-.13,.02],[.085,.18,.08]);
   ellipsoid(arm,"Silver_Forepaw",darkFur,[s*.025,-.27,.07],[.09,.07,.10]);
   for(let f=-1;f<=1;f++){
-   ellipsoid(arm,s<0?`Paw_Digit_L_${f}`:`Paw_Digit_R_${f}`,ink,[s*.025+f*.028,-.29,.12],[.018,.022,.025]);
+   ellipsoid(arm,s<0?("Paw_Digit_L_"+f):("Paw_Digit_R_"+f),ink,[s*.025+f*.028,-.29,.12],[.018,.022,.025]);
   }
   const leg=pivot(root,s<0?"Leg_L":"Leg_R",[s*.18,.15,-.02]);
   ellipsoid(leg,"Wolf_Hind_Paw",fur,[0,-.06,.07],[.11,.08,.16]);
@@ -69,63 +68,57 @@ export function createWolfModel(){
  }
 
  const head=pivot(root,"Head",[0,.91,.025]);
- ellipsoid(head,"Wolf_Head",fur,[0,0,0],[.31,.27,.24]);
+ ellipsoid(head,"Wolf_Head",fur,[0,0,0],[.30,.27,.25]);
 
- // 灰太狼经典大腮帮子毛簇（左右各有上下两撮外翘尖狼毛）
  for(const s of [-1,1]){
-  const cheek=ellipsoid(head,"Wolf_Cheek_Ruff",fur,[s*.205,-.10,.10],[.13,.09,.12]);
-  cheek.rotation.z=-s*.4;
-  const tuftTop=mesh(new THREE.ConeGeometry(.075,.22,16),fur,head,s<0?"Cheek_Tuft_Top_L":"Cheek_Tuft_Top_R",[s*.32,.01,.02]);
-  tuftTop.rotation.z=-s*1.32;
-  const tuftBot=mesh(new THREE.ConeGeometry(.065,.19,16),fur,head,s<0?"Cheek_Tuft_Bot_L":"Cheek_Tuft_Bot_R",[s*.30,-.09,.05]);
-  tuftBot.rotation.z=-s*1.45;
-  const tuftOld=mesh(new THREE.ConeGeometry(.05,.12,14),fur,head,"Wolf_Cheek_Tuft",[s*.31,-.07,.02]);
+  const cheek=ellipsoid(head,"Wolf_Cheek_Ruff",fur,[s*.21,-.08,.08],[.12,.10,.12]);
+  cheek.rotation.z=-s*.35;
+  const tuftTop=mesh(new THREE.ConeGeometry(.068,.20,16),fur,head,s<0?"Cheek_Tuft_Top_L":"Cheek_Tuft_Top_R",[s*.29,.01,.03]);
+  tuftTop.rotation.z=-s*1.22;tuftTop.rotation.y=s*.12;
+  const tuftBot=mesh(new THREE.ConeGeometry(.060,.17,16),fur,head,s<0?"Cheek_Tuft_Bot_L":"Cheek_Tuft_Bot_R",[s*.28,-.08,.05]);
+  tuftBot.rotation.z=-s*1.38;tuftBot.rotation.y=s*.08;
+  const tuftOld=mesh(new THREE.ConeGeometry(.04,.10,12),fur,head,"Wolf_Cheek_Tuft",[s*.28,-.07,.02]);
   tuftOld.visible=false;
  }
 
- // 耳朵：左耳挺立，右耳带标志性“V”型缺角咬痕
  for(const s of [-1,1]){
-  const ear=pivot(head,s<0?"Ear_L":"Ear_R",[s*.23,.20,-.015]);
-  ear.rotation.z=-s*.13;
+  const ear=pivot(head,s<0?"Ear_L":"Ear_R",[s*.22,.21,-.015]);
+  ear.rotation.z=-s*.13;ear.rotation.x=-.08;
   const outer=mesh(new THREE.ConeGeometry(.10,.26,24),darkFur,ear,"Tall_Wolf_Ear",[0,.09,0],[1,1,.65]);
   outer.rotation.z=-s*.16;
   const inner=mesh(new THREE.ConeGeometry(.055,.16,20),pink,ear,"Ear_Inner",[0,.09,.055],[1,1,.25]);
   inner.rotation.z=-s*.16;
   if(s>0){
-   const notch=pivot(ear,"Right_Ear_Notch",[.078,.14,.01]);
-   mesh(new RoundedBoxGeometry(.042,.052,.08,2,.01),mat(0x262a2e,.95),notch,"Notch_Cut");
+   const notch=pivot(ear,"Right_Ear_Notch",[.075,.13,.01]);
+   mesh(new RoundedBoxGeometry(.038,.048,.07,2,.01),mat(0x24282c,.95),notch,"Notch_Cut");
   }
  }
 
- // 灰太狼标志性打补丁破软帽 (Patched_Hat)
- const hat=pivot(head,"Patched_Hat",[.03,.27,.01]);
- hat.rotation.set(-.16,.05,-.26); // 歪扣在头顶
- ellipsoid(hat,"Hat_Crown",hatOrange,[0,.035,0],[.24,.085,.27]);
- ellipsoid(hat,"Hat_Brim",hatOrange,[0,-.008,.02],[.25,.036,.28]);
- ellipsoid(hat,"Hat_Front_Patch",hatPatch,[.15,.048,.19],[.07,.026,.06]);
- // 标志性米黄大补丁 (Hat_Patch)
+ const hat=pivot(head,"Patched_Hat",[-.02,.27,.01]);
+ hat.rotation.set(-.14,.06,-.22);
+ ellipsoid(hat,"Hat_Crown",hatOrange,[0,.035,0],[.25,.09,.26]);
+ ellipsoid(hat,"Hat_Brim",hatOrange,[0,-.01,.02],[.26,.038,.27]);
+ ellipsoid(hat,"Hat_Front_Patch",hatPatch,[.14,.046,.18],[.07,.026,.06]);
  const patch=ellipsoid(hat,"Hat_Patch",hatPatch,[.04,.095,-.01],[.12,.024,.13]);
  patch.rotation.y=.25;
  for(let i=0;i<7;i++){
   const ang=(i/7)*Math.PI*1.5-.4;
   const rx=.04+Math.cos(ang)*.105, rz=-.01+Math.sin(ang)*.11;
-  curve(hat,`Patch_Stitch_${i}`,[
+  curve(hat,"Patch_Stitch_"+i,[
    [rx-Math.sin(ang)*.016,.10,rz+Math.cos(ang)*.016],
    [rx+Math.sin(ang)*.016,.10,rz-Math.cos(ang)*.016]
   ],.0035,ink);
  }
 
- // 粗黑一字平眉 (眉峰微挑，尽显小聪明)
  for(const s of [-1,1]){
-  const brow=mesh(new RoundedBoxGeometry(.135,.034,.025,2,.008),ink,head,s<0?"Brow_L":"Brow_R",[s*.135,.158,.215]);
-  brow.rotation.z=-s*.05;
-  ellipsoid(head,"Wolf_Brow",ink,[s*.135,.158,.215],[.06,.015,.015]).visible=false;
+  const brow=mesh(new RoundedBoxGeometry(.135,.034,.025,2,.008),ink,head,s<0?"Brow_L":"Brow_R",[s*.132,.155,.22]);
+  brow.rotation.z=-s*.06;
+  ellipsoid(head,"Wolf_Brow",ink,[s*.132,.155,.22],[.06,.015,.015]).visible=false;
  }
 
- // 灰太狼经典半眯狡黠大眼 (Eye_L, Eye_R)
  const eyes=pivot(head,"Eyes",[0,0,0]);
  for(const s of [-1,1]){
-  const eye=pivot(eyes,s<0?"Eye_L":"Eye_R",[s*.13,.06,.215]);
+  const eye=pivot(eyes,s<0?"Eye_L":"Eye_R",[s*.125,.06,.22]);
   eye.rotation.z=-s*.08;
   ellipsoid(eye,"Wolf_Eye",white,[0,0,0],[.058,.068,.026]);
   const eyelid=ellipsoid(eye,"Upper_Eyelid",fur,[0,.028,.015],[.058,.036,.022]);
@@ -134,55 +127,53 @@ export function createWolfModel(){
   ellipsoid(eye,"Catchlight",white,[-.012,.010,.032],[.010,.012,.005]);
  }
 
- // 吻部与大黑鼻头
- ellipsoid(head,"Wolf_Long_Muzzle",fur,[0,-.105,.24],[.16,.11,.19]);
- ellipsoid(head,"Wolf_Nose",ink,[0,-.05,.39],[.068,.046,.036]);
- ellipsoid(head,"Nose_Glint",white,[-.018,-.036,.42],[.015,.009,.005]);
+ ellipsoid(head,"Wolf_Long_Muzzle",fur,[0,-.065,.23],[.165,.095,.18]);
+ ellipsoid(head,"Wolf_Nose",ink,[0,-.03,.39],[.068,.046,.036]);
+ ellipsoid(head,"Nose_Glint",white,[-.018,-.018,.42],[.015,.009,.005]);
 
- // 右脸斜向缝合刀疤 (Face_Stitch)
- const scarGroup=pivot(head,"Face_Stitch",[.195,-.02,.215]);
- curve(scarGroup,"Scar_Spine",[[-.035,.10,.01],[0,0,.02],[.045,-.10,.01]],.003,scarLine);
- for(let i=0;i<5;i++){
-  const y=.08-i*.042, x=-.03+i*.018;
-  curve(scarGroup,`Stitch_Cross_${i}`,[[x-.022,y+.008,.022],[x+.022,y-.008,.022]],.003,scarLine);
+ ellipsoid(head,"Wolf_Jaw",fur,[0,-.15,.20],[.15,.085,.16]);
+ ellipsoid(head,"Wolf_Chin_Stubble",stubbleFur,[0,-.165,.21],[.145,.065,.145]);
+
+ const scarGroup=pivot(head,"Face_Stitch",[.18,-.03,.235]);
+ scarGroup.rotation.y=.35;
+ curve(scarGroup,"Scar_Spine",[[-.03,.08,.005],[0,0,.01],[.035,-.08,.005]],.0032,scarLine);
+ for(let i=0;i<4;i++){
+  const y=.06-i*.04, x=-.02+i*.015;
+  curve(scarGroup,"Stitch_Cross_"+i,[[x-.018,y+.006,.015],[x+.018,y-.006,.015]],.003,scarLine);
  }
 
- // 招牌大嘴裂笑与两颗洁白小狼牙
- const mouthGroup=pivot(head,"Wolf_Grin",[0,-.15,.405]);
- mesh(new RoundedBoxGeometry(.22,.035,.026,2,.012),white,mouthGroup,"Wolf_Grin_Teeth",[0,-.005,.01]);
- curve(mouthGroup,"Wolf_Mouth",[[-.14,.012,.02],[0,.008,.038],[.14,.012,.02]],.004,ink);
- curve(mouthGroup,"Wolf_Smile",[[-.14,.012,.02],[0,-.03,.034],[.14,.012,.02]],.004,ink);
+ const mouthGroup=pivot(head,"Wolf_Grin",[0,-.118,.345]);
+ mesh(new RoundedBoxGeometry(.20,.030,.024,2,.010),white,mouthGroup,"Wolf_Grin_Teeth",[0,-.003,.005]);
+ curve(mouthGroup,"Wolf_Mouth",[[-.13,.008,.01],[0,.005,.025],[.13,.008,.01]],.004,ink);
+ curve(mouthGroup,"Wolf_Smile",[[-.13,.008,.01],[0,-.022,.022],[.13,.008,.01]],.004,ink);
+ curve(mouthGroup,"Smile",[[-.13,.008,.01],[0,-.022,.022],[.13,.008,.01]],.004,ink);
  for(const s of [-1,1]){
-  const fang=mesh(new THREE.ConeGeometry(.016,.042,12),white,mouthGroup,s<0?"Fang_L":"Fang_R",[s*.118,-.012,.034]);
-  fang.rotation.x=Math.PI; // 尖牙向下
+  const fang=mesh(new THREE.ConeGeometry(.015,.038,12),white,mouthGroup,s<0?"Fang_L":"Fang_R",[s*.105,-.010,.022]);
+  fang.rotation.x=Math.PI;
  }
 
- // 下巴稀疏小胡茬 (Wolf_Stubble)
  for(const [x1,y1,z1,x2,y2,z2] of [
-  [-.09,-.18,.24, -.15,-.21,.23],
-  [-.12,-.22,.22, -.18,-.26,.20],
-  [-.06,-.24,.21, -.11,-.29,.18],
-  [.09,-.18,.24, .15,-.21,.23],
-  [.12,-.22,.22, .18,-.26,.20],
-  [.06,-.24,.21, .11,-.29,.18]
+  [-.08,-.17,.28, -.13,-.20,.26],
+  [-.10,-.20,.25, -.15,-.23,.23],
+  [.08,-.17,.28, .13,-.20,.26],
+  [.10,-.20,.25, .15,-.23,.23]
  ]){
   curve(head,"Wolf_Stubble",[[x1,y1,z1],[x2,y2,z2]],.0028,ink);
  }
 
- const happy=ellipsoid(head,"Happy_Mouth",ink,[0,-.17,.448],[.065,.045,.015]);happy.visible=false;
- const tongue=ellipsoid(head,"Happy_Tongue",pink,[0,-.185,.463],[.032,.018,.006]);tongue.visible=false;
+ const happy=ellipsoid(head,"Happy_Mouth",ink,[0,-.132,.348],[.07,.045,.015]);happy.visible=false;
+ const tongue=ellipsoid(head,"Happy_Tongue",pink,[0,-.145,.358],[.035,.018,.006]);tongue.visible=false;
 
- // 蓬松灰白狼尾
- const tail=pivot(root,"Tail",[.20,.30,-.17]);
- const brush=ellipsoid(tail,"Bushy_Wolf_Tail",fur,[.18,.14,-.12],[.12,.24,.11]);
- brush.rotation.z=-.65;
- const tip=ellipsoid(tail,"Tail_White_Tip",tailTip,[.28,.29,-.15],[.09,.10,.08]);
- tip.rotation.z=-.65;
+ const tail=pivot(root,"Tail",[0,.26,-.18]);
+ ellipsoid(tail,"Tail_Base",fur,[0,.04,-.06],[.10,.12,.10]);
+ const brush=ellipsoid(tail,"Bushy_Wolf_Tail",fur,[0,.16,-.14],[.14,.20,.14]);
+ brush.rotation.x=-.32;
+ const tip=ellipsoid(tail,"Tail_White_Tip",tailTip,[0,.29,-.17],[.10,.12,.10]);
+ tip.rotation.x=-.32;
 
  const bow=pivot(root,"Bow",[0,.65,.22]);
  return root;
 }
-// Child-friendly red racing car, using the same named animation pivots as other friends.
 export function createMcqueenModel(){
  const root=new THREE.Group();root.name='Mcqueen_Rig';
  const red=mat(0xd5202b,.34,{metalness:.12}),bright=mat(0xf02d2d,.38),yellow=mat(0xffd43c,.5),dark=mat(0x262d36,.8),rubber=mat(0x292a30,.96),silver=mat(0xcad7da,.5,{metalness:.4}),glass=mat(0xf4fbf5,.3),iris=mat(0x4283bb,.3);
@@ -369,54 +360,44 @@ export function createJettModel(){
 }
 
 export function createPeppaModel(){
- const root=new THREE.Group();root.name='Peppa_Pig_Rig';
- // 按官方卡通形象从零设计：纸片人比例——大圆头直接坐在裙子上（无脖子）、
- // 扁宽梯形红裙、细枝手臂水平外伸、细腿配黑扁鞋；眼高聚拢、猪鼻上移前突。
- const pink=mat(0xf6aebb,.92),light=mat(0xffc9d4,.9),red=mat(0xd93442,.9),dark=mat(0x4a3038,.5),cheek=mat(0xef8ba3,.9),white=mat(0xfffdf8,.7),shoe=mat(0x352c31,.8);
- // 扁宽梯形红裙：纸片人式的扁平正面，下摆外扩
- const body=pivot(root,'Torso',[0,.38,0]);
- sculpt([[0,-.13,0,.28,.22,.15],[0,.02,0,.20,.20,.13],[0,.16,0,.13,.11,.11]],.035,red,body,'Red_Dress');
- // 大圆头：比裙子还宽，佩奇的标志性大头比例
- const head=pivot(root,'Head',[0,.90,.01]);
- sculpt([[.035,0,0,.285,.265,.24],[-.15,.035,.11,.17,.14,.19],[-.24,.045,.24,.105,.105,.12]],.045,pink,head,'Pink_Pig_Head');
- // 猪鼻：上移到脸中上部水平前突（加大突出感），双竖椭圆鼻孔在鼻头前端
- const snout=ellipsoid(head,'Pig_Snout',light,[-.265,.035,.335],[.102,.095,.055]);snout.rotation.y=-.18;
- for(const x of [-.305,-.237])ellipsoid(head,'Nostril',cheek,[x,.042,.386],[.016,.028,.009]);
- ellipsoid(head,'Rosy_Cheek',cheek,[.16,-.075,.205],[.064,.053,.013]);
- // 眼睛：小巧圆润、高高聚在头顶下方（官方形象的眼睛位置）
- const eyes=pivot(head,'Eyes',[0,0,0]);
- for(const [side,x] of [['L',-.055],['R',.105]]){
-  const eye=pivot(eyes,'Eye_'+side,[x,.165,.215]);
-  ellipsoid(eye,'Eye_White',white,[0,0,0],[.053,.062,.023]);
-  ellipsoid(eye,'Pupil',dark,[-.008,.004,.021],[.022,.029,.009]);
-  ellipsoid(eye,'Catchlight',white,[-.005,.013,.031],[.007,.008,.003]);
+ const root=new THREE.Group();root.name="Peppa_Pig_Rig";
+ const pink=mat(0xf6aebb,.92),light=mat(0xffc9d4,.9),red=mat(0xd93442,.9),dark=mat(0x4a3038,.5),cheek=mat(0xef8ba3,.9),white=mat(0xfffdf8,.7),shoe=mat(0x352c31,.8),mouthPink=mat(0xa83250,.85);
+ const body=pivot(root,"Torso",[0,.38,0]);
+ sculpt([[0,-.13,0,.28,.22,.15],[0,.02,0,.20,.20,.13],[0,.16,0,.13,.11,.11]],.035,red,body,"Red_Dress");
+ const head=pivot(root,"Head",[0,.90,.01]);
+ sculpt([[.035,0,0,.285,.265,.24],[-.15,.035,.11,.17,.14,.19],[-.24,.045,.24,.105,.105,.12]],.045,pink,head,"Pink_Pig_Head");
+ const snout=ellipsoid(head,"Pig_Snout",light,[-.265,.035,.335],[.102,.095,.055]);snout.rotation.y=-.18;
+ for(const x of [-.305,-.237])ellipsoid(head,"Nostril",cheek,[x,.042,.386],[.016,.028,.009]);
+ ellipsoid(head,"Rosy_Cheek",cheek,[.16,-.075,.205],[.064,.053,.013]);
+ const eyes=pivot(head,"Eyes",[0,0,0]);
+ for(const [side,x] of [["L",-.055],["R",.105]]){
+  const eye=pivot(eyes,"Eye_"+side,[x,.165,.215]);
+  ellipsoid(eye,"Eye_White",white,[0,0,0],[.053,.062,.023]);
+  ellipsoid(eye,"Pupil",dark,[-.008,.004,.021],[.022,.029,.009]);
+  ellipsoid(eye,"Catchlight",white,[-.005,.013,.031],[.007,.008,.003]);
  }
- // 小圆耳朵：立起贴头顶，间距收窄
  for(const s of [-1,1]){
-  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.10,.25,-.01]);ear.rotation.z=-s*.08;
-  ellipsoid(ear,'Pig_Ear',pink,[0,.04,0],[.046,.075,.028]);
-  ellipsoid(ear,'Inner_Ear',light,[0,.043,.022],[.024,.05,.008]);
+  const ear=pivot(head,s<0?"Ear_L":"Ear_R",[s*.10,.25,-.01]);ear.rotation.z=-s*.08;
+  ellipsoid(ear,"Pig_Ear",pink,[0,.04,0],[.046,.075,.028]);
+  ellipsoid(ear,"Inner_Ear",light,[0,.043,.022],[.024,.05,.008]);
  }
- // 嘴巴：猪鼻正下方的小微笑
- curve(head,'Pig_Smile',[[-.10,-.105,.255],[-.02,-.14,.27],[.065,-.095,.25]],.006,dark);
- const happy=ellipsoid(head,'Happy_Mouth',dark,[-.02,-.125,.268],[.063,.033,.012]);happy.visible=false;
- const tongue=ellipsoid(head,'Happy_Tongue',cheek,[-.02,-.14,.28],[.026,.011,.005]);tongue.visible=false;
- // 细枝手臂：从裙肩水平外伸（参考图的张开手臂），末端圆手
+ curve(head,"Pig_Smile",[[-.10,-.095,.215],[-.02,-.128,.218],[.06,-.090,.205]],.006,mouthPink);
+ curve(head,"Smile",[[-.10,-.095,.215],[-.02,-.128,.218],[.06,-.090,.205]],.006,mouthPink);
+ const happy=ellipsoid(head,"Happy_Mouth",mouthPink,[-.02,-.120,.218],[.058,.032,.012]);happy.visible=false;
+ const tongue=ellipsoid(head,"Happy_Tongue",cheek,[-.02,-.130,.226],[.025,.010,.005]);tongue.visible=false;
  for(const s of [-1,1]){
-  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.175,.50,.01]);
-  ellipsoid(arm,'Pig_Arm',pink,[s*.085,-.01,0],[.115,.038,.038]);
-  ellipsoid(arm,'Pig_Hand',light,[s*.165,-.012,.005],[.05,.048,.048]);
+  const arm=pivot(root,s<0?"Arm_L":"Arm_R",[s*.175,.50,.01]);
+  ellipsoid(arm,"Pig_Arm",pink,[s*.085,-.01,0],[.115,.038,.038]);
+  ellipsoid(arm,"Pig_Hand",light,[s*.165,-.012,.005],[.05,.048,.048]);
  }
- // 细腿 + 黑扁鞋
  for(const s of [-1,1]){
-  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.09,.16,0]);
-  ellipsoid(leg,'Pig_Leg',pink,[0,-.045,0],[.036,.08,.036]);
-  ellipsoid(leg,'Black_Shoe',shoe,[0,-.115,.04],[.075,.045,.105]);
+  const leg=pivot(root,s<0?"Leg_L":"Leg_R",[s*.09,.16,0]);
+  ellipsoid(leg,"Pig_Leg",pink,[0,-.045,0],[.036,.08,.036]);
+  ellipsoid(leg,"Black_Shoe",shoe,[0,-.115,.04],[.075,.045,.105]);
  }
- // 卷卷尾巴：绕一圈的小螺旋
- const tail=pivot(root,'Tail',[0,.36,-.15]);
- curve(tail,'Curly_Pig_Tail',[[0,0,0],[.045,.028,-.014],[.078,.068,-.018],[.062,.105,-.018],[.026,.105,-.018],[.018,.072,-.018],[.038,.048,-.018]],.012,pink);
- pivot(root,'Bow',[.155,1.12,.06]);
+ const tail=pivot(root,"Tail",[0,.36,-.15]);
+ curve(tail,"Curly_Pig_Tail",[[0,0,0],[.045,.028,-.014],[.078,.068,-.018],[.062,.105,-.018],[.026,.105,-.018],[.018,.072,-.018],[.038,.048,-.018]],.012,pink);
+ pivot(root,"Bow",[.155,1.12,.06]);
  return root;
 }
 export function createThomasModel(){

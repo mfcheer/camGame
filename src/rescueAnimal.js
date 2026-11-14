@@ -300,7 +300,7 @@ export class RescueAnimal {
     this.receiveTimer=0;this.receivePower=1;this.comboMoveTimer=0;this.recoilTimer=0;this.moodWorried=0;this.moodExcited=0;
     this.actionPoseFn=null;this.actionPoseT=0;this.performanceGlow=null;
     if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.y=.048;}
-    for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=true;}
+    for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R','Pig_Smile','Wolf_Mouth','Wolf_Smile','Wolf_Grin_Teeth']){const m=this.model.getObjectByName(name);if(m)m.visible=true;}
     this.currentX=this.startX;this.currentY=this.groundY;
     this.group.visible=true;this.animalGroup.visible=true;this.postGroup.visible=true;this.ropesGroup.visible=true;this.setOpacity(1);
     this.animalGroup.position.set(this.startX,this.groundY,.06);this.animalGroup.rotation.set(0,0,0);this.animalGroup.scale.setScalar(this.modelScale);
@@ -362,7 +362,7 @@ export class RescueAnimal {
       ||(this.state==='TRAPPED'&&this.moodExcited>.5);
     if(this.happyMouth)this.happyMouth.visible=happy;
     if(this.happyTongue)this.happyTongue.visible=happy;
-    if(this.happyMouth)for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=!happy;}
+    if(this.happyMouth)for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R','Pig_Smile','Wolf_Mouth','Wolf_Smile','Wolf_Grin_Teeth']){const m=this.model.getObjectByName(name);if(m)m.visible=!happy;}
     if(!this.isBlinking && this.blinkTimer<3.1)this.eyesGroup.scale.y=happy?.75:(this.state==='TRAPPED'?1+.06*this.moodWorried:1);
     if(this.eyeBases)for(const [i,eye] of [this.leftEye,this.rightEye].entries()) {
       const shift=this.state==='TRAPPED'&&!happy?.004+.009*this.moodWorried:0;
