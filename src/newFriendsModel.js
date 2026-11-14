@@ -300,85 +300,163 @@ export function createChaseModel(){
  ellipsoid(bow,'Badge_Star',white,[0,0,.062],[.012,.012,.005]);
  return root;
 }
+// 《超级飞侠》（Super Wings）主角——乐迪（Jett）：
+// 官方 3D 原画与变形机甲深度重构：
+// 1. 彻底移除人形白肉脸、人形腮红与大头娃娃结构，回归纯正的红色喷气式飞机机器人！
+// 2. 挡风玻璃驾驶舱即眼睛视窗（Cockpit Windshield）：天蓝色流线弧形玻璃罩直接嵌双眼；
+// 3. 宝石蓝大眼睛、流线型红色机鼻、机腹下颚与亲切自信的飞行微笑嘴；
+// 4. 标志性黄色喷气进气口耳麦（带白色外环与红色小翼）、机顶红色背鳍与黄色警示灯；
+// 5. 鲜红机身配白色机腹、胸前金色超级飞侠飞翼徽章、后置双联装喷气尾喷口；
+// 6. 红色后掠主翼配白色翼梢、挂载亮黄色喷气涡轮引擎（黑涡轮前罩与银色喷管）；
+// 7. 白色机械手臂带红腕带、红色起落架滑行靴（靴侧嵌黄色机轮与黑色橡胶胎）。
 export function createJettModel(){
  const root=new THREE.Group();root.name='Jett_Airplane_Rig';
- const red=mat(0xeb2629,.35,{metalness:.12}),white=mat(0xfcfbf7,.42),yellow=mat(0xffcc00,.42),blue=mat(0x2296ee,.32),dark=mat(0x252a32,.65),gold=mat(0xf5b820,.35,{metalness:.25}),pink=mat(0xf8928c,.85),silver=mat(0xc5d2dc,.4,{metalness:.35});
- const body=pivot(root,'Torso',[0,.42,0]);
- ellipsoid(body,'Red_Fuselage',red,[0,.03,0],[.29,.35,.24]);
- ellipsoid(body,'White_Front',white,[0,.035,.205],[.18,.22,.045]);
+ const red=mat(0xeb2629,.30,{metalness:.15,roughness:.25}),
+       white=mat(0xf8fafc,.35,{metalness:.08,roughness:.30}),
+       yellow=mat(0xfacc15,.30,{metalness:.12,roughness:.32}),
+       windshieldBlue=mat(0x38bdf8,.28,{metalness:.10,roughness:.15}),
+       eyeWhite=mat(0xffffff,.25),
+       eyeBlue=mat(0x1d4ed8,.30),
+       dark=mat(0x0f172a,.75),
+       gold=mat(0xf59e0b,.30,{metalness:.45,roughness:.25}),
+       pink=mat(0xf43f5e,.85),
+       silver=mat(0xd1d5db,.35,{metalness:.50,roughness:.25}),
+       rubber=mat(0x1e293b,.95);
+
+ // --- 一、 躯干（流线型红色喷气机身） ---
+ const body=pivot(root,'Torso',[0,.40,0]);
+ ellipsoid(body,'Red_Fuselage',red,[0,.02,0],[.29,.34,.25]);
+ ellipsoid(body,'White_Front',white,[0,.025,.195],[.19,.22,.055]);
+
+ // 机尾后置双联装喷气推进器
  for(const s of [-1,1]){
-  mesh(new THREE.CylinderGeometry(.052,.062,.12,16),dark,body,'Jet_Exhaust',[s*.13,-.15,-.18]);
-  ellipsoid(body,'Exhaust_Flame_Glow',yellow,[s*.13,-.21,-.18],[.035,.02,.035]);
+  mesh(new THREE.CylinderGeometry(.052,.062,.13,16),dark,body,'Jet_Exhaust',[s*.13,-.14,-.18]);
+  ellipsoid(body,'Exhaust_Flame_Glow',yellow,[s*.13,-.21,-.18],[.035,.022,.035]);
  }
- const head=pivot(root,'Head',[0,.93,.02]);
- ellipsoid(head,'Red_Airplane_Head',red,[0,0,0],[.33,.29,.27]);
- // 大白脸：占头部下半大部分，乐迪的招牌圆润笑脸
- ellipsoid(head,'Friendly_Face',white,[0,-.045,.215],[.285,.215,.085]);
- // 额头蓝色风挡色带
- ellipsoid(head,'Helmet_Center',mat(0x7cc4ee,.4),[0,.20,.165],[.205,.058,.105]);
- ellipsoid(head,'Windshield_Glint',white,[0,.215,.24],[.10,.018,.02]);
- const topFinShape=new THREE.Shape();topFinShape.moveTo(-.02,0);topFinShape.lineTo(0,.13);topFinShape.lineTo(.04,0);topFinShape.closePath();
- const topFin=mesh(new THREE.ExtrudeGeometry(topFinShape,{depth:.018,bevelEnabled:true,bevelSize:.006,bevelThickness:.005}),red,head,'Head_Top_Fin',[0,.24,.02]);
- topFin.rotation.y=Math.PI/2;
- ellipsoid(head,'Head_Beacon',yellow,[0,.23,.18],[.025,.02,.025]);
- ellipsoid(head,'Helmet_Brow',red,[0,.115,.22],[.26,.05,.08]);
+
+ // --- 二、 头部（流线型喷气机头 + 驾驶舱风挡双眼） ---
+ // 头部即机头前半部，与机身一体流线衔接
+ const head=pivot(root,'Head',[0,.82,.04]);
+ ellipsoid(head,'Red_Airplane_Head',red,[0,0,0],[.33,.31,.30]);
+
+ // 2.1 标志性天蓝色弧形大风挡驾驶舱（Cockpit Windshield Canopy）
+ // 飞机的驾驶舱玻璃直接充当眼睛所在视窗，彻底告别人形大白脸！
+ const windshield=ellipsoid(head,'Cockpit_Windshield',windshieldBlue,[0,.055,.195],[.27,.175,.145]);
+ windshield.rotation.x=-.22;
+ // 风挡流线高光弧带
+ const glint=ellipsoid(head,'Windshield_Glint',white,[0,.145,.255],[.18,.018,.04]);
+ glint.rotation.x=-.25;
+ // 驾驶舱顶流线型机头眉檐（Helmet_Brow - 测试必检节点）
+ const browRim=ellipsoid(head,'Helmet_Brow',red,[0,.155,.215],[.275,.042,.115]);
+ browRim.rotation.x=-.30;
+
+ // 2.2 嵌入天蓝风挡玻璃的大眼睛（卡通机器大眼）
  const eyes=pivot(head,'Eyes',[0,0,0]);
  for(const s of [-1,1]){
-  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.12,.005,.265]);
-  ellipsoid(eye,'Eye_White',white,[0,0,0],[.064,.084,.027]);
-  ellipsoid(eye,'Iris',blue,[0,-.006,.017],[.05,.064,.015]);
-  ellipsoid(eye,'Eye',dark,[0,-.008,.026],[.028,.04,.011]);
-  ellipsoid(eye,'Catchlight',white,[-.016,.022,.036],[.013,.016,.006]);
-  ellipsoid(eye,'Catchlight_Small',white,[.014,-.018,.034],[.006,.007,.004]);
-  curve(head,s<0?'Brow_L':'Brow_R',[[s*.065,.115,.265],[s*.12,.135,.26],[s*.17,.105,.245]],.006,dark);
-  ellipsoid(head,s<0?'Blush_L':'Blush_R',pink,[s*.20,-.08,.23],[.046,.03,.012]);
-  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.32,.03,0]);
-  const earCup=mesh(new THREE.CylinderGeometry(.088,.088,.075,24),yellow,ear,'Headset_Pod',[s*.02,0,0]);earCup.rotation.z=Math.PI/2;
-  const earRing=mesh(new THREE.CylinderGeometry(.092,.092,.02,24),white,ear,'Headset_Ring',[s*.055,0,0]);earRing.rotation.z=Math.PI/2;
+  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.115,.050,.265]);
+  eye.rotation.y=s*.08;
+  // 洁白透亮的大眼白
+  ellipsoid(eye,'Eye_White',eyeWhite,[0,0,0],[.066,.095,.026]);
+  // 乐迪标志性宝石蓝大虹膜
+  ellipsoid(eye,'Iris',eyeBlue,[0,-.005,.018],[.052,.074,.014]);
+  // 深邃纯黑大瞳孔
+  ellipsoid(eye,'Eye',dark,[0,-.008,.026],[.030,.045,.010]);
+  // 双层清澈水珠高光
+  ellipsoid(eye,'Catchlight',white,[s*-.018,.028,.034],[.016,.020,.006]);
+  ellipsoid(eye,'Catchlight_Small',white,[s*.016,-.022,.032],[.008,.010,.004]);
+  // 机体红色飞行动感眉线
+  curve(head,s<0?'Brow_L':'Brow_R',[[s*.055,.145,.260],[s*.115,.165,.255],[s*.175,.135,.240]],.0065,red);
+ }
+
+ // 2.3 风挡下方的红色流线前机鼻（Jet Nose Cone）
+ const noseCone=ellipsoid(head,'Jet_Nose_Cone',red,[0,-.065,.265],[.085,.060,.075]);
+ noseCone.rotation.x=.15;
+
+ // 2.4 机头下半部白色机腹下颚与微笑嘴（White Lower Fuselage Chin & Smile）
+ const lowerChin=ellipsoid(head,'Lower_Fuselage_Chin',white,[0,-.135,.185],[.24,.125,.135]);
+ lowerChin.rotation.x=.25;
+ // 亲切开朗的飞机微笑嘴
+ curve(head,'Smile',[[-.115,-.145,.275],[0,-.185,.285],[.115,-.145,.275]],.0075,dark);
+ // 欢庆胜利开心张嘴与粉红小舌头
+ const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.155,.280],[.095,.045,.015]);happy.visible=false;
+ const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.168,.290],[.042,.016,.006]);tongue.visible=false;
+
+ // 2.5 两侧标志性黄色喷气式进气口耳麦（Headset_Pod - 带白圈与红天线）
+ for(const s of [-1,1]){
+  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.31,.04,.01]);
+  const earCup=mesh(new THREE.CylinderGeometry(.085,.085,.072,24),yellow,ear,'Headset_Pod',[s*.02,0,0]);
+  earCup.rotation.z=Math.PI/2;
+  const earRing=mesh(new THREE.CylinderGeometry(.090,.090,.022,24),white,ear,'Headset_Ring',[s*.055,0,0]);
+  earRing.rotation.z=Math.PI/2;
   ellipsoid(ear,'Headset_Speaker',dark,[s*.066,0,0],[.008,.045,.045]);
-  ellipsoid(ear,'Jet_Side_Piece',red,[s*.02,0,0],[.06,.07,.08]);
-  ellipsoid(ear,'Headset_Antenna',red,[s*.02,.09,0],[.018,.032,.018]);
-  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.28,.55,.02]);
+  ellipsoid(ear,'Jet_Side_Piece',red,[s*.015,0,0],[.055,.07,.08]);
+  // 红色小翼天线，后掠倾角
+  const antenna=ellipsoid(ear,'Headset_Antenna',red,[s*.02,.085,-.025],[.016,.040,.022]);
+  antenna.rotation.x=-.45;
+ }
+
+ // 2.6 机顶背脊导流鳍与黄色警示灯
+ const topFinShape=new THREE.Shape();
+ topFinShape.moveTo(-.025,0);topFinShape.lineTo(0,.135);topFinShape.lineTo(.045,0);topFinShape.closePath();
+ const topFin=mesh(new THREE.ExtrudeGeometry(topFinShape,{depth:.018,bevelEnabled:true,bevelSize:.006,bevelThickness:.005}),red,head,'Head_Top_Fin',[0,.235,.01]);
+ topFin.rotation.y=Math.PI/2;
+ ellipsoid(head,'Head_Beacon',yellow,[0,.230,.175],[.025,.020,.025]);
+
+ // --- 三、 机翼与黄色喷气引擎（Airplane Wings & Jet Turbines） ---
+ for(const s of [-1,1]){
+  const wing=pivot(body,s<0?'Wing_L':'Wing_R',[s*.24,.08,-.06]);
+  const shape=new THREE.Shape();
+  shape.moveTo(0,.10);shape.lineTo(s*.56,-.05);shape.lineTo(s*.50,-.24);shape.lineTo(0,-.13);shape.closePath();
+  mesh(new THREE.ExtrudeGeometry(shape,{depth:.032,bevelEnabled:true,bevelSize:.012,bevelThickness:.008,bevelSegments:2}),red,wing,'Airplane_Wing');
+  ellipsoid(wing,'Wing_Tip',white,[s*.44,-.15,.028],[.085,.055,.034]);
+  const stripe=ellipsoid(wing,'Wing_Stripe',white,[s*.26,-.095,.038],[.14,.016,.01]);stripe.rotation.z=-s*.22;
+  // 标志性亮黄色圆柱喷气式涡轮引擎（Jet_Engine）
+  const pod=mesh(new THREE.CylinderGeometry(.046,.046,.27,20),yellow,wing,'Jet_Engine',[s*.21,-.11,-.04]);pod.rotation.x=Math.PI/2;
+  ellipsoid(wing,'Engine_Intake',dark,[s*.21,-.11,.095],[.042,.042,.015]);
+  ellipsoid(wing,'Engine_Nozzle',silver,[s*.21,-.11,-.175],[.04,.04,.02]);
+ }
+
+ // --- 四、 机械手臂（白色机械臂带红腕套） ---
+ for(const s of [-1,1]){
+  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.28,.53,.02]);
   ellipsoid(arm,'Red_Shoulder',red,[0,0,0],[.07,.07,.07]);
   ellipsoid(arm,'White_Arm',white,[s*.03,-.11,0],[.065,.13,.065]);
   ellipsoid(arm,'Red_Wrist_Cuff',red,[s*.035,-.19,.01],[.07,.035,.07]);
   ellipsoid(arm,'Red_Hand',red,[s*.035,-.24,.025],[.08,.065,.08]);
   ellipsoid(arm,'White_Hand',white,[s*.04,-.25,.02],[.07,.06,.06]);
   ellipsoid(arm,'Hand_Thumb',white,[s*.07,-.23,.045],[.025,.035,.025]);
+ }
+
+ // --- 五、 飞行滑跑起落架腿（红色滑行靴嵌黄色机轮） ---
+ for(const s of [-1,1]){
   const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.15,.20,0]);
   ellipsoid(leg,'White_Leg',white,[0,-.05,.01],[.08,.11,.08]);
   ellipsoid(leg,'Red_Boot',red,[0,-.14,.06],[.10,.075,.14]);
   ellipsoid(leg,'Boot_Sole',white,[0,-.20,.07],[.095,.022,.135]);
   const hub=mesh(new THREE.CylinderGeometry(.042,.042,.022,16),yellow,leg,'Boot_Wheel_Hub',[s*.095,-.15,.03]);hub.rotation.z=Math.PI/2;
-  const tire=mesh(new THREE.CylinderGeometry(.046,.046,.016,16),dark,leg,'Boot_Wheel_Tire',[s*.098,-.15,.03]);tire.rotation.z=Math.PI/2;
+  const tire=mesh(new THREE.CylinderGeometry(.046,.046,.016,16),rubber,leg,'Boot_Wheel_Tire',[s*.098,-.15,.03]);tire.rotation.z=Math.PI/2;
   ellipsoid(leg,'Boot_Thruster',yellow,[0,-.14,-.07],[.035,.035,.02]);
-  const wing=pivot(body,s<0?'Wing_L':'Wing_R',[s*.24,.08,-.06]);
-  const shape=new THREE.Shape();shape.moveTo(0,.10);shape.lineTo(s*.56,-.05);shape.lineTo(s*.50,-.24);shape.lineTo(0,-.13);shape.closePath();
-  mesh(new THREE.ExtrudeGeometry(shape,{depth:.032,bevelEnabled:true,bevelSize:.012,bevelThickness:.008,bevelSegments:2}),red,wing,'Airplane_Wing');
-  ellipsoid(wing,'Wing_Tip',white,[s*.44,-.15,.028],[.085,.055,.034]);
-  const stripe=ellipsoid(wing,'Wing_Stripe',white,[s*.26,-.095,.038],[.14,.016,.01]);stripe.rotation.z=-s*.22;
-  const pod=mesh(new THREE.CylinderGeometry(.046,.046,.27,20),yellow,wing,'Jet_Engine',[s*.21,-.11,-.04]);pod.rotation.x=Math.PI/2;
-  ellipsoid(wing,'Engine_Intake',dark,[s*.21,-.11,.095],[.042,.042,.015]);
-  ellipsoid(wing,'Engine_Nozzle',silver,[s*.21,-.11,-.175],[.04,.04,.02]);
  }
- // 乐迪的招牌大笑嘴：更宽更开朗
- curve(head,'Smile',[[-.125,-.125,.255],[0,-.185,.272],[.125,-.125,.255]],.008,dark);
- const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.145,.272],[.105,.052,.015]);happy.visible=false;
- const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.163,.286],[.045,.017,.006]);tongue.visible=false;
+
+ // --- 六、 垂直尾翼与水平尾翼（Tail Fin） ---
  const tail=pivot(root,'Tail',[0,.54,-.22]);
- const finShape=new THREE.Shape();finShape.moveTo(-.04,0);finShape.lineTo(-.01,.34);finShape.lineTo(.06,.34);finShape.lineTo(.08,0);finShape.closePath();
+ const finShape=new THREE.Shape();
+ finShape.moveTo(-.04,0);finShape.lineTo(-.01,.34);finShape.lineTo(.06,.34);finShape.lineTo(.08,0);finShape.closePath();
  mesh(new THREE.ExtrudeGeometry(finShape,{depth:.025,bevelEnabled:true,bevelSize:.01,bevelThickness:.006,bevelSegments:2}),red,tail,'Tail_Fin');
  ellipsoid(tail,'Tail_Fin_Tip',white,[.02,.34,.012],[.045,.022,.015]);
  for(const s of [-1,1]){
   const hWing=ellipsoid(tail,s<0?'Tail_Wing_L':'Tail_Wing_R',red,[s*.15,.08,.02],[.12,.018,.07]);hWing.rotation.z=s*.08;
   ellipsoid(tail,s<0?'Tail_Wing_Tip_L':'Tail_Wing_Tip_R',white,[s*.24,.09,.02],[.035,.014,.03]);
  }
- const bow=pivot(root,'Bow',[0,.60,.24]);
+
+ // --- 七、 胸前超级飞侠金色飞翼徽章（Super Wings Chest Crest） ---
+ const bow=pivot(root,'Bow',[0,.58,.24]);
  ellipsoid(bow,'Chest_Star',gold,[0,0,0],[.065,.05,.016]);
  ellipsoid(bow,'Badge_Wing_L',gold,[-.075,.01,-.004],[.05,.025,.01]);
  ellipsoid(bow,'Badge_Wing_R',gold,[.075,.01,-.004],[.05,.025,.01]);
- ellipsoid(bow,'Badge_Center',blue,[0,0,.012],[.032,.032,.008]);
+ ellipsoid(bow,'Badge_Center',windshieldBlue,[0,0,.012],[.032,.032,.008]);
  ellipsoid(bow,'Badge_Star',gold,[0,0,.018],[.014,.014,.005]);
+
  return root;
 }
 
