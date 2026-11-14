@@ -18,12 +18,10 @@ export class SpeechPolicy {
   beginRound() { this.spokenThisRound = 0; }
   update(dt) { this.activeSeconds += Math.max(0, dt); }
   allowAutomatic({busy = false} = {}) {
-    // Per rescue round the featured word speaks once in English and once in
-    // Chinese. The pair follow-up only needs a short reinforcement gap; the
-    // first speech keeps the cross-speech quiet interval.
+    // Each opportunity is one complete Chinese-then-English pair; skip busy moments.
     if (!this.automaticEnabled || busy || this.speakingToken !== null ||
         this.spokenThisRound >= 2 ||
-        this.activeSeconds - this.lastSpeechEnd < (this.spokenThisRound === 1 ? 2.5 : 12)) return false;
+        this.activeSeconds - this.lastSpeechEnd < 4) return false;
     this.spokenThisRound++;
     return true;
   }
@@ -35,6 +33,6 @@ export class SpeechPolicy {
   }
   toJSON() {
     return {automaticEnabled: this.automaticEnabled, spokenThisRound: this.spokenThisRound,
-      cooldownSeconds: Math.max(0, Math.round((12 - (this.activeSeconds - this.lastSpeechEnd)) * 10) / 10)};
+      cooldownSeconds: Math.max(0, Math.round((4 - (this.activeSeconds - this.lastSpeechEnd)) * 10) / 10)};
   }
 }

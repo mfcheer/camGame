@@ -545,8 +545,7 @@ export class BubbleManager {
     this.constrainPlayPosition(b.group.position, b.playBounds);
   }
 
-  // One featured word per rescue round: every bubble carries the same card,
-  // so the round can speak it once in English and once in Chinese.
+  // Rotate three pictures from a theme while avoiding recently used concepts.
   chooseRoundWord() {
     const shuffle = items => {
       for (let i=items.length-1;i>0;i--) {
@@ -555,7 +554,6 @@ export class BubbleManager {
       }
       return items;
     };
-    if (this.roundWord) return this.roundWord;
     // Choose among the category's eligible words, avoiding the last few rounds.
     if (!this.wordPool.length) {
       const categories=[...new Set(WORDS_LIST.filter(word=>!this.recentWordIds.includes(word.conceptId||word.id)).map(word=>word.category))];
@@ -568,18 +566,17 @@ export class BubbleManager {
         if(concepts.has(concept))return false;
         concepts.add(concept);return true;
       }).slice(0,3);
+      this.onWordPoolReady?.(this.wordPool);
     }
     if (!this.wordQueue?.length) {
-      const fresh=this.wordPool.filter(word=>!this.recentWordIds.includes(word.conceptId||word.id));
-      if(!fresh.length){this.wordPool=[];return this.chooseRoundWord();}
-      this.wordQueue=shuffle([...fresh]);
+      this.wordQueue=shuffle([...this.wordPool]);
       if(this.wordQueue.length>1 && this.wordQueue[0].id===this.lastWordId) {
         [this.wordQueue[0],this.wordQueue[1]]=[this.wordQueue[1],this.wordQueue[0]];
       }
     }
-    this.roundWord=this.wordQueue.shift();
-    if(this.roundWord){this.recentWordIds.push(this.roundWord.conceptId||this.roundWord.id);if(this.recentWordIds.length>5)this.recentWordIds.shift();}
-    return this.roundWord;
+    const word=this.wordQueue.shift();
+    if(word){this.lastWordId=word.id;this.recentWordIds.push(word.conceptId||word.id);if(this.recentWordIds.length>5)this.recentWordIds.shift();}
+    return word;
   }
 
   beginWordRound() {

@@ -106,6 +106,7 @@ export class Game {
       this.bubbleManager.onComboChange = (combo) => this.handleComboChange(combo);
       this.bubbleManager.onSpecialPop = () => this.onBubblePopped();
       this.bubbleManager.wordAudioHandler=word=>this.presentPlayWord(word);
+      this.bubbleManager.onWordPoolReady=words=>{if(this.speechPolicy?.automaticEnabled)this.audioManager?.preloadWordAudios?.(words.map(w=>w.id),{review:true});};
     }
 
     this.bubbleManager?.contrastSampler && (this.bubbleManager.contrastSampler.video=this.videoElement);
@@ -526,11 +527,7 @@ export class Game {
 
   beginRoundGreeting() {
     this.animalSpeech?.cancel();this.voiceQueue?.cancel();this.voiceQueue?.resume();this.speechPolicy?.beginRound();this.lastPlayWord=null;this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
-    // One featured word per round, spoken once in English and once in Chinese
-    // in a random order so the pair is always a complete, understandable input.
-    if(this.bubbleManager?.beginWordRound){this.bubbleManager.beginWordRound();this.bubbleManager.chooseRoundWord?.();}
-    this.roundWordLangs=Math.random()<.5?['en','zh']:['zh','en'];
-    if(this.speechPolicy?.automaticEnabled)this.audioManager?.preloadWordAudios?.(this.bubbleManager.wordPool?.map(w=>w.id)||[],{review:true});
+    this.bubbleManager?.beginWordRound?.();
     if(this.state==='PLAYING')this.bubbleManager.spawnNext(this.collectedCount,true);
   }
 
@@ -538,14 +535,12 @@ export class Game {
     this.lastPlayWord=word;this.uiManager?.setLastWordAvailable?.(true);
     // The last hit transitions to pet play immediately, so it has no speech opportunity.
     if(this.state!=='PLAYING'||this.collectedCount+(this.bubbleManager?.lastPoppedEnergy||1)>=this.targetCount)return Promise.resolve();
-    const spoken=this.speechPolicy?.spokenThisRound||0;
-    const lang=this.roundWordLangs?.[spoken]==='zh'?'zh':'en';
     let token;
-    return this.voiceQueue.playAutomaticWord(word.id,()=>{
+    return this.voiceQueue.playAutomaticPair(word.id,()=>{
       if(this.state!=='PLAYING')return;
       token=this.playWordCueToken=(this.playWordCueToken||0)+1;
       this.cueWord=word;this.wordCueRemaining=Infinity;this.uiManager?.showWordCue?.(word);
-    },{review:true,lang}).finally(()=>{
+    }).finally(()=>{
       if(token!==undefined&&token===this.playWordCueToken&&this.state==='PLAYING'&&this.cueWord===word)this.wordCueRemaining=.65;
     });
   }

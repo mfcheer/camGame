@@ -31,11 +31,11 @@ test('each new card has its own image and complete Chinese, English and bilingua
  }
 });
 
-test('recent concepts stay out of five subsequent rounds and each round keeps one featured word',()=>{
+test('recent concepts stay out of the next five rounds',()=>{
  const camera=new THREE.PerspectiveCamera(48,1,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();
  const b=new BubbleManager(new THREE.Scene(),camera,{},null),seen=[];
  for(let i=0;i<250;i++){
   b.clear();b.beginWordRound();const word=b.chooseRoundWord(),concept=word.conceptId||word.id;
-  assert.equal(b.chooseRoundWord(),word);assert.ok(!seen.slice(-5).includes(concept),`repeated ${concept}`);seen.push(concept);
+  assert.ok(!seen.slice(-5).includes(concept),`repeated ${concept}`);seen.push(concept);
  }
 });

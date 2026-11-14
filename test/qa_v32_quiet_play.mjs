@@ -28,46 +28,11 @@ test('default pops retain the latest word for deliberate point-reading without m
   assert.equal(g.lastPlayWord.id,'cup');assert.equal(g.cueWord,undefined);assert.equal(calls.length,0);assert.equal(policy.spokenThisRound,0);
 });
 
-test('rapid pops speak while busy drops the rest; the pair follow-up still speaks later in the same round',async()=>{
-  const {g,calls,jobs,queue,policy}=fixture(true);const first=g.presentPlayWord(getWordById('egg'));
-  await g.presentPlayWord(getWordById('cup'));await g.presentPlayWord(getWordById('cat'));
-  assert.equal(calls.length,1);assert.equal(queue.pendingWord,null);assert.equal(g.cueWord.id,'egg');assert.equal(policy.spokenThisRound,1);
-  policy.update(2);jobs[0]();await first;assert.equal(g.wordCueRemaining,.65);
-  // After the short pair gap a later pop completes the pair; a third chance is blocked.
-  policy.update(2.6);const second=g.presentPlayWord(getWordById('cup'));assert.equal(calls.length,2);assert.equal(policy.spokenThisRound,2);jobs[1]();await second;
-  policy.update(12);await g.presentPlayWord(getWordById('cat'));assert.equal(calls.length,2);
+test('automatic speech pairs Chinese and English without queuing fast hits',async()=>{
+ const {g,calls,jobs,policy}=fixture(true);const first=g.presentPlayWord(getWordById('egg'));await g.presentPlayWord(getWordById('cup'));assert.deepEqual(calls.map(c=>c.options.lang),['zh']);jobs[0]();await tick();assert.deepEqual(calls.map(c=>c.options.lang),['zh','en']);jobs[1]();await first;assert.equal(policy.spokenThisRound,1);
 });
-
-test('the featured pair speaks English and Chinese once each with only a short reinforcement gap',async()=>{
-  const {queue,policy,jobs,calls}=fixture(true);
-  const first=queue.playAutomaticWord('egg',null,{review:true,lang:'en'});
-  assert.equal(calls.length,1);assert.deepEqual(calls[0].options,{review:true,lang:'en'});policy.update(1);jobs[0]();await first;
-  policy.update(2.4);await queue.playAutomaticWord('egg',null,{review:true,lang:'zh'});assert.equal(calls.length,1);
-  policy.update(.2);const second=queue.playAutomaticWord('egg',null,{review:true,lang:'zh'});
-  assert.deepEqual(calls[1].options,{review:true,lang:'zh'});jobs[1]();await second;
-  policy.update(20);await queue.playAutomaticWord('egg',null,{review:true,lang:'en'});assert.equal(calls.length,2);assert.equal(policy.spokenThisRound,2);
-});
-
-test('the round plans one word in a random language order and every bubble carries the same card',()=>{
-  const {g}=fixture(true);
-  g.roundWordLangs=['zh','en'];g.speechPolicy=new (Object.getPrototypeOf(g.speechPolicy).constructor)(null);g.speechPolicy.setAutomatic(true);
-  const langs=[];
-  const audio={playWord(id,options){langs.push(options.lang);return Promise.resolve();},stopWord(){}};
-  g.voiceQueue=new VoiceQueue(audio,g.speechPolicy);
-  return g.presentPlayWord(getWordById('egg')).then(()=>{g.speechPolicy.update(2.6);return g.presentPlayWord(getWordById('egg'));}).then(()=>{
-    assert.deepEqual(langs,['zh','en']);
-    const camera=new T.PerspectiveCamera(48,1,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();
-    const bubbles=new BubbleManager(new T.Scene(),camera,{},null);
-    bubbles.beginWordRound();const a=bubbles.chooseRoundWord();const b=bubbles.chooseRoundWord();const c=bubbles.chooseRoundWord();
-    assert.equal(a.id,b.id);assert.equal(b.id,c.id);
-  });
-});
-
-test('the twelve-second interval starts at voice completion, persists across rounds and cannot be bypassed by enabling again',async()=>{
-  const {queue,policy,jobs,calls}=fixture(true);const first=queue.playAutomaticWord('egg');policy.update(10);jobs[0]();await first;
-  policy.beginRound();policy.update(11.9);await queue.playAutomaticWord('cup');assert.equal(calls.length,1);assert.equal(policy.spokenThisRound,0);
-  policy.setAutomatic(false);policy.setAutomatic(true);await queue.playAutomaticWord('cup');assert.equal(calls.length,1);
-  policy.update(.11);const second=queue.playAutomaticWord('cup');assert.equal(calls.length,2);jobs[1]();await second;
+test('automatic pairs respect a four-second quiet interval across rounds',async()=>{
+ const {queue,policy,jobs,calls}=fixture(true);const first=queue.playAutomaticPair('egg');jobs[0]();await tick();jobs[1]();await first;policy.beginRound();policy.update(3.9);await queue.playAutomaticPair('cup');assert.equal(calls.length,2);policy.update(.2);const next=queue.playAutomaticPair('cup');jobs[2]();await tick();jobs[3]();await next;assert.equal(calls.length,4);
 });
 
 test('a busy manual phrase skips an automatic opportunity without using its budget or starting a backlog',async()=>{
@@ -81,7 +46,7 @@ test('manual reading interrupts automatic speech, keeps bilingual options and re
   const {queue,policy,jobs,calls}=fixture(true);queue.playAutomaticWord('egg');policy.update(1);
   const manual=queue.playManualWord('cup',{review:false});assert.deepEqual(calls[1],{id:'cup',options:{review:false}});
   await tick();assert.equal(queue.current.value,'cup');policy.update(2);jobs[1]();await manual;policy.beginRound();
-  policy.update(11);await queue.playAutomaticWord('cat');assert.equal(calls.length,2);
+  policy.update(3);await queue.playAutomaticWord('cat');assert.equal(calls.length,2);
 });
 
 test('pause discards automatic speech and old completion; resuming never starts it again',async()=>{
@@ -128,14 +93,9 @@ test('muted or blocked sound skips automatic opportunities without consuming the
   audio.recoveryNeeded=false;const spoken=queue.playAutomaticWord('egg');assert.equal(calls.length,1);jobs[0]();await spoken;
 });
 
-test('an old cancelled voice cannot clear the new round cue or reset its quiet clock',async()=>{
-  const {g,queue,policy,jobs}=fixture(true);const old=g.presentPlayWord(getWordById('egg'));
-  queue.cancel();g.clearPlayWordCue();policy.beginRound();policy.update(12);
-  const next=g.presentPlayWord(getWordById('cup'));jobs[0]();await old;
-  assert.equal(g.cueWord.id,'cup');assert.equal(g.wordCueRemaining,Infinity);assert.notEqual(policy.speakingToken,null);
-  jobs[1]();await next;assert.equal(g.wordCueRemaining,.65);assert.equal(policy.speakingToken,null);
+test('a cancelled bilingual pair cannot continue into the next round',async()=>{
+ const {g,queue,policy,jobs,calls}=fixture(true);const old=g.presentPlayWord(getWordById('egg'));queue.cancel();g.clearPlayWordCue();await old;policy.beginRound();policy.update(4);const next=g.presentPlayWord(getWordById('cup'));jobs[0]();await tick();assert.equal(g.cueWord.id,'cup');jobs[1]();await tick();jobs[2]();await next;assert.deepEqual(calls.map(x=>x.id),['egg','cup','cup']);
 });
-
 
 test('11-inch tablet targets are larger and consistent across rotation, with room for browser bars',()=>{
   for(const [w,h] of [[834,1194],[820,1180],[834,1210],[744,1194]]){

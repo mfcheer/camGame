@@ -62,6 +62,7 @@ export class AudioManager {
     // BGM 状态
     this.currentStageId = 'forest';
     this.bgmGainNode = null;
+    this.sfxGainNode = null;
     this.bgmFilterNode = null;
     this.bgmInterval = null;
     this.bgmStep = 0;
@@ -76,7 +77,7 @@ export class AudioManager {
   }
 
   init() {
-    if(this.ctx?.state==='closed'){this.ctx=null;this.initialized=false;this.bgmGainNode=null;this.bgmFilterNode=null;}
+    if(this.ctx?.state==='closed'){this.ctx=null;this.initialized=false;this.bgmGainNode=null;this.sfxGainNode=null;this.bgmFilterNode=null;}
     if (this.initialized && this.ctx) {
       this._requestContextResume();
       return;
@@ -121,7 +122,7 @@ export class AudioManager {
     if(rebuild&&this.ctx){
       this.stopWord();if(this.bgmInterval)clearInterval(this.bgmInterval);this.bgmInterval=null;
       try{this.ctx.close?.()?.catch?.(()=>{});}catch{}
-      this.ctx=null;this.initialized=false;this.bgmGainNode=null;this.bgmFilterNode=null;this._resumePromise=null;this._resumeContext=null;
+      this.ctx=null;this.initialized=false;this.bgmGainNode=null;this.sfxGainNode=null;this.bgmFilterNode=null;this._resumePromise=null;this._resumeContext=null;
     }
     this.init();
     return this.ensureRunning().then(ok=>{
@@ -158,6 +159,9 @@ export class AudioManager {
   _setupBGMGraph() {
     if (!this.ctx || typeof this.ctx.createGain !== 'function' || !this.ctx.destination) return;
     try {
+      this.sfxGainNode = this.ctx.createGain();
+      this.sfxGainNode.gain.setValueAtTime(this._speechDucking ? .22 : 1, this.ctx.currentTime || 0);
+      this.sfxGainNode.connect(this.ctx.destination);
       this.bgmGainNode = this.ctx.createGain();
       const now = this.ctx.currentTime || 0;
       this.bgmGainNode.gain.setValueAtTime(this.isMuted ? 0 : 0.08, now);
@@ -251,7 +255,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
 
       modOsc.start(now);
       modOsc.stop(now + 0.12);
@@ -271,7 +275,7 @@ export class AudioManager {
       splashGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
 
       splash.connect(splashGain);
-      splashGain.connect(this.ctx.destination);
+      splashGain.connect(this.sfxGainNode || this.ctx.destination);
       splash.start(now + 0.005);
       splash.stop(now + 0.10);
 
@@ -284,7 +288,7 @@ export class AudioManager {
         chimeGain.gain.setValueAtTime(0.10 + Math.min(0.12, combo * 0.018), now + 0.01);
         chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
         chime.connect(chimeGain);
-        chimeGain.connect(this.ctx.destination);
+        chimeGain.connect(this.sfxGainNode || this.ctx.destination);
         chime.start(now + 0.01);
         chime.stop(now + 0.19);
       }
@@ -315,7 +319,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
       osc.start(now);
       osc.stop(now + 0.43);
 
@@ -329,7 +333,7 @@ export class AudioManager {
       coinGain.gain.linearRampToValueAtTime(0.18, now + 0.04);
       coinGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
       coin.connect(coinGain);
-      coinGain.connect(this.ctx.destination);
+      coinGain.connect(this.sfxGainNode || this.ctx.destination);
       coin.start(now);
       coin.stop(now + 0.29);
 
@@ -346,7 +350,7 @@ export class AudioManager {
         chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.38 + i * 0.08);
 
         chime.connect(chimeGain);
-        chimeGain.connect(this.ctx.destination);
+        chimeGain.connect(this.sfxGainNode || this.ctx.destination);
         chime.start(now + 0.03 * i);
         chime.stop(now + 0.40 + i * 0.08);
       });
@@ -406,7 +410,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.40);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
       osc.start(now);
       osc.stop(now + 0.41);
     } else if (type === 'happy') {
@@ -423,7 +427,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.20);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(now + offset);
         osc.stop(now + offset + 0.21);
       }
@@ -438,7 +442,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.23);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
       osc.start(now);
       osc.stop(now + 0.24);
     }
@@ -460,7 +464,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.09);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(now + offset);
         osc.stop(now + offset + 0.10);
       }
@@ -478,7 +482,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.08);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(now + offset);
         osc.stop(now + offset + 0.09);
       }
@@ -495,7 +499,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
       osc.start(now);
       osc.stop(now + 0.09);
     }
@@ -517,7 +521,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.12);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(now + offset);
         osc.stop(now + offset + 0.13);
       }
@@ -535,7 +539,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.12);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(now + offset);
         osc.stop(now + offset + 0.13);
       }
@@ -552,7 +556,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
       osc.start(now);
       osc.stop(now + 0.12);
     }
@@ -574,7 +578,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.50);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(now);
         osc.stop(now + 0.52);
       }
@@ -592,7 +596,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.28);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(now + offset);
         osc.stop(now + offset + 0.30);
       }
@@ -610,7 +614,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
       osc.start(now);
       osc.stop(now + 0.26);
     }
@@ -633,7 +637,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, time + 0.55);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(time);
         osc.stop(time + 0.58);
       });
@@ -652,7 +656,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, time + 0.38);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(time);
         osc.stop(time + 0.40);
       });
@@ -670,7 +674,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(now + idx * 0.02);
         osc.stop(now + 0.34);
       });
@@ -693,7 +697,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.09);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(now + offset);
         osc.stop(now + offset + 0.10);
       }
@@ -711,7 +715,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.10);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
         osc.start(now + offset);
         osc.stop(now + offset + 0.11);
       }
@@ -728,7 +732,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
       osc.start(now);
       osc.stop(now + 0.09);
     }
@@ -761,7 +765,7 @@ export class AudioManager {
           gain.gain.exponentialRampToValueAtTime(0.001, time + (i === 3 ? 1.5 : 0.35));
 
           osc.connect(gain);
-          gain.connect(this.ctx.destination);
+          gain.connect(this.sfxGainNode || this.ctx.destination);
           osc.start(time);
           osc.stop(time + (i === 3 ? 1.6 : 0.36));
         });
@@ -794,7 +798,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
 
       osc.start(now);
       osc.stop(now + 0.3);
@@ -826,7 +830,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, time + 0.5);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
 
         osc.start(time);
         osc.stop(time + 0.52);
@@ -856,7 +860,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
 
       osc.start(now);
       osc.stop(now + 0.33);
@@ -883,7 +887,7 @@ export class AudioManager {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
 
       osc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
 
       osc.start(now);
       osc.stop(now + 0.2);
@@ -911,7 +915,7 @@ export class AudioManager {
         gain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
 
         osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
 
         osc.start(time);
         osc.stop(time + 0.23);
@@ -946,7 +950,7 @@ export class AudioManager {
 
       leftOsc.connect(gain);
       rightOsc.connect(gain);
-      gain.connect(this.ctx.destination);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
 
       leftOsc.start(now);
       leftOsc.stop(now + 0.38);
@@ -960,7 +964,7 @@ export class AudioManager {
       chimeGain.gain.setValueAtTime(0.12, now + 0.18);
       chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.50);
       chime.connect(chimeGain);
-      chimeGain.connect(this.ctx.destination);
+      chimeGain.connect(this.sfxGainNode || this.ctx.destination);
       chime.start(now + 0.18);
       chime.stop(now + 0.52);
     } catch (e) {}
@@ -982,7 +986,7 @@ export class AudioManager {
       gain1.gain.setValueAtTime(0.24, now);
       gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.028);
       click1.connect(gain1);
-      gain1.connect(this.ctx.destination);
+      gain1.connect(this.sfxGainNode || this.ctx.destination);
       click1.start(now);
       click1.stop(now + 0.03);
 
@@ -994,7 +998,7 @@ export class AudioManager {
       flapGain.gain.setValueAtTime(0.18, now + 0.025);
       flapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
       flap.connect(flapGain);
-      flapGain.connect(this.ctx.destination);
+      flapGain.connect(this.sfxGainNode || this.ctx.destination);
       flap.start(now + 0.025);
       flap.stop(now + 0.082);
 
@@ -1006,7 +1010,7 @@ export class AudioManager {
       gain2.gain.setValueAtTime(0.20, now + 0.075);
       gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
       click2.connect(gain2);
-      gain2.connect(this.ctx.destination);
+      gain2.connect(this.sfxGainNode || this.ctx.destination);
       click2.start(now + 0.075);
       click2.stop(now + 0.135);
     } catch (e) {}
@@ -1055,6 +1059,16 @@ export class AudioManager {
 
     this._wordAudioPromises.set(key, promise);
     return promise;
+  }
+
+  setSpeechDucking(active) {
+    this._speechDucking=!!active;
+    if (!this.sfxGainNode || !this.ctx) return;
+    try {
+      const gain=this.sfxGainNode.gain, now=this.ctx.currentTime||0;
+      gain.cancelScheduledValues(now);
+      gain.setTargetAtTime(active ? .22 : 1,now,active ? .03 : .12);
+    } catch {}
   }
 
   // Resolve only after the recording (or speech fallback) actually ends.
