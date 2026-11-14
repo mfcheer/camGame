@@ -65,12 +65,14 @@ test('1. 单词配置与 75 个图案/中英双语发音资源完整性验证', 
   for (const w of WORDS_LIST) {
     categories[w.category] = (categories[w.category] || 0) + 1;
   }
-  assert.equal(categories.school, 10, '文具与教室类应包含 10 个单词');
+  assert.equal(categories.school, 11, '文具与教室类包含电脑在内共 11 个单词');
   assert.equal(categories.colors, 10, '色彩类应包含 10 个单词');
   assert.equal(categories.shapes, 7, '图形类应包含 7 个单词');
   assert.equal(categories.toys, 19, '玩具类含绘本词共19个');
   assert.equal(categories.two_book, 10, 'Two绘本主题及数字一共10词');
-  assert.equal(categories.everyday,9);
+  assert.equal(categories.everyday,6);
+  assert.equal(categories.body,7);
+  assert.equal(categories.animals,5);
 
   // 验证随机抽取与排除机制
   const sample1 = getRandomWord();

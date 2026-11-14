@@ -18,10 +18,13 @@ test('navigation guard is non-passive, scoped by current game state, and can be 
  const remove=installNavigationGuard(()=>active,target);assert.deepEqual(options,{capture:true,passive:false});let prevented=0;const e={deltaX:99,deltaY:0,cancelable:true,preventDefault:()=>prevented++};handler(e);active=true;handler(e);assert.equal(prevented,1);handler({...e,cancelable:false});assert.equal(prevented,1);remove();assert.equal(removed,true);
 });
 
-test('library shows all 75 unique words and complete disjoint categories without progress changes',()=>{
+test('library shows all 75 unique words with complete categories and shared storybook animals',()=>{
  const all=libraryWords();assert.equal(all.length,75);assert.equal(new Set(all.map(w=>w.id)).size,75);
- assert.equal(libraryWords('colors').length,10);assert.equal(libraryWords('everyday').length,9);assert.equal(libraryWords('toys').length,19);
- assert.equal(WORD_CATEGORIES.filter(([id])=>id!=='all').reduce((n,[id])=>n+libraryWords(id).length,0),75);assert.deepEqual(libraryWords('unknown'),[]);
+ assert.equal(libraryWords('colors').length,10);assert.equal(libraryWords('everyday').length,6);assert.equal(libraryWords('toys').length,19);
+ const categorized=WORD_CATEGORIES.filter(([id])=>id!=='all').flatMap(([id])=>libraryWords(id));
+ assert.equal(new Set(categorized.map(w=>w.id)).size,75);
+ for(const id of ['bee','fish','bird','cat','dog','cow','horse'])assert.equal(categorized.filter(w=>w.id===id).length,2);
+ assert.deepEqual(libraryWords('unknown'),[]);
 });
 
 test('a short phrase stays at least four seconds, leaves 1.8 seconds to echo and fades before advancing',async()=>{
