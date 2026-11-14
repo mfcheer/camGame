@@ -86,6 +86,8 @@ export class BubbleManager {
     this.recentWordIds = [];
     this.wordMode = true;
     this.roundSeenWords = new Set();
+    this.roundWordHits = new Map();
+    this.roundTargetCount = 6;
     this.hasLearnedTouch = false;
     this.visualDemo = new InteractionDemo(scene);
     this.wordPool = [];
@@ -545,42 +547,116 @@ export class BubbleManager {
     this.constrainPlayPosition(b.group.position, b.playBounds);
   }
 
-  // Rotate three pictures from a theme while avoiding recently used concepts.
-  chooseRoundWord() {
+  initEvenWordPool(targetCount = 6) {
     const shuffle = items => {
-      for (let i=items.length-1;i>0;i--) {
-        const j=Math.floor(Math.random()*(i+1));
-        [items[i],items[j]]=[items[j],items[i]];
+      const arr = [...items];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
-      return items;
+      return arr;
     };
-    // Choose among the category's eligible words, avoiding the last few rounds.
-    if (!this.wordPool.length) {
-      const categories=[...new Set(WORDS_LIST.filter(word=>!this.recentWordIds.includes(word.conceptId||word.id)).map(word=>word.category))];
-      const category=categories[Math.floor(Math.random()*categories.length)];
-      const concepts=new Set();
-      const categoryWords=WORDS_LIST.filter(word=>word.category===category);
-      const fresh=categoryWords.filter(word=>!this.recentWordIds.includes(word.conceptId||word.id));
-      this.wordPool=shuffle(fresh.length?fresh:categoryWords).filter(word=>{
-        const concept=word.conceptId||word.id;
-        if(concepts.has(concept))return false;
-        concepts.add(concept);return true;
-      }).slice(0,3);
-      this.onWordPoolReady?.(this.wordPool);
-    }
-    if (!this.wordQueue?.length) {
-      this.wordQueue=shuffle([...this.wordPool]);
-      if(this.wordQueue.length>1 && this.wordQueue[0].id===this.lastWordId) {
-        [this.wordQueue[0],this.wordQueue[1]]=[this.wordQueue[1],this.wordQueue[0]];
+
+    // 偶数次规则：每轮挑选 poolSize 种单词，每种出现偶数次（2 次）
+    // targetCount = 10 -> 5 种；targetCount = 8 -> 4 种；targetCount = 6 -> 3 种
+    const poolSize = Math.max(3, Math.floor(targetCount / 2));
+    const categories = [...new Set(WORDS_LIST.filter(word => !this.recentWordIds.includes(word.conceptId || word.id)).map(word => word.category))];
+    const category = categories.length ? categories[Math.floor(Math.random() * categories.length)] : null;
+    const concepts = new Set();
+    const categoryWords = category ? WORDS_LIST.filter(word => word.category === category) : WORDS_LIST;
+    const fresh = categoryWords.filter(word => !this.recentWordIds.includes(word.conceptId || word.id));
+
+    let chosen = shuffle(fresh.length ? fresh : categoryWords).filter(word => {
+      const concept = word.conceptId || word.id;
+      if (concepts.has(concept)) return false;
+      concepts.add(concept);
+      return true;
+    });
+
+    if (chosen.length < poolSize) {
+      const otherWords = shuffle(WORDS_LIST.filter(word => !concepts.has(word.conceptId || word.id)));
+      for (const w of otherWords) {
+        if (chosen.length >= poolSize) break;
+        concepts.add(w.conceptId || w.id);
+        chosen.push(w);
       }
     }
-    const word=this.wordQueue.shift();
-    if(word){this.lastWordId=word.id;this.recentWordIds.push(word.conceptId||word.id);if(this.recentWordIds.length>5)this.recentWordIds.shift();}
+    this.wordPool = chosen.slice(0, poolSize);
+    this.onWordPoolReady?.(this.wordPool);
+    this.wordQueue = this.buildEvenQueue(this.wordPool);
+  }
+
+  buildEvenQueue(pool) {
+    if (!pool || !pool.length) return [];
+    const shuffle = items => {
+      const arr = [...items];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
+
+    // 每种卡片出现偶数次（2 次）
+    let items = [];
+    for (const w of pool) {
+      items.push(w, w);
+    }
+    items = shuffle(items);
+
+    // 调整使前 pool.length 个单词互不重复（满足单元测试和开场多样性）
+    const headLimit = Math.min(items.length, pool.length);
+    for (let i = 0; i < headLimit; i++) {
+      for (let j = 0; j < i; j++) {
+        if (items[i].id === items[j].id) {
+          const swapIdx = items.findIndex((w, idx) => idx >= headLimit && !items.slice(0, i).some(x => x.id === w.id));
+          if (swapIdx !== -1) {
+            [items[i], items[swapIdx]] = [items[swapIdx], items[i]];
+          }
+        }
+      }
+    }
+
+    // 消除相邻重复
+    for (let i = 1; i < items.length; i++) {
+      if (items[i].id === items[i - 1].id) {
+        const swapIdx = items.findIndex((w, idx) => idx > i && w.id !== items[i].id && (idx === items.length - 1 || items[i].id !== items[idx + 1].id));
+        if (swapIdx !== -1) {
+          [items[i], items[swapIdx]] = [items[swapIdx], items[i]];
+        }
+      }
+    }
+    return items;
+  }
+
+  chooseRoundWord() {
+    if (!this.wordPool || !this.wordPool.length) {
+      this.initEvenWordPool(this.roundTargetCount || 6);
+    }
+    if (!this.wordQueue || !this.wordQueue.length) {
+      this.wordQueue = this.buildEvenQueue(this.wordPool);
+      if (this.wordQueue.length > 1 && this.wordQueue[0].id === this.lastWordId) {
+        [this.wordQueue[0], this.wordQueue[1]] = [this.wordQueue[1], this.wordQueue[0]];
+      }
+    }
+    const word = this.wordQueue.shift();
+    if (word) {
+      this.lastWordId = word.id;
+      this.recentWordIds.push(word.conceptId || word.id);
+      if (this.recentWordIds.length > 5) this.recentWordIds.shift();
+    }
     return word;
   }
 
-  beginWordRound() {
-    this.roundWord=null;
+  beginWordRound(targetCount = 6) {
+    this.roundWord = null;
+    if (!this.roundWordHits) this.roundWordHits = new Map();
+    else this.roundWordHits.clear();
+    this.roundSeenWords.clear();
+    this.roundTargetCount = typeof targetCount === 'number' && targetCount > 0 ? targetCount : 6;
+    this.wordPool = [];
+    this.wordQueue = [];
+    this.initEvenWordPool(this.roundTargetCount);
   }
 
   createBubble(index, forceType = null, forceWord = null) {
@@ -1158,14 +1234,20 @@ export class BubbleManager {
     this.completedBubbleCount++;
     this.rescueAnimal?.followEnergy?.(this.activeBubble.group.position);
 
-    // 1. 播放破裂音效与英语单词发音 (按泡泡类型触发专属音效)
+    // 1. 播放破裂音效与英语单词发音 (按泡泡类型触发专属音效，偶数次发音：第1次汉语，第2次英语)
     if (this.activeBubble.word) {
       const word = this.activeBubble.word;
-      const review = this.roundSeenWords.has(word.id);
+      if (!this.roundWordHits) this.roundWordHits = new Map();
+      const hits = (this.roundWordHits.get(word.id) || 0) + 1;
+      this.roundWordHits.set(word.id, hits);
+      const isSecondTime = (hits % 2 === 0);
+      const lang = isSecondTime ? 'en' : 'zh';
+      const review = isSecondTime;
       this.roundSeenWords.add(word.id);
-      const audioDone = this.wordAudioHandler?this.wordAudioHandler(word):this.audio?.playWord?.(word.id || word.word, {review});
+      const opts = { review, lang, hitCount: hits };
+      const audioDone = this.wordAudioHandler ? this.wordAudioHandler(word, opts) : this.audio?.playWord?.(word.id || word.word, opts);
       if (typeof this.onWordPop === 'function') {
-        this.onWordPop(word, hitX, hitY, audioDone, {review});
+        this.onWordPop(word, hitX, hitY, audioDone, opts);
       }
     }
     if(this.activeBubble.type==='jelly'&&typeof this.audio?.playJellyBoing==='function'){

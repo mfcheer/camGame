@@ -754,15 +754,18 @@ export class UIManager {
     this.dom.campBadgeCount.textContent = `${unlocked}/${CAMP_ANIMALS.length}`;
   }
   // 划破气泡浮现实物认知卡片 (高清实物大图 + 英文单词标牌 + 视听立体刺激)
-  showWordPopup(word, hitX = 0.5, hitY = 0.5) {
+  showWordPopup(word, hitX = 0.5, hitY = 0.5, options = {}) {
     if (typeof document === "undefined") return;
     const wordData = typeof word === "string" ? getWordById(word) || { word, id: word, accent: "#ff6b81" } : word;
     if (!wordData || !wordData.word) return;
 
+    const { review = false, lang = (review ? 'en' : 'zh'), hitCount = (review ? 2 : 1) } = (typeof options === 'object' && options !== null ? options : {});
+
     const restoreFocus=document.activeElement===this.activeWordPopup?.replayButton;
     this.clearWordPopup();
     const popup = document.createElement("div");
-    popup.className = "word-popup-card word-popup-pill";
+    popup.className = `word-popup-card word-popup-pill is-lang-${lang} hit-${hitCount}`;
+    if (popup.dataset) { popup.dataset.lang = lang; popup.dataset.hitCount = String(hitCount); } if (typeof popup.setAttribute === "function") { popup.setAttribute("data-lang", lang); popup.setAttribute("data-hit-count", String(hitCount)); }
     if (typeof popup.setAttribute === "function") {
       popup.setAttribute("role", "status");
       popup.setAttribute("aria-live", "off");

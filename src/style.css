@@ -1653,9 +1653,44 @@ html, body, .card, .start-choices, .start-actions, .word-library-grid, .word-lib
   .start-card{overflow-y:auto}
   .start-choices{flex:0 0 auto;overflow:visible;padding-bottom:0}
 }
+/* 窄竖屏：功能三合一排走紧凑形态（与横屏一致——隐藏图标、缩小字号），防止"单词小花园 75 词"溢出按钮边缘 */
+@media(max-width:540px) and (orientation:portrait){
+  .start-feature-row{gap:5px}
+  .start-feature-row .vocabulary-entry-btn>span:first-child,.start-feature-row .camp-btn-icon{display:none}
+  .start-feature-row .vocabulary-entry-btn,.start-feature-row .camp-entry-btn{padding:8px 6px;font-size:11px;gap:4px;min-height:38px}
+  .start-feature-row .word-mode-toggle{padding:8px 6px;font-size:11px;gap:4px}
+  .start-feature-row .word-mode-toggle input{width:16px;height:16px}
+  .start-feature-row .vocabulary-entry-count,.start-feature-row .camp-badge-count{font-size:10px}
+}
 /* 功能排营地按钮与相邻按钮等高（旧 540px 边距规则会让它缩短 10px、底边错位） */
 .start-actions .start-feature-row .camp-entry-btn{margin:0}
 /* BGM 待激活提示：浏览器要求首次交互后才可播放，首页/游戏静音按钮轻微呼吸提示"点一下有音乐" */
 .awaiting-audio{animation:sound-await 2.4s ease-in-out infinite}
 @keyframes sound-await{0%,100%{transform:scale(1);box-shadow:0 6px 18px rgba(0,0,0,.15)}50%{transform:scale(1.08);box-shadow:0 6px 24px rgba(74,222,128,.5)}}
 @media(prefers-reduced-motion:reduce){.awaiting-audio{animation:none}}
+
+.word-popup-card.is-lang-zh .word-popup-cn {
+  font-size: 26px;
+  font-weight: 800;
+  color: #253d35;
+  order: 1;
+}
+.word-popup-card.is-lang-zh .word-popup-text {
+  font-size: 17px;
+  font-weight: 600;
+  color: #596b61;
+  order: 2;
+}
+.word-popup-card.is-lang-en .word-popup-text {
+  font-size: 30px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #253d35;
+  order: 1;
+}
+.word-popup-card.is-lang-en .word-popup-cn {
+  font-size: 17px;
+  font-weight: 600;
+  color: #596b61;
+  order: 2;
+}

@@ -105,7 +105,8 @@ export class Game {
     if (this.bubbleManager) {
       this.bubbleManager.onComboChange = (combo) => this.handleComboChange(combo);
       this.bubbleManager.onSpecialPop = () => this.onBubblePopped();
-      this.bubbleManager.wordAudioHandler=word=>this.presentPlayWord(word);
+      this.bubbleManager.wordAudioHandler=(word,options)=>this.presentPlayWord(word,options);
+      this.bubbleManager.onWordPop=(word,hitX,hitY,audioDone,options)=>this.presentWord(word,hitX,hitY,audioDone,options);
       this.bubbleManager.onWordPoolReady=words=>{if(this.speechPolicy?.automaticEnabled)this.audioManager?.preloadWordAudios?.(words.map(w=>w.id),{review:true});};
     }
 
@@ -531,15 +532,26 @@ export class Game {
 
   beginRoundGreeting() {
     this.animalSpeech?.cancel();this.voiceQueue?.cancel();this.voiceQueue?.resume();this.speechPolicy?.beginRound();this.lastPlayWord=null;this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
-    this.bubbleManager?.beginWordRound?.();
+    this.bubbleManager?.beginWordRound?.(this.targetCount);
     if(this.state==='PLAYING')this.bubbleManager.spawnNext(this.collectedCount,true);
   }
 
-  presentPlayWord(word) {
+  presentPlayWord(word, options = {}) {
     this.lastPlayWord=word;this.uiManager?.setLastWordAvailable?.(true);
     // The last hit transitions to pet play immediately, so it has no speech opportunity.
     if(this.state!=='PLAYING'||this.collectedCount+(this.bubbleManager?.lastPoppedEnergy||1)>=this.targetCount)return Promise.resolve();
     let token;
+    if (options && options.lang) {
+      const review = !!options.review;
+      const lang = options.lang;
+      return this.voiceQueue.playAutomaticWord(word.id,()=>{
+        if(this.state!=='PLAYING')return;
+        token=this.playWordCueToken=(this.playWordCueToken||0)+1;
+        this.cueWord=word;this.wordCueRemaining=Infinity;this.uiManager?.showWordCue?.(word, options);
+      },{review,lang}).finally(()=>{
+        if(token!==undefined&&token===this.playWordCueToken&&this.state==='PLAYING'&&this.cueWord===word)this.wordCueRemaining=.65;
+      });
+    }
     return this.voiceQueue.playAutomaticPair(word.id,()=>{
       if(this.state!=='PLAYING')return;
       token=this.playWordCueToken=(this.playWordCueToken||0)+1;
@@ -1131,11 +1143,15 @@ export class Game {
     else if(this.animalSpeech?.active&&!this.animalSpeech.paused&&!this.animalSpeech.done)this.animalSpeech.replay();
   }
 
-  presentWord(word,hitX,hitY,audioDone,{review=false}={}) {
+  presentWord(word,hitX,hitY,audioDone,options={}) {
+    const review = typeof options === 'boolean' ? options : !!options?.review;
+    const lang = options?.lang || (review ? 'en' : 'zh');
+    const hitCount = options?.hitCount || (review ? 2 : 1);
     const token=this.wordPresentationToken=(this.wordPresentationToken||0)+1;
     this.currentWord=word;
     this.wordIsReview=review;
     this.wordPlaybackReview=review;
+    this.wordPlaybackLang=lang;
     this.wordReplayReady=false;
     this.wordReplayDwell=0;
     this.wordReplayHover=false;
@@ -1144,7 +1160,7 @@ export class Game {
     this.wordQuietElapsed=0;
     this.wordAudioDone=false;
     this.wordPresentationRemaining=1;
-    this.uiManager?.showWordPopup?.(word,hitX,hitY);
+    this.uiManager?.showWordPopup?.(word,hitX,hitY,{review,lang,hitCount});
     this.waitForWordAudio(audioDone,token);
   }
 
@@ -1156,8 +1172,9 @@ export class Game {
     this.wordElapsed=0;this.wordQuietElapsed=0;this.wordClosingRemaining=0;this.wordAudioDone=false;
     this.wordReplayReady=false;this.wordReplayDwell=0;this.wordReplayHover=false;
     const anchor=this.uiManager?.wordPopupAnchor;
-    this.uiManager?.showWordPopup?.(this.currentWord,anchor?.x??.5,anchor?.y??.5);
-    this.waitForWordAudio(this.audioManager?.playWord?.(this.currentWord.id,{review:true}),token);
+    const lang=this.wordPlaybackLang||'en';
+    this.uiManager?.showWordPopup?.(this.currentWord,anchor?.x??.5,anchor?.y??.5,{review:true,lang});
+    this.waitForWordAudio(this.audioManager?.playWord?.(this.currentWord.id,{review:true,lang}),token);
   }
 
   updateWordReplay(dt) {
