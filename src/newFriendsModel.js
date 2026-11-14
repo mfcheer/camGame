@@ -187,22 +187,37 @@ export function createJettModel(){
 
 export function createPeppaModel(){
  const root=new THREE.Group();root.name='Peppa_Pig_Rig';
- const pink=mat(0xf2a6b7,.92),light=mat(0xffc0ca,.9),red=mat(0xd74b4c,.9),dark=mat(0x4a3038,.5),cheek=mat(0xe77992,.9),white=mat(0xfffcf6,.7);
+ const pink=mat(0xf6aebb,.92),light=mat(0xffc3ce,.9),red=mat(0xd64550,.9),dark=mat(0x4a3038,.5),cheek=mat(0xef8ba3,.9),white=mat(0xfffdf8,.7),shoe=mat(0x352c31,.8);
+ // 红色 A 字连衣裙：下摆外扩、肩部收窄，剪出裙装轮廓
  const body=pivot(root,'Torso',[0,.45,0]);
- sculpt([[0,-.025,0,.26,.27,.19],[0,.15,0,.15,.18,.15]],.065,red,body,'Red_Dress');
- const head=pivot(root,'Head',[0,1.00,.005]);
- // A gently asymmetric pig face with a projecting snout, still easy to read from the front.
- sculpt([[.04,0,0,.29,.26,.21],[-.18,.005,.055,.23,.17,.19]],.075,pink,head,'Pink_Pig_Head');
- ellipsoid(head,'Pig_Snout',light,[-.25,-.015,.22],[.16,.115,.07]);
- for(const s of [-1,1])ellipsoid(head,'Nostril',cheek,[-.25+s*.045,-.012,.285],[.018,.025,.008]);
- ellipsoid(head,'Rosy_Cheek',cheek,[.20,-.055,.19],[.052,.043,.01]);
- const ears=[[-.05,.235],[.15,.22]];for(let i=0;i<2;i++){const ear=pivot(head,i===0?'Ear_L':'Ear_R',[ears[i][0],ears[i][1],-.005]);const e=ellipsoid(ear,'Pig_Ear',pink,[0,.055,0],[.052,.10,.04]);e.rotation.z=i===0?.16:-.16;ellipsoid(ear,'Inner_Ear',light,[0,.06,.036],[.027,.06,.007]);}
- const eyes=pivot(head,'Eyes',[0,0,0]);for(const [side,x] of [['L',-.105],['R',.08]]){const eye=pivot(eyes,'Eye_'+side,[x,.105,.195]);ellipsoid(eye,'Eye_White',white,[0,0,0],[.050,.055,.024]);ellipsoid(eye,'Pupil',dark,[0,0,.023],[.022,.027,.009]);ellipsoid(eye,'Catchlight',white,[-.005,.009,.032],[.006,.007,.003]);}
- curve(head,'Pig_Smile',[[-.09,-.15,.22],[.02,-.19,.225],[.14,-.145,.205]],.006,dark);
- const happy=ellipsoid(head,'Happy_Mouth',dark,[.03,-.17,.23],[.065,.037,.01]);happy.visible=false;const tongue=ellipsoid(head,'Happy_Tongue',light,[.03,-.183,.242],[.03,.012,.004]);tongue.visible=false;
- for(const s of [-1,1]){const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.20,.57,.01]);const upper=ellipsoid(arm,'Pig_Arm',pink,[s*.075,-.04,0],[.13,.035,.034]);upper.rotation.z=-s*.25;ellipsoid(arm,'Pig_Hand',light,[s*.17,-.07,.01],[.043,.035,.03]);const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.12,.18,0]);ellipsoid(leg,'Pig_Leg',pink,[0,-.06,0],[.034,.10,.034]);ellipsoid(leg,'Black_Shoe',dark,[0,-.15,.055],[.075,.045,.11]);}
- const tail=pivot(root,'Tail',[0,.40,-.17]);curve(tail,'Curly_Pig_Tail',[[0,0,0],[.08,.03,-.04],[.12,.08,-.04],[.08,.12,-.04],[.04,.08,-.04]],.012,pink);
- const bow=pivot(root,'Bow',[0,.62,.18]);return root;
+ sculpt([[0,-.10,0,.30,.26,.21],[0,.02,0,.235,.225,.175],[0,.15,0,.175,.175,.15]],.06,red,body,'Red_Dress');
+ // 圆头：左右完全对称，不再歪向一侧
+ const head=pivot(root,'Head',[0,.995,0]);
+ ellipsoid(head,'Pink_Pig_Head',pink,[0,0,0],[.27,.245,.235]);
+ // 猪鼻：居中前突，双鼻孔朝前对称分布
+ ellipsoid(head,'Pig_Snout',light,[0,-.02,.20],[.15,.115,.105]);
+ for(const s of [-1,1])ellipsoid(head,'Nostril',cheek,[s*.05,-.012,.297],[.02,.028,.012]);
+ for(const s of [-1,1])ellipsoid(head,'Rosy_Cheek',cheek,[s*.19,-.075,.175],[.052,.042,.012]);
+ // 小圆耳朵：贴头顶微微外倾，告别兔耳感
+ for(const s of [-1,1]){const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.115,.205,-.01]);ear.rotation.z=-s*.26;ellipsoid(ear,'Pig_Ear',pink,[0,.036,0],[.05,.075,.032]);ellipsoid(ear,'Inner_Ear',light,[0,.04,.024],[.026,.048,.008]);}
+ // 眼睛：鼻梁上方左右对称
+ const eyes=pivot(head,'Eyes',[0,0,0]);for(const s of [-1,1]){const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.095,.085,.185]);ellipsoid(eye,'Eye_White',white,[0,0,0],[.052,.06,.026]);ellipsoid(eye,'Pupil',dark,[0,0,.024],[.024,.03,.01]);ellipsoid(eye,'Catchlight',white,[-.006,.011,.034],[.007,.008,.003]);}
+ // 嘴巴：鼻下居中微笑
+ curve(head,'Pig_Smile',[[-.075,-.14,.225],[0,-.175,.235],[.075,-.14,.225]],.006,dark);
+ const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.16,.235],[.065,.038,.012]);happy.visible=false;
+ const tongue=ellipsoid(head,'Happy_Tongue',cheek,[0,-.172,.248],[.03,.013,.005]);tongue.visible=false;
+ for(const s of [-1,1]){
+  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.23,.60,.02]);
+  const upper=ellipsoid(arm,'Pig_Arm',pink,[s*.06,-.075,0],[.05,.105,.05]);upper.rotation.z=-s*.55;
+  ellipsoid(arm,'Pig_Hand',light,[s*.115,-.135,.02],[.052,.048,.05]);
+  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.115,.19,0]);
+  ellipsoid(leg,'Pig_Leg',pink,[0,-.055,0],[.043,.09,.043]);
+  ellipsoid(leg,'Black_Shoe',shoe,[0,-.135,.048],[.085,.05,.115]);
+ }
+ // 卷卷尾巴：绕一圈的小螺旋
+ const tail=pivot(root,'Tail',[0,.42,-.18]);
+ curve(tail,'Curly_Pig_Tail',[[0,0,0],[.05,.03,-.015],[.085,.075,-.02],[.07,.115,-.02],[.03,.115,-.02],[.02,.08,-.02],[.045,.055,-.02]],.013,pink);
+ const bow=pivot(root,'Bow',[0,.64,.18]);return root;
 }
 export function createThomasModel(){
  const root=new THREE.Group();root.name='Thomas_Train_Rig';
