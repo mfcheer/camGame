@@ -21,6 +21,16 @@ export const ANIMAL_PHRASES={
     phrase('you-did-it','You did it!','你做到啦！'),
     phrase('so-much-fun','We had so much fun!','今天玩得真开心！'),
     phrase('see-you-tomorrow','See you tomorrow!','明天见哦！')
+  ],
+  celebrate:[
+    phrase('zh-thank-rescue','谢谢你救了我！','谢谢你救了我！'),
+    phrase('zh-great-job','你太棒啦！','你太棒啦！'),
+    phrase('zh-we-did-it','我们成功啦！','我们成功啦！'),
+    phrase('zh-so-happy','今天玩得真开心！','今天玩得真开心！'),
+    phrase('zh-awesome','你真厉害呀！','你真厉害呀！'),
+    phrase('zh-thank-friend','太感谢你啦，我的好朋友！','太感谢你啦，我的好朋友！'),
+    phrase('zh-free-now','太好啦，我自由啦！','太好啦，我自由啦！'),
+    phrase('zh-super-hero','你真是个小英雄！','你真是个小英雄！')
   ]
 };
 const favorites={bunny:['hello-play','like-red','how-are-you'],cat:['play-ball','like-orange','happy-today'],

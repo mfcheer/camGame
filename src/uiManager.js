@@ -21,12 +21,18 @@ export class UIManager {
     portrait.src=resolveAssetUrl(`/models/${id}-preview.png`);portrait.alt='';
     const body=document.createElement('div');body.className='animal-speech-body';
     const name=document.createElement('div');name.className='animal-speech-name';name.textContent=GAME_CONFIG.animals[id].name;
-    const en=document.createElement('div');en.className='animal-speech-en';en.lang='en';en.textContent=phrase.en;
-    const zh=document.createElement('div');zh.className='animal-speech-zh';zh.lang='zh-CN';zh.textContent=phrase.zh;
     const footer=document.createElement('div');footer.className='animal-speech-footer';
-    const hint=document.createElement('span');hint.className='animal-speech-hint';hint.textContent='听朋友说一句';
+    const hint=document.createElement('span');hint.className='animal-speech-hint';hint.textContent=phase==='celebrate'?'庆祝欢呼中':'听朋友说一句';
     const replay=document.createElement('button');replay.type='button';replay.className='animal-speech-replay';replay.textContent='↻ 再听一次';replay.setAttribute('aria-label','再听一次这句话');replay.addEventListener('click',()=>this.handlers?.onReplaySpeech?.());
-    footer.append(hint,replay);body.append(name,en,zh,footer);card.append(portrait,body);card.dataset.phase=phase;
+    footer.append(hint,replay);
+    if(phase==='celebrate'){
+      const zh=document.createElement('div');zh.className='animal-speech-en animal-speech-celebrate-zh';zh.lang='zh-CN';zh.textContent=phrase.zh;
+      body.append(name,zh,footer);
+    }else{
+      const en=document.createElement('div');en.className='animal-speech-en';en.lang='en';en.textContent=phrase.en;
+      const zh=document.createElement('div');zh.className='animal-speech-zh';zh.lang='zh-CN';zh.textContent=phrase.zh;
+      body.append(name,en,zh,footer);
+    }card.append(portrait,body);card.dataset.phase=phase;
     (document.getElementById('app')||document.body).appendChild(card);this.animalSpeechCard=card;this.updateLearningChrome();
   }
   setAnimalSpeechListening(){

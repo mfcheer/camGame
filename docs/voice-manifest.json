@@ -5698,5 +5698,269 @@
         "sha256": "5d2e77ba43843ab7e56d715d3a71b35fb72e393449fe8e0f3d271b575a3ac499"
       }
     ]
+  },
+  {
+    "kind": "celebrate-zh",
+    "id": "zh-thank-rescue",
+    "text": "谢谢你救了我！",
+    "zh": "谢谢你救了我！",
+    "en": "Thank you for rescuing me!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/zh-thank-rescue.mp3",
+        "sha256": "c2628142224892e05df62f59fdb9b78e027e62b98144a26a72bf7f6f448efc14"
+      },
+      {
+        "path": "public/audio/phrases/zh-thank-rescue.mp3",
+        "sha256": "c2628142224892e05df62f59fdb9b78e027e62b98144a26a72bf7f6f448efc14"
+      }
+    ]
+  },
+  {
+    "kind": "celebrate-zh",
+    "id": "zh-great-job",
+    "text": "你太棒啦！",
+    "zh": "你太棒啦！",
+    "en": "You are amazing!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/zh-great-job.mp3",
+        "sha256": "36eddcca4fbcef040c089e9f7c1a453ed5dfc87c956fe5a699437d8ab4c6c54f"
+      },
+      {
+        "path": "public/audio/phrases/zh-great-job.mp3",
+        "sha256": "36eddcca4fbcef040c089e9f7c1a453ed5dfc87c956fe5a699437d8ab4c6c54f"
+      }
+    ]
+  },
+  {
+    "kind": "celebrate-zh",
+    "id": "zh-we-did-it",
+    "text": "我们成功啦！",
+    "zh": "我们成功啦！",
+    "en": "We did it!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/zh-we-did-it.mp3",
+        "sha256": "59f6267a2b6bfb0a479c062605d883d09691f8c1e16f78633583499807cd23f0"
+      },
+      {
+        "path": "public/audio/phrases/zh-we-did-it.mp3",
+        "sha256": "59f6267a2b6bfb0a479c062605d883d09691f8c1e16f78633583499807cd23f0"
+      }
+    ]
+  },
+  {
+    "kind": "celebrate-zh",
+    "id": "zh-so-happy",
+    "text": "今天玩得真开心！",
+    "zh": "今天玩得真开心！",
+    "en": "We had so much fun!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/zh-so-happy.mp3",
+        "sha256": "53c8ef4d04c055fa19a69235bd17f676ecadabac498981b32d5d7e132b172cb2"
+      },
+      {
+        "path": "public/audio/phrases/zh-so-happy.mp3",
+        "sha256": "53c8ef4d04c055fa19a69235bd17f676ecadabac498981b32d5d7e132b172cb2"
+      }
+    ]
+  },
+  {
+    "kind": "celebrate-zh",
+    "id": "zh-awesome",
+    "text": "你真厉害呀！",
+    "zh": "你真厉害呀！",
+    "en": "You are super great!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/zh-awesome.mp3",
+        "sha256": "0a2e09665c1b58b5950ad0b80af1acb70206d0886edfd622061c936aa076d7af"
+      },
+      {
+        "path": "public/audio/phrases/zh-awesome.mp3",
+        "sha256": "0a2e09665c1b58b5950ad0b80af1acb70206d0886edfd622061c936aa076d7af"
+      }
+    ]
+  },
+  {
+    "kind": "celebrate-zh",
+    "id": "zh-thank-friend",
+    "text": "太感谢你啦，我的好朋友！",
+    "zh": "太感谢你啦，我的好朋友！",
+    "en": "Thank you, my good friend!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/zh-thank-friend.mp3",
+        "sha256": "2e6410c37cf461f4817497ec15265019d19d49323e38d91d8a0507c3b524e2fe"
+      },
+      {
+        "path": "public/audio/phrases/zh-thank-friend.mp3",
+        "sha256": "2e6410c37cf461f4817497ec15265019d19d49323e38d91d8a0507c3b524e2fe"
+      }
+    ]
+  },
+  {
+    "kind": "celebrate-zh",
+    "id": "zh-free-now",
+    "text": "太好啦，我自由啦！",
+    "zh": "太好啦，我自由啦！",
+    "en": "Hooray, I am free now!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/zh-free-now.mp3",
+        "sha256": "df55ee5b94fc17ab09520aad863ff92f7b6de7dd3e92139c78c6dd0436debd38"
+      },
+      {
+        "path": "public/audio/phrases/zh-free-now.mp3",
+        "sha256": "df55ee5b94fc17ab09520aad863ff92f7b6de7dd3e92139c78c6dd0436debd38"
+      }
+    ]
+  },
+  {
+    "kind": "celebrate-zh",
+    "id": "zh-super-hero",
+    "text": "你真是个小英雄！",
+    "zh": "你真是个小英雄！",
+    "en": "You are a little hero!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/zh-super-hero.mp3",
+        "sha256": "96f4ca3e9099ff25726e66558fcc49293440a4f1c3e0613a22c348b27850357c"
+      },
+      {
+        "path": "public/audio/phrases/zh-super-hero.mp3",
+        "sha256": "96f4ca3e9099ff25726e66558fcc49293440a4f1c3e0613a22c348b27850357c"
+      }
+    ]
   }
 ]

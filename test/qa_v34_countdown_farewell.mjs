@@ -1,3 +1,4 @@
+import {chooseAnimalPhrase} from '../src/animalPhrases.js';
 // 倒数三套配音、解救告别短语与首页新布局专项（qa_v34）
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -75,4 +76,39 @@ test('每轮结束的告别短语从 end 短语库随机选择且不与上次重
     animalSpeech:{start(phase,id){seen.add(phase);}}});
   for(let i=0;i<8;i++)g.startFarewell();
   assert.ok(seen.has('end'));
+});
+
+test('通关做庆祝动作时自动播报中文庆祝短语，离开至终点时播报英文告别短语',()=>{
+  const speechCalls=[];
+  const g=Object.assign(Object.create(Game.prototype),{
+    state:'CELEBRATING',activeAnimalId:'krashy',
+    friendInteraction:{active:true,start(){},clear(){}},
+    bubbleManager:{hideHandIndicators(){}},
+    uiManager:{showFriendPlay(){},hideFriendPlay(){}},
+    animalSpeech:{start(phase,id){speechCalls.push([phase,id]);}},
+    voiceQueue:{cancel(){}},clearPlayWordCue(){},beginFarewell(){}
+  });
+  // 1. 触发庆祝动作时播报中文 celebrate
+  if(g.friendInteraction){
+    g.friendInteraction.start();
+    g.bubbleManager.hideHandIndicators();
+    g.uiManager?.showFriendPlay?.();
+    g.animalSpeech?.start('celebrate', g.activeAnimalId, ()=>{});
+  }
+  assert.deepEqual(speechCalls,[['celebrate','krashy']],'庆祝动作开始时应播报中文短语');
+  // 2. 庆祝动作结束离开走向终点时播报英文 end
+  g.finishFriendPlay();
+  assert.deepEqual(speechCalls,[['celebrate','krashy'],['end','krashy']],'离开走到终点阶段应播报英文告别短语');
+});
+
+test('每轮庆祝短语从 celebrate 库随机选择且不与上次重复',()=>{
+  const chosen=[];
+  let prev=null;
+  for(let i=0;i<16;i++){
+    const phrase=chooseAnimalPhrase('celebrate','krashy',prev);
+    assert.ok(phrase.id.startsWith('zh-'),'庆祝短语应为中文短语');
+    if(prev)assert.notEqual(phrase.id,prev,'不与上次重复');
+    prev=phrase.id;chosen.push(phrase.id);
+  }
+  assert.ok(new Set(chosen).size>=4,'应从8句庆祝库中丰富轮换');
 });

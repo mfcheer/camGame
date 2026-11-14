@@ -596,7 +596,8 @@ export class Game {
     if(this.audioManager?.isMuted){this.audioManager.toggleMute();this.uiManager?.syncSoundButtons?.(false);}
     this.audioManager?.recoverFromGesture?.();
     this.clearPlayWordCue();this.voiceQueue?.cancel();
-    this.animalSpeech?.start(this.state==='PLAYING'?'start':'end',this.activeAnimalId,()=>{});
+    const hiPhase=this.state==='PLAYING'?'start':(this.friendInteraction?.active?'celebrate':'end');
+    this.animalSpeech?.start(hiPhase,this.activeAnimalId,()=>{});
   }
 
   openWordDetail(word=this.lastPlayWord) {
@@ -707,6 +708,7 @@ export class Game {
       this.friendInteraction.start();
       this.bubbleManager.hideHandIndicators();
       this.uiManager?.showFriendPlay?.();
+      this.animalSpeech?.start('celebrate', this.activeAnimalId||this.rescueAnimal?.animalId||'bunny', ()=>{});
       return;
     }
     this.startFarewell();
