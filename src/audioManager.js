@@ -388,7 +388,7 @@ export class AudioManager {
           break;
         case 'wolf': case 'chase': this._playDogSound(type); break;
         case 'jett': case 'thomas': this._playCarFriendSound(type); break;
-        case 'peppa': this._playBunnySound(type); break;
+        case 'peppa': this._playPeppaSound(type); break;
         case 'mcqueen': this._playCarFriendSound(type); break;
         case 'teddy': this._playBunnySound(type); break;
         case 'bunny':
@@ -692,6 +692,27 @@ export class AudioManager {
         osc.start(now + idx * 0.02);
         osc.stop(now + 0.34);
       });
+    }
+  }
+
+  // 佩奇专属：小猪哼哼声（低频鼻音 grunt，双声哼哼表现开心）
+  _playPeppaSound(type) {
+    const now=this.ctx.currentTime;
+    const oinks=type==='escape'?[[0,.26],[.15,.30],[.30,.34]]
+      :type==='happy'?[[0,.24],[.14,.22]]
+      :[[0,.22]];
+    for(const [off,len] of oinks){
+      const osc=this.ctx.createOscillator(),lp=this.ctx.createBiquadFilter(),gain=this.ctx.createGain();
+      osc.type='sawtooth';lp.type='lowpass';
+      lp.frequency.setValueAtTime(650,now+off);lp.frequency.exponentialRampToValueAtTime(380,now+off+len);
+      osc.frequency.setValueAtTime(150,now+off);
+      osc.frequency.exponentialRampToValueAtTime(92,now+off+len*.55);
+      osc.frequency.exponentialRampToValueAtTime(128,now+off+len);
+      gain.gain.setValueAtTime(.001,now+off);
+      gain.gain.linearRampToValueAtTime(.17,now+off+.025);
+      gain.gain.exponentialRampToValueAtTime(.001,now+off+len);
+      osc.connect(lp);lp.connect(gain);gain.connect(this.sfxGainNode||this.ctx.destination);
+      osc.start(now+off);osc.stop(now+off+len+.01);
     }
   }
 

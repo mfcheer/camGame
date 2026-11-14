@@ -62,9 +62,9 @@ export const GAME_CONFIG = {
     mcqueen: {name:'闪电麦昆',targetBubbles:10,asset:'lightning-mcqueen',escapeStyle:'drive',description:'闪电赛道 · 和麦昆一起追逐轻快的泡泡。',victoryText:'麦昆开动轮子，开心地向你眨眼道谢。'},
     wolf: {name:'大灰狼 灰灰',targetBubbles:12,asset:'friendly-wolf',escapeStyle:'bound',description:'森林追逐 · 和灰灰一起追随轻快的泡泡。',victoryText:'灰灰摇着尾巴，开心地跑回森林。'},
     teddy: {name:'泰迪熊 抱抱',targetBubbles:8,asset:'teddy-bear',escapeStyle:'hop',description:'温暖抱抱 · 和抱抱一起慢慢收集泡泡。',victoryText:'抱抱开心地挥挥手，送你一个大大的拥抱。'},
-    chase:{name:'汪汪队 阿奇',targetBubbles:10,asset:'rescue-chase',escapeStyle:'bound',description:'勇敢巡逻 · 和阿奇一起寻找泡泡。',victoryText:'阿奇摇摇尾巴，开心地完成救援。'},
-    jett:{name:'超级飞侠 乐迪',targetBubbles:12,asset:'airplane-jett',escapeStyle:'fly',description:'天空飞行 · 和乐迪一起追逐云朵泡泡。',victoryText:'乐迪展开机翼，开心地飞过天空。'},
-    peppa:{name:'小猪佩奇',targetBubbles:8,asset:'peppa-pig',escapeStyle:'hop',description:'快乐跳跳 · 和佩奇一起慢慢收集泡泡。',victoryText:'佩奇开心地跳起来，挥手向你道谢。'},
+    chase:{name:'汪汪队 阿奇',targetBubbles:10,asset:'rescue-chase',escapeStyle:'bound',description:'勇敢靠谱的小警长，敬礼出发！跟着阿奇一起巡逻找泡泡。',victoryText:'阿奇敬了个礼：汪汪，任务完成啦！'},
+    jett:{name:'超级飞侠 乐迪',targetBubbles:12,asset:'airplane-jett',escapeStyle:'fly',description:'乐迪来啦！热情的飞行小英雄，带你在云朵间追泡泡。',victoryText:'乐迪在空中翻了个跟头，比出胜利手势！'},
+    peppa:{name:'小猪佩奇',targetBubbles:8,asset:'peppa-pig',escapeStyle:'hop',description:'爱跳泥坑的快乐小猪，咯咯咯的笑声最响亮。和佩奇一起轻轻收集泡泡。',victoryText:'佩奇开心地蹦了个泥坑舞，哈哈大笑！'},
     thomas:{name:'托马斯火车',targetBubbles:10,asset:'thomas-train',escapeStyle:'drive',description:'快乐列车 · 跟着托马斯追逐泡泡。',victoryText:'托马斯开动轮子，开心地向你道谢。'},
     panda: {
       name: '大熊猫 圆圆',

@@ -90,21 +90,58 @@ export function createMcqueenModel(){
  pivot(root,'Tail',[0,.4,-.65]);return root;
 }
 
-// A blue-uniform rescue pup and a red-and-white airplane friend.
+// A blue-uniform rescue pup: floppy dark ears, proper police cap and a fitted jacket.
+function chaseFloppyEar(){
+ const g=new THREE.SphereGeometry(1,24,28),p=g.attributes.position;
+ for(let i=0;i<p.count;i++){const t=(1-p.getY(i))/2;
+  p.setXYZ(i,p.getX(i)*(.105+.055*t),-.36*t,p.getZ(i)*.062+.05*Math.sin(t*Math.PI));}
+ g.computeVertexNormals();return g;
+}
 export function createChaseModel(){
  const root=createDogModel();root.name='Chase_Rescue_Pup';
- const brown=mat(0xa96332,.95),tan=mat(0xe9b77d,.95),navy=mat(0x224c98,.78),blue=mat(0x347ed0,.72),gold=mat(0xf3cd52,.55),ink=mat(0x263447,.6);
+ const brown=mat(0xa9723e,.95),tan=mat(0xe9b77d,.95),earBrown=mat(0x7c5231,.95),
+  navy=mat(0x2453a0,.8),deep=mat(0x1a3c78,.85),sky=mat(0x3f7fd6,.72),
+  gold=mat(0xf3cd52,.55),ink=mat(0x263447,.6),white=mat(0xf5f8ff,.5);
+ // 毛色：金棕身体 + 浅棕口鼻/胸口/爪尖/尾尖
  for(const name of ['Puppy_Plump_Body','Puppy_Head','Foreleg','Hind_Paw','Wagging_Tail'])root.traverse(o=>{if(o.name===name&&o.isMesh)o.material=brown;});
  for(const name of ['Cream_Chest','Cream_Muzzle','Cream_Forepaw','Cream_Hind_Toes','Cream_Tail_Tip'])root.traverse(o=>{if(o.name===name&&o.isMesh)o.material=tan;});
- for(const side of ['L','R']){const ear=root.getObjectByName('Ear_'+side);ear.clear();const s=side==='L'?-1:1;const outer=ellipsoid(ear,'Chase_Pointy_Ear',brown,[s*.015,.10,0],[.10,.18,.07]);outer.rotation.z=-s*.16;const inner=ellipsoid(ear,'Chase_Inner_Ear',tan,[s*.015,.10,.065],[.055,.11,.012]);inner.rotation.z=-s*.16;}
- const body=root.getObjectByName('Torso');ellipsoid(body,'Blue_Rescue_Vest',navy,[0,.05,.13],[.29,.29,.17]);ellipsoid(body,'Vest_Front',blue,[0,.045,.265],[.16,.20,.025]);
- const pack=mesh(new RoundedBoxGeometry(.42,.34,.18,4,.06),navy,body,'Rescue_Backpack',[0,.12,-.23]);
- ellipsoid(body,'Backpack_Top',blue,[0,.29,-.23],[.15,.04,.11]);
- for(const s of [-1,1]){ellipsoid(body,'Vest_Shoulder',navy,[s*.19,.20,.14],[.10,.08,.11]);ellipsoid(body,'Uniform_Button',gold,[s*.10,.02,.285],[.014,.014,.008]);}
- const head=root.getObjectByName('Head');const hat=pivot(head,'Police_Cap',[0,.25,-.005]);ellipsoid(hat,'Cap_Crown',navy,[0,.02,0],[.27,.105,.22]);ellipsoid(hat,'Cap_Band',blue,[0,-.035,.015],[.27,.038,.225]);ellipsoid(hat,'Cap_Brim',navy,[0,-.05,.17],[.245,.025,.12]);
- ellipsoid(hat,'Cap_Badge',gold,[0,.03,.213],[.055,.06,.014]);ellipsoid(hat,'Badge_Center',ink,[0,.03,.227],[.022,.028,.008]);
- for(const [x,y] of [[0,.035],[-.016,.055],[0,.061],[.016,.055]])ellipsoid(hat,'Cap_Paw',gold,[x,y,.238],[.006,.007,.004]);
- const bow=root.getObjectByName('Bow');bow.clear();ellipsoid(bow,'Collar_Badge',gold,[0,0,.035],[.055,.066,.02]);ellipsoid(bow,'Badge_Inset',blue,[0,0,.054],[.03,.04,.008]);
+ const patch=root.getObjectByName('Honey_Eye_Patch');if(patch)patch.visible=false;
+ const chest=root.getObjectByName('Cream_Chest');if(chest)chest.visible=false;
+ // 标志性大垂耳：深棕色，从头两侧自然垂到脸颊
+ for(const side of ['L','R']){
+  const earPivot=root.getObjectByName('Ear_'+side);earPivot.clear();earPivot.rotation.set(0,0,0);
+  const s=side==='L'?-1:1;earPivot.rotation.z=s*.16;
+  mesh(chaseFloppyEar(),earBrown,earPivot,'Chase_Floppy_Ear');
+ }
+ // 合身蓝色警服：外壳式夹克包住背部和两侧，浅蓝胸襟 + 纽扣 + 肩章
+ const body=root.getObjectByName('Torso');
+ ellipsoid(body,'Blue_Rescue_Vest',navy,[0,.01,-.02],[.365,.405,.30]);
+ ellipsoid(body,'Vest_Front',sky,[0,.05,.262],[.12,.14,.032]);
+ curve(body,'Vest_Zipper',[[0,-.07,.288],[0,.15,.288]],.007,deep);
+ for(const s of [-1,1]){
+  ellipsoid(body,'Vest_Shoulder',navy,[s*.195,.19,.10],[.105,.075,.115]);
+  ellipsoid(body,'Shoulder_Patch',sky,[s*.21,.20,.10],[.05,.035,.075]);
+ }
+ for(const y of [.09,-.02])ellipsoid(body,'Uniform_Button',gold,[0,y,.292],[.017,.017,.009]);
+ // 背部警用背包 + 顶部警灯
+ mesh(new RoundedBoxGeometry(.40,.32,.16,4,.06),deep,body,'Rescue_Backpack',[0,.10,-.30]);
+ ellipsoid(body,'Backpack_Top',navy,[0,.27,-.28],[.14,.045,.10]);
+ ellipsoid(body,'Backpack_Light',gold,[0,.29,-.20],[.032,.032,.016]);
+ // 立体警帽：圆顶 + 帽墙 + 帽檐 + 金色爪印警徽
+ const head=root.getObjectByName('Head');const hatNode=pivot(head,'Police_Cap',[0,.24,-.005]);
+ ellipsoid(hatNode,'Cap_Crown',navy,[0,.035,0],[.265,.115,.23]);
+ ellipsoid(hatNode,'Cap_Band',deep,[0,-.05,.005],[.272,.042,.238]);
+ ellipsoid(hatNode,'Cap_Brim',deep,[0,-.062,.17],[.25,.026,.125]);
+ ellipsoid(hatNode,'Cap_Visor_Glint',sky,[0,-.058,.20],[.16,.012,.06]);
+ ellipsoid(hatNode,'Cap_Badge',gold,[0,.03,.222],[.058,.062,.015]);
+ ellipsoid(hatNode,'Badge_Center',deep,[0,.03,.236],[.024,.03,.008]);
+ for(const [x,y,r] of [[0,.042,.007],[-.014,.056,.006],[.014,.056,.006],[-.011,.036,.006],[.011,.036,.006]])
+  ellipsoid(hatNode,'Cap_Paw',gold,[x,y,.242],[r,r*1.1,.004]);
+ // 胸前警徽（挂在 Bow 节点，动画兼容）
+ const bow=root.getObjectByName('Bow');bow.clear();
+ ellipsoid(bow,'Collar_Badge',gold,[0,0,.035],[.06,.068,.02]);
+ ellipsoid(bow,'Badge_Inset',sky,[0,0,.054],[.032,.042,.008]);
+ ellipsoid(bow,'Badge_Star',white,[0,0,.062],[.012,.012,.005]);
  return root;
 }
 export function createJettModel(){
@@ -119,8 +156,11 @@ export function createJettModel(){
  }
  const head=pivot(root,'Head',[0,.93,.02]);
  ellipsoid(head,'Red_Airplane_Head',red,[0,0,0],[.33,.29,.27]);
- ellipsoid(head,'Friendly_Face',white,[0,-.04,.21],[.26,.19,.08]);
- ellipsoid(head,'Helmet_Center',white,[0,.24,.06],[.07,.038,.18]);
+ // 大白脸：占头部下半大部分，乐迪的招牌圆润笑脸
+ ellipsoid(head,'Friendly_Face',white,[0,-.045,.215],[.285,.215,.085]);
+ // 额头蓝色风挡色带
+ ellipsoid(head,'Helmet_Center',mat(0x7cc4ee,.4),[0,.20,.165],[.205,.058,.105]);
+ ellipsoid(head,'Windshield_Glint',white,[0,.215,.24],[.10,.018,.02]);
  const topFinShape=new THREE.Shape();topFinShape.moveTo(-.02,0);topFinShape.lineTo(0,.13);topFinShape.lineTo(.04,0);topFinShape.closePath();
  const topFin=mesh(new THREE.ExtrudeGeometry(topFinShape,{depth:.018,bevelEnabled:true,bevelSize:.006,bevelThickness:.005}),red,head,'Head_Top_Fin',[0,.24,.02]);
  topFin.rotation.y=Math.PI/2;
@@ -128,14 +168,14 @@ export function createJettModel(){
  ellipsoid(head,'Helmet_Brow',red,[0,.115,.22],[.26,.05,.08]);
  const eyes=pivot(head,'Eyes',[0,0,0]);
  for(const s of [-1,1]){
-  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.115,.01,.265]);
-  ellipsoid(eye,'Eye_White',white,[0,0,0],[.055,.072,.025]);
-  ellipsoid(eye,'Iris',blue,[0,-.006,.016],[.042,.055,.014]);
-  ellipsoid(eye,'Eye',dark,[0,-.008,.024],[.024,.035,.01]);
-  ellipsoid(eye,'Catchlight',white,[-.014,.018,.032],[.012,.014,.005]);
-  ellipsoid(eye,'Catchlight_Small',white,[.012,-.015,.031],[.006,.007,.004]);
-  curve(head,s<0?'Brow_L':'Brow_R',[[s*.06,.10,.265],[s*.115,.12,.26],[s*.165,.095,.245]],.006,dark);
-  ellipsoid(head,s<0?'Blush_L':'Blush_R',pink,[s*.19,-.07,.23],[.042,.028,.012]);
+  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.12,.005,.265]);
+  ellipsoid(eye,'Eye_White',white,[0,0,0],[.064,.084,.027]);
+  ellipsoid(eye,'Iris',blue,[0,-.006,.017],[.05,.064,.015]);
+  ellipsoid(eye,'Eye',dark,[0,-.008,.026],[.028,.04,.011]);
+  ellipsoid(eye,'Catchlight',white,[-.016,.022,.036],[.013,.016,.006]);
+  ellipsoid(eye,'Catchlight_Small',white,[.014,-.018,.034],[.006,.007,.004]);
+  curve(head,s<0?'Brow_L':'Brow_R',[[s*.065,.115,.265],[s*.12,.135,.26],[s*.17,.105,.245]],.006,dark);
+  ellipsoid(head,s<0?'Blush_L':'Blush_R',pink,[s*.20,-.08,.23],[.046,.03,.012]);
   const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.32,.03,0]);
   const earCup=mesh(new THREE.CylinderGeometry(.088,.088,.075,24),yellow,ear,'Headset_Pod',[s*.02,0,0]);earCup.rotation.z=Math.PI/2;
   const earRing=mesh(new THREE.CylinderGeometry(.092,.092,.02,24),white,ear,'Headset_Ring',[s*.055,0,0]);earRing.rotation.z=Math.PI/2;
@@ -157,17 +197,18 @@ export function createJettModel(){
   const tire=mesh(new THREE.CylinderGeometry(.046,.046,.016,16),dark,leg,'Boot_Wheel_Tire',[s*.098,-.15,.03]);tire.rotation.z=Math.PI/2;
   ellipsoid(leg,'Boot_Thruster',yellow,[0,-.14,-.07],[.035,.035,.02]);
   const wing=pivot(body,s<0?'Wing_L':'Wing_R',[s*.24,.08,-.06]);
-  const shape=new THREE.Shape();shape.moveTo(0,.09);shape.lineTo(s*.46,-.06);shape.lineTo(s*.40,-.20);shape.lineTo(0,-.12);shape.closePath();
+  const shape=new THREE.Shape();shape.moveTo(0,.10);shape.lineTo(s*.56,-.05);shape.lineTo(s*.50,-.24);shape.lineTo(0,-.13);shape.closePath();
   mesh(new THREE.ExtrudeGeometry(shape,{depth:.032,bevelEnabled:true,bevelSize:.012,bevelThickness:.008,bevelSegments:2}),red,wing,'Airplane_Wing');
-  ellipsoid(wing,'Wing_Tip',white,[s*.36,-.125,.025],[.075,.05,.032]);
-  const stripe=ellipsoid(wing,'Wing_Stripe',white,[s*.22,-.07,.038],[.12,.015,.01]);stripe.rotation.z=-s*.25;
-  const pod=mesh(new THREE.CylinderGeometry(.046,.046,.24,20),yellow,wing,'Jet_Engine',[s*.18,-.09,-.04]);pod.rotation.x=Math.PI/2;
-  ellipsoid(wing,'Engine_Intake',dark,[s*.18,-.09,.08],[.042,.042,.015]);
-  ellipsoid(wing,'Engine_Nozzle',silver,[s*.18,-.09,-.16],[.04,.04,.02]);
+  ellipsoid(wing,'Wing_Tip',white,[s*.44,-.15,.028],[.085,.055,.034]);
+  const stripe=ellipsoid(wing,'Wing_Stripe',white,[s*.26,-.095,.038],[.14,.016,.01]);stripe.rotation.z=-s*.22;
+  const pod=mesh(new THREE.CylinderGeometry(.046,.046,.27,20),yellow,wing,'Jet_Engine',[s*.21,-.11,-.04]);pod.rotation.x=Math.PI/2;
+  ellipsoid(wing,'Engine_Intake',dark,[s*.21,-.11,.095],[.042,.042,.015]);
+  ellipsoid(wing,'Engine_Nozzle',silver,[s*.21,-.11,-.175],[.04,.04,.02]);
  }
- curve(head,'Smile',[[-.09,-.135,.265],[0,-.175,.275],[.09,-.135,.265]],.007,dark);
- const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.14,.275],[.075,.045,.015]);happy.visible=false;
- const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.155,.288],[.035,.016,.006]);tongue.visible=false;
+ // 乐迪的招牌大笑嘴：更宽更开朗
+ curve(head,'Smile',[[-.125,-.125,.255],[0,-.185,.272],[.125,-.125,.255]],.008,dark);
+ const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.145,.272],[.105,.052,.015]);happy.visible=false;
+ const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.163,.286],[.045,.017,.006]);tongue.visible=false;
  const tail=pivot(root,'Tail',[0,.54,-.22]);
  const finShape=new THREE.Shape();finShape.moveTo(-.04,0);finShape.lineTo(-.01,.34);finShape.lineTo(.06,.34);finShape.lineTo(.08,0);finShape.closePath();
  mesh(new THREE.ExtrudeGeometry(finShape,{depth:.025,bevelEnabled:true,bevelSize:.01,bevelThickness:.006,bevelSegments:2}),red,tail,'Tail_Fin');
@@ -191,6 +232,12 @@ export function createPeppaModel(){
  // 红色 A 字连衣裙：下摆外扩、肩部收窄，剪出裙装轮廓
  const body=pivot(root,'Torso',[0,.45,0]);
  sculpt([[0,-.10,0,.30,.26,.21],[0,.02,0,.235,.225,.175],[0,.15,0,.175,.175,.15]],.06,red,body,'Red_Dress');
+ // 金黄滚边：下摆金环 + 领口金线 + 波浪纹，参考图的中式红裙
+ const trim=mat(0xf5c542,.85);
+ const hem=mesh(new THREE.TorusGeometry(.27,.016,10,48),trim,body,'Dress_Hem_Band',[0,-.055,0]);hem.rotation.x=Math.PI/2;
+ curve(body,'Dress_Collar_Trim',[[-.155,.145,.155],[0,.19,.175],[.155,.145,.155]],.012,trim);
+ curve(body,'Dress_Wave_Trim',[[-.19,.02,.205],[-.095,.07,.215],[0,.02,.225],[.095,.07,.215],[.19,.02,.205]],.009,trim);
+ for(const x of [-.09,0,.09])ellipsoid(body,'Dress_Flower_Dot',trim,[x,.115,.16],[.02,.02,.008]);
  // 圆头：左右完全对称，不再歪向一侧
  const head=pivot(root,'Head',[0,.995,0]);
  ellipsoid(head,'Pink_Pig_Head',pink,[0,0,0],[.27,.245,.235]);
@@ -217,7 +264,11 @@ export function createPeppaModel(){
  // 卷卷尾巴：绕一圈的小螺旋
  const tail=pivot(root,'Tail',[0,.42,-.18]);
  curve(tail,'Curly_Pig_Tail',[[0,0,0],[.05,.03,-.015],[.085,.075,-.02],[.07,.115,-.02],[.03,.115,-.02],[.02,.08,-.02],[.045,.055,-.02]],.013,pink);
- const bow=pivot(root,'Bow',[0,.64,.18]);return root;
+ // 头侧小红花（参考图造型）：五瓣红花金黄花蕊
+ const bow=pivot(root,'Bow',[.225,1.06,.10]);
+ for(let i=0;i<5;i++){const a=i/5*Math.PI*2;const petal=ellipsoid(bow,'Flower_Petal',red,[Math.cos(a)*.048,Math.sin(a)*.048,.02],[.034,.034,.013]);petal.rotation.z=a;}
+ ellipsoid(bow,'Flower_Center',trim,[0,0,.03],[.02,.02,.008]);
+ return root;
 }
 export function createThomasModel(){
  const root=new THREE.Group();root.name='Thomas_Train_Rig';
