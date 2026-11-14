@@ -762,7 +762,7 @@ export class BubbleManager {
         hitsNeeded: 1,
         hitsReceived: 0,
         squashTimer: 0,
-        energyValue: 2
+        energyValue: 1
       };
       this.initializePlayTarget();
       this.idleTimer = 0;
@@ -936,10 +936,11 @@ export class BubbleManager {
         relocationElapsed: 0,
         updateCount: 0,
         suppressedHands: new Set(),
+        word,
         isPopping: false,
         hitsNeeded: 1,
         hitsReceived: 0,
-        energyValue: 2
+        energyValue: 1
       };
       this.initializePlayTarget();
       this.idleTimer = 0;

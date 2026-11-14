@@ -41,13 +41,13 @@ function createMockAudio() {
 }
 
 // 果冻保留特殊外观、破裂音效与奖励，但只需一次触碰。
-check('Q弹果冻一次触碰即破裂，并提供2份能量',()=>{
+check('Q弹果冻一次触碰即破裂，提供1份能量',()=>{
  const camera=new THREE.PerspectiveCamera(48,16/9,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();
  const audio=createMockAudio(),bm=new BubbleManager(new THREE.Scene(),camera,audio,null);bm.createBubble(0,'jelly');
- assert.equal(bm.activeBubble.hitsNeeded,1);assert.equal(bm.activeBubble.energyValue,2);
+ assert.equal(bm.activeBubble.hitsNeeded,1);assert.equal(bm.activeBubble.energyValue,1);
  assert.equal(bm.checkHandCollisions([{id:1,hands:[center(bm)]}]),true);assert.equal(bm.activeBubble,null);
- assert.equal(bm.lastPoppedEnergy,2);assert.ok(audio.calls.some(c=>c.type==='playJellyBoing'));
- assert.equal(bm.energyProjectiles[0].energyCount,2);
+ assert.equal(bm.lastPoppedEnergy,1);assert.ok(audio.calls.some(c=>c.type==='playJellyBoing'));
+ assert.equal(bm.energyProjectiles[0].energyCount,1);
 });
 
 // 2. 彩虹流光泡泡（连击奖励、七彩旋转光晕与清脆滑音）
@@ -93,7 +93,7 @@ check('亲子爱心任一玩家一次触碰即破裂，无双触或等待合并'
   bm.activeBubble.group.updateWorldMatrix(true,true);const group=side==='middle'?bm.activeBubble.group:bm.activeBubble[side+'HeartGroup'];
   const p=group.getWorldPosition(new THREE.Vector3()).project(camera);
   assert.equal(bm.checkHandCollisions([{id,hands:[{x:(p.x+1)/2,y:(1-p.y)/2,isIndexTip:true,observed:true}]}]),true);
-  assert.equal(bm.activeBubble,null);assert.equal(bm.lastPoppedEnergy,2);assert.ok(audio.calls.some(c=>c.type==='playHeartMerge'));
+  assert.equal(bm.activeBubble,null);assert.equal(bm.lastPoppedEnergy,1);assert.ok(audio.calls.some(c=>c.type==='playHeartMerge'));
  }
 });
 

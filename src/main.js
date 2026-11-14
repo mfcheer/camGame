@@ -106,7 +106,7 @@ export class Game {
       this.bubbleManager.onComboChange = (combo) => this.handleComboChange(combo);
       this.bubbleManager.onSpecialPop = () => this.onBubblePopped();
       this.bubbleManager.wordAudioHandler=(word,options)=>this.presentPlayWord(word,options);
-      this.bubbleManager.onWordPoolReady=words=>{if(this.speechPolicy?.automaticEnabled)this.audioManager?.preloadWordAudios?.(words.map(w=>w.id),{review:true});};
+      this.bubbleManager.onWordPoolReady=words=>{this.audioManager?.preloadWordAudios?.(words.map(w=>w.id),{review:true});};
     }
 
     this.bubbleManager?.contrastSampler && (this.bubbleManager.contrastSampler.video=this.videoElement);

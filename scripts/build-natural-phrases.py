@@ -130,7 +130,7 @@ for entry in work:
             chain = f"[0:a]{trim},asplit=2[c1][c2];[1:a]aformat=sample_rates={rate}:channel_layouts=mono,asplit=2[e1][e2];[c1][e1][c2][e2]concat=n=4:v=0:a=1,{profile['master_filter']}[out]"
             subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(cn), '-i', str(wav), '-filter_complex', chain, '-map', '[out]', *encode, str(paths[0])], check=True)
         if args.force or not paths[1].exists():
-            subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(wav), '-af', profile['master_filter'], *encode, str(paths[1])], check=True)
+            subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(wav), '-af', f"{trim},{profile['master_filter']}", *encode, str(paths[1])], check=True)
     record = {'kind': args.kind, 'id': entry['id'], 'text': text, 'zh': entry.get('zh'), 'profile': profile,
               'assets': [{'path': str(path.relative_to(root)), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()} for path in paths]}
     records = [item for item in records if (item['kind'], item['id']) != (args.kind, entry['id'])] + [record]

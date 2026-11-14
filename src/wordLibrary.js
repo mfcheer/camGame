@@ -10,6 +10,14 @@ export class WordLibrary {
   constructor(audio,onMuteChange=()=>{},voice=audio){if(typeof document!=='undefined'){const count=document.querySelector('.vocabulary-entry-count');if(count)count.textContent=`${WORDS_LIST.length} 词`;}this.audio=audio;this.voice=voice;this.onMuteChange=onMuteChange;this.category='all';this.token=0;}
   open(){
     if(this.overlay||typeof document==='undefined')return;
+    this.audio?.recoverFromGesture?.();
+    const currentWords = libraryWords(this.category);
+    this.audio?.preloadWordAudios?.(currentWords.map(w=>w.id),{review:true});
+    if(typeof window!=='undefined'&&typeof window.requestIdleCallback==='function'){
+      window.requestIdleCallback(()=>{this.audio?.preloadWordAudios?.(WORDS_LIST.map(w=>w.id),{review:true});});
+    } else {
+      setTimeout(()=>{this.audio?.preloadWordAudios?.(WORDS_LIST.map(w=>w.id),{review:true});},250);
+    }
     this.returnFocus=document.activeElement;this.home=document.getElementById('start-screen');if(this.home)this.home.inert=true;
     const overlay=el('div','word-library-overlay'),panel=el('section','word-library');overlay.id='word-library';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-labelledby','word-library-title');
     const header=el('header','word-library-header'),book=el('img','word-library-book');book.src=resolveAssetUrl('/images/words/learning/book.svg');book.alt='';
@@ -35,7 +43,9 @@ export class WordLibrary {
   renderWords(){
     for(const button of this.filters.children)button.setAttribute('aria-pressed',String(button.dataset.category===this.category));
     this.grid.replaceChildren();this.grid.scrollTop=0;
-    for(const word of libraryWords(this.category)){
+    const words = libraryWords(this.category);
+    this.audio?.preloadWordAudios?.(words.map(w=>w.id),{review:true});
+    for(const word of words){
       const card=el('button','library-word');card.type='button';card.dataset.word=word.id;card.setAttribute('aria-label',`${word.word}，${word.zh}，点击听英文`);
       const picture=el('img','library-word-image');picture.src=resolveAssetUrl(word.itemImage||word.image);picture.alt='';picture.loading='lazy';picture.decoding='async';
       const en=el('strong','library-word-en',word.word);en.lang='en';const zh=el('span','library-word-zh',word.zh);zh.lang='zh-CN';

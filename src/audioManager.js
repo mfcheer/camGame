@@ -217,9 +217,8 @@ export class AudioManager {
 
   // 1. 泡泡碰破音效 (拟真卡通水泡“啵~💦”与 Combo 阶梯音阶爬升)
   playPop(combo = 0) {
-    if (this.isMuted || !this.ctx) return;
     this.init();
-    if (!this.ctx || typeof this.ctx.createOscillator !== 'function') return;
+    if (this.isMuted || !this.ctx || typeof this.ctx.createOscillator !== 'function') return;
 
     try {
       const now = this.ctx.currentTime;
@@ -1227,6 +1226,7 @@ export class AudioManager {
     this.lastPlayedWord = id;
     this.lastWordReview = review;
     this.init();
+    this._requestContextResume();
     const token = this._wordToken;
     if (this.bgmGainNode && this.ctx && !this.isBGMPaused) {
       const g=this.bgmGainNode.gain, now=this.ctx.currentTime;
