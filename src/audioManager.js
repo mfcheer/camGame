@@ -52,7 +52,7 @@ const CHARACTER_MUSIC={
   bunny:['sine',1],cat:['triangle',.88],frog:['sine',1.12],dog:['triangle',.94],
   dragon:['sine',1.16],goldenDragon:['sine',1.24],mcqueen:['triangle',.72],
   wolf:['triangle',.92],teddy:['sine',1.28],chase:['triangle',.82],
-  jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96],excavator:['triangle',.82],tayo:['triangle',.86],triceratops:['triangle',.88],krashy:['sine',1.05]
+  jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96],excavator:['triangle',.82],tayo:['triangle',.86],triceratops:['triangle',.88],krashy:['sine',1.05],maiqi:['sine',1.16]
 };
 
 export class AudioManager {
@@ -398,6 +398,7 @@ export class AudioManager {
         case 'tayo': this._playTayoSound(type); break;
         case 'triceratops': this._playTriceratopsSound(type); break;
         case 'krashy': this._playKrashySound(type); break;
+        case 'maiqi': this._playMaiqiSound(type); break;
         case 'excavator': this._playExcavatorSound(type); break;
         case 'peppa': this._playPeppaSound(type); break;
         case 'mcqueen': this._playCarFriendSound(type); break;
@@ -410,6 +411,10 @@ export class AudioManager {
     } catch (e) {}
   }
 
+  _playMaiqiSound(type){
+    // Light rising peeps; no clip or music from the animation is shipped.
+    this._playFriendNotes([620,740,880],type,'sine',.065);
+  }
   _playKrashySound(type){
     this._playFriendNotes([440,554,659,880],type,'sine',.075);
   }

@@ -22,7 +22,8 @@ export const CAMP_ANIMALS = [
   { id:'excavator',name:'挖掘机 小铲',preview:'models/excavator-preview.png?v=20261114r1',title:'小铲工地',badge:'🚜',target:8 },
   { id:'tayo',name:'小公交车 太友',preview:'models/tayo-preview.png?v=20261115r1',title:'快乐小巴士',badge:'🚌',target:10 },
   { id:'triceratops',name:'三角龙 嘟嘟',preview:'models/triceratops-preview.png?v=20261115r1',title:'远古盾甲',badge:'🦕',target:10 },
-  { id:'krashy',name:'瑞奇宝宝 跳跳',preview:'models/krashy-preview.png?v=20261115r1',title:'瑞奇跳跳',badge:'🐰',target:8 }
+  { id:'krashy',name:'瑞奇宝宝 跳跳',preview:'models/krashy-preview.png?v=20261115r1',title:'瑞奇跳跳',badge:'🐰',target:8 },
+  { id:'maiqi',name:'萌鸡小队 麦奇',preview:'models/maiqi-preview.png?v=20261115r1',title:'森林小探险',badge:'🐤',target:8 }
 ];
 
 export const CAMP_STORAGE_KEY = 'camgame_forest_camp_v1';

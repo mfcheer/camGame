@@ -9,6 +9,9 @@
 - 动物朋友：rabbit、duck、frog、sheep；不将这些额外动物记作绘本原文。
 - 身体部位：face、eye、ear、mouth、nose、hair，图中标示对应位置。
 - 课程复习：weather、one、happy，以及原有 red、blue、circle。
+- 常见水果（10词）：apple、banana、grape、orange、pear、peach、watermelon、strawberry、mango、cherry。
+- 日常饮品（8词）：water、milk、juice、tea、soup、hot chocolate、yogurt、lemonade。
+- 进阶认知（17词）：sun、moon、tree、flower、car、bus、train、boat、plane、star、cloud、rain、bread、rice、noodle、cake、cookie。
 
 图片为 `scripts/build-expanded-word-art.mjs` 创建的可编辑SVG，每张复用到词库、泡泡、详细卡。此前重新设计的 circle 和 orange 属于独立维护素材，`scripts/refresh-word-art.mjs` 不再覆盖它们。
 

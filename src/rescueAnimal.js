@@ -11,9 +11,10 @@ import { createDragonModel } from './dragonModel.js';
 import { createDogModel } from './dogModel.js';
 import { createTeddyModel,createWolfModel,createMcqueenModel,createChaseModel,createJettModel,createPeppaModel,createThomasModel,createTayoModel,createTriceratopsModel,createKrashyModel } from './newFriendsModel.js';
 import {createExcavatorModel} from './excavatorModel.js';
+import {createMaiqiModel} from './maiqiModel.js';
 import { GAME_CONFIG } from './config.js';
 
-export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel,chase:createChaseModel,jett:createJettModel,peppa:createPeppaModel,thomas:createThomasModel,excavator:createExcavatorModel,tayo:createTayoModel,triceratops:createTriceratopsModel,krashy:createKrashyModel};
+export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel,chase:createChaseModel,jett:createJettModel,peppa:createPeppaModel,thomas:createThomasModel,excavator:createExcavatorModel,tayo:createTayoModel,triceratops:createTriceratopsModel,krashy:createKrashyModel,maiqi:createMaiqiModel};
 const smooth = t => t*t*(3-2*t);
 const clamp = THREE.MathUtils.clamp;
 
@@ -129,7 +130,7 @@ export class RescueAnimal {
     const vw=vh*w/h;
     const oldStart=this.startX,oldEnd=this.endX;
     const progress=oldEnd>oldStart?clamp((this.currentX-oldStart)/(oldEnd-oldStart),0,1):0;
-    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,chase:1.02,jett:1.02,peppa:1.02,thomas:1.05,excavator:.92,wolf:1.02,teddy:1.02,tayo:1.05,triceratops:1.02,krashy:1.02})[this.animalId];
+    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,chase:1.02,jett:1.02,peppa:1.02,thomas:1.05,excavator:.92,wolf:1.02,teddy:1.02,tayo:1.05,triceratops:1.02,krashy:1.02,maiqi:1.06})[this.animalId];
     this.groundY=-vh/2+.45+getSafeInsets().bottom*vh/h;
     this.startX=-vw/2+Math.min(1.5,vw*.24)+getSafeInsets().left*vh/h;
     this.endX=vw/2-1.0-getSafeInsets().right*vh/h;
@@ -214,6 +215,12 @@ export class RescueAnimal {
         this.leftEarGroup.rotation.z=.1+pulse*.16*motion;this.rightEarGroup.rotation.z=-.1-pulse*.11*motion;
         this.model.position.y=pulse*.055*motion;
       }
+    }else if(this.animalId==='maiqi'){
+      this.headGroup.rotation.z+=Math.sin(t*2.6)*.045*motion+pulse*.12*motion;
+      this.leftArm.rotation.z=-.25-Math.sin(t*6)*.10*motion-pulse*.55*motion;
+      this.rightArm.rotation.z=.25+Math.sin(t*6+.8)*.10*motion+pulse*.55*motion;
+      this.tailGroup.rotation.z=Math.sin(t*4)*.11*motion;
+      this.model.position.y+=pulse*.045*motion;
     }else if(this.animalId==='teddy'){
       this.leftArm.rotation.z=-pulse*.5*motion;this.rightArm.rotation.z=pulse*.5*motion;this.headGroup.rotation.z+=pulse*.12*motion;
     }else if(this.animalId==='peppa'){
@@ -599,6 +606,13 @@ export class RescueAnimal {
       elbow.rotation.z=(-.09*Math.sin(this.idleTime*1.7+.6)-reaction*.16-wave*.55)*lively;
       bucket.rotation.z=(.10*Math.sin(this.idleTime*2.3)+reaction*.22+wave*.6)*lively;
       if(this.state==='TRAPPED'||this.state==='CHEERING'||this.state==='ESCAPING')this.headGroup.rotation.z+=reaction*.08*lively;
+    }
+    if(this.animalId==='maiqi'){
+      const flap=this.reducedMotion?0:Math.sin(this.idleTime*(this.state==='ESCAPING'?14:7))*(this.reactionTimer>0?.28:.10);
+      if(this.state==='TRAPPED'||this.state==='CHEERING'||this.state==='ESCAPING'){
+        this.leftArm.rotation.z=-.22-flap;this.rightArm.rotation.z=.22+flap;
+        this.tailGroup.rotation.z=Math.sin(this.idleTime*3)*.10;
+      }
     }
     if(this.animalId==='triceratops')this.tailGroup.rotation.y=Math.sin(this.idleTime*2.4)*.22;
     if(this.animalId==='dog')this.tailGroup.rotation.y=Math.sin(this.idleTime*(this.moodExcited>.5?9.5:7))*(this.state==='TRAPPED'?.4:.55);

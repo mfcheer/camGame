@@ -70,6 +70,7 @@ export const GAME_CONFIG = {
     triceratops:{name:'三角龙 嘟嘟',targetBubbles:10,asset:'sunny-triceratops',escapeStyle:'trot',description:'远古恐龙 · 顶着坚固可爱的小盾牌，踏着稳健步伐为你加油。',victoryText:'嘟嘟轻轻摇了摇大盾甲，踏着小步回侏罗纪森林啦！'},
     tayo:{name:'小公交车 太友',targetBubbles:10,asset:'bus-tayo',escapeStyle:'drive',description:'韩国人气动画 · 蓝色120小巴士，哔哔按响车喇叭出发！跟着太友快乐巡游找泡泡。',victoryText:'太友按响车喇叭：哔哔——今天玩得真开心！'},
 
+    maiqi: {name:'萌鸡小队 麦奇',targetBubbles:8,asset:'mengji-maiqi',assetVersion:'20261115r1',escapeStyle:'hop',description:'森林小探险 · 麦奇扑扇小翅膀，陪你慢慢找大泡泡。',victoryText:'麦奇张开小翅膀，开心地跳了两下，向你说谢谢！'},
     krashy: {name:'瑞奇宝宝 跳跳',targetBubbles:8,asset:'babyriki-krashy',escapeStyle:'hop',description:'《瑞奇宝宝》活力担当 · 圆滚滚的天空蓝小兔，蹦蹦跳跳最爱笑。和跳跳一起轻快弹跳找泡泡。',victoryText:'跳跳高兴地摇了摇长耳朵，一蹦一跳开心地回瑞奇乐园啦！'},
     panda: {
       name: '大熊猫 圆圆',
@@ -100,7 +101,7 @@ export const GAME_CONFIG = {
   }
 };
 
-export const PLAYABLE_ANIMALS = ['bunny', 'cat', 'frog', 'dog', 'dragon', 'goldenDragon','mcqueen','wolf','teddy','chase','jett','peppa','thomas','excavator','tayo','triceratops','krashy'];
+export const PLAYABLE_ANIMALS = ['bunny', 'cat', 'frog', 'dog', 'dragon', 'goldenDragon','mcqueen','wolf','teddy','chase','jett','peppa','thomas','excavator','tayo','triceratops','krashy','maiqi'];
 export function resolveAnimal(selection, random = Math.random) {
   return selection === 'random' ? PLAYABLE_ANIMALS[Math.min(PLAYABLE_ANIMALS.length-1, Math.floor(random()*PLAYABLE_ANIMALS.length))] : (PLAYABLE_ANIMALS.includes(selection) ? selection : 'bunny');
 }

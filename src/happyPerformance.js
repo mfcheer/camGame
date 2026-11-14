@@ -285,6 +285,20 @@ const ACTIONS=[
     a.headGroup.rotation.x=-s*.12;
     a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*4))*0.08*m;
   }},
+  {id:'chickWingFlap',dur:1.55,animals:['maiqi'],fn:(a,t,m)=>{
+    const lift=Math.sin(t*Math.PI),flutter=Math.sin(t*Math.PI*8)*lift*m;
+    a.leftArm.rotation.z=-.35-.58*lift*m-.18*flutter;
+    a.rightArm.rotation.z=.35+.58*lift*m+.18*flutter;
+    a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*.065*m;
+    a.headGroup.rotation.z=-flutter*.07;
+  }},
+  {id:'chickPeck',dur:1.45,animals:['maiqi'],fn:(a,t,m)=>{
+    const dip=Math.sin(t*Math.PI*2)*Math.sin(t*Math.PI)*m;
+    a.headGroup.rotation.x=.25*dip;
+    a.bodyMesh.rotation.x=.08*dip;
+    a.leftArm.rotation.z=-.18-.12*Math.abs(dip);
+    a.rightArm.rotation.z=.18+.12*Math.abs(dip);
+  }},
   {id:'scoopDig',dur:1.7,animals:['excavator'],fn:(a,t,m)=>{
     const dip=Math.sin(t*Math.PI),curl=Math.sin(t*Math.PI*2);
     a.model.getObjectByName('Boom_Base').rotation.z=-.20*dip*m;
@@ -293,7 +307,7 @@ const ACTIONS=[
     a.bodyMesh.rotation.z=.025*curl*m;
   }},
 ];
-const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['wolfChinScheming','wolfCackle','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['trainWhistle','steamBurst','wheelRev','trainSway'],excavator:['bucketWave','scoopDig'],tayo:['busHonk','busHop','busWiggle'],triceratops:['dinoStomp','frillShake','hornNod'],krashy:['krashyHop','krashyWiggle','krashyCheer']};
+const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['wolfChinScheming','wolfCackle','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['trainWhistle','steamBurst','wheelRev','trainSway'],excavator:['bucketWave','scoopDig'],tayo:['busHonk','busHop','busWiggle'],triceratops:['dinoStomp','frillShake','hornNod'],krashy:['krashyHop','krashyWiggle','krashyCheer'],maiqi:['chickWingFlap','chickPeck']};
 const FINALE=ACTIONS.find(x=>x.id==='finaleBow');
 
 // 结算后的"开心小演出"：动物自己走到台前随机表演，孩子和家长可以休息。
