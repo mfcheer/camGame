@@ -8,7 +8,7 @@ import {RescueAnimal} from '../src/rescueAnimal.js';
 import {HappyPerformance} from '../src/happyPerformance.js';
 import {getAnimalPlayStyle} from '../src/animalPlayStyles.js';
 import {PoseDetector} from '../src/poseDetector.js';
-const ids=['mcqueen','wolf','teddy','chase','jett','peppa','thomas','excavator','tayo','triceratops'];
+const ids=['mcqueen','wolf','teddy','chase','jett','peppa','thomas','excavator','tayo','triceratops','krashy'];
 const camera=()=>{const c=new THREE.PerspectiveCamera(48,1194/834,.1,100);c.position.z=7.5;c.updateMatrixWorld();return c;};
 test('touch simulation releases its fingertip on lift',()=>{
  const detector=new PoseDetector(null);const received=[];detector.onResultsCallback=x=>received.push(x);
