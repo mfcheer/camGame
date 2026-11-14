@@ -1,6 +1,7 @@
 import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
 import { getWordCn, getWordById, resolveAssetUrl } from './wordsConfig.js';
 import {GAME_CONFIG,PLAYABLE_ANIMALS} from './config.js';
+import {CAMP_ANIMALS} from './campManager.js';
 /**
  * UI 界面与交互状态管理器
  * 1. 5 个彩色发光圆点进度指示（免识字设计，直观友好）
@@ -699,14 +700,7 @@ export class UIManager {
     if (this.dom.campUnlockedCount) this.dom.campUnlockedCount.textContent = String(unlockedCount);
     if (this.dom.campTotalCount) this.dom.campTotalCount.textContent = String(totalCount);
 
-    const animals = [
-      { id: 'bunny', name: '小兔 萌萌', preview: 'models/bunny-preview.png', title: '森林第一站', badge: '🐰' },
-      { id: 'cat', name: '橘猫 橘子', preview: 'models/cat-preview.png', title: '耐心挑战', badge: '🐱' },
-      { id: 'frog', name: '青蛙 呱呱', preview: 'models/frog-preview.png', title: '池塘探险', badge: '🐸' },
-      { id: 'dog', name: '小狗 旺旺', preview: 'models/dog-preview.png', title: '活力挑战', badge: '🐶' },
-      { id: 'dragon', name: '飞龙 翼翼', preview: 'models/dragon-preview.png', title: '云谷奇遇', badge: '🐲' },
-      { id: 'goldenDragon', name: '金龙 小金', preview: 'models/goldenDragon-preview.png', title: '祥云漫游', badge: '🐉' }
-    ];
+    const animals = CAMP_ANIMALS;
 
     animals.forEach(animal => {
       const count = rescues[animal.id] || 0;
@@ -757,7 +751,7 @@ export class UIManager {
   updateCampBadge(campManager) {
     if (!this.dom.campBadgeCount || !campManager) return;
     const unlocked = campManager.getUnlockedCount();
-    this.dom.campBadgeCount.textContent = `${unlocked}/6`;
+    this.dom.campBadgeCount.textContent = `${unlocked}/${CAMP_ANIMALS.length}`;
   }
   // 划破气泡浮现实物认知卡片 (高清实物大图 + 英文单词标牌 + 视听立体刺激)
   showWordPopup(word, hitX = 0.5, hitY = 0.5) {

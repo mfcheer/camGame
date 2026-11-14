@@ -775,7 +775,7 @@ export class Game {
       videoElement: this.videoElement,
       webglCanvas: this.sceneManager?.renderer?.domElement,
       animalId, animalName: this.currentAnimalName, targetBubbles: this.targetCount,
-      animalEmoji: {bunny:'🐰',cat:'🐱',frog:'🐸',dog:'🐶',dragon:'🐲',goldenDragon:'🐉'}[animalId] || '🐾'
+      animalEmoji: {bunny:'🐰',cat:'🐱',frog:'🐸',dog:'🐶',dragon:'🐲',goldenDragon:'🐉',vampire:'🧛',wolf:'🐺',teddy:'🧸'}[animalId] || '🐾'
     });
     this.audioManager?.playCameraShutter?.();
     this.uiManager?.triggerCameraFlash?.();

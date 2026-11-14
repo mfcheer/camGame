@@ -9,9 +9,10 @@ import { createFrogModel } from './frogModel.js';
 import { createGoldenDragonModel } from './goldenDragonModel.js';
 import { createDragonModel } from './dragonModel.js';
 import { createDogModel } from './dogModel.js';
+import { createTeddyModel,createWolfModel,createVampireModel } from './newFriendsModel.js';
 import { GAME_CONFIG } from './config.js';
 
-export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel};
+export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,vampire:createVampireModel,wolf:createWolfModel,teddy:createTeddyModel};
 const smooth = t => t*t*(3-2*t);
 const clamp = THREE.MathUtils.clamp;
 
@@ -71,7 +72,8 @@ export class RescueAnimal {
     // ears/tails arrive a beat later with a little overshoot. Reduced motion goes direct.
     const parts={bunny:[['leftEarGroup','z'],['rightEarGroup','z'],['leftEarGroup','x'],['rightEarGroup','x']],
       cat:[['leftEarGroup','z'],['rightEarGroup','z'],['tailGroup','z'],['tailGroup','y']],
-      dog:[['leftEarGroup','x'],['rightEarGroup','x'],['tailGroup','y'],['tailGroup','z']]};
+      dog:[['leftEarGroup','x'],['rightEarGroup','x'],['tailGroup','y'],['tailGroup','z']],
+      wolf:[['leftEarGroup','z'],['rightEarGroup','z'],['tailGroup','y']],teddy:[['leftEarGroup','z'],['rightEarGroup','z']],vampire:[]};
     this.springs=(parts[this.animalId]||[]).map(([name,axis])=>({
       get:()=>this[name].rotation[axis],apply:v=>this[name].rotation[axis]=v,pos:0,vel:0}));
     for(const s of this.springs)s.pos=s.get();
@@ -125,7 +127,7 @@ export class RescueAnimal {
     const vw=vh*w/h;
     const oldStart=this.startX,oldEnd=this.endX;
     const progress=oldEnd>oldStart?clamp((this.currentX-oldStart)/(oldEnd-oldStart),0,1):0;
-    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94})[this.animalId];
+    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,vampire:1.02,wolf:1.02,teddy:1.02})[this.animalId];
     this.groundY=-vh/2+.45+getSafeInsets().bottom*vh/h;
     this.startX=-vw/2+Math.min(1.5,vw*.24)+getSafeInsets().left*vh/h;
     this.endX=vw/2-1.0-getSafeInsets().right*vh/h;
@@ -189,15 +191,19 @@ export class RescueAnimal {
       this.headGroup.rotation.z-=pulse*.18*motion;this.headGroup.rotation.x=-pulse*.08;
       this.leftEarGroup.rotation.z=.08-pulse*.10;this.rightEarGroup.rotation.z=-.08+pulse*.10;
       this.tailGroup.rotation.z=Math.sin(t*(r>0?4:1.5))*(r>0?.25:.08)*motion;
-    }else if(['dog','bunny'].includes(this.animalId)){
+    }else if(['dog','bunny','wolf'].includes(this.animalId)){
       this.rightArm.rotation.set(-.2,0,2.25-pulse*.35*motion);
-      if(this.animalId==='dog'){
+      if(['dog','wolf'].includes(this.animalId)){
         this.tailGroup.rotation.y=Math.sin(t*(r>0?11:5))*(r>0?.65:.3)*motion;
         this.headGroup.rotation.z-=pulse*.12*motion;
       }else{
         this.leftEarGroup.rotation.z=.1+pulse*.16*motion;this.rightEarGroup.rotation.z=-.1-pulse*.11*motion;
         this.model.position.y=pulse*.055*motion;
       }
+    }else if(this.animalId==='teddy'){
+      this.leftArm.rotation.z=-pulse*.5*motion;this.rightArm.rotation.z=pulse*.5*motion;this.headGroup.rotation.z+=pulse*.12*motion;
+    }else if(this.animalId==='vampire'){
+      this.rightArm.rotation.z=pulse*.8*motion;this.headGroup.rotation.z+=pulse*.1*motion;
     }else if(this.animalId==='frog'){
       this.leftArm.rotation.z=-pulse*.3;this.rightArm.rotation.z=pulse*.3;
       this.leftLeg.rotation.x=this.rightLeg.rotation.x=pulse*.12;

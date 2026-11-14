@@ -105,7 +105,7 @@ check('UIManager: showCamp 生成 6 位动物卡片，正确区分已解救与�
   assert.equal(elements['camp-modal'].classList.contains('hidden'), false, '营地弹窗应展示');
   assert.equal(elements['camp-unlocked-count'].textContent, '2', '解锁数应显示 2');
   assert.equal(elements['camp-total-count'].textContent, '2', '累计解救数应显示 2');
-  assert.equal(elements['camp-grid'].children.length, 6, '必须生成全部 6 位小动物卡片');
+  assert.equal(elements['camp-grid'].children.length, CAMP_ANIMALS.length, '必须生成全部朋友的卡片');
 
   const bunnyCard = elements['camp-grid'].children[0];
   assert.ok(bunnyCard.className.includes('unlocked'), '小兔应为 unlocked 状态');

@@ -5,7 +5,10 @@ export const ANIMAL_PLAY_STYLES = {
   cat: {name:'慢漂追踪', motion:'drift', amplitudeX:20, amplitudeY:6, size:1, period:6.8, comboMs:2100, cooldownMs:900, jellyAt:[3], rainbowAt:[], hint:'慢慢跟随，靠近泡泡它会停住'},
   dog: {name:'轻快连击', motion:'bounce', amplitudeX:13, amplitudeY:10, size:1, period:2.8, comboMs:2400, cooldownMs:700, jellyAt:[4], rainbowAt:[], hint:'轻快连戳，连击会亮起彩虹'},
   dragon: {name:'云间弧线', motion:'arc', amplitudeX:27, amplitudeY:17, size:.98, period:5.6, comboMs:2200, cooldownMs:900, jellyAt:[2,6], rainbowAt:[4], hint:'跟着云间弧线，遇见不同泡泡'},
-  goldenDragon: {name:'祥云游动', motion:'serpentine', amplitudeX:22, amplitudeY:11, size:1, period:7, comboMs:2300, cooldownMs:950, jellyAt:[3], rainbowAt:[1,5], hint:'跟随祥云，慢慢画出一条曲线'}
+  goldenDragon: {name:'祥云游动', motion:'serpentine', amplitudeX:22, amplitudeY:11, size:1, period:7, comboMs:2300, cooldownMs:950, jellyAt:[3], rainbowAt:[1,5], hint:'跟随祥云，慢慢画出一条曲线'},
+  vampire:{name:'月光漫步',motion:'drift',amplitudeX:12,amplitudeY:8,size:1.04,period:6.2,comboMs:2200,cooldownMs:900,jellyAt:[3],rainbowAt:[],hint:'跟着月光泡泡，轻轻碰一碰'},
+  wolf:{name:'森林追逐',motion:'bounce',amplitudeX:16,amplitudeY:8,size:1.02,period:3.4,comboMs:2300,cooldownMs:800,jellyAt:[3],rainbowAt:[5],hint:'和灰灰一起追逐泡泡'},
+  teddy:{name:'温暖抱抱',motion:'drift',amplitudeX:9,amplitudeY:4,size:1.07,period:7.2,comboMs:2300,cooldownMs:950,jellyAt:[2],rainbowAt:[],hint:'慢慢伸手，和抱抱一起玩'}
 };
 export function getAnimalPlayStyle(id) { return ANIMAL_PLAY_STYLES[id] || ANIMAL_PLAY_STYLES.bunny; }
 

@@ -11,7 +11,10 @@ export const CAMP_ANIMALS = [
   { id: 'frog', name: '青蛙 呱呱', preview: 'models/frog-preview.png', title: '池塘跳将', badge: '🐸', target: 6 },
   { id: 'dog', name: '小狗 旺旺', preview: 'models/dog-preview.png', title: '活力小狗', badge: '🐶', target: 10 },
   { id: 'dragon', name: '飞龙 翼翼', preview: 'models/dragon-preview.png', title: '云谷飞龙', badge: '🐲', target: 12 },
-  { id: 'goldenDragon', name: '金龙 小金', preview: 'models/goldenDragon-preview.png', title: '祥云金龙', badge: '🐉', target: 9 }
+  { id: 'goldenDragon', name: '金龙 小金', preview: 'models/goldenDragon-preview.png', title: '祥云金龙', badge: '🐉', target: 9 },
+  { id:'vampire',name:'吸血鬼 小夜',preview:'models/vampire-preview.png',title:'月光朋友',badge:'🧛',target:10 },
+  { id:'wolf',name:'大灰狼 灰灰',preview:'models/wolf-preview.png',title:'森林伙伴',badge:'🐺',target:12 },
+  { id:'teddy',name:'泰迪熊 抱抱',preview:'models/teddy-preview.png',title:'温暖抱抱',badge:'🧸',target:8 }
 ];
 
 export const CAMP_STORAGE_KEY = 'camgame_forest_camp_v1';

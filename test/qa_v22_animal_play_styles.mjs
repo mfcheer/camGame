@@ -12,13 +12,13 @@ function manager(id='cat',index=1,type='normal') {
 }
 function step(b,seconds) {for(let t=0;t<seconds-1e-6;t+=.02)b.update(.02,t);}
 
-test('six distinct motion signatures and an accessible stationary first target',()=>{
+test('distinct motion signatures and an accessible stationary first target',()=>{
   const signatures=PLAYABLE_ANIMALS.map(id=>{
     const style=ANIMAL_PLAY_STYLES[id];
     for(let t=0;t<8;t+=.25)assert.deepEqual(animalTargetOffset(style,t,0),{x:0,y:0});
     return JSON.stringify([1,2.5,3.2,4.8].map(t=>animalTargetOffset(style,t,1)));
   });
-  assert.equal(new Set(signatures).size,6);
+  assert.equal(new Set(signatures).size,PLAYABLE_ANIMALS.length);
 });
 
 test('frog movement includes a long planted pause followed by a small hop',()=>{

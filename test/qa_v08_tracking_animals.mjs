@@ -61,7 +61,7 @@ check('Cat trots with alternating paws; rabbit pushes both hind legs together',(
  for(const id of ['cat','bunny']){const a=new RescueAnimal(new T.Scene(),camera(),id);a.startEscape();a.update(1,1);if(id==='cat'){assert.ok(a.leftArm.rotation.x*a.rightArm.rotation.x<0);assert.ok(a.headGroup.position.y<.7);assert.ok(a.leftArm.position.z>a.leftLeg.position.z+.5);}else assert.equal(a.leftLeg.rotation.x,a.rightLeg.rotation.x);}
 });
 check('Selection/random resolves only playable animals and sets goal before start',()=>{
- assert.equal(resolveAnimal('random',()=>0),'bunny');assert.equal(resolveAnimal('random',()=>.99),'goldenDragon');assert.equal(resolveAnimal('bad'),'bunny');
+ assert.equal(resolveAnimal('random',()=>0),'bunny');assert.equal(resolveAnimal('random',()=>.99),'teddy');assert.equal(resolveAnimal('bad'),'bunny');
  const game=Object.assign(Object.create(Game.prototype),{state:'START',rescueAnimal:{animalId:'bunny',setAnimal(id){this.animalId=id;}},uiManager:{}});game.handleSelectAnimal('cat');assert.equal(game.targetCount,10);assert.equal(game.activeAnimalId,'cat');assert.equal(GAME_CONFIG.animals.bunny.targetBubbles,6);
 });
 check('Render interpolation and collision share the same visible marker',()=>{

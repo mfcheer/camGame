@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>彩虹小队 - 亲子体感解救小动物</title>
-  <meta name="description" content="伸出食指，戳破彩虹泡泡，解救六位动物朋友。支持单人和亲子合作，摄像头识别在本地设备完成。" />
+  <meta name="description" content="伸出食指，戳破彩虹泡泡，解救九位森林朋友。支持单人和亲子合作，摄像头识别在本地设备完成。" />
   <meta name="theme-color" content="#78b7a1" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="彩虹小队 · 森林大解救" />
-  <meta property="og:description" content="和家人一起伸手戳泡泡，解救六位可爱的动物朋友。" />
+  <meta property="og:description" content="和家人一起伸手戳泡泡，解救九位可爱的森林朋友。" />
   <meta property="og:image" content="https://mfcheer.github.io/camGame/icons/icon-512.png" />
   <link rel="icon" type="image/svg+xml" href="%BASE_URL%icons/app-icon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%icons/icon-32.png" />
@@ -119,8 +119,11 @@
           <button class="animal-choice" data-animal="goldenDragon" aria-pressed="false">
             <img src="%BASE_URL%models/goldenDragon-preview.png" alt="金龙小金" /><strong>金龙 小金</strong><span>12 能量 · 祥云游动</span>
           </button>
+          <button class="animal-choice" data-animal="vampire" aria-pressed="false"><img src="%BASE_URL%models/vampire-preview.png" alt="吸血鬼小夜" /><strong>小夜</strong><span>10 能量 · 月光漫步</span></button>
+          <button class="animal-choice" data-animal="wolf" aria-pressed="false"><img src="%BASE_URL%models/wolf-preview.png" alt="大灰狼灰灰" /><strong>大灰狼 灰灰</strong><span>12 能量 · 森林追逐</span></button>
+          <button class="animal-choice" data-animal="teddy" aria-pressed="false"><img src="%BASE_URL%models/teddy-preview.png" alt="泰迪熊抱抱" /><strong>泰迪熊 抱抱</strong><span>8 能量 · 温暖抱抱</span></button>
           <button class="animal-choice random-choice" data-animal="random" aria-pressed="false">
-            <div class="random-friends"><img src="%BASE_URL%models/bunny-preview.png" alt="" /><img src="%BASE_URL%models/cat-preview.png" alt="" /><img src="%BASE_URL%models/frog-preview.png" alt="" /><img src="%BASE_URL%models/dog-preview.png" alt="" /><img src="%BASE_URL%models/dragon-preview.png" alt="" /><img src="%BASE_URL%models/goldenDragon-preview.png" alt="" /></div><strong>随机朋友</strong><span>六位朋友 · 开局揭晓</span>
+            <div class="random-friends"><img src="%BASE_URL%models/bunny-preview.png" alt="" /><img src="%BASE_URL%models/cat-preview.png" alt="" /><img src="%BASE_URL%models/frog-preview.png" alt="" /><img src="%BASE_URL%models/dog-preview.png" alt="" /><img src="%BASE_URL%models/dragon-preview.png" alt="" /><img src="%BASE_URL%models/goldenDragon-preview.png" alt="" /></div><strong>随机朋友</strong><span>九位朋友 · 开局揭晓</span>
           </button>
         </div>
 
@@ -245,7 +248,7 @@
       <div class="card camp-card">
         <div class="camp-header">
           <h2>⛺ 我的森林营地</h2>
-          <p>已点亮 <strong id="camp-unlocked-count">0</strong> / 6 位朋友 · 累计送出 <strong id="camp-total-count">0</strong> 次自由！</p>
+          <p>已点亮 <strong id="camp-unlocked-count">0</strong> / 9 位朋友 · 累计送出 <strong id="camp-total-count">0</strong> 次自由！</p>
           <div class="camp-tip">点击已点亮的小动物，可以听听它们的专属叫声哦 🎵</div>
         </div>
         <div class="camp-grid" id="camp-grid"></div>

@@ -46,7 +46,7 @@ const ACTIONS=[
     a.rightEarGroup.rotation.z=-.13-w*.26*m;
     a.headGroup.rotation.z=w*.06*m;
   }},
-  {id:'tailChase',dur:1.6,animals:['dog'],fn:(a,t,m)=>{
+  {id:'tailChase',dur:1.6,animals:['dog','wolf'],fn:(a,t,m)=>{
     a.tailGroup.rotation.y=Math.sin(t*Math.PI*10)*.8*m;
     a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*4))*.05*m;
     a.headGroup.rotation.z=Math.sin(t*Math.PI*5)*.10*m;
@@ -106,7 +106,7 @@ const ACTIONS=[
     a.headGroup.rotation.z=Math.sin(t*Math.PI*2)*.16*m;
     a.bodyMesh.rotation.y=Math.sin(t*Math.PI*2)*.04*m;
   }},
-  {id:'headTilt',dur:1.4,animals:['dog'],fn:(a,t,m)=>{
+  {id:'headTilt',dur:1.4,animals:['dog','wolf'],fn:(a,t,m)=>{
     const tilt=Math.sin(t*Math.PI*2)*m;
     a.headGroup.rotation.z=tilt*.28;
     a.leftEarGroup.rotation.z=.12+tilt*.22;a.rightEarGroup.rotation.z=-.12-tilt*.22;
@@ -143,8 +143,12 @@ const ACTIONS=[
     a.leftArm.rotation.z=-.45*bow;a.rightArm.rotation.z=.45*bow;
     a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*.02*m;
   }},
+  {id:'capeWave',dur:1.5,animals:['vampire'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.rightArm.rotation.z=1.3+s*.35;a.headGroup.rotation.z=s*.07;}},
+  {id:'moonBow',dur:1.4,animals:['vampire'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.headGroup.rotation.x=s*.24;a.leftArm.rotation.z=-s*.8;a.rightArm.rotation.z=s*.8;}},
+  {id:'bearHug',dur:1.5,animals:['teddy'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.leftArm.rotation.z=-s*.9;a.rightArm.rotation.z=s*.9;a.headGroup.rotation.z=s*.12;}},
+  {id:'bearSway',dur:1.6,animals:['teddy'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.bodyMesh.rotation.z=s*.12;a.headGroup.rotation.z=-s*.1;}},
 ];
-const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover']};
+const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],vampire:['capeWave','moonBow'],wolf:['tailChase','headTilt'],teddy:['bearHug','bearSway']};
 const FINALE=ACTIONS.find(x=>x.id==='finaleBow');
 
 // 结算后的"开心小演出"：动物自己走到台前随机表演，孩子和家长可以休息。

@@ -8,8 +8,8 @@ import {Game} from '../src/main.js';
 import {createAccessory,CelebrationAccessories} from '../src/celebrationAccessories.js';
 const results=[];function check(name,fn){fn();results.push(name);}
 const camera=()=>{const c=new T.PerspectiveCamera(48,16/9,.1,100);c.position.z=7.5;c.updateMatrixWorld();return c;};
-check('All six selections and random intervals resolve to playable animals',()=>{
- assert.deepEqual(PLAYABLE_ANIMALS,['bunny','cat','frog','dog','dragon','goldenDragon']);assert.deepEqual([.05,.22,.38,.55,.72,.9].map(r=>resolveAnimal('random',()=>r)),PLAYABLE_ANIMALS);
+check('All selections and random intervals resolve to playable animals',()=>{
+ assert.deepEqual(PLAYABLE_ANIMALS,['bunny','cat','frog','dog','dragon','goldenDragon','vampire','wolf','teddy']);assert.deepEqual(PLAYABLE_ANIMALS.map((_,i)=>resolveAnimal('random',()=>(i+.5)/PLAYABLE_ANIMALS.length)),PLAYABLE_ANIMALS);
  for(const id of PLAYABLE_ANIMALS)assert.equal(resolveAnimal(id),id);
 });
 check('Frog and dog assets are real GLBs with complete compatible animation pivots',()=>{
