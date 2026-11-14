@@ -1123,6 +1123,15 @@ export class Game {
     window.addEventListener('mousemove', handlePointer);
     window.addEventListener('touchmove', handlePointer, { passive: true });
     window.addEventListener('touchstart', handlePointer, { passive: true });
+    const releaseTouch = () => {
+      if (!this.isDemoMode) return;
+      this.poseDetector.releaseDemoHand?.();
+      if (this.state!=='PLAYING') return;
+      this.bubbleManager?.activeBubble?.suppressedHands?.delete('1_demo_pointer');
+      this.bubbleManager?.activeBubble?.suppressedHands?.delete('2_demo_pointer');
+    };
+    window.addEventListener('touchend', releaseTouch, { passive: true });
+    window.addEventListener('touchcancel', releaseTouch, { passive: true });
   }
 
   // visibilitychange and pagehide can both fire; preserve the original pause state.

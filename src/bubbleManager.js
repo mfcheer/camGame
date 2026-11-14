@@ -574,7 +574,8 @@ export class BubbleManager {
     });
 
     if (chosen.length < poolSize) {
-      const otherWords = shuffle(WORDS_LIST.filter(word => !concepts.has(word.conceptId || word.id)));
+      const freshOthers = WORDS_LIST.filter(word => !concepts.has(word.conceptId || word.id) && !this.recentWordIds.includes(word.conceptId || word.id));
+      const otherWords = shuffle(freshOthers.length ? freshOthers : WORDS_LIST.filter(word => !concepts.has(word.conceptId || word.id)));
       for (const w of otherWords) {
         if (chosen.length >= poolSize) break;
         concepts.add(w.conceptId || w.id);

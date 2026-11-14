@@ -813,6 +813,12 @@ export class PoseDetector {
     }
   }
 
+  releaseDemoHand() {
+    if (!this.isDemoMode) return;
+    this.trackedPlayers = [];
+    this.onResultsCallback?.({players: [], isDemo: true});
+  }
+
   // 暂停检测
   pause() {
     this.isRunning = false;

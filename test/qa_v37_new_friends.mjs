@@ -7,8 +7,16 @@ import {CAMP_ANIMALS,CampManager} from '../src/campManager.js';
 import {RescueAnimal} from '../src/rescueAnimal.js';
 import {HappyPerformance} from '../src/happyPerformance.js';
 import {getAnimalPlayStyle} from '../src/animalPlayStyles.js';
+import {PoseDetector} from '../src/poseDetector.js';
 const ids=['mcqueen','wolf','teddy','chase','jett','peppa','thomas'];
 const camera=()=>{const c=new THREE.PerspectiveCamera(48,1194/834,.1,100);c.position.z=7.5;c.updateMatrixWorld();return c;};
+test('touch simulation releases its fingertip on lift',()=>{
+ const detector=new PoseDetector(null);const received=[];detector.onResultsCallback=x=>received.push(x);
+ detector.enableDemoMode();detector.injectDemoHand(.5,.5);
+ assert.equal(detector.trackedPlayers[0].hands[0].side,'demo_pointer');
+ detector.releaseDemoHand();assert.equal(detector.trackedPlayers.length,0);
+ assert.deepEqual(received.at(-1),{players:[],isDemo:true});
+});
 test('new friends have assets, configuration, random selection and camp records',()=>{
  const camp=new CampManager();
  for(const id of ids){const profile=GAME_CONFIG.animals[id];assert.ok(PLAYABLE_ANIMALS.includes(id));assert.equal(resolveAnimal(id),id);assert.ok(CAMP_ANIMALS.some(a=>a.id===id));assert.equal(camp.recordRescue(id),1);assert.ok(camp.isUnlocked(id));assert.ok(getAnimalPlayStyle(id).name);for(const file of [`public/models/${id}-preview.png`,`public/models/${profile.asset}.glb`])assert.ok(fs.statSync(file).size>1000,file);}
