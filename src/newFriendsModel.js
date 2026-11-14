@@ -109,27 +109,80 @@ export function createChaseModel(){
 }
 export function createJettModel(){
  const root=new THREE.Group();root.name='Jett_Airplane_Rig';
- const red=mat(0xe92e32,.46),white=mat(0xf8f6eb,.64),blue=mat(0x3989bd,.42),dark=mat(0x344650,.5),gold=mat(0xf5c64a,.5),pink=mat(0xed9588,.8);
- const body=pivot(root,'Torso',[0,.42,0]);ellipsoid(body,'Red_Fuselage',red,[0,.03,0],[.28,.34,.23]);ellipsoid(body,'White_Front',white,[0,.025,.205],[.17,.22,.04]);
- const engine=mat(0xb6c8ce,.6,{metalness:.25});
- for(const s of [-1,1]){ellipsoid(body,'Jet_Engine',engine,[s*.14,.07,-.23],[.09,.18,.10]);ellipsoid(body,'Engine_Outlet',dark,[s*.14,-.09,-.24],[.06,.025,.065]);}
- const head=pivot(root,'Head',[0,.94,.02]);ellipsoid(head,'Red_Airplane_Head',red,[0,0,0],[.32,.28,.25]);ellipsoid(head,'Friendly_Face',white,[0,-.035,.215],[.25,.18,.06]);
- ellipsoid(head,'Helmet_Center',white,[0,.235,.08],[.065,.033,.18]);
- const visor=ellipsoid(head,'Helmet_Brow',red,[0,.115,.225],[.25,.055,.07]);
+ const red=mat(0xeb2629,.35,{metalness:.12}),white=mat(0xfcfbf7,.42),yellow=mat(0xffcc00,.42),blue=mat(0x2296ee,.32),dark=mat(0x252a32,.65),gold=mat(0xf5b820,.35,{metalness:.25}),pink=mat(0xf8928c,.85),silver=mat(0xc5d2dc,.4,{metalness:.35});
+ const body=pivot(root,'Torso',[0,.42,0]);
+ ellipsoid(body,'Red_Fuselage',red,[0,.03,0],[.29,.35,.24]);
+ ellipsoid(body,'White_Front',white,[0,.035,.205],[.18,.22,.045]);
+ for(const s of [-1,1]){
+  mesh(new THREE.CylinderGeometry(.052,.062,.12,16),dark,body,'Jet_Exhaust',[s*.13,-.15,-.18]);
+  ellipsoid(body,'Exhaust_Flame_Glow',yellow,[s*.13,-.21,-.18],[.035,.02,.035]);
+ }
+ const head=pivot(root,'Head',[0,.93,.02]);
+ ellipsoid(head,'Red_Airplane_Head',red,[0,0,0],[.33,.29,.27]);
+ ellipsoid(head,'Friendly_Face',white,[0,-.04,.21],[.26,.19,.08]);
+ ellipsoid(head,'Helmet_Center',white,[0,.24,.06],[.07,.038,.18]);
+ const topFinShape=new THREE.Shape();topFinShape.moveTo(-.02,0);topFinShape.lineTo(0,.13);topFinShape.lineTo(.04,0);topFinShape.closePath();
+ const topFin=mesh(new THREE.ExtrudeGeometry(topFinShape,{depth:.018,bevelEnabled:true,bevelSize:.006,bevelThickness:.005}),red,head,'Head_Top_Fin',[0,.24,.02]);
+ topFin.rotation.y=Math.PI/2;
+ ellipsoid(head,'Head_Beacon',yellow,[0,.23,.18],[.025,.02,.025]);
+ ellipsoid(head,'Helmet_Brow',red,[0,.115,.22],[.26,.05,.08]);
  const eyes=pivot(head,'Eyes',[0,0,0]);
  for(const s of [-1,1]){
-  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.11,.005,.27]);ellipsoid(eye,'Eye',dark,[0,0,0],[.045,.055,.02]);ellipsoid(eye,'Iris',blue,[0,-.006,.018],[.026,.034,.01]);ellipsoid(eye,'Catchlight',white,[-.01,.014,.028],[.011,.013,.005]);
-  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.31,.04,0]);ellipsoid(ear,'Jet_Side_Piece',red,[0,0,0],[.07,.09,.11]);ellipsoid(ear,'Jet_Side_Highlight',gold,[s*.052,0,.025],[.012,.038,.045]);
-  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.27,.55,.02]);ellipsoid(arm,'White_Arm',white,[s*.03,-.12,0],[.07,.16,.07]);ellipsoid(arm,'Red_Hand',red,[s*.035,-.24,.025],[.08,.065,.08]);
-  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.15,.19,0]);ellipsoid(leg,'White_Leg',white,[0,-.06,.01],[.085,.13,.08]);ellipsoid(leg,'Red_Boot',red,[0,-.15,.08],[.11,.07,.15]);
-  const wing=pivot(body,s<0?'Wing_L':'Wing_R',[s*.23,.05,-.08]);const shape=new THREE.Shape();shape.moveTo(0,.08);shape.lineTo(s*.42,-.07);shape.lineTo(s*.36,-.18);shape.lineTo(0,-.10);shape.closePath();mesh(new THREE.ExtrudeGeometry(shape,{depth:.035,bevelEnabled:true,bevelSize:.012,bevelThickness:.01,bevelSegments:2}),red,wing,'Airplane_Wing');
-  ellipsoid(wing,'Wing_Tip',white,[s*.32,-.115,.025],[.06,.045,.028]);
-  const stripe=ellipsoid(wing,'Wing_Stripe',white,[s*.22,-.08,.04],[.11,.012,.01]);stripe.rotation.z=-s*.25;
+  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.115,.01,.265]);
+  ellipsoid(eye,'Eye_White',white,[0,0,0],[.055,.072,.025]);
+  ellipsoid(eye,'Iris',blue,[0,-.006,.016],[.042,.055,.014]);
+  ellipsoid(eye,'Eye',dark,[0,-.008,.024],[.024,.035,.01]);
+  ellipsoid(eye,'Catchlight',white,[-.014,.018,.032],[.012,.014,.005]);
+  ellipsoid(eye,'Catchlight_Small',white,[.012,-.015,.031],[.006,.007,.004]);
+  curve(head,s<0?'Brow_L':'Brow_R',[[s*.06,.10,.265],[s*.115,.12,.26],[s*.165,.095,.245]],.006,dark);
+  ellipsoid(head,s<0?'Blush_L':'Blush_R',pink,[s*.19,-.07,.23],[.042,.028,.012]);
+  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.32,.03,0]);
+  const earCup=mesh(new THREE.CylinderGeometry(.088,.088,.075,24),yellow,ear,'Headset_Pod',[s*.02,0,0]);earCup.rotation.z=Math.PI/2;
+  const earRing=mesh(new THREE.CylinderGeometry(.092,.092,.02,24),white,ear,'Headset_Ring',[s*.055,0,0]);earRing.rotation.z=Math.PI/2;
+  ellipsoid(ear,'Headset_Speaker',dark,[s*.066,0,0],[.008,.045,.045]);
+  ellipsoid(ear,'Jet_Side_Piece',red,[s*.02,0,0],[.06,.07,.08]);
+  ellipsoid(ear,'Headset_Antenna',red,[s*.02,.09,0],[.018,.032,.018]);
+  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.28,.55,.02]);
+  ellipsoid(arm,'Red_Shoulder',red,[0,0,0],[.07,.07,.07]);
+  ellipsoid(arm,'White_Arm',white,[s*.03,-.11,0],[.065,.13,.065]);
+  ellipsoid(arm,'Red_Wrist_Cuff',red,[s*.035,-.19,.01],[.07,.035,.07]);
+  ellipsoid(arm,'Red_Hand',red,[s*.035,-.24,.025],[.08,.065,.08]);
+  ellipsoid(arm,'White_Hand',white,[s*.04,-.25,.02],[.07,.06,.06]);
+  ellipsoid(arm,'Hand_Thumb',white,[s*.07,-.23,.045],[.025,.035,.025]);
+  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.15,.20,0]);
+  ellipsoid(leg,'White_Leg',white,[0,-.05,.01],[.08,.11,.08]);
+  ellipsoid(leg,'Red_Boot',red,[0,-.14,.06],[.10,.075,.14]);
+  ellipsoid(leg,'Boot_Sole',white,[0,-.20,.07],[.095,.022,.135]);
+  const hub=mesh(new THREE.CylinderGeometry(.042,.042,.022,16),yellow,leg,'Boot_Wheel_Hub',[s*.095,-.15,.03]);hub.rotation.z=Math.PI/2;
+  const tire=mesh(new THREE.CylinderGeometry(.046,.046,.016,16),dark,leg,'Boot_Wheel_Tire',[s*.098,-.15,.03]);tire.rotation.z=Math.PI/2;
+  ellipsoid(leg,'Boot_Thruster',yellow,[0,-.14,-.07],[.035,.035,.02]);
+  const wing=pivot(body,s<0?'Wing_L':'Wing_R',[s*.24,.08,-.06]);
+  const shape=new THREE.Shape();shape.moveTo(0,.09);shape.lineTo(s*.46,-.06);shape.lineTo(s*.40,-.20);shape.lineTo(0,-.12);shape.closePath();
+  mesh(new THREE.ExtrudeGeometry(shape,{depth:.032,bevelEnabled:true,bevelSize:.012,bevelThickness:.008,bevelSegments:2}),red,wing,'Airplane_Wing');
+  ellipsoid(wing,'Wing_Tip',white,[s*.36,-.125,.025],[.075,.05,.032]);
+  const stripe=ellipsoid(wing,'Wing_Stripe',white,[s*.22,-.07,.038],[.12,.015,.01]);stripe.rotation.z=-s*.25;
+  const pod=mesh(new THREE.CylinderGeometry(.046,.046,.24,20),yellow,wing,'Jet_Engine',[s*.18,-.09,-.04]);pod.rotation.x=Math.PI/2;
+  ellipsoid(wing,'Engine_Intake',dark,[s*.18,-.09,.08],[.042,.042,.015]);
+  ellipsoid(wing,'Engine_Nozzle',silver,[s*.18,-.09,-.16],[.04,.04,.02]);
  }
- curve(head,'Smile',[[-.09,-.12,.274],[0,-.16,.286],[.09,-.12,.274]],.006,dark);
- const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.135,.28],[.07,.04,.012]);happy.visible=false;const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.15,.294],[.032,.014,.005]);tongue.visible=false;
- const tail=pivot(root,'Tail',[0,.52,-.22]);const fin=new THREE.Shape();fin.moveTo(-.04,0);fin.lineTo(0,.3);fin.lineTo(.08,.03);fin.closePath();mesh(new THREE.ExtrudeGeometry(fin,{depth:.025,bevelEnabled:true,bevelSize:.01,bevelThickness:.006,bevelSegments:2}),red,tail,'Tail_Fin');
- const bow=pivot(root,'Bow',[0,.60,.24]);ellipsoid(bow,'Chest_Star',gold,[0,0,0],[.045,.045,.015]);return root;
+ curve(head,'Smile',[[-.09,-.135,.265],[0,-.175,.275],[.09,-.135,.265]],.007,dark);
+ const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.14,.275],[.075,.045,.015]);happy.visible=false;
+ const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.155,.288],[.035,.016,.006]);tongue.visible=false;
+ const tail=pivot(root,'Tail',[0,.54,-.22]);
+ const finShape=new THREE.Shape();finShape.moveTo(-.04,0);finShape.lineTo(-.01,.34);finShape.lineTo(.06,.34);finShape.lineTo(.08,0);finShape.closePath();
+ mesh(new THREE.ExtrudeGeometry(finShape,{depth:.025,bevelEnabled:true,bevelSize:.01,bevelThickness:.006,bevelSegments:2}),red,tail,'Tail_Fin');
+ ellipsoid(tail,'Tail_Fin_Tip',white,[.02,.34,.012],[.045,.022,.015]);
+ for(const s of [-1,1]){
+  const hWing=ellipsoid(tail,s<0?'Tail_Wing_L':'Tail_Wing_R',red,[s*.15,.08,.02],[.12,.018,.07]);hWing.rotation.z=s*.08;
+  ellipsoid(tail,s<0?'Tail_Wing_Tip_L':'Tail_Wing_Tip_R',white,[s*.24,.09,.02],[.035,.014,.03]);
+ }
+ const bow=pivot(root,'Bow',[0,.60,.24]);
+ ellipsoid(bow,'Chest_Star',gold,[0,0,0],[.065,.05,.016]);
+ ellipsoid(bow,'Badge_Wing_L',gold,[-.075,.01,-.004],[.05,.025,.01]);
+ ellipsoid(bow,'Badge_Wing_R',gold,[.075,.01,-.004],[.05,.025,.01]);
+ ellipsoid(bow,'Badge_Center',blue,[0,0,.012],[.032,.032,.008]);
+ ellipsoid(bow,'Badge_Star',gold,[0,0,.018],[.014,.014,.005]);
+ return root;
 }
 
 export function createPeppaModel(){
