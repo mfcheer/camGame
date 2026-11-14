@@ -360,44 +360,109 @@ export function createJettModel(){
 }
 
 export function createPeppaModel(){
- const root=new THREE.Group();root.name="Peppa_Pig_Rig";
- const pink=mat(0xf6aebb,.92),light=mat(0xffc9d4,.9),red=mat(0xd93442,.9),dark=mat(0x4a3038,.5),cheek=mat(0xef8ba3,.9),white=mat(0xfffdf8,.7),shoe=mat(0x352c31,.8),mouthPink=mat(0xa83250,.85);
- const body=pivot(root,"Torso",[0,.38,0]);
- sculpt([[0,-.13,0,.28,.22,.15],[0,.02,0,.20,.20,.13],[0,.16,0,.13,.11,.11]],.035,red,body,"Red_Dress");
- const head=pivot(root,"Head",[0,.90,.01]);
- sculpt([[.035,0,0,.285,.265,.24],[-.15,.035,.11,.17,.14,.19],[-.24,.045,.24,.105,.105,.12]],.045,pink,head,"Pink_Pig_Head");
- const snout=ellipsoid(head,"Pig_Snout",light,[-.265,.035,.335],[.102,.095,.055]);snout.rotation.y=-.18;
- for(const x of [-.305,-.237])ellipsoid(head,"Nostril",cheek,[x,.042,.386],[.016,.028,.009]);
- ellipsoid(head,"Rosy_Cheek",cheek,[.16,-.075,.205],[.064,.053,.013]);
- const eyes=pivot(head,"Eyes",[0,0,0]);
- for(const [side,x] of [["L",-.055],["R",.105]]){
-  const eye=pivot(eyes,"Eye_"+side,[x,.165,.215]);
-  ellipsoid(eye,"Eye_White",white,[0,0,0],[.053,.062,.023]);
-  ellipsoid(eye,"Pupil",dark,[-.008,.004,.021],[.022,.029,.009]);
-  ellipsoid(eye,"Catchlight",white,[-.005,.013,.031],[.007,.008,.003]);
+ const root=new THREE.Group();root.name='Peppa_Pig_Rig';
+ // 按官方卡通形象深度设计：经典吹风机头型、大圆头直接坐在红裙上（无脖子）、
+ // 扁宽梯形红裙、细枝手臂水平外伸、细腿配黑扁鞋；双眼高聚拢、猪鼻上移前突。
+ const pink=mat(0xf6aebb,.92),light=mat(0xffc9d4,.9),red=mat(0xd93442,.9),dark=mat(0x4a3038,.5),cheek=mat(0xef8ba3,.9),white=mat(0xfffdf8,.7),shoe=mat(0x352c31,.8);
+ // 官方经典深洋红线条色与红润口腔色彩
+ const smileMat=mat(0xba1d50,.85),mouthInnerMat=mat(0x8a1038,.9),tongueMat=mat(0xf58aa4,.9);
+
+ // 扁宽梯形红裙：纸片人式的扁平正面，下摆外扩
+ const body=pivot(root,'Torso',[0,.38,0]);
+ sculpt([[0,-.13,0,.28,.22,.15],[0,.02,0,.20,.20,.13],[0,.16,0,.13,.11,.11]],.035,red,body,'Red_Dress');
+ // 大圆头：比裙子还宽，佩奇的标志性大头比例
+ const head=pivot(root,'Head',[0,.90,.01]);
+ sculpt([[.035,0,0,.285,.265,.24],[-.15,.035,.11,.17,.14,.19],[-.24,.045,.24,.105,.105,.12]],.045,pink,head,'Pink_Pig_Head');
+ // 猪鼻：上移到脸中上部水平前突（加大突出感），双竖椭圆鼻孔在鼻头前端
+ const snout=ellipsoid(head,'Pig_Snout',light,[-.265,.035,.335],[.102,.095,.055]);snout.rotation.y=-.18;
+ for(const x of [-.305,-.237])ellipsoid(head,'Nostril',cheek,[x,.042,.386],[.016,.028,.009]);
+ ellipsoid(head,'Rosy_Cheek',cheek,[.16,-.075,.205],[.064,.053,.013]);
+ // 眼睛：小巧圆润、高高聚在头顶下方（官方形象的眼睛位置）
+ const eyes=pivot(head,'Eyes',[0,0,0]);
+ for(const [side,x] of [['L',-.055],['R',.105]]){
+  const eye=pivot(eyes,'Eye_'+side,[x,.165,.215]);
+  ellipsoid(eye,'Eye_White',white,[0,0,0],[.053,.062,.023]);
+  ellipsoid(eye,'Pupil',dark,[-.008,.004,.021],[.022,.029,.009]);
+  ellipsoid(eye,'Catchlight',white,[-.005,.013,.031],[.007,.008,.003]);
  }
+ // 小圆耳朵：立起贴头顶，间距收窄
  for(const s of [-1,1]){
-  const ear=pivot(head,s<0?"Ear_L":"Ear_R",[s*.10,.25,-.01]);ear.rotation.z=-s*.08;
-  ellipsoid(ear,"Pig_Ear",pink,[0,.04,0],[.046,.075,.028]);
-  ellipsoid(ear,"Inner_Ear",light,[0,.043,.022],[.024,.05,.008]);
+  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.10,.25,-.01]);ear.rotation.z=-s*.08;
+  ellipsoid(ear,'Pig_Ear',pink,[0,.04,0],[.046,.075,.028]);
+  ellipsoid(ear,'Inner_Ear',light,[0,.043,.022],[.024,.05,.008]);
  }
- curve(head,"Pig_Smile",[[-.10,-.095,.215],[-.02,-.128,.218],[.06,-.090,.205]],.006,mouthPink);
- curve(head,"Smile",[[-.10,-.095,.215],[-.02,-.128,.218],[.06,-.090,.205]],.006,mouthPink);
- const happy=ellipsoid(head,"Happy_Mouth",mouthPink,[-.02,-.120,.218],[.058,.032,.012]);happy.visible=false;
- const tongue=ellipsoid(head,"Happy_Tongue",cheek,[-.02,-.130,.226],[.025,.010,.005]);tongue.visible=false;
+
+ // 官方动画原汁原味大微笑：深洋红大圆弯弧，两头带标志性微翘笑窝
+ const smileGroup=pivot(head,'Pig_Smile',[-.025,-.10,.222]);
+ smileGroup.rotation.set(-.12,.15,-.06);
+ const smileCurve=new THREE.CubicBezierCurve3(
+  new THREE.Vector3(-.09,.015,.002),
+  new THREE.Vector3(-.05,-.050,.002),
+  new THREE.Vector3(.03,-.045,.002),
+  new THREE.Vector3(.065,.018,.002)
+ );
+ mesh(new THREE.TubeGeometry(smileCurve,32,.0055,10,false),smileMat,smileGroup,'Smile_Arc');
+ const leftCorner=new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(-.09,.015,.002),
+  new THREE.Vector3(-.098,.026,.002),
+  new THREE.Vector3(-.088,.036,.002)
+ );
+ mesh(new THREE.TubeGeometry(leftCorner,12,.005,8,false),smileMat,smileGroup,'Smile_Corner_L');
+ const rightCorner=new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(.065,.018,.002),
+  new THREE.Vector3(.075,.028,.002),
+  new THREE.Vector3(.068,.036,.002)
+ );
+ mesh(new THREE.TubeGeometry(rightCorner,12,.005,8,false),smileMat,smileGroup,'Smile_Corner_R');
+ const stdSmile=pivot(head,'Smile',[-.025,-.10,.222]); // 兼容通用Smile节点
+
+ // 开心大笑/通关庆祝/说话时的官方动画招牌月牙大笑嘴 (Happy_Mouth & Happy_Tongue)
+ const happyGroup=pivot(head,'Happy_Mouth',[-.025,-.10,.222]);
+ happyGroup.rotation.set(-.12,.15,-.06);
+ happyGroup.visible=false;
+ const mouthShape=new THREE.Shape();
+ mouthShape.moveTo(-.08,.015);
+ mouthShape.quadraticCurveTo(-.01,.032,.06,.020);
+ mouthShape.bezierCurveTo(.05,-.065,-.07,-.070,-.08,.015);
+ mesh(new THREE.ShapeGeometry(mouthShape),mouthInnerMat,happyGroup,'Happy_Mouth_Cavity',[0,0,.002]);
+ const happyPerimeter=[];
+ for(let i=0;i<=24;i++){
+  const t=i/24;
+  let pt;
+  if(t<=.5){
+   const u=t*2;
+   pt=new THREE.Vector2().lerpVectors(new THREE.Vector2(-.08,.015),new THREE.Vector2(.06,.020),u);
+   pt.y+=Math.sin(u*Math.PI)*.015;
+  }else{
+   const u=(t-.5)*2;
+   pt=new THREE.Vector2().lerpVectors(new THREE.Vector2(.06,.020),new THREE.Vector2(-.08,.015),u);
+   pt.y-=Math.sin(u*Math.PI)*.078;
+  }
+  happyPerimeter.push(new THREE.Vector3(pt.x,pt.y,.003));
+ }
+ mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(happyPerimeter,true),32,.0045,8,true),smileMat,happyGroup,'Happy_Mouth_Lip');
+ const tongueShape=new THREE.Shape();
+ tongueShape.moveTo(-.04,-.020);
+ tongueShape.quadraticCurveTo(0,.010,.04,-.015);
+ tongueShape.quadraticCurveTo(0,-.055,-.04,-.020);
+ mesh(new THREE.ShapeGeometry(tongueShape),tongueMat,happyGroup,'Happy_Tongue',[0,0,.004]);
+
+ // 细枝手臂：从裙肩水平外伸（参考图的张开手臂），末端圆手
  for(const s of [-1,1]){
-  const arm=pivot(root,s<0?"Arm_L":"Arm_R",[s*.175,.50,.01]);
-  ellipsoid(arm,"Pig_Arm",pink,[s*.085,-.01,0],[.115,.038,.038]);
-  ellipsoid(arm,"Pig_Hand",light,[s*.165,-.012,.005],[.05,.048,.048]);
+  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.175,.50,.01]);
+  ellipsoid(arm,'Pig_Arm',pink,[s*.085,-.01,0],[.115,.038,.038]);
+  ellipsoid(arm,'Pig_Hand',light,[s*.165,-.012,.005],[.05,.048,.048]);
  }
+ // 细腿 + 黑扁鞋
  for(const s of [-1,1]){
-  const leg=pivot(root,s<0?"Leg_L":"Leg_R",[s*.09,.16,0]);
-  ellipsoid(leg,"Pig_Leg",pink,[0,-.045,0],[.036,.08,.036]);
-  ellipsoid(leg,"Black_Shoe",shoe,[0,-.115,.04],[.075,.045,.105]);
+  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.09,.16,0]);
+  ellipsoid(leg,'Pig_Leg',pink,[0,-.045,0],[.036,.08,.036]);
+  ellipsoid(leg,'Black_Shoe',shoe,[0,-.115,.04],[.075,.045,.105]);
  }
- const tail=pivot(root,"Tail",[0,.36,-.15]);
- curve(tail,"Curly_Pig_Tail",[[0,0,0],[.045,.028,-.014],[.078,.068,-.018],[.062,.105,-.018],[.026,.105,-.018],[.018,.072,-.018],[.038,.048,-.018]],.012,pink);
- pivot(root,"Bow",[.155,1.12,.06]);
+ // 卷卷尾巴：绕一圈的小螺旋
+ const tail=pivot(root,'Tail',[0,.36,-.15]);
+ curve(tail,'Curly_Pig_Tail',[[0,0,0],[.045,.028,-.014],[.078,.068,-.018],[.062,.105,-.018],[.026,.105,-.018],[.018,.072,-.018],[.038,.048,-.018]],.012,pink);
+ pivot(root,'Bow',[.155,1.12,.06]);
  return root;
 }
 export function createThomasModel(){
