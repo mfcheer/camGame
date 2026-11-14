@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {mat,mesh,pivot,ellipsoid,curve} from './rabbitModel.js';
 import {createDogModel} from './dogModel.js';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 // The names below are the shared pivots consumed by RescueAnimal and its expressions.
 export function createTeddyModel(){
@@ -29,21 +30,44 @@ export function createWolfModel(){
  for(const s of [-1,1]){const ear=root.getObjectByName(s<0?'Ear_L':'Ear_R');ear.clear();const outer=mat(0x677a83,.95),inner=mat(0xe5a8a0,.95);const e=mesh(new THREE.ConeGeometry(.105,.28,24),outer,ear,'Pointed_Wolf_Ear',[s*.015,.10,0]);e.rotation.z=-s*.15;const inn=mesh(new THREE.ConeGeometry(.055,.17,20),inner,ear,'Wolf_Inner_Ear',[s*.015,.10,.055]);inn.rotation.z=-s*.15;}
  return root;
 }
-export function createVampireModel(){
- const root=createTeddyModel();root.name='Friendly_Vampire_Rig';
- const head=root.getObjectByName('Head'),body=root.getObjectByName('Torso'),dark=mat(0x393346,.9),skin=mat(0xf3cbb6,.95),purple=mat(0x6a527e,.9),red=mat(0xbc6374,.9);
- // Keep the animation pivots, but remove bear-only meshes: glTF exporters do
- // not preserve Object3D.visible for hidden geometry.
- for(const s of [-1,1])root.getObjectByName(s<0?'Ear_L':'Ear_R').clear();
- for(const name of ['Plush_Head','Muzzle','Nose','Mouth','Smile'])head.getObjectByName(name)?.removeFromParent();
- ellipsoid(head,'Friendly_Face',skin,[0,0,.02],[.30,.29,.25]);ellipsoid(head,'Little_Nose',skin,[0,-.09,.26],[.045,.035,.03]);
- for(const side of ['L','R'])head.getObjectByName('Eye_'+side).position.z+=.055;
- const hair=ellipsoid(head,'Dark_Hair',dark,[0,.22,.005],[.31,.13,.25]);hair.rotation.z=.04;
- for(const s of [-1,1]){const lock=ellipsoid(head,'Hair_Lock',dark,[s*.15,.16,.21],[.16,.10,.07]);lock.rotation.z=s*.32;ellipsoid(head,'Blush',red,[s*.18,-.09,.225],[.045,.025,.01]);}
- curve(head,'Friendly_Smile',[[-.085,-.15,.25],[0,-.18,.27],[.085,-.15,.25]],.006,dark);
- for(const s of [-1,1]){const tooth=mesh(new THREE.ConeGeometry(.012,.028,12),mat(0xfff8e8,.6),head,'Tiny_Fang',[s*.05,-.171,.274]);tooth.rotation.z=Math.PI;}
- const coat=body.getObjectByName('Plush_Body');coat.material=purple;const shirt=body.getObjectByName('Tummy');shirt.material=mat(0xf4e8da,.95);shirt.scale.set(.13,.20,.04);
- for(const s of [-1,1]){for(const name of ['Arm_'+(s<0?'L':'R'),'Leg_'+(s<0?'L':'R')])root.getObjectByName(name).traverse(o=>{if(o.isMesh&&o.name!=='Paw'&&o.name!=='Foot_Pad')o.material=purple;});}
- const cape=new THREE.Shape();cape.moveTo(-.24,.25);cape.quadraticCurveTo(-.52,-.12,-.45,-.42);cape.quadraticCurveTo(0,-.28,.45,-.42);cape.quadraticCurveTo(.52,-.12,.24,.25);cape.closePath();mesh(new THREE.ShapeGeometry(cape),mat(0x554268,.95,{side:THREE.DoubleSide}),body,'Velvet_Cape',[0,0,-.13]);
- root.getObjectByName('Tail').clear();return root;
+// Child-friendly red racing car, using the same named animation pivots as other friends.
+export function createMcqueenModel(){
+ const root=new THREE.Group();root.name='Mcqueen_Rig';
+ const red=mat(0xd5202b,.34,{metalness:.12}),bright=mat(0xf02d2d,.38),yellow=mat(0xffd43c,.5),dark=mat(0x262d36,.8),rubber=mat(0x292a30,.96),silver=mat(0xcad7da,.5,{metalness:.4}),glass=mat(0xf4fbf5,.3),iris=mat(0x4283bb,.3);
+ const box=(parent,name,material,pos,size,r=.08)=>mesh(new RoundedBoxGeometry(...size,4,r),material,parent,name,pos);
+ const body=pivot(root,'Torso',[0,.31,0]);
+ box(body,'Red_Racing_Body',red,[0,0,0],[.84,.34,1.30],.14);
+ box(body,'Front_Hood',bright,[0,.16,.38],[.76,.10,.51],.06);
+ box(body,'Front_Bumper',red,[0,-.05,.68],[.78,.12,.12],.04);
+ box(body,'Rear_Spoiler',red,[0,.30,-.57],[.86,.07,.20],.035);
+ for(const side of [-1,1]){
+  const arm=pivot(root,side<0?'Arm_L':'Arm_R',[side*.34,.25,.38]);const leg=pivot(root,side<0?'Leg_L':'Leg_R',[side*.34,.25,-.38]);
+  for(const [p,name] of [[arm,'Front_Wheel'],[leg,'Rear_Wheel']]){
+   const wheel=mesh(new THREE.CylinderGeometry(.17,.17,.14,28),rubber,p,name,[side*.045,0,0]);wheel.rotation.z=Math.PI/2;
+   const hub=mesh(new THREE.CylinderGeometry(.084,.084,.148,24),silver,p,'Wheel_Hub',[side*.045,0,0]);hub.rotation.z=Math.PI/2;
+   const cap=mesh(new THREE.CylinderGeometry(.033,.033,.155,20),red,p,'Wheel_Cap',[side*.045,0,0]);cap.rotation.z=Math.PI/2;
+  }
+  ellipsoid(body,'Headlight',yellow,[side*.28,.10,.655],[.09,.026,.012]);
+ }
+ const head=pivot(root,'Head',[0,.54,-.13]);
+ box(head,'Cabin',red,[0,.02,0],[.64,.37,.62],.12);
+ box(head,'Windshield',glass,[0,.035,.295],[.56,.25,.035],.04);
+ const eyes=pivot(head,'Eyes',[0,0,0]);
+ for(const side of [-1,1]){
+  const eye=pivot(eyes,side<0?'Eye_L':'Eye_R',[side*.13,.04,.32]);
+  ellipsoid(eye,'Iris',iris,[0,0,0],[.063,.09,.018]);ellipsoid(eye,'Pupil',dark,[0,0,.016],[.034,.06,.012]);ellipsoid(eye,'Catchlight',glass,[-.012,.025,.027],[.014,.018,.006]);
+  pivot(head,side<0?'Ear_L':'Ear_R',[side*.3,.15,0]);
+ }
+ const mouth=pivot(head,'Car_Mouth',[0,-.235,.91]);curve(mouth,'Smile',[[-.19,0,0],[-.10,-.035,.005],[0,-.045,.008],[.10,-.035,.005],[.19,0,0]],.012,dark);
+ const happy=ellipsoid(mouth,'Happy_Mouth',dark,[0,-.028,.01],[.17,.052,.01]);happy.visible=false;
+ const tongue=ellipsoid(mouth,'Happy_Tongue',mat(0xf09a86,.7),[0,-.052,.022],[.07,.016,.006]);tongue.visible=false;
+ const bolt=new THREE.Shape();bolt.moveTo(-.09,.06);bolt.lineTo(.01,.06);bolt.lineTo(-.025,-.015);bolt.lineTo(.10,-.015);bolt.lineTo(-.065,-.14);bolt.lineTo(-.03,-.05);bolt.lineTo(-.11,-.05);bolt.closePath();
+ const mark=mesh(new THREE.ShapeGeometry(bolt),yellow,body,'Lightning_Bolt',[0,.221,.39]);mark.rotation.x=-Math.PI/2;
+ const white=mat(0xfff3ca,.6);
+ curve(body,'Race_Number_9',[[-.18,.224,.45],[-.18,.224,.38],[-.12,.224,.38],[-.12,.224,.45],[-.18,.224,.45],[-.12,.224,.45],[-.12,.224,.53]],.008,white);
+ curve(body,'Race_Number_5',[[.16,.224,.38],[.10,.224,.38],[.10,.224,.45],[.16,.224,.45],[.16,.224,.53],[.10,.224,.53]],.008,white);
+ // Bold side lightning makes the racer recognisable from the side as it drives away.
+ for(const side of [-1,1]){const stripe=mesh(new THREE.ShapeGeometry(bolt),yellow,body,'Side_Lightning',[side*.427,.04,.04]);stripe.rotation.y=side*Math.PI/2;stripe.rotation.z=-Math.PI/2;stripe.scale.setScalar(1.5);}
+ const bow=pivot(root,'Bow',[0,.50,.52]);
+ pivot(root,'Tail',[0,.4,-.65]);return root;
 }

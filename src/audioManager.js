@@ -387,7 +387,7 @@ export class AudioManager {
           this._playGoldenDragonSound(type);
           break;
         case 'wolf': this._playDogSound(type); break;
-        case 'vampire': this._playDragonSound(type); break;
+        case 'mcqueen': this._playCarFriendSound(type); break;
         case 'teddy': this._playBunnySound(type); break;
         case 'bunny':
         default:
@@ -395,6 +395,14 @@ export class AudioManager {
           break;
       }
     } catch (e) {}
+  }
+
+  _playCarFriendSound(type) {
+    const now=this.ctx.currentTime, osc=this.ctx.createOscillator(), gain=this.ctx.createGain();
+    const duration=type==='escape'?.32:type==='happy'?.23:.14;
+    osc.type='triangle';osc.frequency.setValueAtTime(210,now);osc.frequency.exponentialRampToValueAtTime(type==='escape'?480:340,now+duration*.7);
+    gain.gain.setValueAtTime(.001,now);gain.gain.linearRampToValueAtTime(.085,now+.025);gain.gain.exponentialRampToValueAtTime(.001,now+duration);
+    osc.connect(gain);gain.connect(this.sfxGainNode||this.ctx.destination);osc.start(now);osc.stop(now+duration+.01);
   }
 
   _playCatSound(type) {

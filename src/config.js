@@ -59,7 +59,7 @@ export const GAME_CONFIG = {
       description: '祥云游动 · 跟随舒缓曲线，收集彩虹与双层能量。',
       victoryText: '小金舒展长尾，游过祥云，轻轻点头向你道谢。'
     },
-    vampire: {name:'吸血鬼 小夜',targetBubbles:10,asset:'little-vampire',escapeStyle:'hop',description:'月光漫步 · 跟随轻轻漂动的泡泡，和小夜一起玩。',victoryText:'小夜展开小披风，开心地向你挥手。'},
+    mcqueen: {name:'闪电麦昆',targetBubbles:10,asset:'lightning-mcqueen',escapeStyle:'drive',description:'闪电赛道 · 和麦昆一起追逐轻快的泡泡。',victoryText:'麦昆开动轮子，开心地向你眨眼道谢。'},
     wolf: {name:'大灰狼 灰灰',targetBubbles:12,asset:'friendly-wolf',escapeStyle:'bound',description:'森林追逐 · 和灰灰一起追随轻快的泡泡。',victoryText:'灰灰摇着尾巴，开心地跑回森林。'},
     teddy: {name:'泰迪熊 抱抱',targetBubbles:8,asset:'teddy-bear',escapeStyle:'hop',description:'温暖抱抱 · 和抱抱一起慢慢收集泡泡。',victoryText:'抱抱开心地挥挥手，送你一个大大的拥抱。'},
     panda: {
@@ -91,7 +91,7 @@ export const GAME_CONFIG = {
   }
 };
 
-export const PLAYABLE_ANIMALS = ['bunny', 'cat', 'frog', 'dog', 'dragon', 'goldenDragon','vampire','wolf','teddy'];
+export const PLAYABLE_ANIMALS = ['bunny', 'cat', 'frog', 'dog', 'dragon', 'goldenDragon','mcqueen','wolf','teddy'];
 export function resolveAnimal(selection, random = Math.random) {
   return selection === 'random' ? PLAYABLE_ANIMALS[Math.min(PLAYABLE_ANIMALS.length-1, Math.floor(random()*PLAYABLE_ANIMALS.length))] : (PLAYABLE_ANIMALS.includes(selection) ? selection : 'bunny');
 }

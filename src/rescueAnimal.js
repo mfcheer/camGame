@@ -9,10 +9,10 @@ import { createFrogModel } from './frogModel.js';
 import { createGoldenDragonModel } from './goldenDragonModel.js';
 import { createDragonModel } from './dragonModel.js';
 import { createDogModel } from './dogModel.js';
-import { createTeddyModel,createWolfModel,createVampireModel } from './newFriendsModel.js';
+import { createTeddyModel,createWolfModel,createMcqueenModel } from './newFriendsModel.js';
 import { GAME_CONFIG } from './config.js';
 
-export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,vampire:createVampireModel,wolf:createWolfModel,teddy:createTeddyModel};
+export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel};
 const smooth = t => t*t*(3-2*t);
 const clamp = THREE.MathUtils.clamp;
 
@@ -73,7 +73,7 @@ export class RescueAnimal {
     const parts={bunny:[['leftEarGroup','z'],['rightEarGroup','z'],['leftEarGroup','x'],['rightEarGroup','x']],
       cat:[['leftEarGroup','z'],['rightEarGroup','z'],['tailGroup','z'],['tailGroup','y']],
       dog:[['leftEarGroup','x'],['rightEarGroup','x'],['tailGroup','y'],['tailGroup','z']],
-      wolf:[['leftEarGroup','z'],['rightEarGroup','z'],['tailGroup','y']],teddy:[['leftEarGroup','z'],['rightEarGroup','z']],vampire:[]};
+      wolf:[['leftEarGroup','z'],['rightEarGroup','z'],['tailGroup','y']],teddy:[['leftEarGroup','z'],['rightEarGroup','z']],mcqueen:[]};
     this.springs=(parts[this.animalId]||[]).map(([name,axis])=>({
       get:()=>this[name].rotation[axis],apply:v=>this[name].rotation[axis]=v,pos:0,vel:0}));
     for(const s of this.springs)s.pos=s.get();
@@ -127,7 +127,7 @@ export class RescueAnimal {
     const vw=vh*w/h;
     const oldStart=this.startX,oldEnd=this.endX;
     const progress=oldEnd>oldStart?clamp((this.currentX-oldStart)/(oldEnd-oldStart),0,1):0;
-    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,vampire:1.02,wolf:1.02,teddy:1.02})[this.animalId];
+    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,wolf:1.02,teddy:1.02})[this.animalId];
     this.groundY=-vh/2+.45+getSafeInsets().bottom*vh/h;
     this.startX=-vw/2+Math.min(1.5,vw*.24)+getSafeInsets().left*vh/h;
     this.endX=vw/2-1.0-getSafeInsets().right*vh/h;
@@ -202,8 +202,8 @@ export class RescueAnimal {
       }
     }else if(this.animalId==='teddy'){
       this.leftArm.rotation.z=-pulse*.5*motion;this.rightArm.rotation.z=pulse*.5*motion;this.headGroup.rotation.z+=pulse*.12*motion;
-    }else if(this.animalId==='vampire'){
-      this.rightArm.rotation.z=pulse*.8*motion;this.headGroup.rotation.z+=pulse*.1*motion;
+    }else if(this.animalId==='mcqueen'){
+      this.bodyMesh.rotation.z=pulse*.08*motion;this.headGroup.rotation.z+=pulse*.08*motion;
     }else if(this.animalId==='frog'){
       this.leftArm.rotation.z=-pulse*.3;this.rightArm.rotation.z=pulse*.3;
       this.leftLeg.rotation.x=this.rightLeg.rotation.x=pulse*.12;
@@ -453,10 +453,14 @@ export class RescueAnimal {
         this.state='ESCAPING';const p=(t-.65)/2.5;const count=this.animalId==='frog'?4:5;
         const hopPos=p*count;const phase=hopPos%1;
         // Advance mainly in the airborne interval, so planted feet do not slide.
-        const step=['cat','dog','dragon','goldenDragon'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
+        const step=['cat','dog','dragon','goldenDragon','mcqueen'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
         this.currentX=THREE.MathUtils.lerp(this.escapeOriginX??this.startX,this.endX,step);
         this.animalGroup.position.x=this.currentX;this.animalGroup.rotation.y=Math.PI/2;this.animalGroup.rotation.z=-.035;
-        if(['cat','dog'].includes(this.animalId)) {
+        if(this.animalId==='mcqueen'){
+          this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
+          for(const wheel of [this.leftArm,this.rightArm,this.leftLeg,this.rightLeg])wheel.rotation.x=-p*Math.PI*14;
+          this.model.rotation.z=this.reducedMotion?0:Math.sin(p*25)*.018;
+        }else if(['cat','dog'].includes(this.animalId)) {
           this.setQuadrupedPosture(1);
           const stride=Math.sin(p*Math.PI*(this.animalId==='dog'?24:20));
           this.model.scale.set(1,1,1);jump=this.reducedMotion?0:Math.abs(stride)*(this.animalId==='dog'?.055:.025);
