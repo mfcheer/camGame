@@ -131,13 +131,13 @@ check('碰破泡泡能量飞向小动物，绳索逐步松解', () => {
   camera.updateMatrixWorld();
 
   const animal = new RescueAnimal(scene, camera);
-  animal.setEnergy(1);
-  assert.equal(animal.energyLevel, 1);
-  assert.equal(animal.ropeCoils[0].loosened, true, '获得能量后绳索应松动');
+  animal.setEnergy(2);
+  assert.equal(animal.energyLevel, 2);
+  assert.equal(animal.ropeCoils[0].loosened, true, '达到首个松绳档（小兔 6 能量的 1/5=2）后绳索应松动');
   assert.ok(animal.hopTimer > 0, '获得能量后小动物应展现受到鼓舞的欢跃动作');
 });
 
-// 5. 达成 5 分胜利大逃亡：绳索崩解并横向从左一路奔跑到最右侧
+// 5. 达成 6 分胜利大逃亡：绳索崩解并横向从左一路奔跑到最右侧
 check('集满 5 分后绳索崩解，小动物沿底部跑道从左向右横穿屏幕逃生', () => {
   const scene = new T.Scene();
   const camera = new T.PerspectiveCamera(48, 16/9, 0.1, 1000);

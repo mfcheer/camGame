@@ -101,3 +101,5 @@ Original prompt: 按 MVP_ACCEPTANCE_V0.2.md 验收《彩虹小队》，检查计
 2026-11-14 演出扩充：动作库 10→17（通用+4：挥手/果冻抖动/星星跳/点头打拍；每动物第二招牌：兔冲天跳、猫甩尾、狗歪头杀、蛙飞跃、龙悬停振翅、金龙腾云漂浮），固定结尾"深鞠躬+满屏爱心"谢幕；buildPlan 随机选招牌、lastPlan 防与上局重复（finaleBow 需排除出随机池）。360 次节目单压力检查零重复，qa_v26 断言同步，全量测试、浏览器闭环（wave→skyHop→spin→nodDance→finaleBow 自动推进→告别→结算→5 秒下一局）与截图目检通过，已推送（65cb5b1）。
 
 2026-11-14 文档同步：README 更新宠物互动→开心小演出、12 秒→5 秒驻留倒计时、示范手指仅限首泡、目录结构（happyPerformance）、测试套件数 24→44、通关合影步骤改为手动拍照；FLOW_LEARNING.md 三处"宠物互动"同步为演出表述。
+
+2026-11-14 中英成对发音：每轮锁定一张词卡（BubbleManager.roundWord + beginWordRound），开启"自动听英语"后同一词卡读一英一中各一次、先后顺序随机（roundWordLangs）；speechPolicy 预算 1→2，轮内成对第二次 2.5 秒巩固间隔（跨轮首次仍 12 秒）；audioManager playWord 支持 lang:'zh'（audio/words/zh/ 47 个 Tingting 210wpm 标准录音，build-natural-phrases.py 新增 --kind zh-words，voice-manifest.json 登记）。六动物目标能量改偶数 6/8/10/12/14/16（兔/蛙/猫/金/狗/龙）。更新 qa_v05/v06/v08/v10/v12/v32 断言，新增 qa_v33 浏览器闭环（同词卡 en+zh、6 进度点、zh 音频 200）。全量 108 项测试通过、构建+闭环+截图目检通过。

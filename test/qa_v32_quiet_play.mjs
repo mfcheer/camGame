@@ -11,7 +11,7 @@ function fixture(enabled=false){
   const policy=new SpeechPolicy(null);policy.setAutomatic(enabled);
   const calls=[],jobs=[],audio={playWord(id,options){calls.push({id,options});return new Promise(resolve=>jobs.push(resolve));},playPhrase(phrase){calls.push({phrase});return new Promise(resolve=>jobs.push(resolve));},stopWord(){jobs.at(-1)?.();},recoverFromGesture(){}};
   const queue=new VoiceQueue(audio,policy);
-  const g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',collectedCount:0,targetCount:5,speechPolicy:policy,voiceQueue:queue,audioManager:audio,activeAnimalId:'cat',bubbleManager:{lastPoppedEnergy:1},uiManager:{setLastWordAvailable(){},showWordCue(){},clearWordCue(){}}});
+  const g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',collectedCount:0,targetCount:6,speechPolicy:policy,voiceQueue:queue,audioManager:audio,activeAnimalId:'cat',bubbleManager:{lastPoppedEnergy:1},uiManager:{setLastWordAvailable(){},showWordCue(){},clearWordCue(){}}});
   return {g,policy,queue,audio,calls,jobs};
 }
 
@@ -28,12 +28,39 @@ test('default pops retain the latest word for deliberate point-reading without m
   assert.equal(g.lastPlayWord.id,'cup');assert.equal(g.cueWord,undefined);assert.equal(calls.length,0);assert.equal(policy.spokenThisRound,0);
 });
 
-test('many rapid pops speak once per round and never enqueue or prolong the matching picture',async()=>{
+test('rapid pops speak while busy drops the rest; the pair follow-up still speaks later in the same round',async()=>{
   const {g,calls,jobs,queue,policy}=fixture(true);const first=g.presentPlayWord(getWordById('egg'));
   await g.presentPlayWord(getWordById('cup'));await g.presentPlayWord(getWordById('cat'));
   assert.equal(calls.length,1);assert.equal(queue.pendingWord,null);assert.equal(g.cueWord.id,'egg');assert.equal(policy.spokenThisRound,1);
   policy.update(2);jobs[0]();await first;assert.equal(g.wordCueRemaining,.65);
-  policy.update(20);await g.presentPlayWord(getWordById('cup'));assert.equal(calls.length,1);
+  // After the short pair gap a later pop completes the pair; a third chance is blocked.
+  policy.update(2.6);await g.presentPlayWord(getWordById('cup'));assert.equal(calls.length,2);assert.equal(policy.spokenThisRound,2);
+  policy.update(12);await g.presentPlayWord(getWordById('cat'));assert.equal(calls.length,2);
+});
+
+test('the featured pair speaks English and Chinese once each with only a short reinforcement gap',async()=>{
+  const {queue,policy,jobs,calls}=fixture(true);
+  const first=queue.playAutomaticWord('egg',null,{review:true,lang:'en'});
+  assert.equal(calls.length,1);assert.deepEqual(calls[0].options,{review:true,lang:'en'});policy.update(1);jobs[0]();await first;
+  policy.update(2.4);await queue.playAutomaticWord('egg',null,{review:true,lang:'zh'});assert.equal(calls.length,1);
+  policy.update(.2);const second=queue.playAutomaticWord('egg',null,{review:true,lang:'zh'});
+  assert.deepEqual(calls[1].options,{review:true,lang:'zh'});jobs[1]();await second;
+  policy.update(20);await queue.playAutomaticWord('egg',null,{review:true,lang:'en'});assert.equal(calls.length,2);assert.equal(policy.spokenThisRound,2);
+});
+
+test('the round plans one word in a random language order and every bubble carries the same card',()=>{
+  const {g}=fixture(true);
+  g.roundWordLangs=['zh','en'];g.speechPolicy=new (Object.getPrototypeOf(g.speechPolicy).constructor)(null);g.speechPolicy.setAutomatic(true);
+  const langs=[];
+  const audio={playWord(id,options){langs.push(options.lang);return Promise.resolve();},stopWord(){}};
+  g.voiceQueue=new VoiceQueue(audio,g.speechPolicy);
+  return g.presentPlayWord(getWordById('egg')).then(()=>g.presentPlayWord(getWordById('egg'))).then(()=>{
+    assert.deepEqual(langs,['zh','en']);
+    const camera=new T.PerspectiveCamera(48,1,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();
+    const bubbles=new BubbleManager(new T.Scene(),camera,{},null);
+    bubbles.beginWordRound();const a=bubbles.chooseRoundWord();const b=bubbles.chooseRoundWord();const c=bubbles.chooseRoundWord();
+    assert.equal(a.id,b.id);assert.equal(b.id,c.id);
+  });
 });
 
 test('the twelve-second interval starts at voice completion, persists across rounds and cannot be bypassed by enabling again',async()=>{
@@ -72,7 +99,7 @@ test('disabling automatic English stops its current word and cue immediately wit
 });
 
 test('the final hit and the pet stage have no automatic voice that could cross the transition',async()=>{
-  const {g,calls}=fixture(true);g.collectedCount=4;await g.presentPlayWord(getWordById('egg'));assert.equal(calls.length,0);
+  const {g,calls}=fixture(true);g.collectedCount=5;await g.presentPlayWord(getWordById('egg'));assert.equal(calls.length,0);
   g.state='CELEBRATING';g.collectedCount=0;await g.presentPlayWord(getWordById('cat'));assert.equal(calls.length,0);
 });
 

@@ -12,10 +12,10 @@ export class VoiceQueue {
     });
   }
   playWord(id,onStart){return this.request('word',id,onStart);}
-  playAutomaticWord(id,onStart){
+  playAutomaticWord(id,onStart,options={review:true}){
     // Automatic opportunities are disposable; they must never enter the pending slots.
     if(this.paused||this.audio.isMuted||this.audio.recoveryNeeded||!this.policy?.allowAutomatic({busy:!!this.current}))return Promise.resolve();
-    return new Promise(resolve=>this.start({kind:'word',value:id,onStart,resolve,options:{review:true},automatic:true}));
+    return new Promise(resolve=>this.start({kind:'word',value:id,onStart,resolve,options,automatic:true}));
   }
   playManualWord(id,options={review:true}){this.cancel();this.resume();return this.request('word',id,null,options);}
   playPhrase(phrase){return this.request('phrase',phrase);}

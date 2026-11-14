@@ -3,7 +3,7 @@ import { GAME_CONFIG } from '../src/config.js';
 console.log('--- 开始《彩虹小队》核心规则与配置逻辑单元检查 ---');
 
 // 1. 验证目标泡泡数与动物配置
-console.assert(GAME_CONFIG.level.targetBubbles === 5, '目标泡泡数应严格为 5');
+console.assert(GAME_CONFIG.level.targetBubbles === 6, '目标泡泡数应严格为 6');
 console.assert(GAME_CONFIG.level.animalId === 'bunny', '当前森林第一站动物应为 bunny');
 console.assert(GAME_CONFIG.animals.bear !== undefined, '必须包含 bear 配置');
 console.assert(GAME_CONFIG.vision.maxNumPoses === 2, '姿态识别必须配置支持 2 人同框');

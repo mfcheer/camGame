@@ -169,8 +169,8 @@ check('小动物精致造型、小领结视觉落点与绳圈逐圈松解淡出'
   const target = animal.getTargetPosition();
   assert.ok(target.distanceTo(animal.bowtieGroup.getWorldPosition(new THREE.Vector3())) < 1e-6, '能量汇聚必须使用领结实际世界坐标，随模型缩放和动作同步');
 
-  // 得 1 分：第一圈绳圈先进入"松弛下垂"预告段，而非立即坠落
-  animal.setEnergy(1);
+  // 得 2 分（小兔 6 能量的首个松绳档）：第一圈绳圈先进入"松弛下垂"预告段，而非立即坠落
+  animal.setEnergy(2);
   assert.equal(animal.ropeCoils[0].loosened, true);
   assert.equal(animal.ropeCoils[0].falling, false, '里程碑先进松弛段（绷紧→松弛→崩断三段式）');
 

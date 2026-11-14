@@ -1006,27 +1006,28 @@ export class AudioManager {
     } catch (e) {}
   }
   // 11. 划破气泡时播报对应英语单词发音 (Web Audio API 0延迟缓冲播放 + 标准美语少儿教学发音 + Fallback)
-  getWordAudioUrl(wordId, {review = false, phrase = null} = {}) {
+  getWordAudioUrl(wordId, {review = false, phrase = null, lang = null} = {}) {
     if(phrase)return resolveAssetUrl(phrase.audio);
     const raw = String(wordId || "").trim().toLowerCase();
     const id = getWordById(raw)?.id || raw;
     const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
     const cleanBase = base.endsWith("/") ? base : base + "/";
+    if (lang === "zh") return `${cleanBase}audio/words/zh/${id}.mp3`;
     return `${cleanBase}audio/words/${review ? "review/" : ""}${id}.mp3`;
   }
 
-  async loadWordBuffer(wordId, {review = false, phrase = null} = {}) {
+  async loadWordBuffer(wordId, {review = false, phrase = null, lang = null} = {}) {
     const raw = String(wordId || "").trim().toLowerCase();
     const id = getWordById(raw)?.id || raw;
     if (!id) return null;
-    const key = phrase ? `phrase:${id}` : review ? `review:${id}` : id;
+    const key = phrase ? `phrase:${id}` : lang === "zh" ? `zh:${id}` : review ? `review:${id}` : id;
     if (this._wordAudioBuffers.has(key)) return this._wordAudioBuffers.get(key);
     if (this._wordAudioPromises.has(key)) return this._wordAudioPromises.get(key);
 
     const promise = (async () => {
       if (typeof fetch === "undefined") return null;
       try {
-        const url = this.getWordAudioUrl(id,{review,phrase});
+        const url = this.getWordAudioUrl(id,{review,phrase,lang});
         const controller=typeof AbortController!=='undefined'?new AbortController():null;
         const abort=setTimeout(()=>controller?.abort(),6500);
         let res;try{res=await withDeadline(fetch(url,controller?{signal:controller.signal}:undefined),7000,null);}finally{clearTimeout(abort);}
@@ -1051,7 +1052,7 @@ export class AudioManager {
   }
 
   // Resolve only after the recording (or speech fallback) actually ends.
-  playWord(wordId, {review = false, phrase = null} = {}) {
+  playWord(wordId, {review = false, phrase = null, lang = null} = {}) {
     this.stopWord();
     const raw = (typeof wordId === 'string' ? wordId : wordId?.id || '').trim().toLowerCase();
     const id = getWordById(raw)?.id || raw;
@@ -1087,14 +1088,14 @@ export class AudioManager {
         if(fallingBack||!current()){if(!finished&&!current())finish('cancelled');return;}
         fallingBack=true;stopSource();stopElement();
         if(typeof window==='undefined'||!window.speechSynthesis||typeof SpeechSynthesisUtterance==='undefined'){finish('unavailable');return;}
-        try{started=true;this._speakWordFallback(id,()=>finish(),review,phrase);}catch{finish('unavailable');}
+        try{started=true;this._speakWordFallback(id,()=>finish(),review,phrase,lang);}catch{finish('unavailable');}
       };
       const playElement=()=>{
         if(!current()){if(!finished)finish('cancelled');return;}
         if(mediaAttempted)return;mediaAttempted=true;stopSource();clearInterval(watch);watch=null;
         if(typeof Audio==='undefined'){fallback();return;}
         try{
-          const audio=new Audio(this.getWordAudioUrl(id,{review,phrase}));this._activeWordElement=audio;audio.volume=.95;
+          const audio=new Audio(this.getWordAudioUrl(id,{review,phrase,lang}));this._activeWordElement=audio;audio.volume=.95;
           audio.onended=()=>finish();audio.onerror=fallback;
           audio.onpause=()=>{if(current()&&!audio.ended){blocked();finish('interrupted');}};
           if(typeof audio.currentTime==='number'){
@@ -1132,7 +1133,7 @@ export class AudioManager {
       };
       startup=setTimeout(()=>{if(current()&&!started)playElement();},this.voiceStartupTimeoutMs||1800);startup?.unref?.();
       deadline=setTimeout(()=>{if(!current())return;blocked();finish('timeout');try{if(typeof window!=='undefined')window.speechSynthesis?.cancel();}catch{}},this.voiceTimeoutMs||16000);deadline?.unref?.();
-      if(this.ctx&&typeof this.ctx.createBufferSource==='function')this.loadWordBuffer(id,{review,phrase}).then(playBuffer).catch(playElement);
+      if(this.ctx&&typeof this.ctx.createBufferSource==='function')this.loadWordBuffer(id,{review,phrase,lang}).then(playBuffer).catch(playElement);
       else playElement();
     });
   }
@@ -1151,11 +1152,11 @@ export class AudioManager {
     if(!this.isMuted&&!this.isBGMPaused&&this.bgmGainNode&&this.ctx){try{this.bgmGainNode.gain.setTargetAtTime(.08,this.ctx.currentTime,.2);}catch{}}
   }
 
-  _speakWordFallback(id, onDone=()=>{}, review=false, phrase=null) {
+  _speakWordFallback(id, onDone=()=>{}, review=false, phrase=null, lang=null) {
     try {
       const cfg=getWordById(id), zh=cfg?.zh||getWordCn(id), en=cfg?.word||id;
       const pair=[{text:zh,lang:'zh-CN'},{text:en,lang:'en-US'}].filter(p=>p.text);
-      const phrases=phrase ? [{text:phrase.en,lang:'en-US'}] : review ? [{text:en,lang:'en-US'}] : [...pair,...pair];
+      const phrases=phrase ? [{text:phrase.en,lang:'en-US'}] : lang==='zh' ? [{text:zh,lang:'zh-CN'}] : review ? [{text:en,lang:'en-US'}] : [...pair,...pair];
       if(!phrases.length){onDone();return;}
       phrases.forEach((phrase,index)=>{
         const utterance=new SpeechSynthesisUtterance(phrase.text);
@@ -1172,6 +1173,7 @@ export class AudioManager {
 
     for (const id of ids) {
       this.loadWordBuffer(id,{review}).catch(() => {});
+      this.loadWordBuffer(id,{lang:'zh'}).catch(() => {});
       if (typeof Audio !== "undefined") {
         if (!this._wordAudioElements) this._wordAudioElements = new Map();
         const key=review?`review:${id}`:id;
@@ -1180,6 +1182,14 @@ export class AudioManager {
             const a = new Audio(this.getWordAudioUrl(id,{review}));
             a.preload = "auto";
             this._wordAudioElements.set(key, a);
+          } catch (e) {}
+        }
+        const zhKey=`zh:${id}`;
+        if (!this._wordAudioElements.has(zhKey)) {
+          try {
+            const a = new Audio(this.getWordAudioUrl(id,{lang:'zh'}));
+            a.preload = "auto";
+            this._wordAudioElements.set(zhKey, a);
           } catch (e) {}
         }
       }

@@ -10,7 +10,7 @@ export const GAME_CONFIG = {
     id: 1,
     name: '森林第一站',
     animalId: 'bunny', // 森林第一站：小兔萌萌
-    targetBubbles: 5, // 首版锁定：碰破 5 个泡泡送小动物起飞
+    targetBubbles: 6, // 偶数目标：每轮锁定一个单词，成对中英文发音（6 起步逐个 +2）
     bubbleColors: [
       0xff6b81, // 樱花粉
       0xffa502, // 暖阳橙
@@ -26,36 +26,36 @@ export const GAME_CONFIG = {
       name: '小棕熊 嘟嘟',
       weightCategory: 'light',
       balloonScale: 1.0,
-      description: '活泼可爱的小熊，需要 5 个彩虹泡泡即可起飞。'
+      description: '活泼可爱的小熊，需要 6 个彩虹泡泡即可起飞。'
     },
     bunny: {
       name: '小白兔 萌萌',
       weightCategory: 'feather',
       balloonScale: 0.9,
-      targetBubbles: 5, asset: 'forest-bunny', escapeStyle: 'hop',
+      targetBubbles: 6, asset: 'forest-bunny', escapeStyle: 'hop',
       description: '安稳入门 · 大泡泡停在身前，慢慢碰也能成功。'
     },
     cat: {
-      name: '橘猫 橘子', targetBubbles: 8, asset: 'marmalade-cat', escapeStyle: 'trot',
+      name: '橘猫 橘子', targetBubbles: 10, asset: 'marmalade-cat', escapeStyle: 'trot',
       description: '慢漂追踪 · 跟着缓慢漂移的泡泡，靠近就会停住。'
     },
     frog: {
-      name: '小青蛙 呱呱', targetBubbles: 6, asset: 'pond-frog', escapeStyle: 'leap',
+      name: '小青蛙 呱呱', targetBubbles: 8, asset: 'pond-frog', escapeStyle: 'leap',
       description: '荷叶弹跳 · 等泡泡跳起落稳，再伸手碰一碰。',
       victoryText: '呱呱蹬开后腿，跳过荷叶回到池塘啦。'
     },
     dog: {
-      name: '小狗 旺旺', targetBubbles: 10, asset: 'sunny-puppy', escapeStyle: 'bound',
+      name: '小狗 旺旺', targetBubbles: 14, asset: 'sunny-puppy', escapeStyle: 'bound',
       description: '轻快连击 · 更短出场间隔，更宽松的彩虹连击节奏。',
       victoryText: '旺旺摇着尾巴跑回花园，开心地向你伸出小爪。'
     },
     dragon: {
-      name: '飞龙 翼翼', targetBubbles: 12, asset: 'jade-dragon', escapeStyle: 'glide',
+      name: '飞龙 翼翼', targetBubbles: 16, asset: 'jade-dragon', escapeStyle: 'glide',
       description: '云间弧线 · 沿弧线追踪，交替体验果冻与彩虹泡泡。',
       victoryText: '翼翼张开翅膀飞过云谷，回头向你挥了挥小爪。'
     },
     goldenDragon: {
-      name: '金龙 小金', targetBubbles: 9, asset: 'golden-dragon', escapeStyle: 'serpentine',
+      name: '金龙 小金', targetBubbles: 12, asset: 'golden-dragon', escapeStyle: 'serpentine',
       description: '祥云游动 · 跟随舒缓曲线，收集彩虹与双层能量。',
       victoryText: '小金舒展长尾，游过祥云，轻轻点头向你道谢。'
     },

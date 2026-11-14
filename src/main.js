@@ -523,7 +523,10 @@ export class Game {
 
   beginRoundGreeting() {
     this.animalSpeech?.cancel();this.voiceQueue?.cancel();this.voiceQueue?.resume();this.speechPolicy?.beginRound();this.lastPlayWord=null;this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
-    if(this.bubbleManager?.wordMode!==false&&this.bubbleManager?.chooseRoundWord&&!this.bubbleManager.wordPool?.length){const first=this.bubbleManager.chooseRoundWord();if(first)this.bubbleManager.wordQueue.unshift(first);}
+    // One featured word per round, spoken once in English and once in Chinese
+    // in a random order so the pair is always a complete, understandable input.
+    if(this.bubbleManager?.beginWordRound){this.bubbleManager.beginWordRound();this.bubbleManager.chooseRoundWord?.();}
+    this.roundWordLangs=Math.random()<.5?['en','zh']:['zh','en'];
     if(this.speechPolicy?.automaticEnabled)this.audioManager?.preloadWordAudios?.(this.bubbleManager.wordPool?.map(w=>w.id)||[],{review:true});
     if(this.state==='PLAYING')this.bubbleManager.spawnNext(this.collectedCount,true);
   }
@@ -532,12 +535,14 @@ export class Game {
     this.lastPlayWord=word;this.uiManager?.setLastWordAvailable?.(true);
     // The last hit transitions to pet play immediately, so it has no speech opportunity.
     if(this.state!=='PLAYING'||this.collectedCount+(this.bubbleManager?.lastPoppedEnergy||1)>=this.targetCount)return Promise.resolve();
+    const spoken=this.speechPolicy?.spokenThisRound||0;
+    const lang=this.roundWordLangs?.[spoken]==='zh'?'zh':'en';
     let token;
     return this.voiceQueue.playAutomaticWord(word.id,()=>{
       if(this.state!=='PLAYING')return;
       token=this.playWordCueToken=(this.playWordCueToken||0)+1;
       this.cueWord=word;this.wordCueRemaining=Infinity;this.uiManager?.showWordCue?.(word);
-    }).finally(()=>{
+    },{review:true,lang}).finally(()=>{
       if(token!==undefined&&token===this.playWordCueToken&&this.state==='PLAYING'&&this.cueWord===word)this.wordCueRemaining=.65;
     });
   }
@@ -614,7 +619,7 @@ export class Game {
 
   }
 
-  // 达成 5 个泡泡，解救成功，逃生大欢庆！
+  // 达成 6 个泡泡（偶数目标起步），解救成功，逃生大欢庆！
   handleVictory() {
     this.voiceQueue?.cancel();this.animalSpeech?.cancel();this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
     this.state = 'CELEBRATING';

@@ -22,7 +22,7 @@ check('Frog and dog assets are real GLBs with complete compatible animation pivo
 });
 check('Selecting new animals sets their own goals before the game starts',()=>{
  const game=Object.assign(Object.create(Game.prototype),{state:'START',rescueAnimal:{animalId:'bunny',setAnimal(id){this.animalId=id;}},uiManager:{}});
- for(const [id,target]of [['frog',6],['dog',10],['dragon',12]]){game.handleSelectAnimal(id);assert.equal(game.activeAnimalId,id);assert.equal(game.targetCount,target);assert.equal(game.rescueAnimal.animalId,id);}
+ for(const [id,target]of [['frog',8],['dog',14],['dragon',16]]){game.handleSelectAnimal(id);assert.equal(game.activeAnimalId,id);assert.equal(game.targetCount,target);assert.equal(game.rescueAnimal.animalId,id);}
 });
 check('Frog launches in larger jumps; puppy uses an alternating four-footed gait and wag',()=>{
  const frog=new RescueAnimal(new T.Scene(),camera(),'frog'),dog=new RescueAnimal(new T.Scene(),camera(),'dog');
@@ -37,8 +37,8 @@ check('Both new animals pause and reset after completing the whole escape',()=>{
   a.setPaused(false);a.update(3,4.2);assert.equal(a.state,'ESCAPED');a.reset();assert.equal(a.animalGroup.visible,true);assert.equal(a.state,'TRAPPED');assert.equal(a.energyLevel,0);assert.ok(a.ropeCoils.every(c=>c.group.visible));assert.ok([...a.furMaterials].every(m=>m.opacity===1));
  }
 });
-check('Ten-point puppy progress loosens ropes gradually instead of releasing on the first point',()=>{
- const a=new RescueAnimal(new T.Scene(),camera(),'dog');a.setEnergy(1);assert.equal(a.ropeCoils[0].loosened,false);a.setEnergy(6);assert.equal(a.ropeCoils.filter(c=>c.loosened).length,3);a.setEnergy(8);assert.equal(a.ropeCoils.filter(c=>c.loosened).length,4);
+check('Fourteen-point puppy progress loosens ropes gradually instead of releasing on the first point',()=>{
+ const a=new RescueAnimal(new T.Scene(),camera(),'dog');a.setEnergy(1);assert.equal(a.ropeCoils[0].loosened,false);a.setEnergy(6);assert.equal(a.ropeCoils.filter(c=>c.loosened).length,2);a.setEnergy(9);assert.equal(a.ropeCoils.filter(c=>c.loosened).length,3);a.setEnergy(12);assert.equal(a.ropeCoils.filter(c=>c.loosened).length,4);
 });
 check('Pond and puppy garden themes have independent decorations and colours',()=>{
  const s=new SceneManager({appendChild(){}});s.setAnimalTheme('frog');const pond=s.pathMaterial.color.getHex();assert.equal(s.frogExtras.visible,true);assert.equal(s.dogExtras.visible,false);assert.equal(s.catExtras.visible,false);
@@ -56,8 +56,8 @@ check('Dragon energy response flaps actual wings; pause freezes them',()=>{
 check('Dragon glides continuously above the path and resets wings after farewell',()=>{
  const a=new RescueAnimal(new T.Scene(),camera(),'dragon');a.startEscape();a.update(1.4,1.4);assert.equal(a.state,'ESCAPING');assert.ok(a.currentY-a.groundY>.15);const wing=a.model.getObjectByName('Wing_R');a.reset();assert.equal(a.currentY,a.groundY);assert.equal(wing.rotation.y,.18);assert.equal(a.leftLeg.rotation.x,0);
 });
-check('Twelve-point dragon only releases its final rope on the final energy',()=>{
- const a=new RescueAnimal(new T.Scene(),camera(),'dragon');a.setEnergy(11);assert.equal(a.ropeCoils.filter(c=>c.loosened).length,4);a.setEnergy(12);assert.ok(a.ropeCoils.every(c=>c.loosened));
+check('Sixteen-point dragon only releases its final rope on the final energy',()=>{
+ const a=new RescueAnimal(new T.Scene(),camera(),'dragon');a.setEnergy(13);assert.equal(a.ropeCoils.filter(c=>c.loosened).length,4);a.setEnergy(16);assert.ok(a.ropeCoils.every(c=>c.loosened));
 });
 check('Cloud crystal scenery is exclusive to the dragon and switches away cleanly',()=>{
  const s=new SceneManager({appendChild(){}});s.setAnimalTheme('dragon');assert.equal(s.dragonExtras.visible,true);assert.equal(s.dogTrail.visible,false);assert.equal(s.frogExtras.visible,false);s.setAnimalTheme('bunny');assert.equal(s.dragonExtras.visible,false);assert.equal(s.bunnyExtras.visible,true);
@@ -65,7 +65,7 @@ check('Cloud crystal scenery is exclusive to the dragon and switches away cleanl
 check('Rope release plays in three beats: taut tease, slack sag, snap with recoil',()=>{
  const a=new RescueAnimal(new T.Scene(),camera(),'bunny');
  a.update(.2,.2);assert.equal(a.ropeCoils[0].loosened,false);
- a.setEnergy(1);
+ a.setEnergy(2);
  assert.equal(a.ropeCoils[0].loosened,true);assert.equal(a.ropeCoils[0].falling,false,'milestone enters slack first');
  a.update(.2,.4);assert.ok(a.ropeCoils[0].group.position.y<0,'slack sags downward');
  let snapped=false;a.onRopeSnap=()=>snapped=true;
@@ -103,7 +103,7 @@ check('Trapped mood eases from worried to excited with a persistent smile',()=>{
  for(let i=0;i<45;i++)a.update(1/45,i/45);
  assert.ok(a.moodWorried>.5,'worried at empty energy');
  assert.ok(a.leftEarGroup.rotation.z<.1,'ears droop when worried');
- a.setEnergy(3);
+ a.setEnergy(4);
  for(let i=0;i<75;i++)a.update(1/60,1+i/60);
  assert.ok(a.moodExcited>.5,'excited near rescue');
  assert.equal(a.happyMouth.visible,true,'persistent smile');

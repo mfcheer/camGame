@@ -89,6 +89,7 @@ export class BubbleManager {
     this.visualDemo = new InteractionDemo(scene);
     this.wordPool = [];
     this.wordQueue = [];
+    this.roundWord = null;
     this.wordTextureCache = new Map();
     this.onWordPop = null;
     if (typeof document !== 'undefined') {
@@ -543,6 +544,8 @@ export class BubbleManager {
     this.constrainPlayPosition(b.group.position, b.playBounds);
   }
 
+  // One featured word per rescue round: every bubble carries the same card,
+  // so the round can speak it once in English and once in Chinese.
   chooseRoundWord() {
     const shuffle = items => {
       for (let i=items.length-1;i>0;i--) {
@@ -551,6 +554,7 @@ export class BubbleManager {
       }
       return items;
     };
+    if (this.roundWord) return this.roundWord;
     // Three familiar words per rescue; meet each one before repeating.
     if (!this.wordPool.length) {
       const categories=[...new Set(WORDS_LIST.map(word=>word.category))];
@@ -568,7 +572,12 @@ export class BubbleManager {
         [this.wordQueue[0],this.wordQueue[1]]=[this.wordQueue[1],this.wordQueue[0]];
       }
     }
-    return this.wordQueue.shift();
+    this.roundWord=this.wordQueue.shift();
+    return this.roundWord;
+  }
+
+  beginWordRound() {
+    this.roundWord=null;
   }
 
   createBubble(index, forceType = null, forceWord = null) {
@@ -1671,6 +1680,7 @@ export class BubbleManager {
     this.roundSeenWords.clear();
     this.wordPool = [];
     this.wordQueue = [];
+    this.roundWord = null;
     this.lastWordId = null;
     this.roundEase = 0;
     this.comfortableHits = 0;

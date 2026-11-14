@@ -13,7 +13,7 @@ check('Flying dragon is preserved; golden dragon is an independent yellow, wingl
  const file=fs.readFileSync(new URL('../public/models/golden-dragon.glb',import.meta.url));assert.equal(file.toString('ascii',0,4),'glTF');const json=JSON.parse(file.toString('utf8',20,20+file.readUInt32LE(12)).trim());assert.ok(json.nodes.some(n=>n.name==='Whisker_R'));assert.ok(!json.nodes.some(n=>n.name==='Wing_L'));
 });
 check('Golden dragon responds, swims, freezes while paused and resets every extra pivot',()=>{
- const a=new RescueAnimal(new T.Scene(),camera(),'goldenDragon');assert.equal(a.targetEnergy,9);a.setEnergy(1);a.update(.3,.3);assert.ok(a.reactionTimer>0);a.startEscape();a.update(1.4,1.7);assert.equal(a.state,'ESCAPING');assert.ok(a.currentY-a.groundY>.15);assert.ok(Math.abs(a.bodyMesh.rotation.z)>.01);
+ const a=new RescueAnimal(new T.Scene(),camera(),'goldenDragon');assert.equal(a.targetEnergy,12);a.setEnergy(1);a.update(.3,.3);assert.ok(a.reactionTimer>0);a.startEscape();a.update(1.4,1.7);assert.equal(a.state,'ESCAPING');assert.ok(a.currentY-a.groundY>.15);assert.ok(Math.abs(a.bodyMesh.rotation.z)>.01);
  const angle=a.tailGroup.rotation.y,x=a.currentX;a.setPaused(true);a.update(5,6.7);assert.equal(a.currentX,x);assert.equal(a.tailGroup.rotation.y,angle);a.setPaused(false);a.update(3,9.7);assert.equal(a.state,'ESCAPED');a.reset();assert.equal(a.bodyMesh.rotation.z,0);assert.equal(a.model.getObjectByName('Whisker_L').rotation.y,0);assert.equal(a.animalGroup.visible,true);
 });
 check('Every stage changes actual road geometry and destination props without stacking other stages',()=>{

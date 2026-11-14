@@ -54,15 +54,15 @@ check('Losing a hand moves an edge target inward; it does not award a hit',()=>{
  for(let i=0;i<80;i++)b.update(.016,i*.016);
  assert.equal(b.activeBubble.assisted,true);assert.ok(b.activeBubble.basePos.x<before-.5);assert.equal(b.checkHandCollisions(b.latestTrackedPlayers),false);
 });
-check('Cat requires eight bubbles and loosens ropes across its own progress',()=>{
- const a=new RescueAnimal(new T.Scene(),camera(),'cat');assert.equal(a.targetEnergy,8);a.setEnergy(1);assert.equal(a.ropeCoils[0].loosened,false);a.setEnergy(2);assert.equal(a.ropeCoils[0].loosened,true);a.setEnergy(5);assert.equal(a.ropeCoils.filter(c=>c.loosened).length,3);a.setEnergy(7);assert.equal(a.ropeCoils.every(c=>c.loosened),true);
+check('Cat requires ten bubbles and loosens ropes across its own progress',()=>{
+ const a=new RescueAnimal(new T.Scene(),camera(),'cat');assert.equal(a.targetEnergy,10);a.setEnergy(1);assert.equal(a.ropeCoils[0].loosened,false);a.setEnergy(2);assert.equal(a.ropeCoils[0].loosened,true);a.setEnergy(6);assert.equal(a.ropeCoils.filter(c=>c.loosened).length,3);a.setEnergy(10);assert.equal(a.ropeCoils.every(c=>c.loosened),true);
 });
 check('Cat trots with alternating paws; rabbit pushes both hind legs together',()=>{
  for(const id of ['cat','bunny']){const a=new RescueAnimal(new T.Scene(),camera(),id);a.startEscape();a.update(1,1);if(id==='cat'){assert.ok(a.leftArm.rotation.x*a.rightArm.rotation.x<0);assert.ok(a.headGroup.position.y<.7);assert.ok(a.leftArm.position.z>a.leftLeg.position.z+.5);}else assert.equal(a.leftLeg.rotation.x,a.rightLeg.rotation.x);}
 });
 check('Selection/random resolves only playable animals and sets goal before start',()=>{
  assert.equal(resolveAnimal('random',()=>0),'bunny');assert.equal(resolveAnimal('random',()=>.99),'goldenDragon');assert.equal(resolveAnimal('bad'),'bunny');
- const game=Object.assign(Object.create(Game.prototype),{state:'START',rescueAnimal:{animalId:'bunny',setAnimal(id){this.animalId=id;}},uiManager:{}});game.handleSelectAnimal('cat');assert.equal(game.targetCount,8);assert.equal(game.activeAnimalId,'cat');assert.equal(GAME_CONFIG.animals.bunny.targetBubbles,5);
+ const game=Object.assign(Object.create(Game.prototype),{state:'START',rescueAnimal:{animalId:'bunny',setAnimal(id){this.animalId=id;}},uiManager:{}});game.handleSelectAnimal('cat');assert.equal(game.targetCount,10);assert.equal(game.activeAnimalId,'cat');assert.equal(GAME_CONFIG.animals.bunny.targetBubbles,6);
 });
 check('Render interpolation and collision share the same visible marker',()=>{
  const c=camera(),b=new BubbleManager(new T.Scene(),c,{playPop(){}},null);b.createBubble(0);b.activeBubble.spawnElapsed=.5;
