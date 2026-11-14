@@ -31,8 +31,8 @@ test('default pops retain the latest word for deliberate point-reading without m
 test('automatic speech pairs Chinese and English without queuing fast hits',async()=>{
  const {g,calls,jobs,policy}=fixture(true);const first=g.presentPlayWord(getWordById('egg'));await g.presentPlayWord(getWordById('cup'));assert.deepEqual(calls.map(c=>c.options.lang),['zh']);jobs[0]();await tick();assert.deepEqual(calls.map(c=>c.options.lang),['zh','en']);jobs[1]();await first;assert.equal(policy.spokenThisRound,1);
 });
-test('automatic pairs respect a four-second quiet interval across rounds',async()=>{
- const {queue,policy,jobs,calls}=fixture(true);const first=queue.playAutomaticPair('egg');jobs[0]();await tick();jobs[1]();await first;policy.beginRound();policy.update(3.9);await queue.playAutomaticPair('cup');assert.equal(calls.length,2);policy.update(.2);const next=queue.playAutomaticPair('cup');jobs[2]();await tick();jobs[3]();await next;assert.equal(calls.length,4);
+test('automatic pairs respect a micro quiet interval across rounds',async()=>{
+ const {queue,policy,jobs,calls}=fixture(true);const first=queue.playAutomaticPair('egg');jobs[0]();await tick();jobs[1]();await first;policy.beginRound();policy.update(0.2);await queue.playAutomaticPair('cup');assert.equal(calls.length,2);policy.update(.1);const next=queue.playAutomaticPair('cup');jobs[2]();await tick();jobs[3]();await next;assert.equal(calls.length,4);
 });
 
 test('a busy manual phrase skips an automatic opportunity without using its budget or starting a backlog',async()=>{
@@ -63,9 +63,9 @@ test('disabling automatic English stops its current word and cue immediately wit
   const bubbles=new BubbleManager(new T.Scene(),camera,{},null);bubbles.createBubble(0);assert.ok(bubbles.activeBubble.word?.id);
 });
 
-test('the final hit and the pet stage have no automatic voice that could cross the transition',async()=>{
-  const {g,calls}=fixture(true);g.collectedCount=5;await g.presentPlayWord(getWordById('egg'));assert.equal(calls.length,0);
-  g.state='CELEBRATING';g.collectedCount=0;await g.presentPlayWord(getWordById('cat'));assert.equal(calls.length,0);
+test('the final hit speaks during play, while pet stage has no automatic voice',async()=>{
+  const {g,calls}=fixture(true);g.collectedCount=5;await g.presentPlayWord(getWordById('egg'));assert.equal(calls.length,1);
+  g.state='CELEBRATING';g.collectedCount=0;await g.presentPlayWord(getWordById('cat'));assert.equal(calls.length,1);
 });
 
 test('only active game and pet time count toward quiet intervals, not paused, home or results time',()=>{

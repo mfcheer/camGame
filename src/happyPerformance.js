@@ -143,14 +143,16 @@ const ACTIONS=[
     a.leftArm.rotation.z=-.45*bow;a.rightArm.rotation.z=.45*bow;
     a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*.02*m;
   }},
-  {id:'raceRev',dur:1.5,animals:['mcqueen'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*6)*m;a.bodyMesh.rotation.z=s*.04;a.headGroup.rotation.z=-s*.035;for(const p of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])p.rotation.x=t*Math.PI*4;}},
-  {id:'raceSway',dur:1.5,animals:['mcqueen'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.model.rotation.z=s*.08;a.headGroup.rotation.z=-s*.05;}},
+  {id:'raceRev',dur:1.5,animals:['mcqueen','thomas'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*6)*m;a.bodyMesh.rotation.z=s*.04;a.headGroup.rotation.z=-s*.035;for(const p of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])p.rotation.x=t*Math.PI*4;}},
+  {id:'raceSway',dur:1.5,animals:['mcqueen','thomas'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.model.rotation.z=s*.08;a.headGroup.rotation.z=-s*.05;}},
   {id:'bearHug',dur:1.5,animals:['teddy'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.leftArm.rotation.z=-s*.9;a.rightArm.rotation.z=s*.9;a.headGroup.rotation.z=s*.12;}},
   {id:'bearSway',dur:1.6,animals:['teddy'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.bodyMesh.rotation.z=s*.12;a.headGroup.rotation.z=-s*.1;}},
   {id:'jettFly',dur:1.7,animals:['jett'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.animalGroup.position.y+=s*.16;a.model.rotation.z=Math.sin(t*Math.PI*2)*.12*m;for(const [n,d] of [['Wing_L',-1],['Wing_R',1]]){const w=a.model.getObjectByName(n);if(w)w.rotation.z=d*Math.sin(t*Math.PI*4)*.14*m;}}},
   {id:'jettWave',dur:1.5,animals:['jett'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.rightArm.rotation.z=1.0+s*.3;a.headGroup.rotation.z=s*.06;}},
+  {id:'pigJump',dur:1.5,animals:['peppa'],fn:(a,t,m)=>{const s=Math.abs(Math.sin(t*Math.PI*3))*m;a.animalGroup.position.y+=s*.14;a.leftArm.rotation.z=-s*.45;a.rightArm.rotation.z=s*.45;}},
+  {id:'pigWave',dur:1.5,animals:['peppa'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.rightArm.rotation.z=1+s*.3;a.headGroup.rotation.z=s*.08;}},
 ];
-const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['tailChase','headTilt'],teddy:['bearHug','bearSway'],chase:['tailChase','headTilt'],jett:['jettFly','jettWave']};
+const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['tailChase','headTilt'],teddy:['bearHug','bearSway'],chase:['tailChase','headTilt'],jett:['jettFly','jettWave'],peppa:['pigJump','pigWave'],thomas:['raceRev','raceSway']};
 const FINALE=ACTIONS.find(x=>x.id==='finaleBow');
 
 // 结算后的"开心小演出"：动物自己走到台前随机表演，孩子和家长可以休息。

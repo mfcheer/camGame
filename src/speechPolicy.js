@@ -1,7 +1,7 @@
 // Speech frequency uses active game time, never wall-clock time spent in another app.
 export const AUTO_ENGLISH_KEY = 'camgame:autoEnglish:v1';
 export class SpeechPolicy {
-  constructor(storage) {
+  constructor(storage, {minInterval = 0.25, maxPerRound = Infinity} = {}) {
     try { this.storage = storage === undefined ? globalThis.localStorage : storage; } catch {}
     this.automaticEnabled = false;
     try { this.automaticEnabled = this.storage?.getItem(AUTO_ENGLISH_KEY) === 'true'; } catch {}
@@ -10,6 +10,8 @@ export class SpeechPolicy {
     this.spokenThisRound = 0;
     this.serial = 0;
     this.speakingToken = null;
+    this.minInterval = minInterval;
+    this.maxPerRound = maxPerRound;
   }
   setAutomatic(enabled) {
     this.automaticEnabled = !!enabled;
@@ -18,10 +20,10 @@ export class SpeechPolicy {
   beginRound() { this.spokenThisRound = 0; }
   update(dt) { this.activeSeconds += Math.max(0, dt); }
   allowAutomatic({busy = false} = {}) {
-    // Each opportunity is one complete Chinese-then-English pair; skip busy moments.
+    // Each opportunity is a word speech; skip busy moments and brief overlap intervals.
     if (!this.automaticEnabled || busy || this.speakingToken !== null ||
-        this.spokenThisRound >= 2 ||
-        this.activeSeconds - this.lastSpeechEnd < 4) return false;
+        this.spokenThisRound >= this.maxPerRound ||
+        this.activeSeconds - this.lastSpeechEnd < this.minInterval) return false;
     this.spokenThisRound++;
     return true;
   }
@@ -33,6 +35,6 @@ export class SpeechPolicy {
   }
   toJSON() {
     return {automaticEnabled: this.automaticEnabled, spokenThisRound: this.spokenThisRound,
-      cooldownSeconds: Math.max(0, Math.round((4 - (this.activeSeconds - this.lastSpeechEnd)) * 10) / 10)};
+      cooldownSeconds: Math.max(0, Math.round((this.minInterval - (this.activeSeconds - this.lastSpeechEnd)) * 10) / 10)};
   }
 }

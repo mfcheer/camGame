@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {mat,mesh,pivot,ellipsoid,curve} from './rabbitModel.js';
+import {mat,mesh,pivot,ellipsoid,sculpt,curve} from './rabbitModel.js';
 import {createDogModel} from './dogModel.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 
@@ -25,10 +25,28 @@ export function createTeddyModel(){
  return root;
 }
 export function createWolfModel(){
- const root=createDogModel();root.name='Friendly_Wolf_Rig';
- root.traverse(o=>{if(!o.isMesh)return; const c=o.material?.color;if(!c)return; const h=c.getHex();if(h===0xeacb97)c.setHex(0x98a3a6);else if(h===0xb98250)c.setHex(0x677a83);else if(h===0xffefd1)c.setHex(0xeee5d4);});
- for(const s of [-1,1]){const ear=root.getObjectByName(s<0?'Ear_L':'Ear_R');ear.clear();const outer=mat(0x677a83,.95),inner=mat(0xe5a8a0,.95);const e=mesh(new THREE.ConeGeometry(.105,.28,24),outer,ear,'Pointed_Wolf_Ear',[s*.015,.10,0]);e.rotation.z=-s*.15;const inn=mesh(new THREE.ConeGeometry(.055,.17,20),inner,ear,'Wolf_Inner_Ear',[s*.015,.10,.055]);inn.rotation.z=-s*.15;}
- return root;
+ const root=new THREE.Group();root.name='Friendly_Wolf_Rig';
+ const fur=mat(0x82939b,.94),light=mat(0xd4d8d2,.95),shadow=mat(0x596b76,.94),pink=mat(0xdca6a3,.9),ink=mat(0x35434a,.42),amber=mat(0xb5813f,.5),white=mat(0xfff9ec,.5);
+ const body=pivot(root,'Torso',[0,.40,0]);ellipsoid(body,'Wolf_Chest',fur,[0,.025,0],[.27,.34,.23]);ellipsoid(body,'Silver_Bib',light,[0,.04,.215],[.17,.23,.04]);
+ for(const s of [-1,1]){
+  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.22,.48,.08]);ellipsoid(arm,'Wolf_Arm',fur,[s*.025,-.13,.02],[.085,.18,.08]);ellipsoid(arm,'Silver_Forepaw',light,[s*.025,-.27,.07],[.09,.07,.10]);
+  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.19,.15,-.02]);ellipsoid(leg,'Wolf_Hind_Paw',fur,[0,-.06,.07],[.11,.08,.16]);ellipsoid(leg,'Silver_Toes',light,[0,-.06,.20],[.085,.055,.06]);
+ }
+ const head=pivot(root,'Head',[0,.91,.025]);ellipsoid(head,'Wolf_Head',fur,[0,0,0],[.30,.27,.23]);
+ for(const s of [-1,1]){
+  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.23,.20,-.015]);ear.rotation.z=-s*.13;
+  const outer=mesh(new THREE.ConeGeometry(.10,.26,24),shadow,ear,'Tall_Wolf_Ear',[0,.09,0],[1,1,.65]);outer.rotation.z=-s*.16;
+  const inner=mesh(new THREE.ConeGeometry(.055,.16,20),pink,ear,'Ear_Inner',[0,.09,.055],[1,1,.25]);inner.rotation.z=-s*.16;
+  const cheek=ellipsoid(head,'Wolf_Cheek_Ruff',light,[s*.205,-.10,.10],[.13,.09,.12]);cheek.rotation.z=-s*.4;
+  const tuft=mesh(new THREE.ConeGeometry(.065,.17,20),fur,head,'Wolf_Cheek_Tuft',[s*.31,-.07,.02]);tuft.rotation.z=-s*1.25;
+  const brow=ellipsoid(head,'Wolf_Brow',shadow,[s*.13,.155,.192],[.07,.018,.015]);brow.rotation.z=-s*.18;
+ }
+ ellipsoid(head,'Wolf_Long_Muzzle',light,[0,-.105,.25],[.145,.10,.19]);ellipsoid(head,'Wolf_Nose',ink,[0,-.06,.414],[.06,.04,.035]);ellipsoid(head,'Nose_Glint',white,[-.018,-.045,.444],[.014,.008,.004]);
+ curve(head,'Wolf_Mouth',[[0,-.10,.427],[0,-.15,.40],[-.07,-.165,.36]],.005,ink);curve(head,'Wolf_Smile',[[0,-.15,.40],[.07,-.165,.36]],.005,ink);
+ const eyes=pivot(head,'Eyes',[0,0,0]);for(const s of [-1,1]){const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.13,.06,.215]);eye.rotation.z=-s*.1;ellipsoid(eye,'Wolf_Eye',amber,[0,0,0],[.047,.057,.025]);ellipsoid(eye,'Pupil',ink,[0,0,.023],[.024,.038,.01]);ellipsoid(eye,'Catchlight',white,[-.012,.017,.032],[.011,.013,.005]);}
+ const happy=ellipsoid(head,'Happy_Mouth',ink,[0,-.17,.36],[.06,.04,.015]);happy.visible=false;const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.185,.38],[.03,.016,.006]);tongue.visible=false;
+ const tail=pivot(root,'Tail',[.20,.30,-.17]);const brush=ellipsoid(tail,'Bushy_Wolf_Tail',fur,[.18,.14,-.12],[.12,.23,.11]);brush.rotation.z=-.65;const tip=ellipsoid(tail,'Tail_White_Tip',light,[.28,.29,-.15],[.09,.10,.08]);tip.rotation.z=-.65;
+ const bow=pivot(root,'Bow',[0,.65,.22]);return root;
 }
 // Child-friendly red racing car, using the same named animation pivots as other friends.
 export function createMcqueenModel(){
@@ -78,10 +96,14 @@ export function createChaseModel(){
  const brown=mat(0xa96332,.95),tan=mat(0xe9b77d,.95),navy=mat(0x224c98,.78),blue=mat(0x347ed0,.72),gold=mat(0xf3cd52,.55),ink=mat(0x263447,.6);
  for(const name of ['Puppy_Plump_Body','Puppy_Head','Foreleg','Hind_Paw','Wagging_Tail'])root.traverse(o=>{if(o.name===name&&o.isMesh)o.material=brown;});
  for(const name of ['Cream_Chest','Cream_Muzzle','Cream_Forepaw','Cream_Hind_Toes','Cream_Tail_Tip'])root.traverse(o=>{if(o.name===name&&o.isMesh)o.material=tan;});
- for(const side of ['L','R']){const ear=root.getObjectByName('Ear_'+side);ear.clear();const s=side==='L'?-1:1;const outer=mesh(new THREE.ConeGeometry(.11,.29,24),brown,ear,'Chase_Pointy_Ear',[s*.02,.10,0]);outer.rotation.z=-s*.15;}
+ for(const side of ['L','R']){const ear=root.getObjectByName('Ear_'+side);ear.clear();const s=side==='L'?-1:1;const outer=ellipsoid(ear,'Chase_Pointy_Ear',brown,[s*.015,.10,0],[.10,.18,.07]);outer.rotation.z=-s*.16;const inner=ellipsoid(ear,'Chase_Inner_Ear',tan,[s*.015,.10,.065],[.055,.11,.012]);inner.rotation.z=-s*.16;}
  const body=root.getObjectByName('Torso');ellipsoid(body,'Blue_Rescue_Vest',navy,[0,.05,.13],[.29,.29,.17]);ellipsoid(body,'Vest_Front',blue,[0,.045,.265],[.16,.20,.025]);
+ const pack=mesh(new RoundedBoxGeometry(.42,.34,.18,4,.06),navy,body,'Rescue_Backpack',[0,.12,-.23]);
+ ellipsoid(body,'Backpack_Top',blue,[0,.29,-.23],[.15,.04,.11]);
+ for(const s of [-1,1]){ellipsoid(body,'Vest_Shoulder',navy,[s*.19,.20,.14],[.10,.08,.11]);ellipsoid(body,'Uniform_Button',gold,[s*.10,.02,.285],[.014,.014,.008]);}
  const head=root.getObjectByName('Head');const hat=pivot(head,'Police_Cap',[0,.25,-.005]);ellipsoid(hat,'Cap_Crown',navy,[0,.02,0],[.27,.105,.22]);ellipsoid(hat,'Cap_Band',blue,[0,-.035,.015],[.27,.038,.225]);ellipsoid(hat,'Cap_Brim',navy,[0,-.05,.17],[.245,.025,.12]);
  ellipsoid(hat,'Cap_Badge',gold,[0,.03,.213],[.055,.06,.014]);ellipsoid(hat,'Badge_Center',ink,[0,.03,.227],[.022,.028,.008]);
+ for(const [x,y] of [[0,.035],[-.016,.055],[0,.061],[.016,.055]])ellipsoid(hat,'Cap_Paw',gold,[x,y,.238],[.006,.007,.004]);
  const bow=root.getObjectByName('Bow');bow.clear();ellipsoid(bow,'Collar_Badge',gold,[0,0,.035],[.055,.066,.02]);ellipsoid(bow,'Badge_Inset',blue,[0,0,.054],[.03,.04,.008]);
  return root;
 }
@@ -89,19 +111,66 @@ export function createJettModel(){
  const root=new THREE.Group();root.name='Jett_Airplane_Rig';
  const red=mat(0xe92e32,.46),white=mat(0xf8f6eb,.64),blue=mat(0x3989bd,.42),dark=mat(0x344650,.5),gold=mat(0xf5c64a,.5),pink=mat(0xed9588,.8);
  const body=pivot(root,'Torso',[0,.42,0]);ellipsoid(body,'Red_Fuselage',red,[0,.03,0],[.28,.34,.23]);ellipsoid(body,'White_Front',white,[0,.025,.205],[.17,.22,.04]);
+ const engine=mat(0xb6c8ce,.6,{metalness:.25});
+ for(const s of [-1,1]){ellipsoid(body,'Jet_Engine',engine,[s*.14,.07,-.23],[.09,.18,.10]);ellipsoid(body,'Engine_Outlet',dark,[s*.14,-.09,-.24],[.06,.025,.065]);}
  const head=pivot(root,'Head',[0,.94,.02]);ellipsoid(head,'Red_Airplane_Head',red,[0,0,0],[.32,.28,.25]);ellipsoid(head,'Friendly_Face',white,[0,-.035,.215],[.25,.18,.06]);
- ellipsoid(head,'Helmet_Center',white,[0,.225,.09],[.065,.045,.17]);
+ ellipsoid(head,'Helmet_Center',white,[0,.235,.08],[.065,.033,.18]);
+ const visor=ellipsoid(head,'Helmet_Brow',red,[0,.115,.225],[.25,.055,.07]);
  const eyes=pivot(head,'Eyes',[0,0,0]);
  for(const s of [-1,1]){
   const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.11,.005,.27]);ellipsoid(eye,'Eye',dark,[0,0,0],[.045,.055,.02]);ellipsoid(eye,'Iris',blue,[0,-.006,.018],[.026,.034,.01]);ellipsoid(eye,'Catchlight',white,[-.01,.014,.028],[.011,.013,.005]);
-  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.31,.04,0]);ellipsoid(ear,'Jet_Side_Piece',red,[0,0,0],[.07,.09,.11]);
+  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.31,.04,0]);ellipsoid(ear,'Jet_Side_Piece',red,[0,0,0],[.07,.09,.11]);ellipsoid(ear,'Jet_Side_Highlight',gold,[s*.052,0,.025],[.012,.038,.045]);
   const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.27,.55,.02]);ellipsoid(arm,'White_Arm',white,[s*.03,-.12,0],[.07,.16,.07]);ellipsoid(arm,'Red_Hand',red,[s*.035,-.24,.025],[.08,.065,.08]);
   const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.15,.19,0]);ellipsoid(leg,'White_Leg',white,[0,-.06,.01],[.085,.13,.08]);ellipsoid(leg,'Red_Boot',red,[0,-.15,.08],[.11,.07,.15]);
   const wing=pivot(body,s<0?'Wing_L':'Wing_R',[s*.23,.05,-.08]);const shape=new THREE.Shape();shape.moveTo(0,.08);shape.lineTo(s*.42,-.07);shape.lineTo(s*.36,-.18);shape.lineTo(0,-.10);shape.closePath();mesh(new THREE.ExtrudeGeometry(shape,{depth:.035,bevelEnabled:true,bevelSize:.012,bevelThickness:.01,bevelSegments:2}),red,wing,'Airplane_Wing');
   ellipsoid(wing,'Wing_Tip',white,[s*.32,-.115,.025],[.06,.045,.028]);
+  const stripe=ellipsoid(wing,'Wing_Stripe',white,[s*.22,-.08,.04],[.11,.012,.01]);stripe.rotation.z=-s*.25;
  }
  curve(head,'Smile',[[-.09,-.12,.274],[0,-.16,.286],[.09,-.12,.274]],.006,dark);
  const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.135,.28],[.07,.04,.012]);happy.visible=false;const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.15,.294],[.032,.014,.005]);tongue.visible=false;
  const tail=pivot(root,'Tail',[0,.52,-.22]);const fin=new THREE.Shape();fin.moveTo(-.04,0);fin.lineTo(0,.3);fin.lineTo(.08,.03);fin.closePath();mesh(new THREE.ExtrudeGeometry(fin,{depth:.025,bevelEnabled:true,bevelSize:.01,bevelThickness:.006,bevelSegments:2}),red,tail,'Tail_Fin');
  const bow=pivot(root,'Bow',[0,.60,.24]);ellipsoid(bow,'Chest_Star',gold,[0,0,0],[.045,.045,.015]);return root;
+}
+
+export function createPeppaModel(){
+ const root=new THREE.Group();root.name='Peppa_Pig_Rig';
+ const pink=mat(0xf2a6b7,.92),light=mat(0xffc0ca,.9),red=mat(0xd74b4c,.9),dark=mat(0x4a3038,.5),cheek=mat(0xe77992,.9),white=mat(0xfffcf6,.7);
+ const body=pivot(root,'Torso',[0,.45,0]);
+ sculpt([[0,-.025,0,.26,.27,.19],[0,.15,0,.15,.18,.15]],.065,red,body,'Red_Dress');
+ const head=pivot(root,'Head',[0,1.00,.005]);
+ // A gently asymmetric pig face with a projecting snout, still easy to read from the front.
+ sculpt([[.04,0,0,.29,.26,.21],[-.18,.005,.055,.23,.17,.19]],.075,pink,head,'Pink_Pig_Head');
+ ellipsoid(head,'Pig_Snout',light,[-.25,-.015,.22],[.16,.115,.07]);
+ for(const s of [-1,1])ellipsoid(head,'Nostril',cheek,[-.25+s*.045,-.012,.285],[.018,.025,.008]);
+ ellipsoid(head,'Rosy_Cheek',cheek,[.20,-.055,.19],[.052,.043,.01]);
+ const ears=[[-.05,.235],[.15,.22]];for(let i=0;i<2;i++){const ear=pivot(head,i===0?'Ear_L':'Ear_R',[ears[i][0],ears[i][1],-.005]);const e=ellipsoid(ear,'Pig_Ear',pink,[0,.055,0],[.052,.10,.04]);e.rotation.z=i===0?.16:-.16;ellipsoid(ear,'Inner_Ear',light,[0,.06,.036],[.027,.06,.007]);}
+ const eyes=pivot(head,'Eyes',[0,0,0]);for(const [side,x] of [['L',-.105],['R',.08]]){const eye=pivot(eyes,'Eye_'+side,[x,.105,.195]);ellipsoid(eye,'Eye_White',white,[0,0,0],[.050,.055,.024]);ellipsoid(eye,'Pupil',dark,[0,0,.023],[.022,.027,.009]);ellipsoid(eye,'Catchlight',white,[-.005,.009,.032],[.006,.007,.003]);}
+ curve(head,'Pig_Smile',[[-.09,-.15,.22],[.02,-.19,.225],[.14,-.145,.205]],.006,dark);
+ const happy=ellipsoid(head,'Happy_Mouth',dark,[.03,-.17,.23],[.065,.037,.01]);happy.visible=false;const tongue=ellipsoid(head,'Happy_Tongue',light,[.03,-.183,.242],[.03,.012,.004]);tongue.visible=false;
+ for(const s of [-1,1]){const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.20,.57,.01]);const upper=ellipsoid(arm,'Pig_Arm',pink,[s*.075,-.04,0],[.13,.035,.034]);upper.rotation.z=-s*.25;ellipsoid(arm,'Pig_Hand',light,[s*.17,-.07,.01],[.043,.035,.03]);const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.12,.18,0]);ellipsoid(leg,'Pig_Leg',pink,[0,-.06,0],[.034,.10,.034]);ellipsoid(leg,'Black_Shoe',dark,[0,-.15,.055],[.075,.045,.11]);}
+ const tail=pivot(root,'Tail',[0,.40,-.17]);curve(tail,'Curly_Pig_Tail',[[0,0,0],[.08,.03,-.04],[.12,.08,-.04],[.08,.12,-.04],[.04,.08,-.04]],.012,pink);
+ const bow=pivot(root,'Bow',[0,.62,.18]);return root;
+}
+export function createThomasModel(){
+ const root=new THREE.Group();root.name='Thomas_Train_Rig';
+ const blue=mat(0x2879c8,.55,{metalness:.08}),lightBlue=mat(0x4aa1de,.55),black=mat(0x31363d,.78),red=mat(0xcd4040,.7),gray=mat(0xe0e4dc,.75),dark=mat(0x414950,.6),white=mat(0xffffff,.5),gold=mat(0xf1cb49,.6);
+ const box=(parent,name,material,pos,size,r=.04)=>mesh(new RoundedBoxGeometry(...size,4,r),material,parent,name,pos);
+ const body=pivot(root,'Torso',[0,.32,0]);box(body,'Blue_Train_Chassis',blue,[0,-.02,0],[.70,.27,1.15],.07);box(body,'Red_Buffer_Beam',red,[0,-.09,.59],[.8,.11,.11],.03);
+ const boiler=mesh(new THREE.CylinderGeometry(.27,.27,.85,32),blue,body,'Blue_Boiler',[0,.14,.03]);boiler.rotation.x=Math.PI/2;
+ box(body,'Blue_Cab',blue,[0,.30,-.41],[.64,.47,.40],.06);box(body,'Cab_Roof',black,[0,.55,-.41],[.68,.07,.42],.025);
+ box(body,'Cab_Window',dark,[0,.32,-.203],[.40,.22,.015],.025);
+ const funnel=mesh(new THREE.CylinderGeometry(.09,.08,.24,24),black,body,'Train_Funnel',[0,.48,.23]);mesh(new THREE.CylinderGeometry(.103,.103,.035,24),black,body,'Funnel_Rim',[0,.61,.23]);ellipsoid(body,'Steam_Dome',gold,[0,.43,-.12],[.09,.065,.09]);
+ for(const s of [-1,1]){
+  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.31,.2,.33]);const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.31,.2,-.34]);
+  for(const p of [arm,leg]){const w=mesh(new THREE.CylinderGeometry(.14,.14,.11,24),blue,p,'Train_Wheel',[s*.04,0,0]);w.rotation.z=Math.PI/2;const hub=mesh(new THREE.CylinderGeometry(.055,.055,.12,20),lightBlue,p,'Wheel_Hub',[s*.04,0,0]);hub.rotation.z=Math.PI/2;}
+  box(body,'Engine_Number_One',gold,[s*.356,.025,-.16],[.012,.20,.045],.005);
+  curve(body,'Running_Board',[[s*.365,-.01,-.47],[s*.365,-.01,.43]],.014,black);
+  ellipsoid(body,'Round_Buffer',black,[s*.28,-.095,.657],[.065,.065,.038]);
+ }
+ const head=pivot(root,'Head',[0,.46,.48]);mesh(new THREE.TorusGeometry(.252,.018,10,40),black,head,'Smokebox_Rim',[0,0,.067]);ellipsoid(head,'Round_Train_Face',gray,[0,0,.09],[.25,.25,.07]);
+ const eyes=pivot(head,'Eyes',[0,0,0]);for(const s of [-1,1]){const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.09,.06,.15]);ellipsoid(eye,'Eye_White',white,[0,0,0],[.052,.058,.018]);ellipsoid(eye,'Pupil',dark,[0,0,.018],[.021,.027,.01]);pivot(head,s<0?'Ear_L':'Ear_R',[s*.22,.1,0]);}
+ for(const s of [-1,1]){const brow=ellipsoid(head,'Train_Brow',dark,[s*.095,.135,.139],[.055,.012,.008]);brow.rotation.z=-s*.12;}
+ ellipsoid(head,'Nose',gray,[0,-.025,.17],[.04,.05,.03]);curve(head,'Train_Smile',[[-.12,-.11,.155],[0,-.16,.17],[.12,-.11,.155]],.007,dark);
+ const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.13,.17],[.07,.04,.01]);happy.visible=false;const tongue=ellipsoid(head,'Happy_Tongue',red,[0,-.15,.18],[.03,.012,.005]);tongue.visible=false;
+ const bow=pivot(root,'Bow',[0,.68,.20]);const tail=pivot(root,'Tail',[0,.4,-.56]);return root;
 }

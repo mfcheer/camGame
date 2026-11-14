@@ -156,3 +156,51 @@ test('3. 实物卡片双语弹窗呈现：第1次强化中文标记，第2次强
   assert.equal(popupEn.textSpan.textContent, 'table');
   assert.ok(popupEn.photo.src.includes('table'));
 });
+
+test("4. 播报限频解禁校验：解除单轮2次上限、0.25秒微避让及末尾通关泡泡播报放行", async () => {
+  const { SpeechPolicy } = await import("../src/speechPolicy.js");
+  const { VoiceQueue } = await import("../src/voiceQueue.js");
+  const { Game } = await import("../src/main.js");
+
+  // 1. 单轮上限放开与 0.25s 微避让
+  const policy = new SpeechPolicy(null);
+  policy.setAutomatic(true);
+  const calls = [];
+  const audio = {
+    playWord(id, opts) {
+      calls.push({ id, ...opts });
+      return Promise.resolve();
+    },
+    stopWord() {},
+    setSpeechDucking() {}
+  };
+  const queue = new VoiceQueue(audio, policy);
+
+  // 连续播报 5 对 (10次单词)
+  for (let i = 0; i < 10; i++) {
+    policy.update(0.3); // 超过 0.25s 微避让
+    await queue.playAutomaticWord("table", () => {}, { review: i % 2 === 1, lang: i % 2 === 1 ? "en" : "zh" });
+  }
+  assert.equal(calls.length, 10, "10次卡片播报均应放行，不再被2次硬顶卡死");
+  assert.equal(policy.spokenThisRound, 10, "本轮播报计数正常递增至10");
+
+  // 2. 0.25s 极短避让生效校验 (0.1s 内连点被阻断)
+  const blocked = await queue.playAutomaticWord("cup", () => {}, { review: false, lang: "zh" });
+  assert.equal(calls.length, 10, "未隔0.25秒的极端瞬发应被避让");
+
+  // 3. 通关最后一颗泡泡播报放行校验
+  const game = Object.assign(Object.create(Game.prototype), {
+    state: "PLAYING",
+    collectedCount: 5,
+    targetCount: 6,
+    voiceQueue: queue,
+    bubbleManager: { lastPoppedEnergy: 1 },
+    uiManager: {
+      setLastWordAvailable() {},
+      showWordCue() {}
+    }
+  });
+  policy.update(0.3);
+  await game.presentPlayWord(getWordById("table"), { lang: "en", review: true });
+  assert.equal(calls.length, 11, "最后一颗泡泡（5->6达到targetCount）的播报应当正常触发");
+});

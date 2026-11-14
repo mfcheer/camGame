@@ -540,8 +540,7 @@ export class Game {
 
   presentPlayWord(word, options = {}) {
     this.lastPlayWord=word;this.uiManager?.setLastWordAvailable?.(true);
-    // The last hit transitions to pet play immediately, so it has no speech opportunity.
-    if(this.state!=='PLAYING'||this.collectedCount+(this.bubbleManager?.lastPoppedEnergy||1)>=this.targetCount)return Promise.resolve();
+    if(this.state!=='PLAYING')return Promise.resolve();
     let token;
     if (options && options.lang) {
       const review = !!options.review;
@@ -551,7 +550,7 @@ export class Game {
         token=this.playWordCueToken=(this.playWordCueToken||0)+1;
         this.cueWord=word;this.wordCueRemaining=Infinity;this.uiManager?.showWordCue?.(word, options);
       },{review,lang}).finally(()=>{
-        if(token!==undefined&&token===this.playWordCueToken&&this.state==='PLAYING'&&this.cueWord===word)this.wordCueRemaining=.65;
+        if(token!==undefined&&token===this.playWordCueToken&&['PLAYING','CELEBRATING'].includes(this.state)&&this.cueWord===word)this.wordCueRemaining=.65;
       });
     }
     return this.voiceQueue.playAutomaticPair(word.id,()=>{
@@ -559,7 +558,7 @@ export class Game {
       token=this.playWordCueToken=(this.playWordCueToken||0)+1;
       this.cueWord=word;this.wordCueRemaining=Infinity;this.uiManager?.showWordCue?.(word);
     }).finally(()=>{
-      if(token!==undefined&&token===this.playWordCueToken&&this.state==='PLAYING'&&this.cueWord===word)this.wordCueRemaining=.65;
+      if(token!==undefined&&token===this.playWordCueToken&&['PLAYING','CELEBRATING'].includes(this.state)&&this.cueWord===word)this.wordCueRemaining=.65;
     });
   }
 
@@ -637,7 +636,14 @@ export class Game {
 
   // 达成 6 个泡泡（偶数目标起步），解救成功，逃生大欢庆！
   handleVictory() {
-    this.voiceQueue?.cancel();this.animalSpeech?.cancel();this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
+    if (this.voiceQueue?.current?.kind !== 'word') {
+      this.voiceQueue?.cancel();
+    }
+    this.animalSpeech?.cancel();
+    if (!this.voiceQueue?.current) {
+      this.clearPlayWordCue();
+      this.uiManager?.hidePlayWords?.();
+    }
     this.state = 'CELEBRATING';
     this.prePauseState = 'CELEBRATING';
     this.isSoftWaiting = false;
@@ -789,7 +795,7 @@ export class Game {
       videoElement: this.videoElement,
       webglCanvas: this.sceneManager?.renderer?.domElement,
       animalId, animalName: this.currentAnimalName, targetBubbles: this.targetCount,
-      animalEmoji: {bunny:'🐰',cat:'🐱',frog:'🐸',dog:'🐶',dragon:'🐲',goldenDragon:'🐉',mcqueen:'🏎️',wolf:'🐺',teddy:'🧸',chase:'🐶',jett:'✈️'}[animalId] || '🐾'
+      animalEmoji: {bunny:'🐰',cat:'🐱',frog:'🐸',dog:'🐶',dragon:'🐲',goldenDragon:'🐉',mcqueen:'🏎️',wolf:'🐺',teddy:'🧸',chase:'🐶',jett:'✈️',peppa:'🐷',thomas:'🚂'}[animalId] || '🐾'
     });
     this.audioManager?.playCameraShutter?.();
     this.uiManager?.triggerCameraFlash?.();

@@ -7,7 +7,7 @@ import {CAMP_ANIMALS,CampManager} from '../src/campManager.js';
 import {RescueAnimal} from '../src/rescueAnimal.js';
 import {HappyPerformance} from '../src/happyPerformance.js';
 import {getAnimalPlayStyle} from '../src/animalPlayStyles.js';
-const ids=['mcqueen','wolf','teddy','chase','jett'];
+const ids=['mcqueen','wolf','teddy','chase','jett','peppa','thomas'];
 const camera=()=>{const c=new THREE.PerspectiveCamera(48,1194/834,.1,100);c.position.z=7.5;c.updateMatrixWorld();return c;};
 test('new friends have assets, configuration, random selection and camp records',()=>{
  const camp=new CampManager();
@@ -15,7 +15,7 @@ test('new friends have assets, configuration, random selection and camp records'
  assert.equal(camp.getUnlockedCount(),ids.length);
  const car=fs.readFileSync('public/models/lightning-mcqueen.glb');const gltf=JSON.parse(car.toString('utf8',20,20+car.readUInt32LE(12)).trim());
  for(const name of ['Red_Racing_Body','Windshield','Front_Wheel','Lightning_Bolt'])assert.ok(gltf.nodes.some(n=>n.name===name),`${name} missing from the car GLB`);
- for(const [id,required] of [['chase',['Police_Cap','Cap_Badge','Blue_Rescue_Vest']],['jett',['Red_Fuselage','Wing_L','Wing_R','Tail_Fin']]]){
+ for(const [id,required] of [['chase',['Police_Cap','Cap_Badge','Blue_Rescue_Vest']],['jett',['Red_Fuselage','Wing_L','Wing_R','Tail_Fin']],['peppa',['Pink_Pig_Head','Pig_Snout','Red_Dress']],['thomas',['Blue_Boiler','Round_Train_Face','Train_Funnel']]]){
   const data=fs.readFileSync(`public/models/${GAME_CONFIG.animals[id].asset}.glb`);const scene=JSON.parse(data.toString('utf8',20,20+data.readUInt32LE(12)).trim());
   for(const name of required)assert.ok(scene.nodes.some(n=>n.name===name),`${id} is missing ${name}`);
  }

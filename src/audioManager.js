@@ -387,7 +387,8 @@ export class AudioManager {
           this._playGoldenDragonSound(type);
           break;
         case 'wolf': case 'chase': this._playDogSound(type); break;
-        case 'jett': this._playCarFriendSound(type); break;
+        case 'jett': case 'thomas': this._playCarFriendSound(type); break;
+        case 'peppa': this._playBunnySound(type); break;
         case 'mcqueen': this._playCarFriendSound(type); break;
         case 'teddy': this._playBunnySound(type); break;
         case 'bunny':
