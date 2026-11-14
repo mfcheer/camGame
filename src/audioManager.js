@@ -386,7 +386,8 @@ export class AudioManager {
         case 'goldenDragon':
           this._playGoldenDragonSound(type);
           break;
-        case 'wolf': case 'chase': this._playDogSound(type); break;
+        case 'wolf': this._playWolfSound(type); break;
+        case 'chase': this._playDogSound(type); break;
         case 'jett': case 'thomas': this._playCarFriendSound(type); break;
         case 'peppa': this._playPeppaSound(type); break;
         case 'mcqueen': this._playCarFriendSound(type); break;
@@ -459,6 +460,60 @@ export class AudioManager {
       gain.connect(this.sfxGainNode || this.ctx.destination);
       osc.start(now);
       osc.stop(now + 0.24);
+    }
+  }
+
+  _playWolfSound(type) {
+    const now = this.ctx.currentTime;
+    if (type === "escape") {
+      // 灰太狼经典大招牌：富有戏剧张力的诙谐卡通狼嚎“嗷~~~~呜！我一定会回来的！”
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(240, now);
+      osc.frequency.exponentialRampToValueAtTime(520, now + 0.22);
+      osc.frequency.exponentialRampToValueAtTime(340, now + 0.46);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.24, now + 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+
+      osc.connect(gain);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.50);
+    } else if (type === "happy") {
+      // 得意搞怪坏笑：跳跃双音“嘿！嘿！”
+      for (const [offset, pitch] of [[0, 310], [0.12, 370]]) {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(pitch, now + offset);
+        osc.frequency.exponentialRampToValueAtTime(pitch * 1.35, now + offset + 0.08);
+
+        gain.gain.setValueAtTime(0.01, now + offset);
+        gain.gain.linearRampToValueAtTime(0.18, now + offset + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.09);
+
+        osc.connect(gain);
+        gain.connect(this.sfxGainNode || this.ctx.destination);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.10);
+      }
+    } else {
+      // 触碰与待机：轻快诙谐的短音
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(270, now);
+      osc.frequency.exponentialRampToValueAtTime(410, now + 0.10);
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.14, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      osc.connect(gain);
+      gain.connect(this.sfxGainNode || this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.13);
     }
   }
 

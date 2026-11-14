@@ -11,7 +11,7 @@ export const ANIMAL_PLAY_STYLES = {
   chase:{name:'勇敢巡逻',motion:'bounce',amplitudeX:10,amplitudeY:7,size:1.05,period:3.8,comboMs:2400,cooldownMs:850,jellyAt:[3],rainbowAt:[],hint:'阿奇敬礼出发，跟着巡逻节奏找泡泡'},
   jett:{name:'天空飞行',motion:'arc',amplitudeX:17,amplitudeY:10,size:1.04,period:6.1,comboMs:2300,cooldownMs:900,jellyAt:[3],rainbowAt:[5],hint:'乐迪来啦！跟着飞行弧线冲上云霄'},
   mcqueen:{name:'闪电赛道',motion:'drift',amplitudeX:16,amplitudeY:5,size:1.05,period:5.8,comboMs:2300,cooldownMs:850,jellyAt:[3],rainbowAt:[5],hint:'和麦昆一起追逐泡泡'},
-  wolf:{name:'森林追逐',motion:'bounce',amplitudeX:16,amplitudeY:8,size:1.02,period:3.4,comboMs:2300,cooldownMs:800,jellyAt:[3],rainbowAt:[5],hint:'和灰灰一起追逐泡泡'},
+  wolf:{name:'狼王追逐',motion:'bounce',amplitudeX:16,amplitudeY:8,size:1.02,period:3.4,comboMs:2300,cooldownMs:800,jellyAt:[3],rainbowAt:[5],hint:'和灰太狼大王一起追逐泡泡'},
   teddy:{name:'温暖抱抱',motion:'drift',amplitudeX:9,amplitudeY:4,size:1.07,period:7.2,comboMs:2300,cooldownMs:950,jellyAt:[2],rainbowAt:[],hint:'慢慢伸手，和抱抱一起玩'}
 };
 export function getAnimalPlayStyle(id) { return ANIMAL_PLAY_STYLES[id] || ANIMAL_PLAY_STYLES.bunny; }

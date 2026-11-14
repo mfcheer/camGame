@@ -176,8 +176,29 @@ const ACTIONS=[
     a.leftArm.rotation.z=-.5-s*.2*m;a.rightArm.rotation.z=.5+s*.2*m;
     a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*.045*m;
   }},
+  // 灰太狼招牌动作：一手托腮思考坏点子、单手叉腰、狡黠摇晃脑袋、脚尖踩拍
+  {id:'wolfChinScheming',dur:1.6,animals:['wolf'],fn:(a,t,m)=>{
+    const s=Math.sin(t*Math.PI*4);
+    a.rightArm.rotation.z=(1.40+s*.08)*m;
+    a.rightArm.rotation.x=(-0.40+s*.05)*m;
+    a.leftArm.rotation.z=(-0.75-s*.06)*m;
+    a.headGroup.rotation.z=(-0.15+Math.sin(t*Math.PI*2)*.10)*m;
+    a.headGroup.rotation.y=(0.12+s*.06)*m;
+    a.tailGroup.rotation.y=Math.sin(t*Math.PI*6)*.36*m;
+    a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*4))*.022*m;
+  }},
+  // 灰太狼仰天大笑：双手叉腰、挺起大肚腩得意洋洋
+  {id:'wolfCackle',dur:1.6,animals:['wolf'],fn:(a,t,m)=>{
+    const s=Math.sin(t*Math.PI*6);
+    a.leftArm.rotation.z=(-0.70-s*.08)*m;
+    a.rightArm.rotation.z=(0.70+s*.08)*m;
+    a.headGroup.rotation.x=(-0.24+s*.05)*m;
+    a.bodyMesh.rotation.x=(-0.10+s*.03)*m;
+    a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*.035*m;
+    a.tailGroup.rotation.y=Math.sin(t*Math.PI*8)*.35*m;
+  }},
 ];
-const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['tailChase','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['raceRev','raceSway']};
+const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['wolfChinScheming','wolfCackle','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['raceRev','raceSway']};
 const FINALE=ACTIONS.find(x=>x.id==='finaleBow');
 
 // 结算后的"开心小演出"：动物自己走到台前随机表演，孩子和家长可以休息。

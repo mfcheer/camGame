@@ -60,7 +60,7 @@ export const GAME_CONFIG = {
       victoryText: '小金舒展长尾，游过祥云，轻轻点头向你道谢。'
     },
     mcqueen: {name:'闪电麦昆',targetBubbles:10,asset:'lightning-mcqueen',escapeStyle:'drive',description:'闪电赛道 · 和麦昆一起追逐轻快的泡泡。',victoryText:'麦昆开动轮子，开心地向你眨眼道谢。'},
-    wolf: {name:'大灰狼 灰灰',targetBubbles:12,asset:'friendly-wolf',escapeStyle:'bound',description:'森林追逐 · 和灰灰一起追随轻快的泡泡。',victoryText:'灰灰摇着尾巴，开心地跑回森林。'},
+    wolf: {name:'灰太狼大王',targetBubbles:12,asset:'friendly-wolf',escapeStyle:'bound',description:'抓泡泡大作战 · 看本大王的厉害！今天谁也别想从我眼皮底下溜走。',victoryText:'灰太狼大王得意地双手叉腰大笑：“哈哈！我一定会回来的——！”'},
     teddy: {name:'泰迪熊 抱抱',targetBubbles:8,asset:'teddy-bear',escapeStyle:'hop',description:'温暖抱抱 · 和抱抱一起慢慢收集泡泡。',victoryText:'抱抱开心地挥挥手，送你一个大大的拥抱。'},
     chase:{name:'汪汪队 阿奇',targetBubbles:10,asset:'rescue-chase',escapeStyle:'bound',description:'勇敢靠谱的小警长，敬礼出发！跟着阿奇一起巡逻找泡泡。',victoryText:'阿奇敬了个礼：汪汪，任务完成啦！'},
     jett:{name:'超级飞侠 乐迪',targetBubbles:12,asset:'airplane-jett',escapeStyle:'fly',description:'乐迪来啦！热情的飞行小英雄，带你在云朵间追泡泡。',victoryText:'乐迪在空中翻了个跟头，比出胜利手势！'},
