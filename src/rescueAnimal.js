@@ -24,6 +24,8 @@ export class RescueAnimal {
     this.ropeCoils=[];this.particles=[];
     this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.escapeDuration=4.1;
     this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;
+    this.receiveTimer=0;this.receivePower=1;this.comboMoveTimer=0;this.recoilTimer=0;
+    this.moodWorried=0;this.moodExcited=0;this.onRopeSnap=null;
     this.reducedMotion=typeof window!=='undefined'&&window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     this.createPostAndRopes();
     this.setAnimal(animalId,false);
@@ -139,7 +141,12 @@ export class RescueAnimal {
   }
   setEnergy(score) {
     this.energyLevel=score;
-    for(let i=0;i<this.ropeCoils.length;i++)if(score>=Math.ceil((i+1)*this.targetEnergy/5)&&!this.ropeCoils[i].loosened)Object.assign(this.ropeCoils[i],{loosened:true,falling:true,fallTimer:0});
+    // 里程碑绳圈先进"松弛下垂"段，短暂预告后才崩断坠落。
+    for(let i=0;i<this.ropeCoils.length;i++)if(score>=Math.ceil((i+1)*this.targetEnergy/5)&&!this.ropeCoils[i].loosened){
+      const c=this.ropeCoils[i];
+      Object.assign(c,{loosened:true,stage:'slack',slackTimer:0,falling:false,fallTimer:0,taut:false});
+      c.group.position.x=0;c.group.scale.set(1,1,1);
+    }
     this.hopTimer=.70;this.reactionTimer=1.15;this.reactionVariant=(score-1)%3;
     // Quiet ordinary thanks, more visible milestones and a full finale.
     this.glyphTimer=score % 3 === 0 || score >= this.targetEnergy ? .95 : 0;
@@ -152,6 +159,7 @@ export class RescueAnimal {
     if(this.friendFarewell){this.escapeOriginX=this.currentX;this.escapeOriginY=this.currentY;this.escapeOriginScale=this.animalGroup.scale.y;}
     this.model.position.y=0;
     this.state='CHEERING';this.escapeElapsed=0;this.ropesGroup.visible=false;this.hopTimer=0;
+    this.comboMoveTimer=0;this.receiveTimer=0;this.moodWorried=0;this.moodExcited=0;
     this.spawnRopeBreakParticles();
   }
   startFriendPlay() {
@@ -206,20 +214,26 @@ export class RescueAnimal {
     if(this.contactShadow){this.contactShadow.visible=true;this.contactShadow.position.set(this.currentX,(this.friendFloor??this.currentY)+.01,.1);this.contactShadow.scale.setScalar(this.animalGroup.scale.y);}
     this.updateSprings(dt);
   }
-  spawnParticle(pos,dust=false) {
+  spawnParticle(pos,dust=false,color) {
     if(this.particles.length>=16)return;
     const geo=dust?new THREE.SphereGeometry(.045,8,6):new THREE.OctahedronGeometry(.035,0);
-    const mesh=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:dust?0xf2e2bd:0xffd778,transparent:true,opacity:.8,depthWrite:false}));
+    const mesh=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:color||(dust?0xf2e2bd:0xffd778),transparent:true,opacity:.8,depthWrite:false}));
     mesh.position.copy(pos);this.scene.add(mesh);
     this.particles.push({mesh,velocity:new THREE.Vector3((Math.random()-.5)*(dust?.28:1.1),dust?.18:.55+Math.random()*.4,(Math.random()-.5)*.3),life:dust?.45:.7,maxLife:dust?.45:.7,dust});
   }
   spawnRopeBreakParticles(){if(!this.reducedMotion)for(let i=0;i<12;i++)this.spawnParticle(this.getTargetPosition());}
+  spawnRopeFibers(coil){
+    if(this.reducedMotion)return;
+    this.group.updateMatrixWorld(true);
+    const p=coil.group.getWorldPosition(new THREE.Vector3());
+    for(let i=0;i<6;i++)this.spawnParticle(p,false,0xb59063);
+  }
   spawnRunDust(pos){if(!this.reducedMotion)this.spawnParticle(pos,true);}
   setPaused(paused){this.isPaused=paused;}
   setAnticipation(active){this.anticipating=!!active;}
   setSpeechListening(listening){this.speechListening=listening;}
   setSpeaking(speaking){this.speaking=speaking;this.speakingTime=0;}
-  reactToCombo(count){if(count<2||this.state!=='TRAPPED')return;this.reactionTimer=1.15;this.reactionVariant=1;this.glyphTimer=.95;}
+  reactToCombo(count){if(count<2||this.state!=='TRAPPED')return;this.reactionTimer=1.15;this.reactionVariant=1;this.glyphTimer=count>=3?1.05:.95;if(count>=3)this.comboMoveTimer=.85;}
   setOpacity(alpha) {
     for(const mat of this.furMaterials){mat.transparent=alpha<1;mat.opacity=alpha;mat.depthWrite=alpha>.5;}
   }
@@ -227,6 +241,7 @@ export class RescueAnimal {
     this.speechListening=false;this.speaking=false;this.speakingTime=0;this.friendFarewell=false;this.escapeOriginX=null;this.friendResponse=0;this.model.position.y=0;
     this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;this.reactionTimer=0;
     this.anticipating=false;this.reactionVariant=0;this.glyphTimer=0;this.emotion='content';this.attentionPhase='player';this.attentionFocus=null;this.targetFocus=null;this.energyFocus=null;this.energyAttentionRemaining=0;resetExpressionRig(this.expressionRig);
+    this.receiveTimer=0;this.receivePower=1;this.comboMoveTimer=0;this.recoilTimer=0;this.moodWorried=0;this.moodExcited=0;
     this.actionPoseFn=null;this.actionPoseT=0;this.performanceGlow=null;
     if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.y=.048;}
     for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=true;}
@@ -240,7 +255,7 @@ export class RescueAnimal {
     for(const s of this.springs||[]){s.pos=s.get();s.vel=0;}
     this.model.scale.set(1,1,1);this.model.rotation.set(0,-.16,0);this.setQuadrupedPosture(0);
     for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=sign*.18;}
-    for(const c of this.ropeCoils){Object.assign(c,{loosened:false,falling:false,fallTimer:0});c.group.visible=true;c.group.position.set(0,0,0);c.group.scale.set(1,1,1);c.mesh.material.opacity=1;}
+    for(const c of this.ropeCoils){Object.assign(c,{loosened:false,falling:false,fallTimer:0,stage:null,slackTimer:0,taut:false});c.group.visible=true;c.group.position.set(0,0,0);c.group.rotation.z=0;c.group.scale.set(1,1,1);c.mesh.material.opacity=1;}
     for(const p of this.particles){this.scene.remove(p.mesh);p.mesh.geometry.dispose();p.mesh.material.dispose();}this.particles=[];
     if(this.contactShadow){this.contactShadow.visible=true;this.contactShadow.material.opacity=1;}
     for(const m of this.bowMaterials)m.emissiveIntensity=0;
@@ -252,6 +267,11 @@ export class RescueAnimal {
   followEnergy(position) {
     this.energyFocus=position?.clone();
     this.energyAttentionRemaining=.6;
+  }
+  // 能量光团飞抵领结瞬间：张臂+深吸气式squash+蝴蝶结强闪。
+  receiveEnergyImpact(count=1) {
+    if(this.state!=='TRAPPED')return;
+    this.receiveTimer=.5;this.receivePower=count>1?1.25:1;
   }
   setAttentionTarget(target, energy) {
     this.targetFocus=target?.clone() || null;
@@ -281,13 +301,14 @@ export class RescueAnimal {
     }
     if(!['TRAPPED','FRIEND'].includes(this.state))this.headGroup.rotation.y=THREE.MathUtils.lerp(this.headGroup.rotation.y,0,Math.min(1,dt*8));
     if(this.speaking){this.speakingTime+=dt;this.headGroup.rotation.x+=Math.sin(this.speakingTime*5)*.035;}
-    const happy=this.speaking||this.speechListening||this.performanceGlow||reaction>.1||this.state==='WAVING'||this.state==='CHEERING';
+    const happy=this.speaking||this.speechListening||this.performanceGlow||reaction>.1||this.state==='WAVING'||this.state==='CHEERING'
+      ||(this.state==='TRAPPED'&&this.moodExcited>.5);
     if(this.happyMouth)this.happyMouth.visible=happy;
     if(this.happyTongue)this.happyTongue.visible=happy;
     if(this.happyMouth)for(const name of ['Mouth','Smile','Mouth_Stem','Smile_L','Smile_R']){const m=this.model.getObjectByName(name);if(m)m.visible=!happy;}
-    if(!this.isBlinking && this.blinkTimer<3.1)this.eyesGroup.scale.y=happy?.75:1;
+    if(!this.isBlinking && this.blinkTimer<3.1)this.eyesGroup.scale.y=happy?.75:(this.state==='TRAPPED'?1+.06*this.moodWorried:1);
     if(this.eyeBases)for(const [i,eye] of [this.leftEye,this.rightEye].entries()) {
-      const shift=this.state==='TRAPPED'&&!happy?.008:0;
+      const shift=this.state==='TRAPPED'&&!happy?.004+.009*this.moodWorried:0;
       eye.position.x=this.eyeBases[i].x+shift;eye.position.y=this.eyeBases[i].y+(happy?.003:.005);
     }
   }
@@ -326,6 +347,7 @@ export class RescueAnimal {
   update(dt,timeSeconds) {
     if(this.isPaused)return;
     this.idleTime+=dt;this.blinkTimer+=dt;
+    this.receiveTimer=Math.max(0,(this.receiveTimer||0)-dt);
     this.isBlinking=this.blinkTimer>3.1&&this.blinkTimer<3.24;
     this.eyesGroup.scale.y=this.isBlinking?.08:1;
     if(this.blinkTimer>3.6)this.blinkTimer=0;
@@ -334,25 +356,61 @@ export class RescueAnimal {
       p.mesh.material.opacity=Math.max(0,p.life/p.maxLife)*.8;if(p.dust)p.mesh.scale.setScalar(1+(1-p.life/p.maxLife)*1.2);
       if(p.life<=0){this.scene.remove(p.mesh);p.mesh.geometry.dispose();p.mesh.material.dispose();this.particles.splice(i,1);}
     }
-    for(const c of this.ropeCoils)if(c.falling) {
+    for(const c of this.ropeCoils)if(c.stage==='slack') {
+      // 松弛下垂：绳子先塌下来晃两下，给孩子一个"快断了"的预告
+      c.slackTimer+=dt;const t=clamp(c.slackTimer/.45,0,1);
+      c.group.position.y=-t*.08;c.group.rotation.z=Math.sin(c.slackTimer*26)*.018*(1-t*.5);
+      if(t>=1){c.stage=null;c.falling=true;c.fallTimer=0;this.recoilTimer=.42;this.onRopeSnap?.();this.spawnRopeFibers(c);}
+    }else if(c.falling) {
       c.fallTimer+=dt;const t=clamp(c.fallTimer/.32,0,1);c.group.scale.set(1+t*.22,1,1+t*.22);c.group.position.y=-t*.2;c.mesh.material.opacity=1-t;
       if(t>=1){c.falling=false;c.group.visible=false;}
+    }else if(c.taut&&!c.loosened) {
+      // 绷紧预告：下一根要崩的绳圈高频微颤
+      c.group.position.x=Math.sin(this.idleTime*40)*.0045;c.group.scale.setScalar(1+Math.sin(this.idleTime*34)*.012);
     }
     if(this.state==='FRIEND'){this.updateFriendPose(dt);return;}
     let jump=0;
     // Every pose starts from a fresh pitch; additive reactions must not accumulate over frames.
     this.headGroup.rotation.x=0;
     if(this.state==='TRAPPED') {
+      // 被困情绪曲线：随解救进度从担心 → 期待 → 兴奋（不占用 emotion 字段，独立缓动权重）
+      const progress=clamp(this.energyLevel/this.targetEnergy,0,1);
+      const mwTarget=progress<.4?1-progress*2.5:0,meTarget=progress>=.6?1:0,easeK=Math.min(1,dt*5);
+      this.moodWorried+=(mwTarget-this.moodWorried)*easeK;this.moodExcited+=(meTarget-this.moodExcited)*easeK;
+      this.model.position.y=0;
+      const nextIdx=this.ropeCoils.findIndex(c=>!c.loosened);
+      for(let i=0;i<this.ropeCoils.length;i++)this.ropeCoils[i].taut=i===nextIdx&&(Math.ceil((i+1)*this.targetEnergy/5)-this.energyLevel)<=1;
       this.animalGroup.rotation.y=.15+Math.sin(this.idleTime*.85)*.07;
       this.animalGroup.rotation.z=this.reducedMotion?0:Math.sin(this.idleTime*1.7)*.013;
       this.model.scale.set(1,1+Math.sin(this.idleTime*2)*.012,1);
       this.headGroup.rotation.z=Math.sin(this.idleTime*.8)*.045;
-      this.leftEarGroup.rotation.z=.13+Math.sin(this.idleTime*1.9)*.045;
-      this.rightEarGroup.rotation.z=-.13+Math.sin(this.idleTime*1.7+1)*.045;
-      if(this.hopTimer>0) {
-        this.hopTimer=Math.max(0,this.hopTimer-dt);const p=1-this.hopTimer/.7;
+      this.leftEarGroup.rotation.z=.13+Math.sin(this.idleTime*1.9)*.045-this.moodWorried*.22;
+      this.rightEarGroup.rotation.z=-.13+Math.sin(this.idleTime*1.7+1)*.045+this.moodWorried*.22;
+      if(this.comboMoveTimer>0) {
+        // combo≥3 专属大反应：整圈旋转的大型庆祝，结束时由闲置分支复位
+        this.comboMoveTimer=Math.max(0,this.comboMoveTimer-dt);this.hopTimer=Math.max(0,this.hopTimer-dt);
+        const t=1-this.comboMoveTimer/.85,m=this.reducedMotion?.25:1,spin=smooth(t)*Math.PI*2*m;
         if(this.animalId==='goldenDragon'){
-          jump=this.reducedMotion?0:Math.sin(p*Math.PI)*.045;this.animalGroup.position.y=this.groundY+jump;
+          jump=this.reducedMotion?0:Math.sin(t*Math.PI)*.07*m;this.animalGroup.position.y=this.groundY+jump;
+          this.bodyMesh.rotation.z=Math.sin(t*Math.PI*3)*.11*m;this.tailGroup.rotation.y=Math.sin(t*Math.PI*3-.8)*.4*m;
+          this.headGroup.rotation.z=Math.sin(t*Math.PI*2)*.12*m;
+        }else if(this.animalId==='dragon'){
+          if(this.comboMoveTimer===0)this.model.rotation.z=0;else this.model.rotation.z=spin;
+          this.animalGroup.rotation.y=.15+spin;
+          for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=sign*(.18+Math.sin(t*Math.PI)*.5*m);}
+          this.tailGroup.rotation.y=Math.sin(t*Math.PI*2)*.3*m;
+        }else{
+          this.animalGroup.rotation.y=.15+spin;
+          const hop=Math.sin(Math.min(1,t*2)*Math.PI)*.15*m+Math.sin(clamp(t*2-1,0,1)*Math.PI)*.2*m;
+          this.currentY=this.groundY+hop;this.animalGroup.position.y=this.currentY;
+          this.leftArm.rotation.z=-Math.sin(t*Math.PI)*.7*m-.2;this.rightArm.rotation.z=Math.sin(t*Math.PI)*.7*m+.2;
+          this.tailGroup.rotation.z=Math.sin(t*Math.PI*4)*.35*m;
+        }
+        for(const mt of this.bowMaterials){mt.emissive=new THREE.Color(0xe6a94e);mt.emissiveIntensity=Math.sin(t*Math.PI)*.9;}
+      }else if(this.hopTimer>0) {
+        this.hopTimer=Math.max(0,this.hopTimer-dt);const p=1-this.hopTimer/.7;const boost=this.reducedMotion?1:1+.5*progress;
+        if(this.animalId==='goldenDragon'){
+          jump=this.reducedMotion?0:Math.sin(p*Math.PI)*.045*boost;this.animalGroup.position.y=this.groundY+jump;
           this.headGroup.rotation.x=-Math.sin(p*Math.PI)*.10;this.rightArm.rotation.x=-Math.sin(p*Math.PI)*.45;
         }else if(['cat','dog'].includes(this.animalId)) {
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
@@ -360,11 +418,12 @@ export class RescueAnimal {
           this.rightArm.rotation.x=-Math.sin(p*Math.PI)*(this.animalId==='dog'?1.05:.8);
           if(this.animalId==='dog'){this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=Math.sin(p*Math.PI*2)*.12;this.model.scale.y=1+Math.sin(p*Math.PI)*.025;}
           this.tailGroup.rotation.z=Math.sin(p*Math.PI*2)*.22;
-        }else jump=this.animateHop(p,this.reducedMotion?.025:(this.animalId==='frog'?.22:.14));
+        }else jump=this.animateHop(p,this.reducedMotion?.025:(this.animalId==='frog'?.22:.14)*boost);
         this.leftArm.rotation.z=-Math.sin(p*Math.PI)*.45;this.rightArm.rotation.z=Math.sin(p*Math.PI)*.45;
         for(const m of this.bowMaterials){m.emissive=new THREE.Color(0xe6a94e);m.emissiveIntensity=Math.sin(p*Math.PI)*.6;}
       }else {
         this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;this.headGroup.rotation.x=0;
+        if(this.moodExcited>0&&!this.reducedMotion)this.model.position.y=Math.abs(Math.sin(this.idleTime*5))*.015*this.moodExcited;
         this.leftArm.rotation.set(-.12,0,.17);this.rightArm.rotation.set(-.12,0,-.17);
         this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
         this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=0;
@@ -422,7 +481,7 @@ export class RescueAnimal {
         if(alpha===0){this.state='ESCAPED';this.animalGroup.visible=false;this.contactShadow.visible=false;}
       }
     }
-    if(this.animalId==='dog')this.tailGroup.rotation.y=Math.sin(this.idleTime*7)*(this.state==='TRAPPED'?.4:.55);
+    if(this.animalId==='dog')this.tailGroup.rotation.y=Math.sin(this.idleTime*(this.moodExcited>.5?9.5:7))*(this.state==='TRAPPED'?.4:.55);
     if(this.animalId==='dragon'){
       const flying=this.state==='ESCAPING', excited=this.reactionTimer>0||this.state==='CHEERING';
       const flap=this.reducedMotion?0:Math.sin(this.idleTime*(flying?12:excited?10:2))*(flying?.6:excited?.4:.06);
@@ -441,6 +500,19 @@ export class RescueAnimal {
       const blend=smooth(clamp(this.escapeElapsed/.65,0,1));
       this.animalGroup.position.y+=(this.escapeOriginY-this.groundY)*(1-blend);
       this.animalGroup.scale.setScalar(THREE.MathUtils.lerp(this.escapeOriginScale,this.modelScale,blend));
+    }
+    // 能量光团飞抵：张臂+吸气式squash+蝴蝶结强闪（叠加在基础/庆祝姿态之上）
+    if(this.state==='TRAPPED'&&this.receiveTimer>0){
+      const t=1-this.receiveTimer/.5,open=Math.sin(Math.min(1,t*2)*Math.PI),sq=Math.sin(t*Math.PI)*(this.receivePower||1),mo=this.reducedMotion?.25:1;
+      this.leftArm.rotation.z+=-open*.36*mo;this.rightArm.rotation.z+=open*.36*mo;
+      this.model.scale.y*=1-sq*.05*mo;this.model.scale.x*=1+sq*.028*mo;this.model.scale.z*=1+sq*.028*mo;
+      const glow=Math.sin(t*Math.PI)*1.1*(this.receivePower||1);
+      for(const m of this.bowMaterials){m.emissive=new THREE.Color(0xe6a94e);m.emissiveIntensity=Math.max(m.emissiveIntensity,glow);}
+    }
+    // 绳圈崩开的反冲：被"弹"一下的小后仰
+    if(this.recoilTimer>0){
+      this.recoilTimer=Math.max(0,this.recoilTimer-dt);const rt=1-this.recoilTimer/.42;
+      this.animalGroup.rotation.z+=(this.reducedMotion?.012:.045)*Math.sin(rt*Math.PI*2)*(1-rt);
     }
     this.updateAttention(dt);
     this.updateExpression(dt);updateExpressionRig(this,dt);

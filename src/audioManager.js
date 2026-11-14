@@ -844,6 +844,33 @@ export class AudioManager {
     } catch (e) {}
   }
 
+  // 绳圈绷断：短促的"绷——啪"低音twang
+  playRopeSnap() {
+    if (this.isMuted || !this.ctx) return;
+    this.init();
+    if (!this.ctx || typeof this.ctx.createOscillator !== 'function') return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(185, now);
+      osc.frequency.exponentialRampToValueAtTime(72, now + 0.15);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.22, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.2);
+    } catch (e) {}
+  }
+
   // 8. 彩虹流光泡泡清脆滑音与微星光雨 (Crystal Glide & Stars)
   playRainbowGlide() {
     if (this.isMuted || !this.ctx) return;

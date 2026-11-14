@@ -1659,6 +1659,7 @@ export class BubbleManager {
         this.scene.remove(ep.mesh);
         this.energyProjectiles.splice(i, 1);
         ep.mesh.traverse(obj => { if (obj.isMesh) { obj.geometry.dispose(); obj.material.dispose(); } });
+        this.rescueAnimal?.receiveEnergyImpact?.(ep.energyCount || 1);
         ep.onArrive?.(ep.energyCount || 1);
       }
     }

@@ -89,6 +89,7 @@ export class Game {
       this.friendInteraction=new HappyPerformance(this.sceneManager.scene,this.sceneManager.camera,this.rescueAnimal,this.audioManager,()=>this.finishFriendPlay());
       this.celebrationAccessories=new CelebrationAccessories(this.sceneManager.scene,this.sceneManager.camera);
       this.rescueAnimal.onEnergyReceived = () => this.sceneManager.triggerLeftFlowerBounce();
+      this.rescueAnimal.onRopeSnap = () => this.audioManager?.playRopeSnap?.();
       this.rescueAnimal.onReachedExit = () => this.sceneManager.triggerRightArchGlow();
 
       this.bubbleManager = new BubbleManager(

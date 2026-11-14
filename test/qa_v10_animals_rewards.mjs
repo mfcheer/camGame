@@ -62,4 +62,54 @@ check('Twelve-point dragon only releases its final rope on the final energy',()=
 check('Cloud crystal scenery is exclusive to the dragon and switches away cleanly',()=>{
  const s=new SceneManager({appendChild(){}});s.setAnimalTheme('dragon');assert.equal(s.dragonExtras.visible,true);assert.equal(s.dogTrail.visible,false);assert.equal(s.frogExtras.visible,false);s.setAnimalTheme('bunny');assert.equal(s.dragonExtras.visible,false);assert.equal(s.bunnyExtras.visible,true);
 });
+check('Rope release plays in three beats: taut tease, slack sag, snap with recoil',()=>{
+ const a=new RescueAnimal(new T.Scene(),camera(),'bunny');
+ a.update(.2,.2);assert.equal(a.ropeCoils[0].loosened,false);
+ a.setEnergy(1);
+ assert.equal(a.ropeCoils[0].loosened,true);assert.equal(a.ropeCoils[0].falling,false,'milestone enters slack first');
+ a.update(.2,.4);assert.ok(a.ropeCoils[0].group.position.y<0,'slack sags downward');
+ let snapped=false;a.onRopeSnap=()=>snapped=true;
+ a.update(.3,.7);assert.equal(a.ropeCoils[0].falling,true,'snap transition fires');
+ assert.ok(snapped,'onRopeSnap callback fired');assert.ok(a.recoilTimer>0,'animal recoils');
+ a.update(.4,1.1);assert.equal(a.ropeCoils[0].group.visible,false,'rope gone after slack+fall');
+ a.reset();assert.equal(a.ropeCoils[0].group.visible,true);assert.equal(a.recoilTimer,0);assert.equal(a.ropeCoils[0].taut,false);
+});
+check('Energy arrival squash: arms open additively, bow flares, pause freezes and it settles',()=>{
+ const a=new RescueAnimal(new T.Scene(),camera(),'cat');
+ a.receiveEnergyImpact(1);assert.equal(a.receiveTimer,.5);
+ a.receiveEnergyImpact(2);assert.equal(a.receivePower,1.25,'multi-energy hits harder');
+ const armZ=a.leftArm.rotation.z;
+ a.update(.15,.15);
+ assert.ok(a.leftArm.rotation.z<armZ-.15,'arms open outward');
+ assert.ok(a.model.scale.y<1&&a.model.scale.x>1,'arrival squash');
+ assert.ok(a.bowMaterials[0].emissiveIntensity>0,'bow flares');
+ a.setPaused(true);const rt=a.receiveTimer;a.update(2,2.15);assert.equal(a.receiveTimer,rt);
+ a.setPaused(false);a.update(.6,.75);assert.equal(a.receiveTimer,0);
+ assert.ok(Math.abs(a.model.scale.y-1)<.02,'scale settles back');
+});
+check('Combo of three triggers a spin flourish that lands cleanly',()=>{
+ const a=new RescueAnimal(new T.Scene(),camera(),'cat');
+ a.reactToCombo(2);assert.equal(a.comboMoveTimer,0,'combo 2 stays a small reaction');
+ a.reactToCombo(3);assert.ok(a.comboMoveTimer>0);
+ a.update(.85,.85);assert.equal(a.comboMoveTimer,0);
+ a.update(.016,.866);
+ assert.ok(Math.abs(a.animalGroup.rotation.y-(.15+Math.sin(a.idleTime*.85)*.07))<1e-6,'rotation restored by idle pose');
+ const d=new RescueAnimal(new T.Scene(),camera(),'dragon');
+ d.reactToCombo(3);d.update(.9,.9);d.update(.016,.916);
+ assert.equal(d.model.rotation.z,0,'dragon roll resets exactly');
+});
+check('Trapped mood eases from worried to excited with a persistent smile',()=>{
+ const a=new RescueAnimal(new T.Scene(),camera(),'bunny');
+ for(let i=0;i<45;i++)a.update(1/45,i/45);
+ assert.ok(a.moodWorried>.5,'worried at empty energy');
+ assert.ok(a.leftEarGroup.rotation.z<.1,'ears droop when worried');
+ a.setEnergy(3);
+ for(let i=0;i<75;i++)a.update(1/60,1+i/60);
+ assert.ok(a.moodExcited>.5,'excited near rescue');
+ assert.equal(a.happyMouth.visible,true,'persistent smile');
+ a.setEnergy(0);
+ for(let i=0;i<80;i++)a.update(1/60,2+i/60);
+ assert.ok(a.moodWorried>.5);assert.ok(a.moodExcited<.3);
+ assert.equal(a.happyMouth.visible,false,'smile fades when energy drains');
+});
 console.log(JSON.stringify({passed:results.length,results},null,2));

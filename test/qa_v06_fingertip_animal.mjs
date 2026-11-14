@@ -169,14 +169,15 @@ check('小动物精致造型、小领结视觉落点与绳圈逐圈松解淡出'
   const target = animal.getTargetPosition();
   assert.ok(target.distanceTo(animal.bowtieGroup.getWorldPosition(new THREE.Vector3())) < 1e-6, '能量汇聚必须使用领结实际世界坐标，随模型缩放和动作同步');
 
-  // 得 1 分：第一圈绳圈松开并启动淡出
+  // 得 1 分：第一圈绳圈先进入"松弛下垂"预告段，而非立即坠落
   animal.setEnergy(1);
   assert.equal(animal.ropeCoils[0].loosened, true);
-  assert.equal(animal.ropeCoils[0].falling, true);
+  assert.equal(animal.ropeCoils[0].falling, false, '里程碑先进松弛段（绷紧→松弛→崩断三段式）');
 
-  // 推进 350ms 绳圈淡出完毕
-  animal.update(0.35, 0.35);
-  assert.equal(animal.ropeCoils[0].group.visible, false, '松开的绳圈在 350ms 内淡出隐藏');
+  // 松弛段（450ms）结束后进入崩断坠落，再推进 400ms 完成淡出
+  animal.update(0.5, 0.5);
+  animal.update(0.4, 0.9);
+  assert.equal(animal.ropeCoils[0].group.visible, false, '绳圈在松弛+坠落全流程后淡出隐藏');
   assert.equal(animal.ropeCoils[1].group.visible, true, '未达到的绳圈保持绑缚');
 });
 
