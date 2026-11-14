@@ -489,7 +489,7 @@ export function createThomasModel(){
   ellipsoid(body,'Buffer_Pad',redDark,[s*.26,-.06,.682],[.045,.045,.015]);
  }
  // Smokebox door / face (Head group)
- const head=pivot(root,'Head',[0,.46,.50]);
+ const head=pivot(body,'Head',[0,.14,.50]);
  ellipsoid(head,'Round_Train_Face',gray,[0,0,.09],[.255,.255,.07]);
  // Smokebox door hinge/details
  ellipsoid(head,'Smokebox_Hinge',grayDark,[-.18,.0,.145],[.018,.08,.018]);

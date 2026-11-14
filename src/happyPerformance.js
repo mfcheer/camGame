@@ -198,9 +198,9 @@ const ACTIONS=[
     a.tailGroup.rotation.y=Math.sin(t*Math.PI*8)*.35*m;
   }},
   // 托马斯专属演出：鸣笛、喷气、车轮加速、列车摇摆
-  {id:'trainWhistle',dur:1.6,animals:['thomas'],fn:(a,t,m)=>{
+  {id:'trainWhistle',dur:1.6,animals:['thomas'],reset:a=>{a.headGroup.position.copy(a.headRestPosition);},fn:(a,t,m)=>{
     const p=Math.sin(t*Math.PI);
-    a.headGroup.rotation.x=-.06*p*m;a.headGroup.position.y=p*.02*m;
+    a.headGroup.rotation.x=-.06*p*m;a.headGroup.position.y=a.headRestPosition.y+p*.02*m;
     a.bodyMesh.rotation.z=Math.sin(t*Math.PI*2)*.02*m;
     // Whistle blow: a little body lean + eyebrow lift baked into the face rig.
     // One whistle is scheduled by beginAction, not on every animation frame.

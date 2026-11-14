@@ -44,7 +44,7 @@ export class RescueAnimal {
     if(reset){this.reset();if(typeof window!=='undefined')this.updateLayout(getViewport().width,getViewport().height,this.camera);}
     if(typeof window!=='undefined'&&typeof window.fetch==='function') {
       this.assetStatus='loading';
-      new GLTFLoader().load(assetUrl(`models/${this.profile.asset}.glb`),gltf=>{
+      new GLTFLoader().load(assetUrl(`models/${this.profile.asset}.glb${this.profile.assetVersion?`?v=${this.profile.assetVersion}`:''}`),gltf=>{
         if(request!==this.assetRequest){gltf.scene.traverse(o=>{if(o.isMesh){o.geometry.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}});return;}
         this.installModel(gltf.scene);this.assetStatus='glb';
       },undefined,error=>{if(request===this.assetRequest){this.assetStatus='fallback';console.warn('Animal GLB unavailable; using native rig.',error.message);}});
@@ -59,6 +59,7 @@ export class RescueAnimal {
     }
     this.model=model;model.rotation.y=-.16;this.animalGroup.add(model);
     Object.assign(this,getRabbitRig(model));
+    this.headRestPosition=this.headGroup.position.clone();
     this.expressionRig=createExpressionRig(model,this.animalId);this.emotion='content';
     this.furMaterials=new Set();model.traverse(o=>{
       if(o.isMesh){o.castShadow=true;o.receiveShadow=true;for(const m of Array.isArray(o.material)?o.material:[o.material])this.furMaterials.add(m);}
@@ -161,6 +162,11 @@ export class RescueAnimal {
     this.friendFarewell=this.state==='FRIEND';
     if(this.friendFarewell){this.escapeOriginX=this.currentX;this.escapeOriginY=this.currentY;this.escapeOriginScale=this.animalGroup.scale.y;}
     this.model.position.y=0;
+    if(this.animalId==='thomas'){
+      this.headGroup.position.copy(this.headRestPosition);
+      this.bodyMesh.rotation.set(0,0,0);
+      this.model.rotation.set(0,-.12,0);
+    }
     this.state='CHEERING';this.escapeElapsed=0;this.ropesGroup.visible=false;this.hopTimer=0;
     this.comboMoveTimer=0;this.receiveTimer=0;this.moodWorried=0;this.moodExcited=0;
     this.spawnRopeBreakParticles();
@@ -171,6 +177,7 @@ export class RescueAnimal {
     this.actionPoseFn=null;this.actionPoseT=0;this.performanceGlow=null;
     this.ropesGroup.visible=false;this.postGroup.visible=false;this.animalGroup.visible=true;this.setOpacity(1);
     this.model.scale.set(1,1,1);this.model.position.y=0;this.model.rotation.set(0,-.12,0);
+    if(this.animalId==='thomas')this.headGroup.position.copy(this.headRestPosition);
     this.animalGroup.rotation.set(0,0,0);this.setQuadrupedPosture(0);
     for(const g of [this.headGroup,this.leftArm,this.rightArm,this.leftLeg,this.rightLeg,this.tailGroup])g.rotation.set(0,0,0);
   }
@@ -184,6 +191,7 @@ export class RescueAnimal {
     const pulse=r>0?Math.sin(Math.min(1,(1.1-r)/1.1)*Math.PI):0,motion=this.reducedMotion?.2:1;
     this.model.scale.set(1,1+Math.sin(t*2)*.008,1);this.model.rotation.x=0;this.model.position.y=0;
     this.headGroup.rotation.x=0;this.headGroup.rotation.z=Math.sin(t)*.025;
+    if(this.animalId==='thomas')this.headGroup.position.copy(this.headRestPosition);
     this.leftArm.rotation.set(-.1,0,.1);this.rightArm.rotation.set(-.1,0,-.1);
     this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
     this.leftEarGroup.rotation.set(0,0,.1);this.rightEarGroup.rotation.set(0,0,-.1);
@@ -296,7 +304,8 @@ export class RescueAnimal {
     this.currentX=this.startX;this.currentY=this.groundY;
     this.group.visible=true;this.animalGroup.visible=true;this.postGroup.visible=true;this.ropesGroup.visible=true;this.setOpacity(1);
     this.animalGroup.position.set(this.startX,this.groundY,.06);this.animalGroup.rotation.set(0,0,0);this.animalGroup.scale.setScalar(this.modelScale);
-    for(const g of [this.headGroup,this.leftArm,this.rightArm,this.leftLeg,this.rightLeg,this.tailGroup])g.rotation.set(0,0,0);
+    for(const g of [this.headGroup,this.leftArm,this.rightArm,this.leftLeg,this.tailGroup])g.rotation.set(0,0,0);
+    if(this.animalId==='thomas')this.headGroup.position.copy(this.headRestPosition);
     this.leftEarGroup.rotation.set(0,0,.13);this.rightEarGroup.rotation.set(0,0,-.13);this.eyesGroup.scale.set(1,1,1);
     this.bodyMesh.rotation.set(0,0,0);
     for(const name of ['Whisker_L','Whisker_R'])this.model.getObjectByName(name)?.rotation.set(0,0,0);
@@ -487,16 +496,16 @@ export class RescueAnimal {
         if(this.animalId==='goldenDragon'){
           jump=this.reducedMotion?0:Math.sin(t/.65*Math.PI)*.10;this.animalGroup.position.y=this.groundY+jump;
           this.model.scale.set(1,1,1);
-        }else if(this.animalId==='excavator'){
+        }else if(['excavator','thomas'].includes(this.animalId)){
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
-          this.bodyMesh.rotation.z=Math.sin(t/.65*Math.PI)*.07;
+          this.bodyMesh.rotation.z=Math.sin(t/.65*Math.PI)*.035;
         }else if(['cat','dog','chase'].includes(this.animalId)) {
           this.setQuadrupedPosture(smooth(t/.65));
           const stretch=Math.sin(t/.65*Math.PI);this.model.scale.set(1+.10*stretch,1-.06*stretch,1);
           this.leftArm.rotation.x=this.rightArm.rotation.x=-stretch*.6;this.tailGroup.rotation.z=-stretch*.3;
         }else jump=this.animateHop(t/.65,this.reducedMotion?.05:(this.animalId==='frog'?.43:.34));
         this.animalGroup.rotation.y=THREE.MathUtils.lerp(.15,Math.PI/2,smooth(t/.65));
-        this.leftArm.rotation.z=-.45;this.rightArm.rotation.z=.45;
+        if(!['thomas','excavator'].includes(this.animalId)){this.leftArm.rotation.z=-.45;this.rightArm.rotation.z=.45;}
       }else if(t<3.15) {
         this.state='ESCAPING';const p=(t-.65)/2.5;const count=this.animalId==='frog'?4:5;
         const hopPos=p*count;const phase=hopPos%1;
@@ -543,7 +552,7 @@ export class RescueAnimal {
         this.setQuadrupedPosture(1-smooth(clamp((t-3.15)/.22,0,1)));
         this.headGroup.rotation.z=-.1;
         if(['cat','dog','chase'].includes(this.animalId))this.tailGroup.rotation.z=Math.sin((t-3.15)*12)*.3;
-        if(this.animalId==='excavator'){this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);}
+        if(['thomas','excavator'].includes(this.animalId)){this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);}
         else{this.leftArm.rotation.set(0,0,-1.7+Math.sin((t-3.15)*20)*.22);this.rightArm.rotation.set(0,0,-.1);}
         this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
         this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=0;
