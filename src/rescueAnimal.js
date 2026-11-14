@@ -10,9 +10,10 @@ import { createGoldenDragonModel } from './goldenDragonModel.js';
 import { createDragonModel } from './dragonModel.js';
 import { createDogModel } from './dogModel.js';
 import { createTeddyModel,createWolfModel,createMcqueenModel,createChaseModel,createJettModel,createPeppaModel,createThomasModel } from './newFriendsModel.js';
+import {createExcavatorModel} from './excavatorModel.js';
 import { GAME_CONFIG } from './config.js';
 
-export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel,chase:createChaseModel,jett:createJettModel,peppa:createPeppaModel,thomas:createThomasModel};
+export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel,chase:createChaseModel,jett:createJettModel,peppa:createPeppaModel,thomas:createThomasModel,excavator:createExcavatorModel};
 const smooth = t => t*t*(3-2*t);
 const clamp = THREE.MathUtils.clamp;
 
@@ -127,7 +128,7 @@ export class RescueAnimal {
     const vw=vh*w/h;
     const oldStart=this.startX,oldEnd=this.endX;
     const progress=oldEnd>oldStart?clamp((this.currentX-oldStart)/(oldEnd-oldStart),0,1):0;
-    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,chase:1.02,jett:1.02,peppa:1.02,thomas:1.05,wolf:1.02,teddy:1.02})[this.animalId];
+    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,chase:1.02,jett:1.02,peppa:1.02,thomas:1.05,excavator:.92,wolf:1.02,teddy:1.02})[this.animalId];
     this.groundY=-vh/2+.45+getSafeInsets().bottom*vh/h;
     this.startX=-vw/2+Math.min(1.5,vw*.24)+getSafeInsets().left*vh/h;
     this.endX=vw/2-1.0-getSafeInsets().right*vh/h;
@@ -217,6 +218,9 @@ export class RescueAnimal {
       for(const [name,sign] of [['Wing_L',-1],['Wing_R',1]]){
         const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=sign*(.08+Math.sin(t*3)*.06*motion);
       }
+    }else if(this.animalId==='excavator'){
+      this.bodyMesh.rotation.z=Math.sin(t*2)*.018*motion+pulse*.05*motion;
+      this.headGroup.rotation.z+=pulse*.08*motion;
     }else if(this.animalId==='mcqueen'){
       this.bodyMesh.rotation.z=pulse*.08*motion;this.headGroup.rotation.z+=pulse*.08*motion;
     }else if(this.animalId==='thomas'){
@@ -245,6 +249,12 @@ export class RescueAnimal {
     }else if(this.animalId==='goldenDragon'){
       this.bodyMesh.rotation.z=Math.sin(t*3)*.035*motion;this.tailGroup.rotation.y=Math.sin(t*3-.8)*.18*motion;
       for(const [name,sign]of [['Whisker_L',-1],['Whisker_R',1]]){const w=this.model.getObjectByName(name);if(w)w.rotation.y=sign*Math.sin(t*2.5)*.05*motion;}
+    }
+    if(this.animalId==='excavator'){
+      const boom=this.model.getObjectByName('Boom_Base'),elbow=this.model.getObjectByName('Boom_Elbow'),bucket=this.model.getObjectByName('Bucket');
+      boom.rotation.z=(Math.sin(t*1.9)*.07+pulse*.25)*motion;
+      elbow.rotation.z=(-Math.sin(t*1.9+.5)*.08-pulse*.18)*motion;
+      bucket.rotation.z=(Math.sin(t*2.4)*.10+pulse*.27)*motion;
     }
     this.updateAttention(dt);this.updateExpression(dt);updateExpressionRig(this,dt);
     // HappyPerformance 动作覆写层：在 FRIEND 基础姿态之后应用，动画帧内拥有最终决定权。
@@ -450,6 +460,9 @@ export class RescueAnimal {
         if(this.animalId==='goldenDragon'){
           jump=this.reducedMotion?0:Math.sin(p*Math.PI)*.045*boost;this.animalGroup.position.y=this.groundY+jump;
           this.headGroup.rotation.x=-Math.sin(p*Math.PI)*.10;this.rightArm.rotation.x=-Math.sin(p*Math.PI)*.45;
+        }else if(this.animalId==='excavator'){
+          this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
+          this.headGroup.rotation.z=Math.sin(p*Math.PI)*.10;
         }else if(['cat','dog','chase'].includes(this.animalId)) {
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
           this.headGroup.rotation.z=Math.sin(p*Math.PI)*.12;
@@ -474,6 +487,9 @@ export class RescueAnimal {
         if(this.animalId==='goldenDragon'){
           jump=this.reducedMotion?0:Math.sin(t/.65*Math.PI)*.10;this.animalGroup.position.y=this.groundY+jump;
           this.model.scale.set(1,1,1);
+        }else if(this.animalId==='excavator'){
+          this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
+          this.bodyMesh.rotation.z=Math.sin(t/.65*Math.PI)*.07;
         }else if(['cat','dog','chase'].includes(this.animalId)) {
           this.setQuadrupedPosture(smooth(t/.65));
           const stretch=Math.sin(t/.65*Math.PI);this.model.scale.set(1+.10*stretch,1-.06*stretch,1);
@@ -485,12 +501,12 @@ export class RescueAnimal {
         this.state='ESCAPING';const p=(t-.65)/2.5;const count=this.animalId==='frog'?4:5;
         const hopPos=p*count;const phase=hopPos%1;
         // Advance mainly in the airborne interval, so planted feet do not slide.
-        const step=['cat','dog','dragon','goldenDragon','mcqueen','chase','jett','thomas'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
+        const step=['cat','dog','dragon','goldenDragon','mcqueen','chase','jett','thomas','excavator'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
         this.currentX=THREE.MathUtils.lerp(this.escapeOriginX??this.startX,this.endX,step);
         this.animalGroup.position.x=this.currentX;this.animalGroup.rotation.y=Math.PI/2;this.animalGroup.rotation.z=-.035;
-        if(['mcqueen','thomas'].includes(this.animalId)){
+        if(['mcqueen','thomas','excavator'].includes(this.animalId)){
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
-          for(const wheel of [this.leftArm,this.rightArm,this.leftLeg,this.rightLeg])wheel.rotation.x=-p*Math.PI*14;
+          if(this.animalId!=='excavator')for(const wheel of [this.leftArm,this.rightArm,this.leftLeg,this.rightLeg])wheel.rotation.x=-p*Math.PI*14;
           this.model.rotation.z=this.reducedMotion?0:Math.sin(p*25)*.018;
           if(this.animalId==='thomas'&&!this.reducedMotion){
             this.steamClock=(this.steamClock||0)+dt;
@@ -527,13 +543,25 @@ export class RescueAnimal {
         this.setQuadrupedPosture(1-smooth(clamp((t-3.15)/.22,0,1)));
         this.headGroup.rotation.z=-.1;
         if(['cat','dog','chase'].includes(this.animalId))this.tailGroup.rotation.z=Math.sin((t-3.15)*12)*.3;
-        this.leftArm.rotation.set(0,0,-1.7+Math.sin((t-3.15)*20)*.22);this.rightArm.rotation.set(0,0,-.1);
+        if(this.animalId==='excavator'){this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);}
+        else{this.leftArm.rotation.set(0,0,-1.7+Math.sin((t-3.15)*20)*.22);this.rightArm.rotation.set(0,0,-.1);}
         this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
         this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=0;
       }else {
         const alpha=1-clamp((t-3.8)/.3,0,1);this.setOpacity(alpha);this.contactShadow.material.opacity=alpha;
         if(alpha===0){this.state='ESCAPED';this.animalGroup.visible=false;this.contactShadow.visible=false;}
       }
+    }
+    if(this.animalId==='excavator'){
+      const boom=this.model.getObjectByName('Boom_Base'),elbow=this.model.getObjectByName('Boom_Elbow'),bucket=this.model.getObjectByName('Bucket');
+      const reaction=this.reactionTimer>0?Math.sin((1-this.reactionTimer/1.15)*Math.PI):0;
+      const wave=this.state==='WAVING'?Math.sin((this.escapeElapsed-3.15)*18)*.20:0;
+      const driving=this.state==='ESCAPING'?Math.sin(this.idleTime*11)*.075:0;
+      const lively=this.reducedMotion?.35:1;
+      boom.rotation.z=(.06*Math.sin(this.idleTime*1.7)+reaction*.20+wave+driving)*lively;
+      elbow.rotation.z=(-.09*Math.sin(this.idleTime*1.7+.6)-reaction*.16-wave*.55)*lively;
+      bucket.rotation.z=(.10*Math.sin(this.idleTime*2.3)+reaction*.22+wave*.6)*lively;
+      if(this.state==='TRAPPED'||this.state==='CHEERING'||this.state==='ESCAPING')this.headGroup.rotation.z+=reaction*.08*lively;
     }
     if(this.animalId==='dog')this.tailGroup.rotation.y=Math.sin(this.idleTime*(this.moodExcited>.5?9.5:7))*(this.state==='TRAPPED'?.4:.55);
     if(this.animalId==='dragon'){

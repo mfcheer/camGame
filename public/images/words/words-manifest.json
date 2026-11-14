@@ -1796,5 +1796,145 @@
         "kind": "common-fruits"
       }
     ]
+  },
+  {
+    "id": "water",
+    "word": "water",
+    "zh": "水",
+    "category": "drinks",
+    "image": "/images/words/learning/water.svg",
+    "bubbleImage": "/images/words/learning/water.svg",
+    "svg": "/images/words/learning/water.svg",
+    "bubbleSvg": "/images/words/water.svg",
+    "audio": "/audio/words/water.mp3",
+    "reviewAudio": "/audio/words/review/water.mp3",
+    "accent": "#3498DB",
+    "aliases": [
+      "waters"
+    ],
+    "sources": [
+      {
+        "bookId": "drinks-discovery",
+        "form": "water",
+        "kind": "common-drinks"
+      }
+    ]
+  },
+  {
+    "id": "milk",
+    "word": "milk",
+    "zh": "牛奶",
+    "category": "drinks",
+    "image": "/images/words/learning/milk.svg",
+    "bubbleImage": "/images/words/learning/milk.svg",
+    "svg": "/images/words/learning/milk.svg",
+    "bubbleSvg": "/images/words/milk.svg",
+    "audio": "/audio/words/milk.mp3",
+    "reviewAudio": "/audio/words/review/milk.mp3",
+    "accent": "#4A90E2",
+    "aliases": [
+      "milks"
+    ],
+    "sources": [
+      {
+        "bookId": "drinks-discovery",
+        "form": "milk",
+        "kind": "common-drinks"
+      }
+    ]
+  },
+  {
+    "id": "juice",
+    "word": "juice",
+    "zh": "果汁",
+    "category": "drinks",
+    "image": "/images/words/learning/juice.svg",
+    "bubbleImage": "/images/words/learning/juice.svg",
+    "svg": "/images/words/learning/juice.svg",
+    "bubbleSvg": "/images/words/juice.svg",
+    "audio": "/audio/words/juice.mp3",
+    "reviewAudio": "/audio/words/review/juice.mp3",
+    "accent": "#FF9F43",
+    "aliases": [
+      "juices"
+    ],
+    "sources": [
+      {
+        "bookId": "drinks-discovery",
+        "form": "juice",
+        "kind": "common-drinks"
+      }
+    ]
+  },
+  {
+    "id": "tea",
+    "word": "tea",
+    "zh": "茶",
+    "category": "drinks",
+    "image": "/images/words/learning/tea.svg",
+    "bubbleImage": "/images/words/learning/tea.svg",
+    "svg": "/images/words/learning/tea.svg",
+    "bubbleSvg": "/images/words/tea.svg",
+    "audio": "/audio/words/tea.mp3",
+    "reviewAudio": "/audio/words/review/tea.mp3",
+    "accent": "#10AC84",
+    "aliases": [
+      "teas"
+    ],
+    "sources": [
+      {
+        "bookId": "drinks-discovery",
+        "form": "tea",
+        "kind": "common-drinks"
+      }
+    ]
+  },
+  {
+    "id": "yogurt",
+    "word": "yogurt",
+    "zh": "酸奶",
+    "category": "drinks",
+    "image": "/images/words/learning/yogurt.svg",
+    "bubbleImage": "/images/words/learning/yogurt.svg",
+    "svg": "/images/words/learning/yogurt.svg",
+    "bubbleSvg": "/images/words/yogurt.svg",
+    "audio": "/audio/words/yogurt.mp3",
+    "reviewAudio": "/audio/words/review/yogurt.mp3",
+    "accent": "#EE5253",
+    "aliases": [
+      "yogurts",
+      "yoghurt"
+    ],
+    "sources": [
+      {
+        "bookId": "drinks-discovery",
+        "form": "yogurt",
+        "kind": "common-drinks"
+      }
+    ]
+  },
+  {
+    "id": "soup",
+    "word": "soup",
+    "zh": "汤",
+    "category": "drinks",
+    "image": "/images/words/learning/soup.svg",
+    "bubbleImage": "/images/words/learning/soup.svg",
+    "svg": "/images/words/learning/soup.svg",
+    "bubbleSvg": "/images/words/soup.svg",
+    "audio": "/audio/words/soup.mp3",
+    "reviewAudio": "/audio/words/review/soup.mp3",
+    "accent": "#F39C12",
+    "aliases": [
+      "soups",
+      "热汤"
+    ],
+    "sources": [
+      {
+        "bookId": "drinks-discovery",
+        "form": "soup",
+        "kind": "common-drinks"
+      }
+    ]
   }
 ]

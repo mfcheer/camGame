@@ -6,7 +6,7 @@ const FACE={
  dog:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},
  dragon:{width:.052,depth:.044,top:1.50,colour:0x97cbbb},
  goldenDragon:{width:.048,depth:.046,top:1.63,colour:0xeac166},
- teddy:{width:.043,depth:.028,top:1.34,colour:0xe69891},wolf:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},mcqueen:{width:.05,depth:.028,top:1.10,colour:0xffca48},chase:{width:.044,depth:.032,top:1.4,colour:0xffd075},jett:{width:.044,depth:.028,top:1.35,colour:0x97c8eb},peppa:{width:.043,depth:.028,top:1.4,colour:0xf2a1b3},thomas:{width:.048,depth:.028,top:1.32,colour:0x8cc5df}
+ teddy:{width:.043,depth:.028,top:1.34,colour:0xe69891},wolf:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},mcqueen:{width:.05,depth:.028,top:1.10,colour:0xffca48},chase:{width:.044,depth:.032,top:1.4,colour:0xffd075},jett:{width:.044,depth:.028,top:1.35,colour:0x97c8eb},peppa:{width:.043,depth:.028,top:1.4,colour:0xf2a1b3},thomas:{width:.048,depth:.028,top:1.32,colour:0x8cc5df},excavator:{width:.07,depth:.035,top:1.48,colour:0xffd66b}
 };
 function stroke(parent,points,r,material){const path=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const m=new THREE.Mesh(new THREE.TubeGeometry(path,18,r,6,false),material);parent.add(m);return m;}
 function heart(){const s=new THREE.Shape();s.moveTo(0,-.035);s.bezierCurveTo(-.11,.03,-.055,.10,0,.055);s.bezierCurveTo(.055,.10,.11,.03,0,-.035);return new THREE.ShapeGeometry(s,16);}
@@ -149,6 +149,7 @@ export function updateExpressionRig(animal,dt){
    case 'peppa':animal.headGroup.rotation.z+=.07*motion;animal.leftArm.rotation.z=-.16*motion;break;
    case 'mcqueen':animal.headGroup.rotation.z+=Math.sin(t*2)*.035*motion;break;
    case 'thomas':animal.headGroup.rotation.z+=Math.sin(t*2)*.03*motion;break;
+   case 'excavator':animal.headGroup.rotation.z+=.055*motion;break;
   }
  }
  // Cat slow blinks remain readable while looking back at the player.
@@ -176,6 +177,7 @@ export function updateExpressionRig(animal,dt){
    case 'peppa':animal.headGroup.rotation.z+=amount*.11*motion;animal.leftArm.rotation.z-=amount*.18*motion;animal.rightArm.rotation.z+=amount*.18*motion;break;
    case 'mcqueen':animal.bodyMesh.rotation.z+=Math.sin(t*8)*amount*.025*motion;break;
    case 'thomas':animal.headGroup.rotation.z+=amount*(variant===1?-.10:.07)*motion;break;
+   case 'excavator':animal.headGroup.rotation.z+=amount*.08*motion;break;
   }
  }
 }

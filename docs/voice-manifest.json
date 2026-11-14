@@ -3966,5 +3966,365 @@
         "sha256": "13ff69f30ad897425dbeec2706aaba85c798cce10ce17ceb098deb8e2a514c4a"
       }
     ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "water",
+    "text": "水",
+    "zh": "水",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/water.mp3",
+        "sha256": "9b00649cb84b520979e6f16deecae16a64ce119f602de5d9edd631cd71087c2e"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "milk",
+    "text": "牛奶",
+    "zh": "牛奶",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/milk.mp3",
+        "sha256": "01d94ec40f1a038f38f0849fcce3770df467e8039c7f99842ed0bb2e74cd36b5"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "juice",
+    "text": "果汁",
+    "zh": "果汁",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/juice.mp3",
+        "sha256": "ae7fa0da9758049e52524794180ecf58a8014ce91a827cca4d42ec4548ded89d"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "tea",
+    "text": "茶",
+    "zh": "茶",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/tea.mp3",
+        "sha256": "90583635fdf89277bec1363c1e9bdb6a96a2316ab8b3ad2b5c100cf110e4393c"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "yogurt",
+    "text": "酸奶",
+    "zh": "酸奶",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/yogurt.mp3",
+        "sha256": "0cfc7f0e6f3f1bd0a2627e1f527bd9198406ab5b282ba499985f5dbe73261648"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "soup",
+    "text": "汤",
+    "zh": "汤",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/soup.mp3",
+        "sha256": "1d84744d7259c54a634ee819b5833d76bd84797f52b4d510d464da3dd7a45c8d"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "water",
+    "text": "water",
+    "zh": "水",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/water.mp3",
+        "sha256": "7262c6829bdfeda537aeb7e29307fd73253b01f0b44f264281cbd5125d957386"
+      },
+      {
+        "path": "public/audio/words/review/water.mp3",
+        "sha256": "c40d8b55bfd938c23d7b577ce315fb7b53467a47f2bff7d057ca208d2f92f309"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "milk",
+    "text": "milk",
+    "zh": "牛奶",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/milk.mp3",
+        "sha256": "a55c87445b36d6ee72256c637880f872f0fe5936a675dffddf260b9558cf526d"
+      },
+      {
+        "path": "public/audio/words/review/milk.mp3",
+        "sha256": "0f1e82243b02b17ffab542ceef436441cb21bd1ed35790314fefd0adee2d860d"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "juice",
+    "text": "juice",
+    "zh": "果汁",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/juice.mp3",
+        "sha256": "96046e4098e17186e2845d6dbdfc64e75ffa79fb2225f2dc6094fcb31ef12b36"
+      },
+      {
+        "path": "public/audio/words/review/juice.mp3",
+        "sha256": "ff70fd8565207bd4589603e6c1cb19fcefe1f49814b21c339e30d726cf0f1a89"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "tea",
+    "text": "tea",
+    "zh": "茶",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/tea.mp3",
+        "sha256": "22aae8879c5203de2eaa1fd1fd743a6bf6de0307462ab8dae602357bb25538d8"
+      },
+      {
+        "path": "public/audio/words/review/tea.mp3",
+        "sha256": "7f502c9fdcfd5a4b83351071b12463b683c9bfb26c0cd1c755aba3bea9331416"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "yogurt",
+    "text": "yogurt",
+    "zh": "酸奶",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/yogurt.mp3",
+        "sha256": "6b09f40b624ae17b33fd62d713f7cdfcfba28059e70e68b9542e25114224a5a0"
+      },
+      {
+        "path": "public/audio/words/review/yogurt.mp3",
+        "sha256": "f8da81954a453865438dba1ed95c31946d48c0793c8a9a9f1a55d3e45ec3ed79"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "soup",
+    "text": "soup",
+    "zh": "汤",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/soup.mp3",
+        "sha256": "4d52c7644a9c9e06c9dd03d7d6e38d0fa2cab08bb8d6bc0574f7c41e9169c677"
+      },
+      {
+        "path": "public/audio/words/review/soup.mp3",
+        "sha256": "4d9e93c58d8f3de7ddaaf684429ade7b13dbb7f60534e8e71923cb884c8cc6ba"
+      }
+    ]
   }
 ]

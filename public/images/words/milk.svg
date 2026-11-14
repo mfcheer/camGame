@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="shadow_milk" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <radialGradient id="cardGlow_milk" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.96"/>
+      <stop offset="100%" stop-color="#EBF5FB" stop-opacity="0.92"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="128" cy="128" r="114" fill="url(#cardGlow_milk)" filter="url(#shadow_milk)"/>
+  <circle cx="128" cy="128" r="114" fill="none" stroke="#4A90E2" stroke-width="6" opacity="0.85"/>
+  <circle cx="128" cy="128" r="106" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.9"/>
+
+  
+      <g transform="translate(128, 126)">
+        <defs>
+          <linearGradient id="milkCartonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#FFFFFF"/>
+            <stop offset="70%" stop-color="#F4F6F6"/>
+            <stop offset="100%" stop-color="#EAEDED"/>
+          </linearGradient>
+          <linearGradient id="milkBlueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#5DADE2"/>
+            <stop offset="100%" stop-color="#3498DB"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Carton Gable Top -->
+        <path d="M-36 -46 L0 -82 L36 -46 Z" fill="#2980B9" stroke="#1B4F72" stroke-width="4.5" stroke-linejoin="round"/>
+        <path d="M-8 -82 L-8 -92 L8 -92 L8 -82 Z" fill="#3498DB" stroke="#1B4F72" stroke-width="3" stroke-linejoin="round"/>
+
+        <!-- Carton Main Body -->
+        <rect x="-42" y="-46" width="84" height="126" rx="10" fill="url(#milkCartonGrad)" stroke="#1B4F72" stroke-width="4.5"/>
+
+        <!-- Blue header banner on carton -->
+        <path d="M-40 -44 L40 -44 L40 -12 L-40 -12 Z" fill="url(#milkBlueGrad)"/>
+        <text x="0" y="-22" font-family="-apple-system, sans-serif" font-size="14" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">MILK</text>
+
+        <!-- Cow spots on carton -->
+        <path d="M-40 20 C-26 14 -20 30 -28 42 C-38 46 -40 38 -40 20 Z" fill="#34495E"/>
+        <path d="M40 34 C26 28 22 48 30 58 C38 62 40 54 40 34 Z" fill="#34495E"/>
+        <path d="M-6 60 C4 54 12 66 6 76 C-4 78 -10 70 -6 60 Z" fill="#34495E"/>
+
+        <!-- Cute smiling milk glass beside carton -->
+        <g transform="translate(38, 42) scale(0.68)">
+          <path d="M-20 -28 L-14 36 C-12 42 12 42 14 36 L20 -28 Z" fill="#EBF5FB" stroke="#2980B9" stroke-width="4"/>
+          <path d="M-16 -8 L-12 34 C-10 38 10 38 12 34 L16 -8 Z" fill="#FFFFFF"/>
+          <circle cx="-6" cy="10" r="2.5" fill="#2C3E50"/>
+          <circle cx="6" cy="10" r="2.5" fill="#2C3E50"/>
+          <path d="M-3 16 Q0 20 3 16" fill="none" stroke="#2C3E50" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="-9" cy="14" r="3" fill="#FF7675" opacity="0.6"/>
+          <circle cx="9" cy="14" r="3" fill="#FF7675" opacity="0.6"/>
+        </g>
+
+        <!-- Cute Milk drop on left -->
+        <path d="M-52 64 C-52 56 -44 48 -44 48 C-44 48 -36 56 -36 64 C-36 69 -40 73 -44 73 C-48 73 -52 69 -52 64 Z" fill="#FFFFFF" stroke="#3498DB" stroke-width="2.5"/>
+      </g>
+    
+
+  <g transform="translate(128, 206)">
+    <rect x="-56" y="-18" width="112" height="32" rx="16" fill="#4A90E2" stroke="#FFFFFF" stroke-width="2.5" filter="url(#shadow_milk)"/>
+    <text x="0" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Comic Sans MS', sans-serif" font-size="17" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">MILK</text>
+  </g>
+</svg>

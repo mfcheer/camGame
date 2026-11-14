@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_soup" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_soup)">
+    
+      <g transform="translate(128, 134)">
+        <defs>
+          <linearGradient id="bowlGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#F39C12"/>
+            <stop offset="60%" stop-color="#E67E22"/>
+            <stop offset="100%" stop-color="#D35400"/>
+          </linearGradient>
+          <linearGradient id="brothGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F9E79F"/>
+            <stop offset="60%" stop-color="#F5B041"/>
+            <stop offset="100%" stop-color="#EB984E"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Warm Steam Rising -->
+        <path d="M-16 -50 C-24 -64 -12 -76 -18 -92" fill="none" stroke="#F8C471" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+        <path d="M0 -54 C-8 -68 8 -82 0 -98" fill="none" stroke="#F8C471" stroke-width="4.5" stroke-linecap="round" opacity="0.9"/>
+        <path d="M16 -48 C8 -62 20 -76 14 -90" fill="none" stroke="#F8C471" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+
+        <!-- Bowl Handles -->
+        <path d="M-46 -8 C-62 -8 -62 16 -46 16" fill="none" stroke="#BA4A00" stroke-width="6.5" stroke-linecap="round"/>
+        <path d="M46 -8 C62 -8 62 16 46 16" fill="none" stroke="#BA4A00" stroke-width="6.5" stroke-linecap="round"/>
+
+        <!-- Ceramic Bowl Base -->
+        <path d="M-50 -20 C-52 54 52 54 50 -20 Z" fill="url(#bowlGrad)" stroke="#935116" stroke-width="5" stroke-linejoin="round"/>
+        <ellipse cx="0" cy="50" rx="26" ry="6" fill="#935116" opacity="0.4"/>
+
+        <!-- Soup Broth Surface -->
+        <ellipse cx="0" cy="-20" rx="46" ry="15" fill="url(#brothGrad)" stroke="#935116" stroke-width="3.5"/>
+        <ellipse cx="0" cy="-20" rx="36" ry="9" fill="#FCF3CF" opacity="0.6"/>
+
+        <!-- Spoon Resting in Soup -->
+        <path d="M22 -62 L32 -20" fill="none" stroke="#BDC3C7" stroke-width="6" stroke-linecap="round"/>
+        <ellipse cx="26" cy="-18" rx="8" ry="12" transform="rotate(-30 26 -18)" fill="#EAEDED" stroke="#7F8C8D" stroke-width="2"/>
+
+        <!-- Healthy Vegetables in Soup -->
+        <circle cx="-16" cy="-18" r="4.5" fill="#2ECC71" stroke="#27AE60" stroke-width="1.5"/>
+        <circle cx="6" cy="-14" r="4" fill="#2ECC71" stroke="#27AE60" stroke-width="1.5"/>
+        <rect x="-6" y="-24" width="7" height="7" rx="1.5" fill="#E74C3C" stroke="#C0392B" stroke-width="1.5"/>
+        <rect x="-24" y="-14" width="6" height="6" rx="1.5" fill="#E67E22" stroke="#D35400" stroke-width="1.5"/>
+        <rect x="14" y="-24" width="6" height="6" rx="1.5" fill="#E67E22" stroke="#D35400" stroke-width="1.5"/>
+      </g>
+    
+  </g>
+</svg>

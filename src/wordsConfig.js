@@ -3,6 +3,7 @@ import {STORYBOOK_WORDS} from './storybookVocabulary.js';
 import {CLASSROOM_WORDS} from './classroomVocabulary.js';
 import {EXPANDED_WORDS} from './expandedVocabulary.js';
 import {FRUITS_WORDS} from './fruitsVocabulary.js';
+import {DRINKS_WORDS} from './drinksVocabulary.js';
 
 /**
  * 少儿英语启蒙单词库：现有主题 + 幼儿园绘本词汇 + 香甜水果词汇
@@ -371,7 +372,7 @@ const BASE_WORDS_LIST = [
   }
 ];
 
-export const WORDS_LIST = mergeVocabulary(BASE_WORDS_LIST, STORYBOOK_WORDS, CLASSROOM_WORDS, EXPANDED_WORDS, FRUITS_WORDS);
+export const WORDS_LIST = mergeVocabulary(BASE_WORDS_LIST, STORYBOOK_WORDS, CLASSROOM_WORDS, EXPANDED_WORDS, FRUITS_WORDS, DRINKS_WORDS);
 
 export const WORDS_MAP = new Map(WORDS_LIST.map(w => [w.id, w]));
 const WORD_ALIASES = new Map(WORDS_LIST.flatMap(word=>word.aliases.map(alias=>[alias,word.id])));

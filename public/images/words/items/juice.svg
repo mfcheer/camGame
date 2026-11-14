@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <filter id="itemShadow_juice" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_juice)">
+    
+      <g transform="translate(128, 128)">
+        <defs>
+          <linearGradient id="juiceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFC048"/>
+            <stop offset="50%" stop-color="#FF9F43"/>
+            <stop offset="100%" stop-color="#EE5A24"/>
+          </linearGradient>
+          <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#FFF5EB" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#FFEAA7" stop-opacity="0.75"/>
+          </linearGradient>
+          <radialGradient id="orangeGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#FFDD59"/>
+            <stop offset="70%" stop-color="#FFA801"/>
+            <stop offset="100%" stop-color="#FF5E57"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Straw -->
+        <path d="M-10 -90 L16 -40 L12 40" fill="none" stroke="#2ED573" stroke-width="8" stroke-linecap="round"/>
+        <path d="M-8 -82 L-4 -74 M3 -60 L7 -52 M14 -32 L14 -24 M13 0 L13 8 M12 24 L12 32" fill="none" stroke="#FFFFFF" stroke-width="6.5" stroke-linecap="round"/>
+
+        <!-- Glass Outline -->
+        <path d="M-42 -48 L-30 68 C-28 78 28 78 30 68 L42 -48 Z" fill="url(#glassGrad)" stroke="#E67E22" stroke-width="4.5" stroke-linejoin="round"/>
+
+        <!-- Juice Inside -->
+        <path d="M-36 -14 Q0 -8 36 -14 L28 66 C26 74 -26 74 -28 66 Z" fill="url(#juiceGrad)" stroke="#D35400" stroke-width="3"/>
+
+        <!-- Ice cubes -->
+        <rect x="-20" y="4" width="18" height="18" rx="4" fill="#FFFFFF" opacity="0.6" stroke="#FFA801" stroke-width="1.5"/>
+        <rect x="4" y="20" width="16" height="16" rx="4" fill="#FFFFFF" opacity="0.6" stroke="#FFA801" stroke-width="1.5"/>
+
+        <!-- Orange Slice on Rim -->
+        <g transform="translate(38, -48)">
+          <!-- Rind -->
+          <circle cx="0" cy="0" r="26" fill="url(#orangeGrad)" stroke="#D35400" stroke-width="3"/>
+          <circle cx="0" cy="0" r="22" fill="#FFF5EB"/>
+          <circle cx="0" cy="0" r="19" fill="#FFA801"/>
+          <!-- Segments -->
+          <path d="M0 0 L0 -18 M0 0 L15 -10 M0 0 L15 10 M0 0 L0 18 M0 0 L-15 10 M0 0 L-15 -10" stroke="#FFF5EB" stroke-width="2.5"/>
+          <circle cx="0" cy="0" r="4" fill="#FFF5EB"/>
+        </g>
+
+        <!-- Glass Highlight -->
+        <path d="M-34 -40 L-25 60" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+      </g>
+    
+  </g>
+</svg>

@@ -52,7 +52,7 @@ const CHARACTER_MUSIC={
   bunny:['sine',1],cat:['triangle',.88],frog:['sine',1.12],dog:['triangle',.94],
   dragon:['sine',1.16],goldenDragon:['sine',1.24],mcqueen:['triangle',.72],
   wolf:['triangle',.92],teddy:['sine',1.28],chase:['triangle',.82],
-  jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96]
+  jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96],excavator:['triangle',.82]
 };
 
 export class AudioManager {
@@ -395,6 +395,7 @@ export class AudioManager {
         case 'chase': this._playChaseSound(type); break;
         case 'jett': this._playJettSound(type); break;
         case 'thomas': this._playThomasSound(type); break;
+        case 'excavator': this._playExcavatorSound(type); break;
         case 'peppa': this._playPeppaSound(type); break;
         case 'mcqueen': this._playCarFriendSound(type); break;
         case 'teddy': this._playTeddySound(type); break;
@@ -406,6 +407,10 @@ export class AudioManager {
     } catch (e) {}
   }
 
+  _playExcavatorSound(type){
+    // A soft two-note hydraulic lift, quiet enough for repeated toddler play.
+    this._playFriendNotes([260,330,392],type,'triangle',.055);
+  }
   _playCarFriendSound(type) {
     const now=this.ctx.currentTime, osc=this.ctx.createOscillator(), gain=this.ctx.createGain();
     const duration=type==='escape'?.32:type==='happy'?.23:.14;

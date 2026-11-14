@@ -1,5 +1,5 @@
 import {WORDS_LIST,resolveAssetUrl} from './wordsConfig.js';
-export const WORD_CATEGORIES=[['all','全部'],['fruits','香甜水果'],['toys','玩具乐园'],['school','小小教室'],['colors','彩虹颜色'],['shapes','形状积木'],['two_book','绘本朋友'],['animals','动物朋友'],['body','身体部位'],['everyday','生活发现']];
+export const WORD_CATEGORIES=[['all','全部'],['fruits','香甜水果'],['drinks','好喝饮料'],['toys','玩具乐园'],['school','小小教室'],['colors','彩虹颜色'],['shapes','形状积木'],['two_book','绘本朋友'],['animals','动物朋友'],['body','身体部位'],['everyday','生活发现']];
 // Picture-book animals remain in their story theme during play, but are also
 // discoverable alongside the other animals in the library.
 const extraLibraryCategories={animals:new Set(['bee','fish','bird','cat','dog','cow','horse'])};
