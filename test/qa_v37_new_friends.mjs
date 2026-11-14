@@ -8,7 +8,7 @@ import {RescueAnimal} from '../src/rescueAnimal.js';
 import {HappyPerformance} from '../src/happyPerformance.js';
 import {getAnimalPlayStyle} from '../src/animalPlayStyles.js';
 import {PoseDetector} from '../src/poseDetector.js';
-const ids=['mcqueen','wolf','teddy','chase','jett','peppa','thomas','excavator','tayo'];
+const ids=['mcqueen','wolf','teddy','chase','jett','peppa','thomas','excavator','tayo','triceratops'];
 const camera=()=>{const c=new THREE.PerspectiveCamera(48,1194/834,.1,100);c.position.z=7.5;c.updateMatrixWorld();return c;};
 test('touch simulation releases its fingertip on lift',()=>{
  const detector=new PoseDetector(null);const received=[];detector.onResultsCallback=x=>received.push(x);
@@ -23,7 +23,7 @@ test('new friends have assets, configuration, random selection and camp records'
  assert.equal(camp.getUnlockedCount(),ids.length);
  const car=fs.readFileSync('public/models/lightning-mcqueen.glb');const gltf=JSON.parse(car.toString('utf8',20,20+car.readUInt32LE(12)).trim());
  for(const name of ['Red_Racing_Body','Windshield','Front_Wheel','Lightning_Bolt'])assert.ok(gltf.nodes.some(n=>n.name===name),`${name} missing from the car GLB`);
- for(const [id,required] of [['chase',['Police_Cap','Cap_Badge','Blue_Rescue_Vest']],['jett',['Red_Fuselage','Wing_L','Wing_R','Tail_Fin']],['peppa',['Pink_Pig_Head','Pig_Snout','Red_Dress']],['thomas',['Blue_Boiler','Round_Train_Face','Train_Funnel']],['excavator',['Rubber_Track','Windshield','Boom_Base','Boom_Elbow','Bucket','Bucket_Tooth']],['tayo',['Blue_Bus_Body','White_Bus_Roof','Route_Badge_120']]]){
+ for(const [id,required] of [['chase',['Police_Cap','Cap_Badge','Blue_Rescue_Vest']],['jett',['Red_Fuselage','Wing_L','Wing_R','Tail_Fin']],['peppa',['Pink_Pig_Head','Pig_Snout','Red_Dress']],['thomas',['Blue_Boiler','Round_Train_Face','Train_Funnel']],['excavator',['Rubber_Track','Windshield','Boom_Base','Boom_Elbow','Bucket','Bucket_Tooth']],['tayo',['Blue_Bus_Body','White_Bus_Roof','Route_Badge_120']],['triceratops',['Dino_Plump_Body','Neck_Frill','Horn_Brow_L','Horn_Brow_R','Horn_Nose']]]){
   const data=fs.readFileSync(`public/models/${GAME_CONFIG.animals[id].asset}.glb`);const scene=JSON.parse(data.toString('utf8',20,20+data.readUInt32LE(12)).trim());
   for(const name of required)assert.ok(scene.nodes.some(n=>n.name===name),`${id} is missing ${name}`);
  }

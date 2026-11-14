@@ -9,11 +9,11 @@ import { createFrogModel } from './frogModel.js';
 import { createGoldenDragonModel } from './goldenDragonModel.js';
 import { createDragonModel } from './dragonModel.js';
 import { createDogModel } from './dogModel.js';
-import { createTeddyModel,createWolfModel,createMcqueenModel,createChaseModel,createJettModel,createPeppaModel,createThomasModel,createTayoModel } from './newFriendsModel.js';
+import { createTeddyModel,createWolfModel,createMcqueenModel,createChaseModel,createJettModel,createPeppaModel,createThomasModel,createTayoModel,createTriceratopsModel } from './newFriendsModel.js';
 import {createExcavatorModel} from './excavatorModel.js';
 import { GAME_CONFIG } from './config.js';
 
-export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel,chase:createChaseModel,jett:createJettModel,peppa:createPeppaModel,thomas:createThomasModel,excavator:createExcavatorModel,tayo:createTayoModel};
+export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel,chase:createChaseModel,jett:createJettModel,peppa:createPeppaModel,thomas:createThomasModel,excavator:createExcavatorModel,tayo:createTayoModel,triceratops:createTriceratopsModel};
 const smooth = t => t*t*(3-2*t);
 const clamp = THREE.MathUtils.clamp;
 
@@ -129,7 +129,7 @@ export class RescueAnimal {
     const vw=vh*w/h;
     const oldStart=this.startX,oldEnd=this.endX;
     const progress=oldEnd>oldStart?clamp((this.currentX-oldStart)/(oldEnd-oldStart),0,1):0;
-    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,chase:1.02,jett:1.02,peppa:1.02,thomas:1.05,excavator:.92,wolf:1.02,teddy:1.02,tayo:1.05})[this.animalId];
+    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,chase:1.02,jett:1.02,peppa:1.02,thomas:1.05,excavator:.92,wolf:1.02,teddy:1.02,tayo:1.05,triceratops:1.02})[this.animalId];
     this.groundY=-vh/2+.45+getSafeInsets().bottom*vh/h;
     this.startX=-vw/2+Math.min(1.5,vw*.24)+getSafeInsets().left*vh/h;
     this.endX=vw/2-1.0-getSafeInsets().right*vh/h;
@@ -474,6 +474,13 @@ export class RescueAnimal {
         }else if(this.animalId==='excavator'){
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
           this.headGroup.rotation.z=Math.sin(p*Math.PI)*.10;
+        }else if(this.animalId==='triceratops'){
+          const stride=Math.sin(p*Math.PI*22);
+          this.model.scale.set(1,1,1);jump=this.reducedMotion?0:Math.abs(stride)*.035;
+          this.currentY=this.groundY+jump;this.animalGroup.position.y=this.currentY;
+          this.leftArm.rotation.x=stride*.38;this.rightArm.rotation.x=-stride*.38;
+          this.leftLeg.rotation.x=-stride*.35;this.rightLeg.rotation.x=stride*.35;
+          this.tailGroup.rotation.y=Math.sin(p*Math.PI*18)*.22;this.headGroup.rotation.x=-.04+Math.sin(p*Math.PI*22)*.06;
         }else if(['cat','dog','chase'].includes(this.animalId)) {
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
           this.headGroup.rotation.z=Math.sin(p*Math.PI)*.12;
@@ -512,7 +519,7 @@ export class RescueAnimal {
         this.state='ESCAPING';const p=(t-.65)/2.5;const count=this.animalId==='frog'?4:5;
         const hopPos=p*count;const phase=hopPos%1;
         // Advance mainly in the airborne interval, so planted feet do not slide.
-        const step=['cat','dog','dragon','goldenDragon','mcqueen','chase','jett','thomas','excavator','tayo'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
+        const step=['cat','dog','dragon','goldenDragon','mcqueen','chase','jett','thomas','excavator','tayo','triceratops'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
         this.currentX=THREE.MathUtils.lerp(this.escapeOriginX??this.startX,this.endX,step);
         this.animalGroup.position.x=this.currentX;this.animalGroup.rotation.y=Math.PI/2;this.animalGroup.rotation.z=-.035;
         if(['mcqueen','thomas','excavator','tayo'].includes(this.animalId)){
@@ -574,6 +581,7 @@ export class RescueAnimal {
       bucket.rotation.z=(.10*Math.sin(this.idleTime*2.3)+reaction*.22+wave*.6)*lively;
       if(this.state==='TRAPPED'||this.state==='CHEERING'||this.state==='ESCAPING')this.headGroup.rotation.z+=reaction*.08*lively;
     }
+    if(this.animalId==='triceratops')this.tailGroup.rotation.y=Math.sin(this.idleTime*2.4)*.22;
     if(this.animalId==='dog')this.tailGroup.rotation.y=Math.sin(this.idleTime*(this.moodExcited>.5?9.5:7))*(this.state==='TRAPPED'?.4:.55);
     if(this.animalId==='dragon'){
       const flying=this.state==='ESCAPING', excited=this.reactionTimer>0||this.state==='CHEERING';

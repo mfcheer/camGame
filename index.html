@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>彩虹小队 - 亲子体感解救小动物</title>
-  <meta name="description" content="伸出食指，戳破彩虹泡泡，解救 15 位森林朋友。支持单人和亲子合作，摄像头识别在本地设备完成。" />
+  <meta name="description" content="伸出食指，戳破彩虹泡泡，解救 16 位森林朋友。支持单人和亲子合作，摄像头识别在本地设备完成。" />
   <meta name="theme-color" content="#78b7a1" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="彩虹小队 · 森林大解救" />
-  <meta property="og:description" content="和家人一起伸手戳泡泡，解救 15 位可爱的森林朋友。" />
+  <meta property="og:description" content="和家人一起伸手戳泡泡，解救 16 位可爱的森林朋友。" />
   <meta property="og:image" content="https://mfcheer.github.io/camGame/icons/icon-512.png" />
   <link rel="icon" type="image/svg+xml" href="%BASE_URL%icons/app-icon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%icons/icon-32.png" />
@@ -140,8 +140,9 @@
           <button class="animal-choice" data-animal="thomas" aria-pressed="false"><img src="%BASE_URL%models/thomas-preview.png?v=20261114r2" alt="托马斯火车" /><strong>托马斯</strong><span>10 能量 · 快乐列车</span></button>
           <button class="animal-choice" data-animal="excavator" aria-pressed="false"><img src="%BASE_URL%models/excavator-preview.png?v=20261114r1" alt="卡通挖掘机小铲" /><strong>挖掘机 小铲</strong><span>8 能量 · 小铲工地</span></button>
           <button class="animal-choice" data-animal="tayo" aria-pressed="false"><img src="%BASE_URL%models/tayo-preview.png?v=20261115r1" alt="小公交车太友" /><strong>小公交车 太友</strong><span>10 能量 · 快乐巴士</span></button>
+          <button class="animal-choice" data-animal="triceratops" aria-pressed="false"><img src="%BASE_URL%models/triceratops-preview.png?v=20261115r1" alt="三角龙嘟嘟" /><strong>三角龙 嘟嘟</strong><span>10 能量 · 远古盾甲</span></button>
           <button class="animal-choice random-choice" data-animal="random" aria-pressed="false">
-            <div class="random-friends"><img src="%BASE_URL%models/bunny-preview.png?v=20261114r2" alt="" /><img src="%BASE_URL%models/cat-preview.png?v=20261114r2" alt="" /><img src="%BASE_URL%models/frog-preview.png?v=20261114r2" alt="" /><img src="%BASE_URL%models/dog-preview.png?v=20261114r2" alt="" /><img src="%BASE_URL%models/dragon-preview.png?v=20261114r2" alt="" /><img src="%BASE_URL%models/goldenDragon-preview.png?v=20261114r2" alt="" /></div><strong>随机朋友</strong><span>15 位朋友 · 开局揭晓</span>
+            <div class="random-friends"><img src="%BASE_URL%models/bunny-preview.png?v=20261114r2" alt="" /><img src="%BASE_URL%models/cat-preview.png?v=20261114r2" alt="" /><img src="%BASE_URL%models/frog-preview.png?v=20261114r2" alt="" /><img src="%BASE_URL%models/dog-preview.png?v=20261114r2" alt="" /><img src="%BASE_URL%models/dragon-preview.png?v=20261114r2" alt="" /><img src="%BASE_URL%models/goldenDragon-preview.png?v=20261114r2" alt="" /></div><strong>随机朋友</strong><span>16 位朋友 · 开局揭晓</span>
           </button>
         </div>
 
@@ -153,7 +154,7 @@
           <button id="btn-open-camp" class="camp-entry-btn" type="button">
             <span class="camp-btn-icon">⛺</span>
             <span class="camp-btn-text">我的营地</span>
-            <span id="camp-badge-count" class="camp-badge-count">0/15</span>
+            <span id="camp-badge-count" class="camp-badge-count">0/16</span>
           </button>
         </div>
         <button id="btn-start-game" class="btn-primary">开始游戏 🎈</button>
@@ -251,7 +252,7 @@
       <div class="card camp-card">
         <div class="camp-header">
           <h2>⛺ 我的森林营地</h2>
-          <p>已点亮 <strong id="camp-unlocked-count">0</strong> / 15 位朋友 · 累计送出 <strong id="camp-total-count">0</strong> 次自由！</p>
+          <p>已点亮 <strong id="camp-unlocked-count">0</strong> / 16 位朋友 · 累计送出 <strong id="camp-total-count">0</strong> 次自由！</p>
           <div class="camp-tip">点击已点亮的小动物，可以听听它们的专属叫声哦 🎵</div>
         </div>
         <div class="camp-grid" id="camp-grid"></div>

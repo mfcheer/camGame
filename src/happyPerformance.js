@@ -231,6 +231,23 @@ const ACTIONS=[
     a.model.getObjectByName('Bucket').rotation.z=.35*wave*m;
     a.headGroup.rotation.z=-.06*wave*m;
   }},
+  {id:'dinoStomp',dur:1.6,animals:['triceratops'],fn:(a,t,m)=>{
+    const s=Math.sin(t*Math.PI*4)*m;
+    a.leftArm.rotation.x=s*.4;a.rightArm.rotation.x=-s*.4;
+    a.leftLeg.rotation.x=-s*.3;a.rightLeg.rotation.x=s*.3;
+    a.headGroup.rotation.x=Math.sin(t*Math.PI*2)*.12*m;
+  }},
+  {id:'frillShake',dur:1.5,animals:['triceratops'],fn:(a,t,m)=>{
+    const s=Math.sin(t*Math.PI*3)*m;
+    a.headGroup.rotation.z=s*.18;
+    a.headGroup.rotation.y=s*.12;
+    a.tailGroup.rotation.y=-s*.25;
+  }},
+  {id:'hornNod',dur:1.4,animals:['triceratops'],fn:(a,t,m)=>{
+    const s=Math.sin(t*Math.PI*2)*m;
+    a.headGroup.rotation.x=s*.18;
+    a.model.position.y=Math.abs(s)*.04;
+  }},
   {id:'busHonk',dur:1.6,animals:['tayo'],fn:(a,t,m)=>{
     const s=Math.sin(t*Math.PI*6)*m;
     a.bodyMesh.rotation.z=s*.035;
@@ -257,7 +274,7 @@ const ACTIONS=[
     a.bodyMesh.rotation.z=.025*curl*m;
   }},
 ];
-const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['wolfChinScheming','wolfCackle','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['trainWhistle','steamBurst','wheelRev','trainSway'],excavator:['bucketWave','scoopDig'],tayo:['busHonk','busHop','busWiggle']};
+const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['wolfChinScheming','wolfCackle','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['trainWhistle','steamBurst','wheelRev','trainSway'],excavator:['bucketWave','scoopDig'],tayo:['busHonk','busHop','busWiggle'],triceratops:['dinoStomp','frillShake','hornNod']};
 const FINALE=ACTIONS.find(x=>x.id==='finaleBow');
 
 // 结算后的"开心小演出"：动物自己走到台前随机表演，孩子和家长可以休息。

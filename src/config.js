@@ -67,6 +67,7 @@ export const GAME_CONFIG = {
     peppa:{name:'小猪佩奇',targetBubbles:8,asset:'peppa-pig',assetVersion:'20261115-peppa-mouth-anchor',escapeStyle:'hop',description:'爱跳泥坑的快乐小猪，咯咯咯的笑声最响亮。和佩奇一起轻轻收集泡泡。',victoryText:'佩奇开心地蹦了个泥坑舞，哈哈大笑！'},
     thomas:{name:'托马斯火车',targetBubbles:10,asset:'thomas-train',assetVersion:'20261114-face-anchor',escapeStyle:'drive',description:'快乐小火车 · 呜——咔嚓咔嚓，跟着托马斯穿过铁轨追逐泡泡。',victoryText:'托马斯拉响汽笛，冒着蒸汽开心地向你道谢：呜呜，谢谢你！'},
     excavator:{name:'挖掘机 小铲',targetBubbles:8,asset:'sunny-excavator',escapeStyle:'drive',description:'小铲工地 · 大泡泡慢慢飘，小铲举起铲斗为你加油。',victoryText:'小铲举起铲斗，轻轻挥一挥：今天的救援完成啦！'},
+    triceratops:{name:'三角龙 嘟嘟',targetBubbles:10,asset:'sunny-triceratops',escapeStyle:'trot',description:'远古恐龙 · 顶着坚固可爱的小盾牌，踏着稳健步伐为你加油。',victoryText:'嘟嘟轻轻摇了摇大盾甲，踏着小步回侏罗纪森林啦！'},
     tayo:{name:'小公交车 太友',targetBubbles:10,asset:'bus-tayo',escapeStyle:'drive',description:'韩国人气动画 · 蓝色120小巴士，哔哔按响车喇叭出发！跟着太友快乐巡游找泡泡。',victoryText:'太友按响车喇叭：哔哔——今天玩得真开心！'},
 
     panda: {
@@ -98,7 +99,7 @@ export const GAME_CONFIG = {
   }
 };
 
-export const PLAYABLE_ANIMALS = ['bunny', 'cat', 'frog', 'dog', 'dragon', 'goldenDragon','mcqueen','wolf','teddy','chase','jett','peppa','thomas','excavator','tayo'];
+export const PLAYABLE_ANIMALS = ['bunny', 'cat', 'frog', 'dog', 'dragon', 'goldenDragon','mcqueen','wolf','teddy','chase','jett','peppa','thomas','excavator','tayo','triceratops'];
 export function resolveAnimal(selection, random = Math.random) {
   return selection === 'random' ? PLAYABLE_ANIMALS[Math.min(PLAYABLE_ANIMALS.length-1, Math.floor(random()*PLAYABLE_ANIMALS.length))] : (PLAYABLE_ANIMALS.includes(selection) ? selection : 'bunny');
 }

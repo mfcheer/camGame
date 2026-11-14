@@ -52,7 +52,7 @@ const CHARACTER_MUSIC={
   bunny:['sine',1],cat:['triangle',.88],frog:['sine',1.12],dog:['triangle',.94],
   dragon:['sine',1.16],goldenDragon:['sine',1.24],mcqueen:['triangle',.72],
   wolf:['triangle',.92],teddy:['sine',1.28],chase:['triangle',.82],
-  jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96],excavator:['triangle',.82],tayo:['triangle',.86]
+  jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96],excavator:['triangle',.82],tayo:['triangle',.86],triceratops:['triangle',.88]
 };
 
 export class AudioManager {
@@ -396,6 +396,7 @@ export class AudioManager {
         case 'jett': this._playJettSound(type); break;
         case 'thomas': this._playThomasSound(type); break;
         case 'tayo': this._playTayoSound(type); break;
+        case 'triceratops': this._playTriceratopsSound(type); break;
         case 'excavator': this._playExcavatorSound(type); break;
         case 'peppa': this._playPeppaSound(type); break;
         case 'mcqueen': this._playCarFriendSound(type); break;
@@ -431,6 +432,10 @@ export class AudioManager {
   _playChaseSound(type){this._playFriendNotes([390,520,650],type,'triangle',.075);}
   _playJettSound(type){this._playFriendNotes([540,720,960],type,'sine',.085);}
   _playTeddySound(type){this._playFriendNotes([440,550,660],type,'sine',.065);}
+  _playTriceratopsSound(type) {
+    this._playFriendNotes([220, 277, 330], type, triangle, .08);
+  }
+
   _playTayoSound(type) {
     // Cheerful two-tone bus beep-beep horn
     this._playFriendNotes([330, 440, 550], type, 'triangle', .075);
