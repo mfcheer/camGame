@@ -116,7 +116,7 @@ export function updateExpressionRig(animal,dt){
    b.node.position.y+=(b.pos.y+lift-b.node.position.y)*(1-Math.exp(-dt*10));
   }
  }
- if(animal.happyTongue&&animal.animalId==='dog'){animal.happyTongue.rotation.z=happy?Math.sin(t*5)*.10:0;animal.happyTongue.scale.y=.048*(happy?1+Math.sin(t*7)*.08:1);}if(animal.happyTongue&&animal.animalId==='chase'){animal.happyTongue.scale.y=.022*(happy?1+Math.sin(t*6)*.06:1);}
+ if(animal.happyTongue&&animal.animalId==='dog'){animal.happyTongue.rotation.z=0;animal.happyTongue.scale.y=.048*(happy?1+Math.sin(t*6)*.06:1);}if(animal.happyTongue&&animal.animalId==='chase'){animal.happyTongue.scale.y=.022*(happy?1+Math.sin(t*6)*.06:1);}
  const focus=animal.attentionFocus||animal.playerFocus||{x:.5,y:.32};
  const lookX=THREE.MathUtils.clamp((focus.x-.5)*.022,-.012,.012),lookY=THREE.MathUtils.clamp((.4-focus.y)*.025,-.01,.01);
  for(const {node,base}of rig.pupils){node.position.x=THREE.MathUtils.lerp(node.position.x,base.x+lookX,1-Math.exp(-dt*12));node.position.y=THREE.MathUtils.lerp(node.position.y,base.y+lookY,1-Math.exp(-dt*12));}

@@ -34,8 +34,23 @@ export function createDogModel() {
   ellipsoid(eye,'Catchlight',mat(0xffffff,.1),[-.013,.021,.024],[.014,.016,.005]);
   ellipsoid(head,'Brow',cream,[s*.135,.145,.20],[.061,.024,.018]);
  }
- const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.153,.342],[.072,.062,.016]);happy.visible=false;
- const tongue=ellipsoid(head,'Happy_Tongue',pink,[.018,-.19,.36],[.035,.048,.010]);tongue.visible=false;
+ const mouthDark=mat(0x381520,.95),tonguePink=mat(0xf36e84,.88),teethWhite=mat(0xfbfbf8,.8);
+ // 汪汪专属立体下颌骨（托住下唇与口腔，告别悬空）
+ ellipsoid(head,'Dog_Lower_Jaw',cream,[0,-.176,.285],[.096,.040,.078]);
+ curve(head,'Dog_Lower_Lip',[[-.052,-.165,.324],[0,-.180,.334],[.052,-.165,.324]],.005,caramel);
+
+ // 汪汪元气大笑嘴：深李色立体口腔 + 两颗洁白可爱的小上犬牙
+ const happyMouth=pivot(head,'Happy_Mouth',[0,-.146,.334]);happyMouth.visible=false;
+ ellipsoid(happyMouth,'Happy_Mouth_Cavity',mouthDark,[0,0,0],[.065,.046,.016]);
+ for(const s of [-1,1]){
+  const canine=ellipsoid(happyMouth,s<0?'Dog_Canine_L':'Dog_Canine_R',teethWhite,[s*.036,.016,.007],[.006,.011,.006]);
+  canine.rotation.z=s*.15;
+ }
+
+ // 精致健康萌萌小舌头：严格居中、自然受纳于下唇、舌尖微翘，不再突兀下垂
+ const happyTongue=ellipsoid(head,'Happy_Tongue',tonguePink,[0,-.160,.340],[.034,.048,.012]);
+ happyTongue.rotation.x=-.22;
+ happyTongue.visible=false;
  const tail=pivot(root,'Tail',[.22,.27,-.2]);
  curve(tail,'Wagging_Tail',[[0,0,0],[.13,.07,-.08],[.16,.22,-.12],[.12,.31,-.11]],.061,fur);
  ellipsoid(tail,'Cream_Tail_Tip',cream,[.12,.31,-.11],[.062,.065,.06]);

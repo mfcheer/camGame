@@ -439,36 +439,55 @@ export function createPeppaModel(){
  mesh(new THREE.TubeGeometry(rightCorner,12,.005,8,false),smileMat,smileGroup,'Smile_Corner_R');
  const stdSmile=pivot(head,'Smile',[-.025,-.10,.222]); // 兼容通用Smile节点
 
- // 开心大笑/通关庆祝/说话时的官方动画招牌月牙大笑嘴 (Happy_Mouth & Happy_Tongue)
+ // 官方原画线条表情系统：取消诡异的3D挖洞张嘴，纯靠嘴角上扬与下撇表达情感
+ // ① 生气/被困/委屈（嘴角向下撇嘴倒弧 + 向下撇嘴窝）
+ const frownGroup=pivot(head,'Pig_Frown',[-.025,-.10,.222]);
+ frownGroup.rotation.set(-.12,.15,-.06);
+ frownGroup.visible=false;
+ const frownCurve=new THREE.CubicBezierCurve3(
+  new THREE.Vector3(-.085,-.022,.002),
+  new THREE.Vector3(-.045,.015,.002),
+  new THREE.Vector3(.035,.012,.002),
+  new THREE.Vector3(.060,-.020,.002)
+ );
+ mesh(new THREE.TubeGeometry(frownCurve,32,.0055,10,false),smileMat,frownGroup,'Frown_Arc');
+ const leftFrownCorner=new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(-.085,-.022,.002),
+  new THREE.Vector3(-.092,-.032,.002),
+  new THREE.Vector3(-.084,-.040,.002)
+ );
+ mesh(new THREE.TubeGeometry(leftFrownCorner,12,.005,8,false),smileMat,frownGroup,'Frown_Corner_L');
+ const rightFrownCorner=new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(.060,-.020,.002),
+  new THREE.Vector3(.068,-.030,.002),
+  new THREE.Vector3(.062,-.038,.002)
+ );
+ mesh(new THREE.TubeGeometry(rightFrownCorner,12,.005,8,false),smileMat,frownGroup,'Frown_Corner_R');
+
+ // ② 开心大笑/通关欢呼/说话（嘴角大幅高高扬起的招牌超大开朗笑弧）
  const happyGroup=pivot(head,'Happy_Mouth',[-.025,-.10,.222]);
  happyGroup.rotation.set(-.12,.15,-.06);
  happyGroup.visible=false;
- const mouthShape=new THREE.Shape();
- mouthShape.moveTo(-.08,.015);
- mouthShape.quadraticCurveTo(-.01,.032,.06,.020);
- mouthShape.bezierCurveTo(.05,-.065,-.07,-.070,-.08,.015);
- mesh(new THREE.ShapeGeometry(mouthShape),mouthInnerMat,happyGroup,'Happy_Mouth_Cavity',[0,0,.002]);
- const happyPerimeter=[];
- for(let i=0;i<=24;i++){
-  const t=i/24;
-  let pt;
-  if(t<=.5){
-   const u=t*2;
-   pt=new THREE.Vector2().lerpVectors(new THREE.Vector2(-.08,.015),new THREE.Vector2(.06,.020),u);
-   pt.y+=Math.sin(u*Math.PI)*.015;
-  }else{
-   const u=(t-.5)*2;
-   pt=new THREE.Vector2().lerpVectors(new THREE.Vector2(.06,.020),new THREE.Vector2(-.08,.015),u);
-   pt.y-=Math.sin(u*Math.PI)*.078;
-  }
-  happyPerimeter.push(new THREE.Vector3(pt.x,pt.y,.003));
- }
- mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(happyPerimeter,true),32,.0045,8,true),smileMat,happyGroup,'Happy_Mouth_Lip');
- const tongueShape=new THREE.Shape();
- tongueShape.moveTo(-.04,-.020);
- tongueShape.quadraticCurveTo(0,.010,.04,-.015);
- tongueShape.quadraticCurveTo(0,-.055,-.04,-.020);
- mesh(new THREE.ShapeGeometry(tongueShape),tongueMat,happyGroup,'Happy_Tongue',[0,0,.004]);
+ const happySmileCurve=new THREE.CubicBezierCurve3(
+  new THREE.Vector3(-.098,.025,.002),
+  new THREE.Vector3(-.055,-.062,.002),
+  new THREE.Vector3(.035,-.056,.002),
+  new THREE.Vector3(.075,.028,.002)
+ );
+ mesh(new THREE.TubeGeometry(happySmileCurve,32,.006,10,false),smileMat,happyGroup,'Happy_Smile_Arc');
+ const leftHappyCorner=new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(-.098,.025,.002),
+  new THREE.Vector3(-.108,.038,.002),
+  new THREE.Vector3(-.095,.050,.002)
+ );
+ mesh(new THREE.TubeGeometry(leftHappyCorner,12,.0055,8,false),smileMat,happyGroup,'Happy_Corner_L');
+ const rightHappyCorner=new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(.075,.028,.002),
+  new THREE.Vector3(.088,.040,.002),
+  new THREE.Vector3(.078,.052,.002)
+ );
+ mesh(new THREE.TubeGeometry(rightHappyCorner,12,.0055,8,false),smileMat,happyGroup,'Happy_Corner_R');
+ const dummyTongue=pivot(happyGroup,'Happy_Tongue',[0,0,0]);dummyTongue.visible=false;
 
  // 细枝手臂：从裙肩水平外伸（参考图的张开手臂），末端圆手
  for(const s of [-1,1]){
