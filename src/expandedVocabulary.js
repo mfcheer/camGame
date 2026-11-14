@@ -10,5 +10,10 @@ const data = [
 ];
 const lessonIds=new Set(['face','eye','ear','mouth','nose','hair','weather','one','happy','red','blue','circle']);
 const source=id=>({bookId:'classroom-next-lesson',form:id,kind:'teacher-photo'});
-export const EXPANDED_NEW_WORDS=data.map(([id,zh,category])=>({id,word:id,zh,wordCn:zh,chinese:zh,category,accent:'#688f83',aliases:[],sources:lessonIds.has(id)?[source(id)]:[],image:`/images/words/learning/${id}.svg`,itemImage:`/images/words/learning/${id}.svg`,bubbleImage:`/images/words/learning/${id}.svg`,svg:`/images/words/learning/${id}.svg`,itemSvg:`/images/words/learning/${id}.svg`,bubbleSvg:`/images/words/learning/${id}.svg`,audio:`/audio/words/${id}.mp3`,reviewAudio:`/audio/words/review/${id}.mp3`}));
+const redrawn = new Set(['face','eye','ear','mouth','nose','hair','happy','sheep']);
+export const EXPANDED_NEW_WORDS=data.map(([id,zh,category])=>{
+ const fallback=`/images/words/learning/${id}.svg`;
+ const image=redrawn.has(id)?`/images/words/learning/${id}-v2.webp`:fallback;
+ return {id,word:id,zh,wordCn:zh,chinese:zh,category,accent:'#688f83',aliases:[],sources:lessonIds.has(id)?[source(id)]:[],image,itemImage:image,bubbleImage:image,svg:fallback,itemSvg:fallback,bubbleSvg:fallback,audio:`/audio/words/${id}.mp3`,reviewAudio:`/audio/words/review/${id}.mp3`};
+});
 export const EXPANDED_WORDS=[...EXPANDED_NEW_WORDS,...['red','blue','circle'].map(id=>({id,sources:[source(id)]}))];

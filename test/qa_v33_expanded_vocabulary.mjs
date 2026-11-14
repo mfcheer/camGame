@@ -14,7 +14,15 @@ test('new lesson and suggested concepts are unique, categorised and retain the t
   const word=getWordById(id);assert.ok(word,`${id} exists`);assert.equal(WORDS_LIST.filter(w=>w.id===id).length,1);assert.ok(word.sources.some(s=>s.bookId==='classroom-next-lesson'),id);
  }
  for(const w of WORDS_LIST)assert.ok(WORD_CATEGORIES.some(([id])=>id===w.category),w.id);
- assert.equal(libraryWords('body').length,6);assert.equal(libraryWords('animals').length,4);
+ assert.equal(libraryWords('body').length,7);assert.equal(libraryWords('animals').length,12);
+ for(const id of ['bee','fish','bird','cat','dog','cow','horse']){
+  assert.ok(libraryWords('animals').some(w=>w.id===id),id);
+  assert.ok(libraryWords('two_book').some(w=>w.id===id),id);
+ }
+ assert.ok(libraryWords('body').some(w=>w.id==='elbow'));
+ assert.ok(libraryWords('animals').some(w=>w.id==='elephant'));
+ assert.ok(libraryWords('school').some(w=>w.id==='computer'));
+ assert.equal(libraryWords('all').length,75);
 });
 
 test('each new card has its own image and complete Chinese, English and bilingual sound assets',()=>{
