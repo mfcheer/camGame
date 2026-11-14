@@ -193,6 +193,15 @@ export class Game {
     this.comboCount = combo;
     this.rescueAnimal?.reactToCombo?.(combo);
     this.uiManager?.updateCombo?.(combo);
+    if (combo >= 5 && typeof document !== "undefined") {
+      const container = document.getElementById("canvas-container") || document.body;
+      if (container && container.classList) {
+        container.classList.remove("screen-juice-shake");
+        void container.offsetWidth;
+        container.classList.add("screen-juice-shake");
+        setTimeout(() => container.classList.remove("screen-juice-shake"), 240);
+      }
+    }
   }
 
   setupPoseCallbacks() {

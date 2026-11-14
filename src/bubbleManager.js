@@ -998,7 +998,11 @@ export class BubbleManager {
     const cardGroup = this.createWordCardMesh(word, radius);
     group.add(cardGroup);
 
-    // 5. 表面可爱高光弧
+    // 5. 表面可爱高光弧与三形态专属细节
+    // 三种形态随机呈现：'classic'（经典清透）、'iridescent'（肥皂泡虹彩流光）、'jelly_bounce'（Q弹软萌果冻）
+    const visualStyles = ['classic', 'iridescent', 'jelly_bounce'];
+    const visualStyle = visualStyles[index % visualStyles.length];
+
     const highlightGeo = new THREE.SphereGeometry(radius * 0.22, 12, 12);
     const highlightMat = new THREE.MeshBasicMaterial({
       color: 0xffffff,
@@ -1010,6 +1014,22 @@ export class BubbleManager {
     highlightMesh.position.set(-radius * 0.45, radius * 0.45, radius * 0.65);
     highlightMesh.scale.set(1.4, 0.7, 0.5);
     group.add(highlightMesh);
+
+    // 虹彩流光形态额外添加右下角柔光月牙反射弧
+    let bottomReflectMesh = null;
+    if (visualStyle === 'iridescent') {
+      const bottomReflectGeo = new THREE.SphereGeometry(radius * 0.16, 12, 12);
+      const bottomReflectMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.35,
+        depthWrite: false
+      });
+      bottomReflectMesh = new THREE.Mesh(bottomReflectGeo, bottomReflectMat);
+      bottomReflectMesh.position.set(radius * 0.40, -radius * 0.42, radius * 0.55);
+      bottomReflectMesh.scale.set(1.2, 0.5, 0.4);
+      group.add(bottomReflectMesh);
+    }
 
     // 初始缩放设为出场起步 0.65 (0~320ms 弹性弹入 0.65→1.08→1.00，禁止从0闪现)
     group.scale.set(0.65, 0.65, 0.65);
@@ -1033,6 +1053,8 @@ export class BubbleManager {
       relocateAfterMs:8000+Math.random()*4000,
       relocationElapsed:0,
       updateCount: 0,
+      visualStyle,
+      bottomReflectMesh,
       suppressedHands: new Set(),
       isPopping: false,
       type: 'normal',
@@ -1295,15 +1317,27 @@ export class BubbleManager {
     // 2. 触发手晕 160ms 命中闪圈至 ~82px
     this.handFlashTimer = 0.160;
 
-    this.spawnPopRing(burstWorldPos,burstColor,this.activeBubble.baseRadius);
+    // 双层爆破冲击光环：外层极速白色水波冲击环 + 内层柔和彩色能量环
+    this.spawnPopRing(burstWorldPos, 0xffffff, this.activeBubble.baseRadius, {
+      duration: 0.22,
+      expandScale: 0.85,
+      initialOpacity: 0.95
+    });
+    this.spawnPopRing(burstWorldPos, burstColor, this.activeBubble.baseRadius * 0.88, {
+      duration: 0.38,
+      expandScale: 0.48,
+      initialOpacity: 0.85,
+      rotSpeed: 2.2
+    });
+
     // 3. 移除主球体
     this.disposeBubble(this.activeBubble.group);
 
-    // 4. 产生 12~18 个彩色小星星与肥皂水滴爆发粒子
+    // 4. 产生分层爆发粒子：晶莹小水珠（受微重力抛落） + 糖果碎星（高饱和旋转） + 连击音符
     const pCount = this.activeBubble.type === "rainbow" ? 24 : (this.activeBubble.type === "jelly" ? 20 : 16);
-    this.spawnBurstParticles(burstWorldPos, burstColor, pCount);
+    this.spawnBurstParticles(burstWorldPos, burstColor, pCount, this.comboCount);
 
-    // 5. 产生能量光团，沿弧线飞向小动物领结
+    // 5. 产生能量光团，沿弧线飞向小动物领结（带流星彗尾）
     this.spawnEnergyProjectile(burstWorldPos, burstColor, energyVal);
 
     this.activeBubble = null;
@@ -1315,45 +1349,143 @@ export class BubbleManager {
     }
   }
 
-  spawnPopRing(position,color,radius) {
-    const mesh=new THREE.Mesh(new THREE.RingGeometry(radius*.94,radius*1.025,64),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.9,depthWrite:false,side:THREE.DoubleSide}));
-    mesh.position.copy(position);mesh.position.z+=.035;this.scene.add(mesh);this.popRings.push({mesh,elapsed:0});
+  spawnPopRing(position, color, radius, options = {}) {
+    const duration = options.duration || 0.34;
+    const expandScale = options.expandScale || 0.55;
+    const initialOpacity = options.initialOpacity || 0.9;
+    const rotSpeed = options.rotSpeed || 0;
+    const mesh = new THREE.Mesh(
+      new THREE.RingGeometry(radius * 0.94, radius * 1.025, 64),
+      new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity: initialOpacity,
+        depthWrite: false,
+        side: THREE.DoubleSide
+      })
+    );
+    mesh.position.copy(position);
+    mesh.position.z += 0.035;
+    this.scene.add(mesh);
+    this.popRings.push({ mesh, elapsed: 0, duration, expandScale, initialOpacity, rotSpeed });
   }
 
-  // 生成爆破粒子 (12~18 个彩色闪烁星点与柔和水滴)
-  spawnBurstParticles(pos, color, customCount = 16) {
-    const count = customCount;
-    for (let i = 0; i < count; i++) {
-      const isStar = i % 2 === 0;
-      const geo = isStar
-        ? new THREE.PlaneGeometry(.045,.10)
-        : new THREE.SphereGeometry(0.025 + Math.random() * 0.025, 8, 8);
+  // 生成爆破粒子 (晶莹水花水滴 + 糖果彩色碎星 + 连击音符)
+  spawnBurstParticles(pos, color, customCount = 16, combo = 1) {
+    let count = customCount;
+    if (combo >= 5) count = Math.round(count * 1.5);
 
+    // 1. 水花组（晶莹小水珠）：受轻微重力抛落并随着生命周期缩小
+    const dropCount = Math.max(6, Math.round(count * 0.38));
+    for (let i = 0; i < dropCount; i++) {
+      const dropRadius = 0.020 + Math.random() * 0.022;
+      const geo = new THREE.SphereGeometry(dropRadius, 8, 8);
       const mat = new THREE.MeshBasicMaterial({
-        color: Math.random() > 0.35 ? color : 0xffffff,
+        color: Math.random() > 0.4 ? 0xffffff : 0xd8f3ff,
         transparent: true,
-        opacity: 0.95
+        opacity: 0.90
       });
       const mesh = new THREE.Mesh(geo, mat);
-      mesh.rotation.z=Math.random()*Math.PI;
       mesh.position.copy(pos);
-
       const angle = Math.random() * Math.PI * 2;
-      const speed = 0.025 + Math.random() * 0.035;
+      const speed = 0.026 + Math.random() * 0.038;
       const velocity = new THREE.Vector3(
         Math.cos(angle) * speed,
-        Math.sin(angle) * speed + 0.02,
-        (Math.random() - 0.5) * speed * 0.6
+        Math.sin(angle) * speed + 0.022,
+        (Math.random() - 0.5) * speed * 0.5
       );
-
       this.particles.push({
         mesh,
         velocity,
         life: 1.0,
-        decay: 0.028 + Math.random() * 0.025
+        decay: 0.030 + Math.random() * 0.020,
+        gravity: 0.0032,
+        shrink: true
       });
       this.scene.add(mesh);
     }
+
+    // 2. 糖果碎星与十字星芒组
+    const starCount = count - dropCount;
+    const candyPalette = [color, 0xffd166, 0xff6b81, 0x06d6a0, 0x118ab2, 0xffffff];
+    for (let i = 0; i < starCount; i++) {
+      const isCross = i % 2 === 0;
+      const geo = isCross
+        ? new THREE.PlaneGeometry(0.045, 0.10)
+        : new THREE.PlaneGeometry(0.060, 0.060);
+      const starColor = candyPalette[Math.floor(Math.random() * candyPalette.length)];
+      const mat = new THREE.MeshBasicMaterial({
+        color: starColor,
+        transparent: true,
+        opacity: 0.95,
+        side: THREE.DoubleSide
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.rotation.z = Math.random() * Math.PI * 2;
+      mesh.position.copy(pos);
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.022 + Math.random() * 0.035;
+      const velocity = new THREE.Vector3(
+        Math.cos(angle) * speed,
+        Math.sin(angle) * speed + 0.018,
+        (Math.random() - 0.5) * speed * 0.5
+      );
+      this.particles.push({
+        mesh,
+        velocity,
+        life: 1.0,
+        decay: 0.025 + Math.random() * 0.020,
+        spin: (Math.random() - 0.5) * 8.0
+      });
+      this.scene.add(mesh);
+    }
+
+    // 3. 连击 3+ 触发音乐星芒粒子
+    if (combo >= 3) {
+      const noteCount = combo >= 5 ? 4 : 2;
+      for (let i = 0; i < noteCount; i++) {
+        const geo = new THREE.PlaneGeometry(0.075, 0.075);
+        const mat = new THREE.MeshBasicMaterial({
+          color: 0xffd166,
+          transparent: true,
+          opacity: 0.95,
+          side: THREE.DoubleSide
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.copy(pos);
+        mesh.position.x += (Math.random() - 0.5) * 0.12;
+        mesh.position.y += (Math.random() - 0.5) * 0.12;
+        this.particles.push({
+          mesh,
+          velocity: new THREE.Vector3((Math.random() - 0.5) * 0.012, 0.026 + Math.random() * 0.018, 0),
+          life: 1.0,
+          decay: 0.022
+        });
+        this.scene.add(mesh);
+      }
+    }
+  }
+
+  // 彗尾粒子 (能量球飞向领结时的拖尾星尘)
+  spawnTrailParticle(pos, color) {
+    const geo = new THREE.SphereGeometry(0.024, 8, 8);
+    const mat = new THREE.MeshBasicMaterial({
+      color: Math.random() > 0.35 ? 0xffffff : color,
+      transparent: true,
+      opacity: 0.75
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.copy(pos);
+    mesh.position.x += (Math.random() - 0.5) * 0.02;
+    mesh.position.y += (Math.random() - 0.5) * 0.02;
+    this.particles.push({
+      mesh,
+      velocity: new THREE.Vector3((Math.random() - 0.5) * 0.004, (Math.random() - 0.5) * 0.004, 0),
+      life: 0.40,
+      decay: 0.060,
+      isTrail: true
+    });
+    this.scene.add(mesh);
   }
 
   setRescueAnimal(rescueAnimal) {
@@ -1540,7 +1672,7 @@ export class BubbleManager {
     this.layoutGraceSeconds = Math.max(0, this.layoutGraceSeconds - dt);
     this.contrastSampler?.update(dt);
     this.handsAgeSeconds=this.pointerSimulation?0:this.handsAgeSeconds+dt;
-    for(let i=this.popRings.length-1;i>=0;i--){const ring=this.popRings[i];ring.elapsed+=dt;const t=Math.min(1,ring.elapsed/.34);ring.mesh.scale.setScalar(1+t*.55);ring.mesh.material.opacity=(1-t)*.85;if(t>=1){this.scene.remove(ring.mesh);ring.mesh.geometry.dispose();ring.mesh.material.dispose();this.popRings.splice(i,1);}}
+    for(let i=this.popRings.length-1;i>=0;i--){const ring=this.popRings[i];ring.elapsed+=dt;const duration=ring.duration||0.34;const t=Math.min(1,ring.elapsed/duration);const expand=ring.expandScale!==undefined?ring.expandScale:0.55;const initOp=ring.initialOpacity!==undefined?ring.initialOpacity:0.85;ring.mesh.scale.setScalar(1+t*expand);ring.mesh.material.opacity=(1-t)*initOp;if(ring.rotSpeed)ring.mesh.rotation.z+=dt*ring.rotSpeed;if(t>=1){this.scene.remove(ring.mesh);ring.mesh.geometry.dispose();ring.mesh.material.dispose();this.popRings.splice(i,1);}}
     const players=this.latestTrackedPlayers || [];
     const currentBubble=this.activeBubble;
     const relevantPlayers=currentBubble?.ownerId ? players.filter(p=>p.id===currentBubble.ownerId) : players;
@@ -1700,6 +1832,19 @@ export class BubbleManager {
         scaleX *= (1 + squish);
         scaleZ *= (1 + squish);
         scaleY *= (1 - squish * 0.85);
+      } else if (b.visualStyle === 'jelly_bounce' && !b.squashTimer) {
+        // Q弹果冻形态：待机呼吸轻微软体微晃动 (Squash & Stretch)
+        const jellyWobble = Math.sin(timeSeconds * 3.6 + (this.bubbleIndex || 0) * 1.5) * 0.045;
+        scaleX *= (1 + jellyWobble);
+        scaleY *= (1 - jellyWobble * 0.82);
+        scaleZ *= (1 + jellyWobble * 0.4);
+      } else if (b.visualStyle === 'iridescent' && b.mesh?.material) {
+        // 虹彩流光形态：球体色相微弱流转
+        const hue = ((timeSeconds * 0.16) + (this.bubbleIndex || 0) * 0.22) % 1.0;
+        b.mesh.material.emissive.setHSL(hue, 0.65, 0.30);
+      }
+      if (b.bottomReflectMesh?.material) {
+        b.bottomReflectMesh.material.opacity = (0.35 + Math.sin(timeSeconds * 2.0) * 0.1) * spawnAlpha;
       }
 
       if (b.type === 'rainbow' && b.rainbowRing) {
@@ -1744,14 +1889,20 @@ export class BubbleManager {
       if(b.relocating){const fade=Math.max(0,1-b.relocationElapsed/.18);b.group.scale.multiplyScalar(.75+.25*fade);b.group.traverse(o=>{if(o.isMesh&&o.material.transparent)o.material.opacity*=fade;});}
     }
 
-    // 2. 更新爆破粒子
+    // 2. 更新爆破粒子 (支持自旋、重力抛落、微缩放)
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
-      p.mesh.rotation.z+=dt*5;
+      if (p.spin) p.mesh.rotation.z += dt * p.spin;
+      else p.mesh.rotation.z += dt * 5;
       p.mesh.position.addScaledVector(p.velocity, dt * 60);
-      p.velocity.y -= 0.002 * dt * 60; // Same burst duration at different frame rates.
+      const grav = p.gravity !== undefined ? p.gravity : 0.002;
+      p.velocity.y -= grav * dt * 60;
       p.life -= p.decay * dt * 60;
       p.mesh.material.opacity = Math.max(0, p.life);
+      if (p.shrink || p.isTrail) {
+        const sc = Math.max(0.08, p.life);
+        p.mesh.scale.set(sc, sc, sc);
+      }
 
       if (p.life <= 0) {
         this.scene.remove(p.mesh);
@@ -1760,21 +1911,27 @@ export class BubbleManager {
       }
     }
 
-    // 3. 更新能量飞行光团 (沿贝塞尔平滑拱形弧线飞入小动物领结)
+    // 3. 更新能量飞行光团 (沿贝塞尔拱形弧线飞入领结，留存星尘流星彗尾)
     for (let i = this.energyProjectiles.length - 1; i >= 0; i--) {
       const ep = this.energyProjectiles[i];
       ep.progress += dt * 2.5; // 约 400ms 飞入
 
       const p = Math.min(1.0, ep.progress);
       const current = new THREE.Vector3().lerpVectors(ep.start, ep.target, p);
-      // 优雅拱形向上弧线
       current.y += Math.sin(p * Math.PI) * 0.6;
       ep.mesh.position.copy(current);
+
+      // 飞行中留下流星彗尾星尘
+      if (p < 0.92 && Math.random() > 0.22) {
+        this.spawnTrailParticle(current, ep.color);
+      }
 
       if (ep.progress >= 1.0) {
         this.scene.remove(ep.mesh);
         this.energyProjectiles.splice(i, 1);
         ep.mesh.traverse(obj => { if (obj.isMesh) { obj.geometry.dispose(); obj.material.dispose(); } });
+        // 飞抵小动物领结瞬间绽放暖黄吸收光晕波
+        this.spawnPopRing(ep.target, 0xffe066, 0.22, { duration: 0.32, expandScale: 0.65, initialOpacity: 0.90 });
         this.rescueAnimal?.receiveEnergyImpact?.(ep.energyCount || 1);
         ep.onArrive?.(ep.energyCount || 1);
       }
