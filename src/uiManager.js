@@ -163,12 +163,16 @@ export class UIManager {
       this.handlers.onSelectAnimal?.(button.dataset.animal);
     });
     // 模式选择
-    this.dom.btnModeSingle.addEventListener('click', () => {
-      this.setModeSelection('single');
-    });
-    this.dom.btnModeCoop.addEventListener('click', () => {
-      this.setModeSelection('coop');
-    });
+    if (this.dom.btnModeSingle) {
+      this.dom.btnModeSingle.addEventListener('click', () => {
+        this.setModeSelection('single');
+      });
+    }
+    if (this.dom.btnModeCoop) {
+      this.dom.btnModeCoop.addEventListener('click', () => {
+        this.setModeSelection('coop');
+      });
+    }
 
     // 开始游戏
     this.dom.btnStartGame.addEventListener('click', () => {
@@ -329,13 +333,13 @@ export class UIManager {
   setModeSelection(mode) {
     this.currentMode = mode;
     if (mode === 'single') {
-      this.dom.btnModeSingle.classList.add('selected');
-      this.dom.btnModeCoop.classList.remove('selected');
-      this.dom.modeBadge.textContent = '👶 单人模式';
+      this.dom.btnModeSingle?.classList?.add('selected');
+      this.dom.btnModeCoop?.classList?.remove('selected');
+      if (this.dom.modeBadge) this.dom.modeBadge.textContent = '👶 单人模式';
     } else {
-      this.dom.btnModeSingle.classList.remove('selected');
-      this.dom.btnModeCoop.classList.add('selected');
-      this.dom.modeBadge.textContent = '👨‍👩‍👦 亲子双人合作';
+      this.dom.btnModeSingle?.classList?.remove('selected');
+      this.dom.btnModeCoop?.classList?.add('selected');
+      if (this.dom.modeBadge) this.dom.modeBadge.textContent = '👨‍👩‍👦 亲子双人合作';
     }
   }
 

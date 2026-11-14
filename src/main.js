@@ -70,6 +70,8 @@ export class Game {
 
     // 初始化核心模块
     this.videoElement = typeof document !== 'undefined' ? document.getElementById('webcam-video') : null;
+    this.webcamCanvas = typeof document !== 'undefined' ? document.getElementById('webcam-canvas') : null;
+    this.webcamCtx = this.webcamCanvas?.getContext?.('2d') || null;
     this.canvasContainer = typeof document !== 'undefined' ? document.getElementById('canvas-container') : null;
 
     if (this.canvasContainer) {
@@ -431,7 +433,7 @@ export class Game {
     this.prepareAnimal();
     this.lifecycleSessionId = (this.lifecycleSessionId || 0) + 1;
     const session = this.lifecycleSessionId;
-    this.playerMode = mode;
+    this.playerMode = 'single';
     this.isSoftWaiting = false;
     this.coopLostDuration = 0;
     this.bubbleManager.setPlayerMode(mode);
@@ -1008,7 +1010,7 @@ export class Game {
 
   // 切换人数模式
   handleSelectMode(mode) {
-    this.playerMode = mode;
+    this.playerMode = 'single';
     this.bubbleManager.setPlayerMode(mode);
     this.poseDetector.setPlayerMode(mode);
   }
@@ -1060,10 +1062,14 @@ export class Game {
     this.prepareAnimal();
     this.lifecycleSessionId = (this.lifecycleSessionId || 0) + 1;
     this.isDemoMode = true;
-    this.playerMode = mode || 'single';
+    this.playerMode = 'single';
     this.bubbleManager.setPlayerMode(this.playerMode);
     this.poseDetector.setPlayerMode(this.playerMode);
     this.poseDetector.enableDemoMode();
+    if (this.videoElement) {
+      this.videoElement.srcObject = null;
+      this.videoElement?.classList?.remove?.('is-playing');
+    }
     this.audioManager.init();
     this.isSoftWaiting = false;
 
@@ -1100,6 +1106,11 @@ export class Game {
     window.addEventListener('touchstart', kick, { passive: true });
     window.addEventListener('click', kick, { passive: true });
     window.addEventListener('keydown', kick);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && !this.isDemoMode && this.videoElement?.srcObject && this.videoElement.paused) {
+        try { this.videoElement.play()?.catch?.(() => {}); } catch (_) {}
+      }
+    });
   }
 
   // 模拟模式下的鼠标与触摸交互输入
@@ -1310,9 +1321,48 @@ export class Game {
         this.showVictoryWhenReady();
       }
     }
+    this.renderWebcamFrame();
     this.sceneManager?.render();
     // Read WebGL immediately after rendering; no preserveDrawingBuffer needed.
     if (this.photoCapturePending && this.state === 'CELEBRATING') this.captureVictoryPhoto();
+  }
+
+  resizeWebcamCanvas() {
+    if (!this.webcamCanvas) return;
+    const w = typeof window !== 'undefined' ? (window.innerWidth || document.documentElement?.clientWidth || 1280) : 1280;
+    const h = typeof window !== 'undefined' ? (window.innerHeight || document.documentElement?.clientHeight || 720) : 720;
+    const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
+    const targetW = Math.round(w * dpr);
+    const targetH = Math.round(h * dpr);
+    if (this.webcamCanvas.width !== targetW || this.webcamCanvas.height !== targetH) {
+      this.webcamCanvas.width = targetW;
+      this.webcamCanvas.height = targetH;
+    }
+  }
+
+  renderWebcamFrame() {
+    if (!this.webcamCanvas || !this.webcamCtx) return;
+    this.resizeWebcamCanvas();
+    const video = this.videoElement;
+    const cw = this.webcamCanvas.width;
+    const ch = this.webcamCanvas.height;
+    if (this.isDemoMode || !video || video.paused || video.readyState < 2 || !video.videoWidth || !video.videoHeight) {
+      this.webcamCtx.clearRect(0, 0, cw, ch);
+      return;
+    }
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    const scale = Math.max(cw / vw, ch / vh);
+    const sw = cw / scale;
+    const sh = ch / scale;
+    const sx = (vw - sw) / 2;
+    const sy = (vh - sh) / 2;
+
+    this.webcamCtx.save();
+    this.webcamCtx.translate(cw, 0);
+    this.webcamCtx.scale(-1, 1);
+    this.webcamCtx.drawImage(video, sx, sy, sw, sh, 0, 0, cw, ch);
+    this.webcamCtx.restore();
   }
 
   renderLoop() {

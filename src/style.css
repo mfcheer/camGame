@@ -25,18 +25,47 @@ html, body {
   font-family: var(--font-family);
 }
 
-/* 摄像头背景（完全镜像对齐，充满屏幕，未开启或模拟模式为柔和晴空渐变） */
-#webcam-video {
+/* 底层静态回退背景（未开启摄像头、申请权限中、或模拟模式下的柔和晴空渐变） */
+#webcam-fallback-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background: linear-gradient(180deg, #DDF4FF 0%, #EAFBF1 58%, #BDE9D0 100%);
+  pointer-events: none;
+}
+
+/* 摄像头镜像实时渲染画布：纯 Canvas，浏览器绝不会在其上绘制任何视频播放控件，彻底杜绝居中播放按钮 */
+#webcam-canvas {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   object-fit: cover;
-  transform: scaleX(-1); /* 水平镜像，如同照镜子 */
   z-index: 1;
-  background: linear-gradient(180deg, #DDF4FF 0%, #EAFBF1 58%, #BDE9D0 100%);
   pointer-events: none;
+}
+
+/* 底层隐藏视频源：仅作为 MediaStream 接收与视觉算法提取载体，尺寸为 1px 且移出视口，绝不参与屏幕渲染 */
+#webcam-video {
+  position: fixed !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -9999 !important;
+  visibility: hidden !important;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+#webcam-video.is-playing {
+  opacity: 0 !important;
 }
 
 /* 彻底抑制并隐藏浏览器原生播放控件及 WebKit 居中大播放按钮 (半透明圆圈带三角形 ▶️) */
@@ -163,6 +192,7 @@ html, body {
 }
 
 .mode-badge {
+  display: none !important;
   background: rgba(255, 255, 255, 0.92);
   padding: 8px 18px;
   border-radius: var(--border-radius-pill);

@@ -17,8 +17,20 @@
   <link rel="stylesheet" href="./src/style.css" />
 </head>
 <body>
-  <!-- 摄像头镜像视频画面（全屏底层背景，未开启或模拟模式为温和渐变） -->
-  <video id="webcam-video" autoplay playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" muted disablePictureInPicture></video>
+  <!-- 底层静态回退背景与摄像头镜像视频画面 -->
+  <div id="webcam-fallback-bg" class="webcam-fallback-bg"></div>
+  <canvas id="webcam-canvas" class="webcam-canvas" aria-hidden="true"></canvas>
+  <video id="webcam-video" class="webcam-video" autoplay playsinline webkit-playsinline muted defaultMuted disablePictureInPicture tabindex="-1" aria-hidden="true"></video>
+  <script>
+    (function(){
+      var v = document.getElementById('webcam-video');
+      if (v) {
+        v.muted = true;
+        v.defaultMuted = true;
+        try { v.volume = 0; } catch(_) {}
+      }
+    })();
+  </script>
 
   <!-- Three.js 3D 渲染画布容器 -->
   <div id="canvas-container"></div>
@@ -31,7 +43,7 @@
     <div id="game-hud" class="hidden">
       <div class="hud-left">
         <button id="btn-sound" class="icon-btn" title="声音开关">🔊</button>
-        <div id="mode-badge" class="mode-badge">👶 单人模式</div>
+        <div id="mode-badge" class="mode-badge hidden">👶 单人模式</div>
       </div>
 
       <!-- 5 个圆点进度（免识字直观彩虹进度，视口水平绝对居中） -->
@@ -144,20 +156,6 @@
             <span id="camp-badge-count" class="camp-badge-count">0/14</span>
           </button>
         </div>
-        <!-- 模式选择 -->
-        <div class="mode-selector">
-          <button id="btn-mode-single" class="mode-btn selected">
-            <span class="mode-icon">👶</span>
-            <span class="mode-title">单人探索</span>
-            <span class="mode-sub">宝贝自己玩</span>
-          </button>
-          <button id="btn-mode-coop" class="mode-btn">
-            <span class="mode-icon">👨‍👩‍👦</span>
-            <span class="mode-title">亲子合作</span>
-            <span class="mode-sub">父母同框一起玩</span>
-          </button>
-        </div>
-
         <button id="btn-start-game" class="btn-primary">开始游戏 🎈</button>
         <button id="btn-demo-mode" class="btn-secondary">💻 电脑模拟体验</button>
 
@@ -194,7 +192,6 @@
         <h2>游戏已暂停 ⏸️</h2>
         <p>解救进度已为您保留，休息一下再继续吧。</p>
         <button id="btn-resume" class="btn-primary">继续游戏 ▶️</button>
-        <button id="btn-switch-mode-in-pause" class="btn-secondary">切换为亲子双人模式</button>
         <button id="btn-restart" class="btn-secondary">重新开始本轮 🔄</button>
         <button id="btn-exit" class="btn-secondary">退出回首页 🏠</button>
       </div>

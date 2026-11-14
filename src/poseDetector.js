@@ -119,6 +119,22 @@ export class PoseDetector {
     this.lastInferenceAt = -Infinity; this.lastBodyAt = -Infinity;
     this.metrics = { backend:'uninitialized', inferenceMs:0, resultAgeMs:0, frames:0 };
     this.handFilters = new Map(); // 手部 One-Euro 平滑滤波实例表
+
+    if (this.video) {
+      try {
+        this.video.muted = true;
+        this.video.defaultMuted = true;
+        this.video.playsInline = true;
+        this.video.addEventListener('playing', () => {
+          if (this.video && !this.video.paused) {
+            this.video?.classList?.add?.('is-playing');
+          }
+        });
+        this.video.addEventListener('pause', () => this.video?.classList?.remove?.('is-playing'));
+        this.video.addEventListener('ended', () => this.video?.classList?.remove?.('is-playing'));
+        this.video.addEventListener('emptied', () => this.video?.classList?.remove?.('is-playing'));
+      } catch (_) {}
+    }
   }
 
   setStatus(newStatus, detail = null) {
@@ -367,7 +383,6 @@ export class PoseDetector {
         try {
           this.video.setAttribute("playsinline", "");
           this.video.setAttribute("webkit-playsinline", "");
-          this.video.setAttribute("x5-playsinline", "");
           this.video.playsInline = true;
           this.video.muted = true;
           this.video.defaultMuted = true;
@@ -391,7 +406,13 @@ export class PoseDetector {
           if (this.cameraRequestId === reqId && this.video) {
             try {
               const p = this.video.play();
-              if (p && typeof p.catch === "function") p.catch(() => {});
+              if (p && typeof p.then === "function") {
+                p.then(() => {
+                  if (this.cameraRequestId === reqId && this.video) {
+                    this.video?.classList?.add?.('is-playing');
+                  }
+                }).catch(() => {});
+              }
             } catch (_) {}
           }
           resolve();
@@ -775,6 +796,10 @@ export class PoseDetector {
   enableDemoMode() {
     this.isDemoMode = true;
     this.isRunning = true;
+    if (this.video) {
+      this.video.srcObject = null;
+      this.video?.classList?.remove?.('is-playing');
+    }
     this.setStatus('running', '当前为鼠标/触控模拟模式（非摄像头）');
   }
 
@@ -864,6 +889,7 @@ export class PoseDetector {
     }
     if (this.video) {
       this.video.srcObject = null;
+      this.video?.classList?.remove?.('is-playing');
     }
     this.trackedPlayers = [];
     this.unlockPlayers();
