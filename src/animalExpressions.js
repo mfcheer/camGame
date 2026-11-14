@@ -6,7 +6,7 @@ const FACE={
  dog:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},
  dragon:{width:.052,depth:.044,top:1.50,colour:0x97cbbb},
  goldenDragon:{width:.048,depth:.046,top:1.63,colour:0xeac166},
- teddy:{width:.043,depth:.028,top:1.34,colour:0xe69891},wolf:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},mcqueen:{width:.05,depth:.028,top:1.10,colour:0xffca48}
+ teddy:{width:.043,depth:.028,top:1.34,colour:0xe69891},wolf:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},mcqueen:{width:.05,depth:.028,top:1.10,colour:0xffca48},chase:{width:.044,depth:.032,top:1.4,colour:0xffd075},jett:{width:.044,depth:.028,top:1.35,colour:0x97c8eb}
 };
 function stroke(parent,points,r,material){const path=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const m=new THREE.Mesh(new THREE.TubeGeometry(path,18,r,6,false),material);parent.add(m);return m;}
 function heart(){const s=new THREE.Shape();s.moveTo(0,-.035);s.bezierCurveTo(-.11,.03,-.055,.10,0,.055);s.bezierCurveTo(.055,.10,.11,.03,0,-.035);return new THREE.ShapeGeometry(s,16);}

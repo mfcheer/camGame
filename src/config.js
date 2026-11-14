@@ -62,6 +62,8 @@ export const GAME_CONFIG = {
     mcqueen: {name:'闪电麦昆',targetBubbles:10,asset:'lightning-mcqueen',escapeStyle:'drive',description:'闪电赛道 · 和麦昆一起追逐轻快的泡泡。',victoryText:'麦昆开动轮子，开心地向你眨眼道谢。'},
     wolf: {name:'大灰狼 灰灰',targetBubbles:12,asset:'friendly-wolf',escapeStyle:'bound',description:'森林追逐 · 和灰灰一起追随轻快的泡泡。',victoryText:'灰灰摇着尾巴，开心地跑回森林。'},
     teddy: {name:'泰迪熊 抱抱',targetBubbles:8,asset:'teddy-bear',escapeStyle:'hop',description:'温暖抱抱 · 和抱抱一起慢慢收集泡泡。',victoryText:'抱抱开心地挥挥手，送你一个大大的拥抱。'},
+    chase:{name:'汪汪队 阿奇',targetBubbles:10,asset:'rescue-chase',escapeStyle:'bound',description:'勇敢巡逻 · 和阿奇一起寻找泡泡。',victoryText:'阿奇摇摇尾巴，开心地完成救援。'},
+    jett:{name:'超级飞侠 乐迪',targetBubbles:12,asset:'airplane-jett',escapeStyle:'fly',description:'天空飞行 · 和乐迪一起追逐云朵泡泡。',victoryText:'乐迪展开机翼，开心地飞过天空。'},
     panda: {
       name: '大熊猫 圆圆',
       weightCategory: 'medium',
@@ -91,7 +93,7 @@ export const GAME_CONFIG = {
   }
 };
 
-export const PLAYABLE_ANIMALS = ['bunny', 'cat', 'frog', 'dog', 'dragon', 'goldenDragon','mcqueen','wolf','teddy'];
+export const PLAYABLE_ANIMALS = ['bunny', 'cat', 'frog', 'dog', 'dragon', 'goldenDragon','mcqueen','wolf','teddy','chase','jett'];
 export function resolveAnimal(selection, random = Math.random) {
   return selection === 'random' ? PLAYABLE_ANIMALS[Math.min(PLAYABLE_ANIMALS.length-1, Math.floor(random()*PLAYABLE_ANIMALS.length))] : (PLAYABLE_ANIMALS.includes(selection) ? selection : 'bunny');
 }

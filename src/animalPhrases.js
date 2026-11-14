@@ -22,7 +22,7 @@ export const ANIMAL_PHRASES={
 const favorites={bunny:['hello-play','like-red','how-are-you'],cat:['play-ball','like-orange','happy-today'],
   frog:['how-are-you','like-green','hello-play'],dog:['play-ball','happy-today','like-blue'],
   dragon:['hello-play','like-blue','how-are-you'],goldenDragon:['like-yellow','hello-play','happy-today'],
-  mcqueen:['hello-play','like-red','happy-today'],wolf:['play-ball','hello-play','like-green'],teddy:['happy-today','hello-play','like-yellow']};
+  mcqueen:['hello-play','like-red','happy-today'],wolf:['play-ball','hello-play','like-green'],teddy:['happy-today','hello-play','like-yellow'],chase:['hello-play','like-blue','play-ball'],jett:['hello-play','like-red','happy-today']};
 export function chooseAnimalPhrase(phase,animalId,previousId=null,random=Math.random){
   let pool=ANIMAL_PHRASES[phase]||ANIMAL_PHRASES.start;
   if(phase==='start')pool=pool.filter(p=>(favorites[animalId]||favorites.bunny).includes(p.id));

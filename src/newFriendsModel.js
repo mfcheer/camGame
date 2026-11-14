@@ -71,3 +71,37 @@ export function createMcqueenModel(){
  const bow=pivot(root,'Bow',[0,.50,.52]);
  pivot(root,'Tail',[0,.4,-.65]);return root;
 }
+
+// A blue-uniform rescue pup and a red-and-white airplane friend.
+export function createChaseModel(){
+ const root=createDogModel();root.name='Chase_Rescue_Pup';
+ const brown=mat(0xa96332,.95),tan=mat(0xe9b77d,.95),navy=mat(0x224c98,.78),blue=mat(0x347ed0,.72),gold=mat(0xf3cd52,.55),ink=mat(0x263447,.6);
+ for(const name of ['Puppy_Plump_Body','Puppy_Head','Foreleg','Hind_Paw','Wagging_Tail'])root.traverse(o=>{if(o.name===name&&o.isMesh)o.material=brown;});
+ for(const name of ['Cream_Chest','Cream_Muzzle','Cream_Forepaw','Cream_Hind_Toes','Cream_Tail_Tip'])root.traverse(o=>{if(o.name===name&&o.isMesh)o.material=tan;});
+ for(const side of ['L','R']){const ear=root.getObjectByName('Ear_'+side);ear.clear();const s=side==='L'?-1:1;const outer=mesh(new THREE.ConeGeometry(.11,.29,24),brown,ear,'Chase_Pointy_Ear',[s*.02,.10,0]);outer.rotation.z=-s*.15;}
+ const body=root.getObjectByName('Torso');ellipsoid(body,'Blue_Rescue_Vest',navy,[0,.05,.13],[.29,.29,.17]);ellipsoid(body,'Vest_Front',blue,[0,.045,.265],[.16,.20,.025]);
+ const head=root.getObjectByName('Head');const hat=pivot(head,'Police_Cap',[0,.25,-.005]);ellipsoid(hat,'Cap_Crown',navy,[0,.02,0],[.27,.105,.22]);ellipsoid(hat,'Cap_Band',blue,[0,-.035,.015],[.27,.038,.225]);ellipsoid(hat,'Cap_Brim',navy,[0,-.05,.17],[.245,.025,.12]);
+ ellipsoid(hat,'Cap_Badge',gold,[0,.03,.213],[.055,.06,.014]);ellipsoid(hat,'Badge_Center',ink,[0,.03,.227],[.022,.028,.008]);
+ const bow=root.getObjectByName('Bow');bow.clear();ellipsoid(bow,'Collar_Badge',gold,[0,0,.035],[.055,.066,.02]);ellipsoid(bow,'Badge_Inset',blue,[0,0,.054],[.03,.04,.008]);
+ return root;
+}
+export function createJettModel(){
+ const root=new THREE.Group();root.name='Jett_Airplane_Rig';
+ const red=mat(0xe92e32,.46),white=mat(0xf8f6eb,.64),blue=mat(0x3989bd,.42),dark=mat(0x344650,.5),gold=mat(0xf5c64a,.5),pink=mat(0xed9588,.8);
+ const body=pivot(root,'Torso',[0,.42,0]);ellipsoid(body,'Red_Fuselage',red,[0,.03,0],[.28,.34,.23]);ellipsoid(body,'White_Front',white,[0,.025,.205],[.17,.22,.04]);
+ const head=pivot(root,'Head',[0,.94,.02]);ellipsoid(head,'Red_Airplane_Head',red,[0,0,0],[.32,.28,.25]);ellipsoid(head,'Friendly_Face',white,[0,-.035,.215],[.25,.18,.06]);
+ ellipsoid(head,'Helmet_Center',white,[0,.225,.09],[.065,.045,.17]);
+ const eyes=pivot(head,'Eyes',[0,0,0]);
+ for(const s of [-1,1]){
+  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.11,.005,.27]);ellipsoid(eye,'Eye',dark,[0,0,0],[.045,.055,.02]);ellipsoid(eye,'Iris',blue,[0,-.006,.018],[.026,.034,.01]);ellipsoid(eye,'Catchlight',white,[-.01,.014,.028],[.011,.013,.005]);
+  const ear=pivot(head,s<0?'Ear_L':'Ear_R',[s*.31,.04,0]);ellipsoid(ear,'Jet_Side_Piece',red,[0,0,0],[.07,.09,.11]);
+  const arm=pivot(root,s<0?'Arm_L':'Arm_R',[s*.27,.55,.02]);ellipsoid(arm,'White_Arm',white,[s*.03,-.12,0],[.07,.16,.07]);ellipsoid(arm,'Red_Hand',red,[s*.035,-.24,.025],[.08,.065,.08]);
+  const leg=pivot(root,s<0?'Leg_L':'Leg_R',[s*.15,.19,0]);ellipsoid(leg,'White_Leg',white,[0,-.06,.01],[.085,.13,.08]);ellipsoid(leg,'Red_Boot',red,[0,-.15,.08],[.11,.07,.15]);
+  const wing=pivot(body,s<0?'Wing_L':'Wing_R',[s*.23,.05,-.08]);const shape=new THREE.Shape();shape.moveTo(0,.08);shape.lineTo(s*.42,-.07);shape.lineTo(s*.36,-.18);shape.lineTo(0,-.10);shape.closePath();mesh(new THREE.ExtrudeGeometry(shape,{depth:.035,bevelEnabled:true,bevelSize:.012,bevelThickness:.01,bevelSegments:2}),red,wing,'Airplane_Wing');
+  ellipsoid(wing,'Wing_Tip',white,[s*.32,-.115,.025],[.06,.045,.028]);
+ }
+ curve(head,'Smile',[[-.09,-.12,.274],[0,-.16,.286],[.09,-.12,.274]],.006,dark);
+ const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.135,.28],[.07,.04,.012]);happy.visible=false;const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.15,.294],[.032,.014,.005]);tongue.visible=false;
+ const tail=pivot(root,'Tail',[0,.52,-.22]);const fin=new THREE.Shape();fin.moveTo(-.04,0);fin.lineTo(0,.3);fin.lineTo(.08,.03);fin.closePath();mesh(new THREE.ExtrudeGeometry(fin,{depth:.025,bevelEnabled:true,bevelSize:.01,bevelThickness:.006,bevelSegments:2}),red,tail,'Tail_Fin');
+ const bow=pivot(root,'Bow',[0,.60,.24]);ellipsoid(bow,'Chest_Star',gold,[0,0,0],[.045,.045,.015]);return root;
+}

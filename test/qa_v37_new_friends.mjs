@@ -7,14 +7,18 @@ import {CAMP_ANIMALS,CampManager} from '../src/campManager.js';
 import {RescueAnimal} from '../src/rescueAnimal.js';
 import {HappyPerformance} from '../src/happyPerformance.js';
 import {getAnimalPlayStyle} from '../src/animalPlayStyles.js';
-const ids=['mcqueen','wolf','teddy'];
+const ids=['mcqueen','wolf','teddy','chase','jett'];
 const camera=()=>{const c=new THREE.PerspectiveCamera(48,1194/834,.1,100);c.position.z=7.5;c.updateMatrixWorld();return c;};
-test('three friends have assets, configuration, random selection and camp records',()=>{
+test('new friends have assets, configuration, random selection and camp records',()=>{
  const camp=new CampManager();
  for(const id of ids){const profile=GAME_CONFIG.animals[id];assert.ok(PLAYABLE_ANIMALS.includes(id));assert.equal(resolveAnimal(id),id);assert.ok(CAMP_ANIMALS.some(a=>a.id===id));assert.equal(camp.recordRescue(id),1);assert.ok(camp.isUnlocked(id));assert.ok(getAnimalPlayStyle(id).name);for(const file of [`public/models/${id}-preview.png`,`public/models/${profile.asset}.glb`])assert.ok(fs.statSync(file).size>1000,file);}
- assert.equal(camp.getUnlockedCount(),3);
+ assert.equal(camp.getUnlockedCount(),ids.length);
  const car=fs.readFileSync('public/models/lightning-mcqueen.glb');const gltf=JSON.parse(car.toString('utf8',20,20+car.readUInt32LE(12)).trim());
  for(const name of ['Red_Racing_Body','Windshield','Front_Wheel','Lightning_Bolt'])assert.ok(gltf.nodes.some(n=>n.name===name),`${name} missing from the car GLB`);
+ for(const [id,required] of [['chase',['Police_Cap','Cap_Badge','Blue_Rescue_Vest']],['jett',['Red_Fuselage','Wing_L','Wing_R','Tail_Fin']]]){
+  const data=fs.readFileSync(`public/models/${GAME_CONFIG.animals[id].asset}.glb`);const scene=JSON.parse(data.toString('utf8',20,20+data.readUInt32LE(12)).trim());
+  for(const name of required)assert.ok(scene.nodes.some(n=>n.name===name),`${id} is missing ${name}`);
+ }
  assert.ok(!PLAYABLE_ANIMALS.includes('vampire'));assert.ok(!CAMP_ANIMALS.some(a=>a.id==='vampire'));
 });
 test('new character rigs react, pause, reset and run distinct signature performances',()=>{
