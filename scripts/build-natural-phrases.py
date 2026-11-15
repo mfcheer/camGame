@@ -5,7 +5,9 @@ import argparse
 import hashlib
 import json
 import subprocess
+import shutil
 from pathlib import Path
+from voice_audio_quality import check_phrase
 
 root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
@@ -29,6 +31,8 @@ if args.kind == 'countdown':
     entries = [dict(e) for e in COUNTDOWN_ENTRIES]
 else:
     entries = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', query], cwd=root))
+if args.kind == 'phrases':
+    entries = list({entry['id']: entry for entry in entries}.values())
 if args.only:
     unknown = set(args.only) - {entry['id'] for entry in entries}
     if unknown:
@@ -37,7 +41,7 @@ if args.only:
 
 def targets(entry):
     if args.kind == 'phrases':
-        return [root/'public'/entry['audio'].lstrip('/')]
+        return [root/'public'/entry['audio'].lstrip('/'), root/'public/audio/phrases'/f"{entry['id']}.mp3"]
     if args.kind == 'zh-words':
         return [root/'public/audio/words/zh'/f"{entry['id']}.mp3"]
     if args.kind == 'countdown':
@@ -116,7 +120,11 @@ for entry in work:
         target.parent.mkdir(parents=True, exist_ok=True)
     encode = ['-ar', str(profile['output_sample_rate']), '-b:a', profile['output_bitrate']]
     if args.kind == 'phrases':
-        subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(wav), '-af', profile['master_filter'], *encode, str(paths[0])], check=True)
+        trim = f"aformat=sample_rates={rate}:channel_layouts=mono,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-45dB,areverse,apad=pad_dur={profile['tail_silence_seconds']},asetpts=N/SR/TB"
+        filters=f"{trim},{profile['master_filter']}"
+        subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(wav), '-af', filters, *encode, str(paths[0])], check=True)
+        check_phrase(paths[0], wav, filters, profile)
+        shutil.copyfile(paths[0], paths[1])
     elif args.kind == 'countdown':
         # Kokoro chunks carry their own lead-in/out; trim to the same head/tail standard as zh clips.
         trim = f"aformat=sample_rates={rate}:channel_layouts=mono,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-45dB,areverse,apad=pad_dur={profile['tail_silence_seconds']},asetpts=N/SR/TB"

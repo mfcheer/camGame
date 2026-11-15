@@ -1,6 +1,6 @@
 import {AnimalSpeech} from '../src/animalSpeech.js';
 import fs from 'node:fs';
-import {chooseAnimalPhrase} from '../src/animalPhrases.js';
+import {ANIMAL_PHRASES,chooseAnimalPhrase} from '../src/animalPhrases.js';
 // 倒数三套配音、解救告别短语与首页新布局专项（qa_v34）
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -114,7 +114,9 @@ test('通关做庆祝动作时自动播报中文庆祝短语，离开至终点�
   assert.equal(speechCalls[1].phrase.zh, speechCalls[0].phrase.zh);
 });
 
-test('每轮告别互译短语从 8 对短语中轮换且不与上次重复，中英文音频文件全部存在且大于 2KB',()=>{
+test('每轮告别互译短语从 14 对短语中轮换且不与上次重复，中英文音频文件全部存在且大于 2KB',()=>{
+  assert.equal(ANIMAL_PHRASES.end.length,14);
+  assert.equal(new Set(ANIMAL_PHRASES.end.map(p=>p.id)).size,14);
   const chosen=[];
   let prev=null;
   for(let i=0;i<16;i++){
@@ -126,7 +128,7 @@ test('每轮告别互译短语从 8 对短语中轮换且不与上次重复，�
     if(prev)assert.notEqual(phrase.id,prev,'不与上次重复');
     prev=phrase.id;chosen.push(phrase.id);
   }
-  assert.ok(new Set(chosen).size>=4,'应从8句短语库中丰富轮换');
+  assert.ok(new Set(chosen).size>=4,'应从14句短语库中丰富轮换');
 });
 
 test('AnimalSpeech 在 celebrate 时播放中文音频并在 end 时播放同一短语的英文音频', () => {

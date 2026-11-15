@@ -12,5 +12,8 @@
   "output_bitrate": "128k",
   "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
   "chinese_voice": "Tingting",
-  "chinese_rate": 210
+  "chinese_rate": 210,
+  "end_chinese_language": "z",
+  "end_chinese_voice": "zf_xiaoxiao",
+  "end_chinese_speed": 0.95
 }

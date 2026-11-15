@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';import {execFileSync} from 'node:child_process';
 import {AudioManager} from '../src/audioManager.js';import {Game} from '../src/main.js';import {getWordById} from '../src/wordsConfig.js';import {withDeadline} from '../src/audioRecovery.js';
+import {ANIMAL_PHRASES} from '../src/animalPhrases.js';
 const wait=ms=>new Promise(r=>setTimeout(r,ms)),tick=async()=>{await Promise.resolve();await Promise.resolve();};
 function deferred(){let resolve;return {promise:new Promise(r=>resolve=r),resolve:v=>resolve(v)};}
 function fixture(){const events=[],g=Object.assign(Object.create(Game.prototype),{state:'PLAYING',prePauseState:'PLAYING',lifecycleSessionId:1,collectedCount:0,targetCount:5,
@@ -11,7 +12,7 @@ function audio(){const a=new AudioManager(),sources=[];a.init=()=>{};a.ctx={stat
 
  test('voice profile and manifest preserve all accepted natural clips and their source text',()=>{
  const p=JSON.parse(fs.readFileSync('scripts/voice-profile.json'));assert.equal(p.voice,'af_heart');assert.equal(p.speed,.92);assert.equal(p.kokoro_version,'0.9.4');assert.equal(p.output_sample_rate,44100);
- const entries=JSON.parse(fs.readFileSync('docs/voice-manifest.json'));assert.equal(entries.filter(e=>e.kind==='phrases').length,17);for(const e of entries)for(const asset of e.assets)assert.equal(crypto.createHash('sha256').update(fs.readFileSync(asset.path)).digest('hex'),asset.sha256);
+ const entries=JSON.parse(fs.readFileSync('docs/voice-manifest.json'));const expected=new Set([...ANIMAL_PHRASES.start,...ANIMAL_PHRASES.end].map(p=>p.id));assert.deepEqual(new Set(entries.filter(e=>e.kind==='phrases').map(e=>e.id)),expected);for(const e of entries)for(const asset of e.assets)assert.equal(crypto.createHash('sha256').update(fs.readFileSync(asset.path)).digest('hex'),asset.sha256);
  assert.match(fs.readFileSync('AGENTS.md','utf8'),/VOICE_STANDARD/);assert.match(execFileSync('python3',['scripts/build-natural-phrases.py','--only','hello-play','--dry-run'],{encoding:'utf8'}),/KEEP hello-play/);
  });
 

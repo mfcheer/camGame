@@ -17,7 +17,13 @@ const END_PHRASES=[
   phrase('great-job','Great job!','你太棒啦！'),
   phrase('you-did-it','You did it!','你做到啦！'),
   phrase('so-much-fun','We had so much fun!','今天玩得真开心！'),
-  phrase('see-you-tomorrow','See you tomorrow!','明天见哦！')
+  phrase('see-you-tomorrow','See you tomorrow!','明天见哦！'),
+  phrase('thanks-for-helping','Thank you for helping me!','谢谢你帮我！'),
+  phrase('great-team',"We're a great team!",'我们是好搭档！'),
+  phrase('my-hero','You are my hero!','你是我的小英雄！'),
+  phrase('big-hug','A big hug for you!','送你一个大大的拥抱！'),
+  phrase('play-again',"Let's play again!",'再玩一次吧！'),
+  phrase('make-me-smile','You make me smile!','你让我笑得好开心！')
 ];
 
 export const ANIMAL_PHRASES={

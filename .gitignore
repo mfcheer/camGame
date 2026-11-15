@@ -27,3 +27,4 @@ Thumbs.db
 # Local test outputs and recordings
 output/
 .workbuddy/
+__pycache__/

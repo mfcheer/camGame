@@ -6138,5 +6138,377 @@
         "sha256": "cef65f5d13bbe0c464a15d8808095c15171f9b6491ffeff6f80035b06ff9f42f"
       }
     ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "thanks-for-helping-zh",
+    "text": "谢谢你帮我！",
+    "zh": "谢谢你帮我！",
+    "en": "Thank you for helping me!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/thanks-for-helping-zh.mp3",
+        "sha256": "c01bda0a5858a3ab62268bdd2ae0417426faad0af848f10707ff11a4a792c65a"
+      },
+      {
+        "path": "public/audio/phrases/thanks-for-helping-zh.mp3",
+        "sha256": "c01bda0a5858a3ab62268bdd2ae0417426faad0af848f10707ff11a4a792c65a"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "great-team-zh",
+    "text": "我们是好搭档！",
+    "zh": "我们是好搭档！",
+    "en": "We're a great team!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/great-team-zh.mp3",
+        "sha256": "174b0b70bfa098f4d8cd2cfd3732f4560260f398ebe643975eac6e84f4327192"
+      },
+      {
+        "path": "public/audio/phrases/great-team-zh.mp3",
+        "sha256": "174b0b70bfa098f4d8cd2cfd3732f4560260f398ebe643975eac6e84f4327192"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "my-hero-zh",
+    "text": "你是我的小英雄！",
+    "zh": "你是我的小英雄！",
+    "en": "You are my hero!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/my-hero-zh.mp3",
+        "sha256": "edeed357bfd25176ca2e7820ed07be2974b3da4c6a7c5b90f3e957933ddded96"
+      },
+      {
+        "path": "public/audio/phrases/my-hero-zh.mp3",
+        "sha256": "edeed357bfd25176ca2e7820ed07be2974b3da4c6a7c5b90f3e957933ddded96"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "big-hug-zh",
+    "text": "送你一个大大的拥抱！",
+    "zh": "送你一个大大的拥抱！",
+    "en": "A big hug for you!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/big-hug-zh.mp3",
+        "sha256": "f047f83aa561096a0cb0ac52571810157c95487f40e356def5c04cd66e66903e"
+      },
+      {
+        "path": "public/audio/phrases/big-hug-zh.mp3",
+        "sha256": "f047f83aa561096a0cb0ac52571810157c95487f40e356def5c04cd66e66903e"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "play-again-zh",
+    "text": "再玩一次吧！",
+    "zh": "再玩一次吧！",
+    "en": "Let's play again!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/play-again-zh.mp3",
+        "sha256": "3c84653645c76465912e41cad1de7fa10267136aaf523f208562851728fb1959"
+      },
+      {
+        "path": "public/audio/phrases/play-again-zh.mp3",
+        "sha256": "3c84653645c76465912e41cad1de7fa10267136aaf523f208562851728fb1959"
+      }
+    ]
+  },
+  {
+    "kind": "end-zh-phrase",
+    "id": "make-me-smile-zh",
+    "text": "你让我笑得好开心！",
+    "zh": "你让我笑得好开心！",
+    "en": "You make me smile!",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "language": "z",
+      "voice": "zf_xiaoxiao",
+      "speed": 0.95,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015"
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/make-me-smile-zh.mp3",
+        "sha256": "4cd1748e96c0d1a180c1a0cd2e2b937540e5a0ea25ae45fc6ebf85c99435f5c8"
+      },
+      {
+        "path": "public/audio/phrases/make-me-smile-zh.mp3",
+        "sha256": "4cd1748e96c0d1a180c1a0cd2e2b937540e5a0ea25ae45fc6ebf85c99435f5c8"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "thanks-for-helping",
+    "text": "Thank you for helping me!",
+    "zh": "谢谢你帮我！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/thanks-for-helping.mp3",
+        "sha256": "bb54c1e0c78c938ee318740fc2d03e84f8c2ed7e5d1f748a01f3bcacdc430068"
+      },
+      {
+        "path": "public/audio/phrases/thanks-for-helping.mp3",
+        "sha256": "bb54c1e0c78c938ee318740fc2d03e84f8c2ed7e5d1f748a01f3bcacdc430068"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "great-team",
+    "text": "We're a great team!",
+    "zh": "我们是好搭档！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/great-team.mp3",
+        "sha256": "9e174f7961b9ec5c89ad8582fcbf537a0912ab089702e0849ea104dde5c9ee50"
+      },
+      {
+        "path": "public/audio/phrases/great-team.mp3",
+        "sha256": "9e174f7961b9ec5c89ad8582fcbf537a0912ab089702e0849ea104dde5c9ee50"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "my-hero",
+    "text": "You are my hero!",
+    "zh": "你是我的小英雄！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/my-hero.mp3",
+        "sha256": "f899cdb07d87b9f3f0020217788fcdb240e334cc3771628f228111ce7dcb274c"
+      },
+      {
+        "path": "public/audio/phrases/my-hero.mp3",
+        "sha256": "f899cdb07d87b9f3f0020217788fcdb240e334cc3771628f228111ce7dcb274c"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "big-hug",
+    "text": "A big hug for you!",
+    "zh": "送你一个大大的拥抱！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/big-hug.mp3",
+        "sha256": "dc6170aa7ce560be00608f04e6a4c72df4916df5018e0abe15a22ea733cc3044"
+      },
+      {
+        "path": "public/audio/phrases/big-hug.mp3",
+        "sha256": "dc6170aa7ce560be00608f04e6a4c72df4916df5018e0abe15a22ea733cc3044"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "play-again",
+    "text": "Let's play again!",
+    "zh": "再玩一次吧！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/play-again.mp3",
+        "sha256": "714f9cddc5d4c7ed3eb304e3722c44dda98509c7d13fe72e9553cdeda413c6ba"
+      },
+      {
+        "path": "public/audio/phrases/play-again.mp3",
+        "sha256": "714f9cddc5d4c7ed3eb304e3722c44dda98509c7d13fe72e9553cdeda413c6ba"
+      }
+    ]
+  },
+  {
+    "kind": "phrases",
+    "id": "make-me-smile",
+    "text": "You make me smile!",
+    "zh": "你让我笑得好开心！",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/phrases/natural/make-me-smile.mp3",
+        "sha256": "2835766bc9ba81104c74a4f266264e9c907351287eb80977c72a80ae7c153f2e"
+      },
+      {
+        "path": "public/audio/phrases/make-me-smile.mp3",
+        "sha256": "2835766bc9ba81104c74a4f266264e9c907351287eb80977c72a80ae7c153f2e"
+      }
+    ]
   }
 ]
