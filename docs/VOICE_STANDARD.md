@@ -65,6 +65,7 @@ node scripts/sync-word-manifest.mjs
 - 完整学习音频：`public/audio/words/{id}.mp3`，仅在主动点“听中文和英文”时播放，中文→英文→中文→英文。
 - 少量自动英语/主动英文重听/首页点读：`public/audio/words/review/{id}.mp3`，英文一次。
 - 自动中文发音：`public/audio/words/zh/{id}.mp3`，中文一次（Tingting、210字/分钟，尾部180ms留白，其余同母带标准）。2026-11-14起与英文review成对使用：每轮同一词卡一次英文、一次中文，顺序随机；生成命令 `python3 scripts/build-natural-phrases.py --kind zh-words`（只需macOS say + ffmpeg，无需模型）。
+- 新词的英文短读和中文短读在统一母带后再检查实际解码峰值。极短的词可能让一次响度标准化低估音量；脚本仅对峰值低于 8000/32768 的新单词短读补偿到约 16000/32768，保留原声线和语速，并在清单中记录补偿后的文件哈希。完整双语音频仍按原有四段顺序制作。
 - 倒计时人声：`public/audio/countdown/{en,zh}/{3,2,1,go}.mp3`，与既有合成提示音三套并存，每次开局随机选一套（英文 Kokoro af_heart 0.92 速、中文 Tingting 210字/分钟，首尾按母带标准裁剪留白）。生成命令 `python3 scripts/build-natural-phrases.py --kind countdown`。
 - 通关结束语中英成对：`src/animalPhrases.js` 的 `end` 池为唯一文本来源。英文沿用 `voice-profile.json` 的 Kokoro `af_heart` / `0.92`，通过 `scripts/build-natural-phrases.py --only <id>` 生成；中文沿用现有结束语专用的 Kokoro `zf_xiaoxiao` / `0.95`，通过 `scripts/build-end-zh-phrases.py --only <id>` 生成。两条命令均先加 `--dry-run` 核对，只补新 ID；中文命令需 `uv run --no-project --python 3.12 --with kokoro==0.9.4 --with 'misaki[zh]' --with soundfile python` 前缀。新录音强制检查有效发声、峰值和响度，过低的短句会定向抬升到同一听感范围；不要重录已验收的旧句。
 - WAV与临时中文：`output/speech/`，忽略并且不发布。

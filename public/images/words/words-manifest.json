@@ -2421,5 +2421,265 @@
         "kind": "common-colors"
       }
     ]
+  },
+  {
+    "id": "head",
+    "word": "head",
+    "zh": "头",
+    "category": "body",
+    "image": "/images/words/learning/head.webp",
+    "bubbleImage": "/images/words/learning/head.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/head.mp3",
+    "reviewAudio": "/audio/words/review/head.mp3",
+    "accent": "#D98761",
+    "aliases": [
+      "heads"
+    ],
+    "sources": []
+  },
+  {
+    "id": "arm",
+    "word": "arm",
+    "zh": "手臂",
+    "category": "body",
+    "image": "/images/words/learning/arm.webp",
+    "bubbleImage": "/images/words/learning/arm.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/arm.mp3",
+    "reviewAudio": "/audio/words/review/arm.mp3",
+    "accent": "#D98761",
+    "aliases": [
+      "arms"
+    ],
+    "sources": []
+  },
+  {
+    "id": "leg",
+    "word": "leg",
+    "zh": "腿",
+    "category": "body",
+    "image": "/images/words/learning/leg.webp",
+    "bubbleImage": "/images/words/learning/leg.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/leg.mp3",
+    "reviewAudio": "/audio/words/review/leg.mp3",
+    "accent": "#D98761",
+    "aliases": [
+      "legs"
+    ],
+    "sources": []
+  },
+  {
+    "id": "finger",
+    "word": "finger",
+    "zh": "手指",
+    "category": "body",
+    "image": "/images/words/learning/finger.webp",
+    "bubbleImage": "/images/words/learning/finger.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/finger.mp3",
+    "reviewAudio": "/audio/words/review/finger.mp3",
+    "accent": "#D98761",
+    "aliases": [
+      "fingers"
+    ],
+    "sources": []
+  },
+  {
+    "id": "three",
+    "word": "three",
+    "zh": "三",
+    "category": "numbers",
+    "image": "/images/words/learning/three.svg",
+    "bubbleImage": "/images/words/learning/three.svg",
+    "svg": "/images/words/learning/three.svg",
+    "bubbleSvg": "/images/words/learning/three.svg",
+    "audio": "/audio/words/three.mp3",
+    "reviewAudio": "/audio/words/review/three.mp3",
+    "accent": "#E9A451",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "four",
+    "word": "four",
+    "zh": "四",
+    "category": "numbers",
+    "image": "/images/words/learning/four.svg",
+    "bubbleImage": "/images/words/learning/four.svg",
+    "svg": "/images/words/learning/four.svg",
+    "bubbleSvg": "/images/words/learning/four.svg",
+    "audio": "/audio/words/four.mp3",
+    "reviewAudio": "/audio/words/review/four.mp3",
+    "accent": "#72ADBC",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "five",
+    "word": "five",
+    "zh": "五",
+    "category": "numbers",
+    "image": "/images/words/learning/five.svg",
+    "bubbleImage": "/images/words/learning/five.svg",
+    "svg": "/images/words/learning/five.svg",
+    "bubbleSvg": "/images/words/learning/five.svg",
+    "audio": "/audio/words/five.mp3",
+    "reviewAudio": "/audio/words/review/five.mp3",
+    "accent": "#A58ACB",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "chick",
+    "word": "chick",
+    "zh": "小鸡",
+    "category": "animals",
+    "image": "/images/words/learning/chick.webp",
+    "bubbleImage": "/images/words/learning/chick.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/chick.mp3",
+    "reviewAudio": "/audio/words/review/chick.mp3",
+    "accent": "#EAB855",
+    "aliases": [
+      "chicks"
+    ],
+    "sources": []
+  },
+  {
+    "id": "butterfly",
+    "word": "butterfly",
+    "zh": "蝴蝶",
+    "category": "animals",
+    "image": "/images/words/learning/butterfly.webp",
+    "bubbleImage": "/images/words/learning/butterfly.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/butterfly.mp3",
+    "reviewAudio": "/audio/words/review/butterfly.mp3",
+    "accent": "#BD84CF",
+    "aliases": [
+      "butterflies"
+    ],
+    "sources": []
+  },
+  {
+    "id": "turtle",
+    "word": "turtle",
+    "zh": "乌龟",
+    "category": "animals",
+    "image": "/images/words/learning/turtle.webp",
+    "bubbleImage": "/images/words/learning/turtle.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/turtle.mp3",
+    "reviewAudio": "/audio/words/review/turtle.mp3",
+    "accent": "#70A983",
+    "aliases": [
+      "turtles"
+    ],
+    "sources": []
+  },
+  {
+    "id": "orange-fruit",
+    "word": "orange",
+    "zh": "橙子",
+    "category": "fruits",
+    "image": "/images/words/learning/orange-fruit.webp",
+    "bubbleImage": "/images/words/learning/orange-fruit.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/orange-fruit.mp3",
+    "reviewAudio": "/audio/words/review/orange-fruit.mp3",
+    "accent": "#EC934C",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "lemon",
+    "word": "lemon",
+    "zh": "柠檬",
+    "category": "fruits",
+    "image": "/images/words/learning/lemon.webp",
+    "bubbleImage": "/images/words/learning/lemon.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/lemon.mp3",
+    "reviewAudio": "/audio/words/review/lemon.mp3",
+    "accent": "#E3C64D",
+    "aliases": [
+      "lemons"
+    ],
+    "sources": []
+  },
+  {
+    "id": "paper",
+    "word": "paper",
+    "zh": "纸",
+    "category": "school",
+    "image": "/images/words/learning/paper.webp",
+    "bubbleImage": "/images/words/learning/paper.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/paper.mp3",
+    "reviewAudio": "/audio/words/review/paper.mp3",
+    "accent": "#8295BD",
+    "aliases": [],
+    "sources": []
+  },
+  {
+    "id": "gray",
+    "word": "gray",
+    "zh": "灰色",
+    "category": "colors",
+    "image": "/images/words/learning/gray.webp",
+    "bubbleImage": "/images/words/learning/gray.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/gray.mp3",
+    "reviewAudio": "/audio/words/review/gray.mp3",
+    "accent": "#7C858E",
+    "aliases": [
+      "grey"
+    ],
+    "sources": []
+  },
+  {
+    "id": "bubble",
+    "word": "bubble",
+    "zh": "泡泡",
+    "category": "toys",
+    "image": "/images/words/learning/bubble.webp",
+    "bubbleImage": "/images/words/learning/bubble.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/bubble.mp3",
+    "reviewAudio": "/audio/words/review/bubble.mp3",
+    "accent": "#76B9CB",
+    "aliases": [
+      "bubbles"
+    ],
+    "sources": []
+  },
+  {
+    "id": "sunny",
+    "word": "sunny",
+    "zh": "晴天",
+    "category": "everyday",
+    "image": "/images/words/learning/sunny.webp",
+    "bubbleImage": "/images/words/learning/sunny.webp",
+    "svg": null,
+    "bubbleSvg": null,
+    "audio": "/audio/words/sunny.mp3",
+    "reviewAudio": "/audio/words/review/sunny.mp3",
+    "accent": "#E5B654",
+    "aliases": [],
+    "sources": []
   }
 ]

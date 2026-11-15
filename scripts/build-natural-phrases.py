@@ -6,6 +6,7 @@ import hashlib
 import json
 import subprocess
 import shutil
+from array import array
 from pathlib import Path
 from voice_audio_quality import check_phrase
 
@@ -19,6 +20,23 @@ args = parser.parse_args()
 if args.force and not args.only:
     parser.error('--force requires --only, to avoid replacing the complete accepted voice library')
 profile = json.loads((root/'scripts/voice-profile.json').read_text())
+
+def lift_quiet_word(path):
+    """Keep short word clips audible when one-pass loudnorm underestimates them."""
+    pcm = subprocess.check_output(['ffmpeg', '-v', 'error', '-i', str(path), '-f', 's16le', '-ac', '1', '-ar', '44100', '-'])
+    samples = array('h')
+    samples.frombytes(pcm)
+    peak = max((abs(sample) for sample in samples), default=0)
+    if not peak:
+        raise RuntimeError(f'Empty voice clip: {path}')
+    if peak >= 8000:
+        return
+    temp = path.with_name(path.stem + '-boost.mp3')
+    gain = 16000 / peak
+    subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(path),
+                    '-af', f'volume={gain:.4f},alimiter=limit=0.9',
+                    '-ar', str(profile['output_sample_rate']), '-b:a', profile['output_bitrate'], str(temp)], check=True)
+    temp.replace(path)
 # Countdown voice sets: one English (Kokoro) and one Chinese (Tingting) 3-2-1-GO per game start.
 COUNTDOWN_ENTRIES = [
     {'id': '3', 'en': 'three', 'zh': '三'},
@@ -70,6 +88,7 @@ if args.kind == 'zh-words':
         path = targets(entry)[0]
         path.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(cn), '-af', f"{trim},{profile['master_filter']}", *encode, str(path)], check=True)
+        lift_quiet_word(path)
         record = {'kind': args.kind, 'id': entry['id'], 'text': entry['zh'], 'zh': entry['zh'], 'profile': profile,
                   'assets': [{'path': str(path.relative_to(root)), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}]}
         records = [item for item in records if (item['kind'], item['id']) != (args.kind, entry['id'])] + [record]
@@ -139,6 +158,7 @@ for entry in work:
             subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(cn), '-i', str(wav), '-filter_complex', chain, '-map', '[out]', *encode, str(paths[0])], check=True)
         if args.force or not paths[1].exists():
             subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(wav), '-af', f"{trim},{profile['master_filter']}", *encode, str(paths[1])], check=True)
+            lift_quiet_word(paths[1])
     record = {'kind': args.kind, 'id': entry['id'], 'text': text, 'zh': entry.get('zh'), 'profile': profile,
               'assets': [{'path': str(path.relative_to(root)), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()} for path in paths]}
     records = [item for item in records if (item['kind'], item['id']) != (args.kind, entry['id'])] + [record]

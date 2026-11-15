@@ -1,9 +1,16 @@
 import {WORDS_LIST,resolveAssetUrl} from './wordsConfig.js';
-export const WORD_CATEGORIES=[['all','全部'],['fruits','香甜水果'],['drinks','好喝饮料'],['toys','玩具乐园'],['school','小小教室'],['colors','彩虹颜色'],['shapes','形状积木'],['two_book','绘本朋友'],['animals','动物朋友'],['body','身体部位'],['everyday','生活发现']];
+export const WORD_CATEGORIES=[['all','全部'],['fruits','香甜水果'],['drinks','好喝饮料'],['toys','玩具乐园'],['school','小小教室'],['colors','彩虹颜色'],['shapes','形状积木'],['numbers','数数乐园'],['two_book','绘本朋友'],['animals','动物朋友'],['body','身体部位'],['everyday','生活发现']];
 // Picture-book animals remain in their story theme during play, but are also
 // discoverable alongside the other animals in the library.
-const extraLibraryCategories={animals:new Set(['bee','fish','bird','cat','dog','cow','horse'])};
-export function libraryWords(category='all'){return WORDS_LIST.filter(w=>category==='all'||w.category===category||extraLibraryCategories[category]?.has(w.id));}
+const extraLibraryCategories={animals:new Set(['bee','fish','bird','cat','dog','cow','horse']),numbers:new Set(['one','two'])};
+export function libraryWords(category='all'){
+  const words=WORDS_LIST.filter(w=>category==='all'||w.category===category||extraLibraryCategories[category]?.has(w.id));
+  if(category==='numbers'){
+    const order=['one','two','three','four','five'];
+    return words.sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id));
+  }
+  return words;
+}
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text)node.textContent=text;return node;};
 
 export class WordLibrary {

@@ -6510,5 +6510,1061 @@
         "sha256": "2835766bc9ba81104c74a4f266264e9c907351287eb80977c72a80ae7c153f2e"
       }
     ]
+  },
+  {
+    "kind": "words",
+    "id": "head",
+    "text": "head",
+    "zh": "头",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/head.mp3",
+        "sha256": "f7ec7947c356a766f9bf7460c0668dea61160d895e61d930ff1f6fc598f1c95f"
+      },
+      {
+        "path": "public/audio/words/review/head.mp3",
+        "sha256": "df55252a02d7b5197fa6ef1e7719d83c95a2bfd6554d5ee8c79ec6a26c38dac5"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "arm",
+    "text": "arm",
+    "zh": "手臂",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/arm.mp3",
+        "sha256": "8fc543ea425f7682ce4f58d6845fc154c37c8ca3ef0ac2f4727546a4f45cbff3"
+      },
+      {
+        "path": "public/audio/words/review/arm.mp3",
+        "sha256": "09aff05b23af2b644f02a42513272d70af2e77ed4246dfd9282482a3e65af74c"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "leg",
+    "text": "leg",
+    "zh": "腿",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/leg.mp3",
+        "sha256": "757c960cecc1aafeb1bb4674bbea05c9b63a70d7a927ca7c9aa74e7ed221291b"
+      },
+      {
+        "path": "public/audio/words/review/leg.mp3",
+        "sha256": "e9c5e41dd1d9675336db1a48d8e1139497ae073e557140783240700c7fb57a3d"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "finger",
+    "text": "finger",
+    "zh": "手指",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/finger.mp3",
+        "sha256": "8e3d942eb9c1af623b71e79e25b26b4f44c1284dddcd6442f7fd568f68996e26"
+      },
+      {
+        "path": "public/audio/words/review/finger.mp3",
+        "sha256": "c8896b3b2e864a2113eb74aebb0a5aa7057339c8b2494041992d5b0d2e248f49"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "three",
+    "text": "three",
+    "zh": "三",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/three.mp3",
+        "sha256": "2bc68453b19ea16201d3c9e2c748280ea6acc7ef02b0b4447ba267961a713f4f"
+      },
+      {
+        "path": "public/audio/words/review/three.mp3",
+        "sha256": "2fb0349a5cbced6f0ac97e4029ac8f1d68e81d24245c921a24592f5210cd04a4"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "four",
+    "text": "four",
+    "zh": "四",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/four.mp3",
+        "sha256": "41a30d51a2592d1226637605c870b194053a788b5b5ab1ecc47fff32c052a456"
+      },
+      {
+        "path": "public/audio/words/review/four.mp3",
+        "sha256": "d1c887cb1a4037f6ac946db54326df468a600aa798751cf3858c6fdc26bc8997"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "five",
+    "text": "five",
+    "zh": "五",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/five.mp3",
+        "sha256": "a2a22a1a33b47c25f813c429b41470062cd9473286856408804cb4758dde5fcd"
+      },
+      {
+        "path": "public/audio/words/review/five.mp3",
+        "sha256": "b8004009abc49e0e0369c2b7e97f877053946ad23b7f5e1175ee9d8c0af0a4a0"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "chick",
+    "text": "chick",
+    "zh": "小鸡",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/chick.mp3",
+        "sha256": "6d15cb38a82a882ddd1ff44793afcaaeb7ef9b471c3427154e2698ce27181aaf"
+      },
+      {
+        "path": "public/audio/words/review/chick.mp3",
+        "sha256": "431ef870c70d64be180a5fed2a29f9ddf508f0d80eec8e0ade1de29d6fe0ff0d"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "butterfly",
+    "text": "butterfly",
+    "zh": "蝴蝶",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/butterfly.mp3",
+        "sha256": "2be42af25e66a460b55535bb812f35a30adc978e24a68f4bc837215ac2925c34"
+      },
+      {
+        "path": "public/audio/words/review/butterfly.mp3",
+        "sha256": "7a38ffb94a0d603c7c7c540bba51649f4aacb7d6717721112972b7e8e064e11b"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "turtle",
+    "text": "turtle",
+    "zh": "乌龟",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/turtle.mp3",
+        "sha256": "fe6ce869cc133a3e9d1d040610d2315ae54b9ce19993389e3299a9bb57ce9d90"
+      },
+      {
+        "path": "public/audio/words/review/turtle.mp3",
+        "sha256": "e0472240f95c3e9b22df7d59d55f19ef1b14c9bbb01ff398c4fd1caf462ef701"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "orange-fruit",
+    "text": "orange",
+    "zh": "橙子",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/orange-fruit.mp3",
+        "sha256": "77e68812a57f09159929a0069c4d1483ee8cae81535d491c65afb7d367bd14c6"
+      },
+      {
+        "path": "public/audio/words/review/orange-fruit.mp3",
+        "sha256": "d9a8f6b7ac58974c2792a516f9848492ffce1c97a3908b044c1ce74d7671ef57"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "lemon",
+    "text": "lemon",
+    "zh": "柠檬",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/lemon.mp3",
+        "sha256": "8eac54dcf55bbbe8c9e98c6168675a66471d09f5f08fd00130d80c98f27bab0e"
+      },
+      {
+        "path": "public/audio/words/review/lemon.mp3",
+        "sha256": "24f1b92a284f9ab0e5fa0249a514fd50f51cb862bb1d25e9f10deb1ebda8238d"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "paper",
+    "text": "paper",
+    "zh": "纸",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/paper.mp3",
+        "sha256": "42cd311126862fbf706c34f9fbc779e23dcbb2c61a031ca6602f1a68f1ad3f8f"
+      },
+      {
+        "path": "public/audio/words/review/paper.mp3",
+        "sha256": "00c3f24cff1c550914b3aa90984997d2c5667701c7cc6a26c078d6a96324e5b2"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "gray",
+    "text": "gray",
+    "zh": "灰色",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/gray.mp3",
+        "sha256": "7b0e6a9323599f505e57601a763b926fe1f6eaddd09a7f1f193d8f4409853c0f"
+      },
+      {
+        "path": "public/audio/words/review/gray.mp3",
+        "sha256": "fec3263e0e065e2a893295a68f9da4216f4a8182612cd7e42c6e2c733534633e"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "bubble",
+    "text": "bubble",
+    "zh": "泡泡",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/bubble.mp3",
+        "sha256": "67b887e4b5a8925e88dcb7076fa0de50f32f1d5d8b5d04c99e43cdbbe38065f4"
+      },
+      {
+        "path": "public/audio/words/review/bubble.mp3",
+        "sha256": "fabc9fb992645f5158969d8289cad173cd2216acc76d68fc81914a25d29874ae"
+      }
+    ]
+  },
+  {
+    "kind": "words",
+    "id": "sunny",
+    "text": "sunny",
+    "zh": "晴天",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/sunny.mp3",
+        "sha256": "d965936ce17651c5a95559b78d14deb0b46bd04103821c2eb447e3a6f0bc34a5"
+      },
+      {
+        "path": "public/audio/words/review/sunny.mp3",
+        "sha256": "c0bce13c0d64e5ae40b9145b35b2cdaf5847e0b868ebd5ceb2f1aa217f0208ab"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "head",
+    "text": "头",
+    "zh": "头",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/head.mp3",
+        "sha256": "a52469cc109b3ff532cd4d0659665e102036f1cf827d0131aa35bec8ca6ecdc7"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "arm",
+    "text": "手臂",
+    "zh": "手臂",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/arm.mp3",
+        "sha256": "03abc93b1c07d1d9ee9eff8ddf039a684aa07e2485092cc0186c580a1b185d0e"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "leg",
+    "text": "腿",
+    "zh": "腿",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/leg.mp3",
+        "sha256": "ca48e1da520539af01622777e71b5f54e496d3234555a1ec7c02e4ebb76c66c0"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "finger",
+    "text": "手指",
+    "zh": "手指",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/finger.mp3",
+        "sha256": "b0872eb4232c49248d74d2d5dbaa8086209aaf622547af3aab80af3d9f4e6329"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "three",
+    "text": "三",
+    "zh": "三",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/three.mp3",
+        "sha256": "8ead84f4037080890b35cf3868e456df160a4b5207e325eb4e41492619cea44d"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "four",
+    "text": "四",
+    "zh": "四",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/four.mp3",
+        "sha256": "b9781c57900343df228dae8bd7922dd242a1218a7c80a27dea536a760aed9058"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "five",
+    "text": "五",
+    "zh": "五",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/five.mp3",
+        "sha256": "d98499eca956182ddb5b504f035ff0cf453c6e103a5ad545ed2729872047d5fe"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "chick",
+    "text": "小鸡",
+    "zh": "小鸡",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/chick.mp3",
+        "sha256": "b230e4ced40903a837545d7faaa8277f14f7a0d067f3ffcaac79defa88d7223e"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "butterfly",
+    "text": "蝴蝶",
+    "zh": "蝴蝶",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/butterfly.mp3",
+        "sha256": "17c23155665cad3b2ad91843d7d3c5ea46d2bcce09b79f1125673b549232d4be"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "turtle",
+    "text": "乌龟",
+    "zh": "乌龟",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/turtle.mp3",
+        "sha256": "39f6a3ec662907b2736ab754799c83f67a76cb12741158dc19d68930b5303731"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "orange-fruit",
+    "text": "橙子",
+    "zh": "橙子",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/orange-fruit.mp3",
+        "sha256": "06994255df4f77698443060693cee31aa9eaac336c1ab13fb485bc86632b204c"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "lemon",
+    "text": "柠檬",
+    "zh": "柠檬",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/lemon.mp3",
+        "sha256": "dc685d734dc418e3208d23d8983be123955b6a562e5dca1e959b39d2453aaa0e"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "paper",
+    "text": "纸",
+    "zh": "纸",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/paper.mp3",
+        "sha256": "73a8cd71a8f3ea1ea74aa530330f0678833d29572aaabb2c7b868822e94d569a"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "gray",
+    "text": "灰色",
+    "zh": "灰色",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/gray.mp3",
+        "sha256": "7a6796a911525e2eea80a8585cb04e9cf65a5456b32b4ce134c9a575178e4a04"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "bubble",
+    "text": "泡泡",
+    "zh": "泡泡",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/bubble.mp3",
+        "sha256": "1686279a62c147334d359839f0957a37c70de23e262a64ff7900ba3105bf63d4"
+      }
+    ]
+  },
+  {
+    "kind": "zh-words",
+    "id": "sunny",
+    "text": "晴天",
+    "zh": "晴天",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/words/zh/sunny.mp3",
+        "sha256": "e5b54140bd10f61590681ad994de76a4fb2dadf3285d2404d1970b9d327bb106"
+      }
+    ]
   }
 ]

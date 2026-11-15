@@ -7,17 +7,18 @@ import {EXPANDED_NEW_WORDS} from '../src/expandedVocabulary.js';
 import {FRUITS_NEW_WORDS} from '../src/fruitsVocabulary.js';
 import {DRINKS_WORDS} from '../src/drinksVocabulary.js';
 import {COMPLEMENTARY_WORDS} from '../src/complementaryVocabulary.js';
+import {NEXT_WORDS} from '../src/nextVocabulary.js';
 import {libraryWords,WORD_CATEGORIES} from '../src/wordLibrary.js';
 import {BubbleManager} from '../src/bubbleManager.js';
 import {AudioManager} from '../src/audioManager.js';
 
 test('new lesson and suggested concepts are unique, categorised and retain the teacher photo source',()=>{
- assert.equal(WORDS_LIST.length,110);assert.equal(EXPANDED_NEW_WORDS.length,28);assert.equal(new Set(WORDS_LIST.map(w=>w.id)).size,110);
+ assert.equal(WORDS_LIST.length,126);assert.equal(EXPANDED_NEW_WORDS.length,28);assert.equal(NEXT_WORDS.length,16);assert.equal(new Set(WORDS_LIST.map(w=>w.id)).size,126);
  for(const id of ['face','eye','ear','mouth','nose','hair','weather','one','happy','red','blue','circle']){
   const word=getWordById(id);assert.ok(word,`${id} exists`);assert.equal(WORDS_LIST.filter(w=>w.id===id).length,1);assert.ok(word.sources.some(s=>s.bookId==='classroom-next-lesson'),id);
  }
  for(const w of WORDS_LIST)assert.ok(WORD_CATEGORIES.some(([id])=>id===w.category),w.id);
- assert.equal(libraryWords('body').length,10);assert.equal(libraryWords('animals').length,16);
+ assert.equal(libraryWords('body').length,14);assert.equal(libraryWords('animals').length,19);
  for(const id of ['bee','fish','bird','cat','dog','cow','horse']){
   assert.ok(libraryWords('animals').some(w=>w.id===id),id);
   assert.ok(libraryWords('two_book').some(w=>w.id===id),id);
@@ -25,20 +26,25 @@ test('new lesson and suggested concepts are unique, categorised and retain the t
  assert.ok(libraryWords('body').some(w=>w.id==='elbow'));
  assert.ok(libraryWords('animals').some(w=>w.id==='elephant'));
  assert.ok(libraryWords('school').some(w=>w.id==='computer'));
- assert.equal(libraryWords('fruits').length,10);
+ assert.equal(libraryWords('fruits').length,12);
  assert.equal(libraryWords('drinks').length,8);
- assert.equal(libraryWords('all').length,110);
+ assert.equal(libraryWords('numbers').length,5);
+ assert.deepEqual(libraryWords('numbers').map(w=>w.id),['one','two','three','four','five']);
+ assert.equal(libraryWords('all').length,126);
+ assert.equal(getWordById('orange-fruit').word,'orange');
+ assert.equal(getWordById('orange').category,'colors');
+ assert.equal(getWordById('grey').id,'gray');
 });
 
 test('each new card has its own image and complete Chinese, English and bilingual sound assets',()=>{
- for(const word of [...EXPANDED_NEW_WORDS,...FRUITS_NEW_WORDS,...DRINKS_WORDS,...COMPLEMENTARY_WORDS]){
+ for(const word of [...EXPANDED_NEW_WORDS,...FRUITS_NEW_WORDS,...DRINKS_WORDS,...COMPLEMENTARY_WORDS,...NEXT_WORDS]){
   const paths=[word.image,word.audio,word.reviewAudio,`/audio/words/zh/${word.id}.mp3`];
   for(const path of paths)assert.ok(fs.statSync('public'+path).size>200,`${word.id}: ${path}`);
  }
  const manifest=JSON.parse(fs.readFileSync('public/images/words/words-manifest.json','utf8'));
  assert.deepEqual(manifest.map(w=>w.id),WORDS_LIST.map(w=>w.id));
  const audio=new AudioManager();
- for(const word of [...EXPANDED_NEW_WORDS,...FRUITS_NEW_WORDS,...DRINKS_WORDS,...COMPLEMENTARY_WORDS]){
+ for(const word of [...EXPANDED_NEW_WORDS,...FRUITS_NEW_WORDS,...DRINKS_WORDS,...COMPLEMENTARY_WORDS,...NEXT_WORDS]){
   assert.equal(audio.getWordAudioUrl(word.id,{review:true}),word.reviewAudio);
   assert.equal(audio.getWordAudioUrl(word.id,{lang:'zh'}),`/audio/words/zh/${word.id}.mp3`);
  }

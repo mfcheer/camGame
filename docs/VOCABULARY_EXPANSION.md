@@ -1,20 +1,20 @@
-# 词库扩充：课程照片与熟悉的事物
+# 课程词库扩充
 
-词库从47扩充到75个规范词条，新增28词。教师课程照片中已有的 red、blue、circle 沿用原词条并追加 `classroom-next-lesson` 来源，不重复计数。
+截至 2026-11-15，游戏有 126 个去重词条。本轮在原有 110 词之上增加 16 词，保留现有游戏模式、抽词和播报规则。
 
-- 形状：star、heart、oval。
-- 颜色：pink、white、black、brown。
-- 教室：eraser、ruler、schoolbag、scissors。
-- 玩具与游乐：puzzle、balloon、slide、swing。
-- 动物朋友：rabbit、duck、frog、sheep；不将这些额外动物记作绘本原文。
-- 身体部位：face、eye、ear、mouth、nose、hair，图中标示对应位置。
-- 课程复习：weather、one、happy，以及原有 red、blue、circle。
-- 常见水果（10词）：apple、banana、grape、orange、pear、peach、watermelon、strawberry、mango、cherry。
-- 日常饮品（8词）：water、milk、juice、tea、soup、hot chocolate、yogurt、lemonade。
-- 进阶认知（17词）：sun、moon、tree、flower、car、bus、train、boat、plane、star、cloud、rain、bread、rice、noodle、cake、cookie。
+| 主题 | 本轮新增 | 图片设计 |
+| --- | --- | --- |
+| 身体部位 | head、arm、leg、finger | 用人物局部与明确指向表现部位，避免与 face、hand 混淆 |
+| 数字 | three、four、five | 大数字加对应的 3、4、5 个圆点；词库「数数乐园」也收录原有 one、two |
+| 动物 | chick、butterfly、turtle | 独立主体与鲜明轮廓，便于小朋友一眼辨认 |
+| 水果 | orange、lemon | 真实水果形态；`orange-fruit` 是橙子 ID，原 `orange` 仍表示橙色 |
+| 教室 | paper | 一张清楚的纸张 |
+| 颜色 | gray | 灰色颜料样本，避免与形状卡混淆；`grey` 作为查找别名 |
+| 玩具 | bubble | 单个彩色泡泡 |
+| 生活 | sunny | 明亮太阳和晴朗天空 |
 
-图片为 `scripts/build-expanded-word-art.mjs` 创建的可编辑SVG，每张复用到词库、泡泡、详细卡。此前重新设计的 circle 和 orange 属于独立维护素材，`scripts/refresh-word-art.mjs` 不再覆盖它们。
+新插图存放在 `public/images/words/learning/`。13 张主体插图是透明背景 WebP，数字卡使用可编辑 SVG，均复用于词库、泡泡及详细词卡。图片优先表达单一概念，不在画内添加英文或中文。
 
-所有新词按照 `docs/VOICE_STANDARD.md` 用项目自然英文声线与 Tingting 中文制作：每词包括英文短读、中文短读和完整中英四段音频。素材路径沿用 `/audio/words/review/`、`/audio/words/zh/` 和 `/audio/words/`，制作记录及SHA256记录在 `docs/voice-manifest.json`。更新词库后用 `node scripts/sync-word-manifest.mjs` 同步公开清单。
+每个新词按 [配音规范](VOICE_STANDARD.md) 制作 3 份离线 MP3：`/audio/words/{id}.mp3` 是中文→英文→中文→英文，`/audio/words/review/{id}.mp3` 是英文一次，`/audio/words/zh/{id}.mp3` 是中文一次。英文沿用 Kokoro `af_heart`，中文沿用 Tingting；素材记录在 `docs/voice-manifest.json`。生成后运行 `node scripts/sync-word-manifest.mjs` 同步公开清单。
 
-分类入口随词库扩展并可在手机横向滑动；同一局保留同一词卡，游戏抽词优先避开最近五局的词或同一概念；保留已有中英文自动播报开关、配对节奏和主动点读。词库、图片与音频分别验证，浏览器对新词进行实际点读和泡泡命中。音频参数与解码检查不能替代家长实际听感验收。
+历史批次来源见 `src/expandedVocabulary.js`、`src/fruitsVocabulary.js`、`src/drinksVocabulary.js`、`src/complementaryVocabulary.js` 和 [绘本导入说明](STORYBOOK_VOCABULARY.md)。本轮词条在 `src/nextVocabulary.js`；没有把新词误记成绘本或老师照片来源。
