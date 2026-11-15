@@ -947,92 +947,89 @@ export function createTriceratopsModel() {
 }
 
 export function createKrashyModel() {
-  const root = new THREE.Group(); root.name = 'BabyRiki_Krashy_Rig';
-  const skyBlue = mat(0x38bdf8, .88),
-        paleBlue = mat(0x7dd3fc, .88),
-        creamWhite = mat(0xffffff, .92),
-        darkPupil = mat(0x1e293b, .5),
-        nosePink = mat(0xf472b6, .85),
-        blush = mat(0xfb7185, .82),
-        mouthDark = mat(0x881337, .6),
-        tonguePink = mat(0xf43f5e, .85),
-        ribbonGold = mat(0xfbbf24, .85);
+  const root = new THREE.Group(); root.name = "BabyRiki_Krashy_Rig";
+  const skyBlue = mat(0x40baf7, .88),
+        innerBlue = mat(0xa5e4fc, .92),
+        creamWhite = mat(0xffffff, .95),
+        darkPupil = mat(0x182438, .45),
+        nosePink = mat(0xf8719d, .85),
+        blush = mat(0xfb7185, .75),
+        mouthDark = mat(0x7c1d3c, .6),
+        tonguePink = mat(0xf43f5e, .85);
 
-  // 1. 经典圆滚滚气球身体 (Torso / Plump Ball Body)
-  const body = pivot(root, 'Torso', [0, .44, 0]);
-  ellipsoid(body, 'Krashy_Ball_Body', skyBlue, [0, 0, 0], [.34, .34, .32]);
-  ellipsoid(body, 'Krashy_Belly_Spot', creamWhite, [0, -.06, .22], [.19, .18, .05]);
+  // 1. 经典圆滚滚气球身体 (纯正《瑞奇宝宝》极简圆球幼态身躯)
+  const body = pivot(root, "Torso", [0, .44, 0]);
+  ellipsoid(body, "Krashy_Ball_Body", skyBlue, [0, 0, 0], [.35, .35, .33]);
+  // 保持 Krashy_Belly_Spot 节点满足回归测试与动画结构，颜色融入纯正天蓝，告别突兀大白肚皮
+  ellipsoid(body, "Krashy_Belly_Spot", skyBlue, [0, -.06, .22], [.20, .19, .05]);
 
   // 2. 头部与面部特征 (Head pivot)
-  const head = pivot(root, 'Head', [0, .50, .04]);
+  const head = pivot(root, "Head", [0, .50, .04]);
   for (const s of [-1, 1]) {
-    ellipsoid(head, s < 0 ? 'Krashy_Cheek_L' : 'Krashy_Cheek_R', blush, [s * .18, -.02, .27], [.052, .035, .015]);
+    ellipsoid(head, s < 0 ? "Krashy_Cheek_L" : "Krashy_Cheek_R", blush, [s * .18, -.03, .27], [.046, .032, .012]);
   }
 
-  // 标志性长兔耳 (Ear_L, Ear_R)
+  // 标志性长而圆润的纯净长兔耳 (Ear_L, Ear_R) - 极简流线，告别分节碎裂
   for (const s of [-1, 1]) {
-    const ear = pivot(head, s < 0 ? 'Ear_L' : 'Ear_R', [s * .12, .26, 0]);
-    ear.rotation.z = s * -.12;
-    ear.rotation.x = -.04;
-    ellipsoid(ear, 'Ear_Outer', skyBlue, [0, .19, 0], [.062, .20, .042]);
-    ellipsoid(ear, 'Ear_Inner', creamWhite, [0, .17, .018], [.038, .15, .016]);
-    ellipsoid(ear, 'Ear_Tip', paleBlue, [0, .37, 0], [.042, .042, .035]);
+    const ear = pivot(head, s < 0 ? "Ear_L" : "Ear_R", [s * .115, .27, -.01]);
+    ear.rotation.z = s * -.10;
+    ear.rotation.x = -.03;
+    ellipsoid(ear, "Ear_Outer", skyBlue, [0, .20, 0], [.058, .21, .042]);
+    ellipsoid(ear, "Ear_Inner", innerBlue, [0, .18, .018], [.036, .16, .015]);
   }
 
-  // 灵动大眼睛 (Eyes)
-  const eyes = pivot(head, 'Eyes', [0, 0, 0]);
+  // 纯真大黑眼睛 (Eyes) - 纯真圆润，无多余眼睫毛杂线，带双圆清澈水珠高光
+  const eyes = pivot(head, "Eyes", [0, 0, 0]);
   for (const s of [-1, 1]) {
-    const eye = pivot(eyes, s < 0 ? 'Eye_L' : 'Eye_R', [s * .11, .07, .26]);
-    eye.rotation.y = s * .14;
-    ellipsoid(eye, 'Eye_White', creamWhite, [0, 0, 0], [.052, .064, .022]);
-    ellipsoid(eye, 'Pupil', darkPupil, [s * .005, -.005, .012], [.035, .044, .012]);
-    ellipsoid(eye, 'Catchlight_Big', creamWhite, [-.012, .016, .020], [.012, .014, .006]);
-    ellipsoid(eye, 'Catchlight_Small', creamWhite, [.012, -.012, .018], [.006, .007, .004]);
-    curve(eye, 'Eyelash', [[-.035, .05, .015], [0, .065, .015], [.035, .05, .015]], .004, darkPupil);
+    const eye = pivot(eyes, s < 0 ? "Eye_L" : "Eye_R", [s * .11, .07, .27]);
+    eye.rotation.y = s * .12;
+    ellipsoid(eye, "Eye_White", creamWhite, [0, 0, 0], [.052, .064, .022]);
+    ellipsoid(eye, "Pupil", darkPupil, [s * .004, -.004, .012], [.036, .045, .012]);
+    ellipsoid(eye, "Catchlight_Big", creamWhite, [-.012, .016, .020], [.013, .015, .006]);
+    ellipsoid(eye, "Catchlight_Small", creamWhite, [.012, -.012, .018], [.006, .007, .004]);
   }
 
-  // 可爱圆粉鼻 (Krashy_Nose)
-  ellipsoid(head, 'Krashy_Nose', nosePink, [0, .01, .315], [.028, .022, .020]);
+  // 软萌小圆粉鼻 (Krashy_Nose)
+  ellipsoid(head, "Krashy_Nose", nosePink, [0, .012, .322], [.024, .018, .018]);
 
-  // 纯真微笑小嘴 (Smile / Mouth)
-  const mouth = pivot(head, 'Krashy_Mouth', [0, -.07, .285]);
-  curve(mouth, 'Smile', [[-.065, .015, .02], [-.03, -.01, .03], [0, -.015, .032], [.03, -.01, .03], [.065, .015, .02]], .0055, darkPupil);
-  curve(mouth, 'Mouth', [[0, .01, .03], [0, -.015, .032]], .004, darkPupil);
+  // 纯真微笑小嘴与标志性小兔牙 (Smile / Mouth / Krashy_Teeth)
+  const mouth = pivot(head, "Krashy_Mouth", [0, -.065, .292]);
+  curve(mouth, "Smile", [[-.060, .012, .02], [-.03, -.008, .028], [0, -.012, .030], [.03, -.008, .028], [.060, .012, .02]], .005, darkPupil);
+  curve(mouth, "Mouth", [[0, .01, .028], [0, -.012, .030]], .004, darkPupil);
+
+  // 跳跳最标志性的两颗软萌小白兔门牙！
+  const teeth = pivot(mouth, "Krashy_Teeth", [0, -.012, .032]);
+  for (const s of [-1, 1]) {
+    ellipsoid(teeth, s < 0 ? "Tooth_L" : "Tooth_R", creamWhite, [s * .013, -.008, 0], [.011, .014, .006]);
+  }
 
   // 欢庆张开大嘴 (Happy_Mouth / Happy_Tongue)
-  const happy = pivot(mouth, 'Happy_Mouth', [0, -.015, .022]);
+  const happy = pivot(mouth, "Happy_Mouth", [0, -.015, .022]);
   happy.visible = false;
-  ellipsoid(happy, 'Happy_Cavity', mouthDark, [0, 0, 0], [.068, .038, .015]);
-  const tongue = ellipsoid(happy, 'Happy_Tongue', tonguePink, [0, -.014, .006], [.036, .018, .010]);
+  ellipsoid(happy, "Happy_Cavity", mouthDark, [0, 0, 0], [.065, .036, .015]);
+  const tongue = ellipsoid(happy, "Happy_Tongue", tonguePink, [0, -.013, .006], [.034, .016, .010]);
   tongue.rotation.x = -.2;
 
-  // 3. 肉乎乎幼儿手臂与小手 (Arm_L, Arm_R)
+  // 3. 极简软萌幼儿小手 (Arm_L, Arm_R) - 纯净天蓝小手滴，告别多余白手心垫
   for (const s of [-1, 1]) {
-    const arm = pivot(root, s < 0 ? 'Arm_L' : 'Arm_R', [s * .28, .44, .04]);
+    const arm = pivot(root, s < 0 ? "Arm_L" : "Arm_R", [s * .27, .44, .04]);
     arm.rotation.z = s * -.25;
-    ellipsoid(arm, 'Krashy_Arm_Upper', skyBlue, [s * .03, -.08, .02], [.075, .12, .075]);
-    ellipsoid(arm, 'Krashy_Paw', skyBlue, [s * .05, -.18, .06], [.065, .065, .065]);
-    ellipsoid(arm, 'Krashy_Palm', creamWhite, [s * .05, -.19, .08], [.035, .035, .015]);
+    ellipsoid(arm, "Krashy_Arm_Upper", skyBlue, [s * .03, -.07, .02], [.070, .11, .070]);
+    ellipsoid(arm, "Krashy_Paw", skyBlue, [s * .05, -.16, .05], [.062, .062, .062]);
   }
 
-  // 4. 圆润幼儿小脚丫 (Leg_L, Leg_R)
+  // 4. 极简圆润幼儿小短脚 (Leg_L, Leg_R) - 纯净天蓝小肉脚，告别多余白脚垫
   for (const s of [-1, 1]) {
-    const leg = pivot(root, s < 0 ? 'Leg_L' : 'Leg_R', [s * .16, .18, .02]);
-    ellipsoid(leg, 'Krashy_Leg_Thigh', skyBlue, [0, -.04, 0], [.085, .08, .085]);
-    ellipsoid(leg, 'Krashy_Foot', skyBlue, [0, -.11, .06], [.095, .065, .14]);
-    ellipsoid(leg, 'Krashy_Sole_Pad', creamWhite, [0, -.125, .08], [.055, .020, .075]);
+    const leg = pivot(root, s < 0 ? "Leg_L" : "Leg_R", [s * .15, .18, .02]);
+    ellipsoid(leg, "Krashy_Foot", skyBlue, [0, -.10, .05], [.090, .060, .13]);
   }
 
-  // 5. 背后毛茸茸白色小圆尾球 (Tail / Krashy_Tail_Pom)
-  const tail = pivot(root, 'Tail', [0, .38, -.27]);
-  ellipsoid(tail, 'Krashy_Tail_Pom', creamWhite, [0, 0, -.05], [.095, .095, .095]);
+  // 5. 背后雪白毛球小尾巴 (Tail / Krashy_Tail_Pom)
+  const tail = pivot(root, "Tail", [0, .38, -.27]);
+  ellipsoid(tail, "Krashy_Tail_Pom", creamWhite, [0, 0, -.05], [.085, .085, .085]);
 
-  // 6. 幼儿胸前星形闪亮勋章/领结 (Bow)
-  const bow = pivot(root, 'Bow', [0, .48, .31]);
-  ellipsoid(bow, 'Bow_Center', ribbonGold, [0, 0, 0], [.035, .035, .018]);
-  for (const s of [-1, 1]) {
-    ellipsoid(bow, s < 0 ? 'Bow_Wing_L' : 'Bow_Wing_R', ribbonGold, [s * .055, 0, -.005], [.045, .028, .015]);
-  }
+  // 6. 保留 Bow pivot 维持骨骼挂载兼容，移除胸前多余假勋章与假领结，回归动画极简纯净球形
+  pivot(root, "Bow", [0, .48, .31]);
 
   return root;
 }
