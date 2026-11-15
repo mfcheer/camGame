@@ -218,7 +218,7 @@ npm run preview
 
 ## 🎨 应用图标与资源架构
 
-- **应用矢量图标**：`public/icons/app-icon.svg`（薄荷森林底色、立体彩虹气泡、头戴金冠小兔与食指触碰星光）；
+- **应用矢量图标**：`public/icons/app-icon.svg`（纯薄荷绿底色、立体彩虹气泡、头戴金冠的小白兔与触碰星光）；
 - **全尺寸导出脚本**：`node scripts/build-icons.mjs`，自动导出 `icon-512.png`、`icon-192.png`、`apple-touch-icon.png` (180×180) 与 `icon-32.png`；
 - **PWA 清单**：`public/manifest.webmanifest`，支持手机/平板浏览器“添加到主屏幕”作为独立 Web App 运行。
 
