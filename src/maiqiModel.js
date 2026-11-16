@@ -97,20 +97,16 @@ export function createMaiqiModel() {
   }
 
   // ==========================================
-  // 四、 小巧圆润的雏鸡短喙与甜笑
+  // 四、 1:1 官方小巧圆润雏鸡短喙与卡通甜笑（告别厚唇与人类肉感舌头）
   // ==========================================
-  // 微翘微笑嘴角底线
-  ellipsoid(head, 'Smile', mouthDark, [0, -.146, .350], [.080, .025, .018]);
-  // 圆润饱满的橘黄色雏鸡上喙（短、圆、钝化，绝对不是尖锐硬喙）
-  const upperBeak = ellipsoid(head, 'Orange_Beak', orangeBeak, [0, -.112, .382], [.084, .038, .058]);
-  upperBeak.rotation.x = .12;
-  // 奶油金橙下喙
-  ellipsoid(head, 'Lower_Beak', beakLower, [0, -.152, .372], [.064, .022, .044]);
-  // 欢庆张嘴与草莓小舌（庆祝演出时展开）
-  const happy = ellipsoid(head, 'Happy_Mouth', mouthDark, [0, -.150, .355], [.086, .045, .018]);
+  // 纯真紧凑的明橙色雏鸡小短喙（鸟类一体圆钝小喙，绝无人类上下肉唇感）
+  const upperBeak = ellipsoid(head, 'Orange_Beak', orangeBeak, [0, -.124, .375], [.066, .040, .054]);
+  upperBeak.rotation.x = .14;
+  // 雏鸡日常微翘软萌嘴角笑线
+  curve(head, 'Smile', [[-.055, -.142, .346], [0, -.150, .356], [.055, -.142, .346]], .0042, mouthDark);
+  // 欢庆时开朗雏鸡小啾鸣卡通笑口（小巧内敛月牙形，无肉唇厚舌）
+  const happy = ellipsoid(head, 'Happy_Mouth', mouthDark, [0, -.148, .352], [.048, .024, .010]);
   happy.visible = false;
-  const tongue = ellipsoid(head, 'Happy_Tongue', tonguePink, [0, -.172, .372], [.046, .018, .010]);
-  tongue.rotation.x = -.2;
 
   // ==========================================
   // 五、 麦奇招牌：纯正鲜红三角领巾（Red_Check_Scarf 保持测试兼容）

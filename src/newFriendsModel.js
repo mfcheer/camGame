@@ -161,8 +161,13 @@ export function createWolfModel(){
   curve(head,"Wolf_Stubble",[[x1,y1,z1],[x2,y2,z2]],.0028,ink);
  }
 
- const happy=ellipsoid(head,"Happy_Mouth",ink,[0,-.132,.348],[.07,.045,.015]);happy.visible=false;
- const tongue=ellipsoid(head,"Happy_Tongue",pink,[0,-.145,.358],[.035,.018,.006]);tongue.visible=false;
+ const happy=pivot(head,"Happy_Mouth",[0,-.125,.348]);happy.visible=false;
+ mesh(new RoundedBoxGeometry(.22,.038,.024,2,.010),white,happy,"Happy_Wolf_Teeth",[0,-.003,.005]);
+ curve(happy,"Happy_Wolf_Arc",[[-.14,.010,.01],[0,-.026,.024],[.14,.010,.01]],.0045,ink);
+ for(const s of [-1,1]){
+  const fang=mesh(new THREE.ConeGeometry(.018,.042,12),white,happy,s<0?"Happy_Fang_L":"Happy_Fang_R",[s*.112,-.014,.022]);
+  fang.rotation.x=Math.PI;
+ }
 
  const tail=pivot(root,"Tail",[0,.26,-.18]);
  ellipsoid(tail,"Tail_Base",fur,[0,.04,-.06],[.10,.12,.10]);
@@ -274,9 +279,8 @@ export function createChaseModel(){
  // 深度优化阿奇的面部神态与嘴部结构：重构下颌、口鼻雀斑、犬齿与精致小舌，彻底摆脱吊死肉片感
  const oldHappy=head.getObjectByName('Happy_Mouth');if(oldHappy)head.remove(oldHappy);
  const oldTongue=head.getObjectByName('Happy_Tongue');if(oldTongue)head.remove(oldTongue);
- // 德牧立体下颌骨（托住下唇与口腔，侧脸饱满帅气）
- ellipsoid(head,'Chase_Lower_Jaw',tan,[0,-.176,.288],[.098,.040,.078]);
- curve(head,'Chase_Lower_Lip',[[-.052,-.165,.324],[0,-.180,.334],[.052,-.165,.324]],.005,earBrown);
+ // 德牧立体下颌（自然平滑收敛，彻底移除突兀的人类下唇线）
+ ellipsoid(head,'Chase_Lower_Jaw',tan,[0,-.178,.272],[.094,.038,.075]);
  // 经典口鼻雀斑胡须点（PAW Patrol 标志性特征，左右各 3 点）
  for(const s of [-1,1]){
   for(const [x,y] of [[.052,-.095],[.082,-.108],[.058,-.122]])
@@ -377,9 +381,11 @@ export function createJettModel(){
  lowerChin.rotation.x=.25;
  // 亲切开朗的飞机微笑嘴
  curve(head,'Smile',[[-.115,-.145,.275],[0,-.185,.285],[.115,-.145,.275]],.0075,dark);
- // 欢庆胜利开心张嘴与粉红小舌头
- const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.155,.280],[.095,.045,.015]);happy.visible=false;
- const tongue=ellipsoid(head,'Happy_Tongue',pink,[0,-.168,.290],[.042,.016,.006]);tongue.visible=false;
+ // 欢庆胜利开怀大笑（超大开朗机身笑弧，彻底告别人类黑洞与粉红肉舌）
+ const happy=pivot(head,'Happy_Mouth',[0,-.155,.280]);happy.visible=false;
+ curve(happy,'Happy_Smile_Arc',[[-.135,-.005,0],[-.06,-.040,.012],[0,-.046,.015],[.06,-.040,.012],[.135,-.005,0]],.009,dark);
+ curve(happy,'Happy_Corner_L',[[-.135,-.005,0],[-.142,.015,-.002]],.0075,dark);
+ curve(happy,'Happy_Corner_R',[[.135,-.005,0],[.142,.015,-.002]],.0075,dark);
 
  // 2.5 两侧标志性黄色喷气式进气口耳麦（Headset_Pod - 带白圈与红天线）
  for(const s of [-1,1]){
@@ -679,9 +685,11 @@ export function createThomasModel(){
  ellipsoid(head,'Nose',gray,[0,-.03,.17],[.042,.052,.032]);
  // Smile
  curve(head,'Train_Smile',[[-.125,-.10,.16],[0,-.155,.178],[.125,-.10,.16]],.008,dark);
- // Happy mouth (open smile for excitement)
- const happy=ellipsoid(head,'Happy_Mouth',dark,[0,-.125,.17],[.075,.045,.012]);happy.visible=false;
- const tongue=ellipsoid(head,'Happy_Tongue',red,[0,-.15,.182],[.035,.015,.006]);tongue.visible=false;
+ // Happy mouth（亲切阳光的机车开怀大笑纹，告别吐红舌头）
+ const happy=pivot(head,'Happy_Mouth',[0,-.125,.175]);happy.visible=false;
+ curve(happy,'Happy_Train_Arc',[[-.14,.015,0],[0,-.045,.012],[.14,.015,0]],.009,dark);
+ curve(happy,'Happy_Train_Cheek_L',[[-.14,.015,0],[-.15,.030,-.002]],.007,dark);
+ curve(happy,'Happy_Train_Cheek_R',[[.14,.015,0],[.15,.030,-.002]],.007,dark);
  // Cheeks (subtle rosy cheeks)
  const cheekMat=mat(0xf0a090,.5);
  for(const s of [-1,1])ellipsoid(head,s<0?'Cheek_L':'Cheek_R',cheekMat,[s*.16,-.06,.155],[.035,.022,.008]);
@@ -904,11 +912,10 @@ export function createTriceratopsModel() {
  const mouth=pivot(head,"Dino_Mouth",[0,-.17,.24]);
  curve(mouth,"Smile",[[-.09,.015,.02],[-.04,-.012,.035],[0,-.018,.04],[.04,-.012,.035],[.09,.015,.02]],.006,dark);
  curve(mouth,"Mouth",[[0,-.018,.04],[0,-.035,.04]],.005,dark);
- ellipsoid(head,"Dino_Lower_Jaw",bellyCream,[0,-.19,.22],[.095,.040,.075]);
+ // 自然下颌（与金橙色皮肤浑然一体，消除厚重的人类浅色下唇突兀感）
+ ellipsoid(head,"Dino_Lower_Jaw",dinoOrange,[0,-.192,.205],[.088,.036,.068]);
  const happy=pivot(mouth,"Happy_Mouth",[0,-.012,.03]);happy.visible=false;
- ellipsoid(happy,"Happy_Cavity",mouthDark,[0,0,0],[.075,.035,.015]);
- const happyTongue=ellipsoid(happy,"Happy_Tongue",tonguePink,[0,-.014,.006],[.040,.018,.010]);
- happyTongue.rotation.x=-.2;
+ ellipsoid(happy,"Happy_Cavity",mouthDark,[0,0,0],[.068,.030,.012]);
 
  // 四肢粗壮稳健小恐龙腿 (Arm_L/R 前腿, Leg_L/R 后腿)
  for(const s of [-1,1]){
@@ -1003,12 +1010,10 @@ export function createKrashyModel() {
     ellipsoid(teeth, s < 0 ? "Tooth_L" : "Tooth_R", creamWhite, [s * .013, -.008, 0], [.011, .014, .006]);
   }
 
-  // 欢庆张开大嘴 (Happy_Mouth / Happy_Tongue)
+  // 欢庆张开大嘴 (Happy_Mouth) - 1:1 还原《瑞奇宝宝》纯粹可爱的卡通月牙笑口，告别深邃喉咙与厚舌头
   const happy = pivot(mouth, "Happy_Mouth", [0, -.015, .022]);
   happy.visible = false;
-  ellipsoid(happy, "Happy_Cavity", mouthDark, [0, 0, 0], [.065, .036, .015]);
-  const tongue = ellipsoid(happy, "Happy_Tongue", tonguePink, [0, -.013, .006], [.034, .016, .010]);
-  tongue.rotation.x = -.2;
+  ellipsoid(happy, "Happy_Cavity", mouthDark, [0, 0, 0], [.054, .028, .010]);
 
   // 3. 极简软萌幼儿小手 (Arm_L, Arm_R) - 纯净天蓝小手滴，告别多余白手心垫
   for (const s of [-1, 1]) {

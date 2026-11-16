@@ -44,8 +44,11 @@ export function createExcavatorModel(){
     ellipsoid(ear,'Roof_Light',s<0?light:pink,[0,.025,0],[.05,.05,.05]);
   }
   curve(head,'Smile',[[-.15,.005,.29],[-.07,-.032,.302],[.01,-.032,.302],[.08,.008,.29]],.009,ink);
-  const happy=ellipsoid(head,'Happy_Mouth',ink,[-.04,-.016,.293],[.063,.027,.014]);happy.visible=false;
-  const tongue=ellipsoid(head,'Happy_Tongue',pink,[-.04,-.031,.306],[.031,.013,.009]);tongue.visible=false;
+  // 欢庆开怀大笑（工程车开朗笑弧，告别突兀的人类肉感舌头）
+  const happy=pivot(head,'Happy_Mouth',[-.04,-.018,.295]);happy.visible=false;
+  curve(happy,'Excavator_Happy_Arc',[[-.13,.015,0],[0,-.032,.008],[.13,.015,0]],.0095,ink);
+  curve(happy,'Excavator_Happy_L',[[-.13,.015,0],[-.14,.028,-.002]],.007,ink);
+  curve(happy,'Excavator_Happy_R',[[.13,.015,0],[.14,.028,-.002]],.007,ink);
   ellipsoid(head,'Cheek_L',pink,[-.248,-.005,.28],[.052,.023,.009]);
   ellipsoid(head,'Cheek_R',pink,[.165,-.005,.28],[.052,.023,.009]);
   const badge=pivot(root,'Bow',[-.29,.57,.325]);

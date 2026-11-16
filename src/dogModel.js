@@ -35,9 +35,8 @@ export function createDogModel() {
   ellipsoid(head,'Brow',cream,[s*.135,.145,.20],[.061,.024,.018]);
  }
  const mouthDark=mat(0x381520,.95),tonguePink=mat(0xf36e84,.88),teethWhite=mat(0xfbfbf8,.8);
- // 汪汪专属立体下颌骨（托住下唇与口腔，告别悬空）
- ellipsoid(head,'Dog_Lower_Jaw',cream,[0,-.176,.285],[.096,.040,.078]);
- curve(head,'Dog_Lower_Lip',[[-.052,-.165,.324],[0,-.180,.334],[.052,-.165,.324]],.005,caramel);
+ // 汪汪自然卡通下颌（平滑内敛，彻底移除突兀的人类下唇线）
+ ellipsoid(head,'Dog_Lower_Jaw',cream,[0,-.178,.270],[.092,.038,.075]);
 
  // 汪汪元气大笑嘴：深李色立体口腔 + 两颗洁白可爱的小上犬牙
  const happyMouth=pivot(head,'Happy_Mouth',[0,-.146,.334]);happyMouth.visible=false;
