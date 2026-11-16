@@ -6,40 +6,9 @@ const ease=t=>t*t*(3-2*t);
 const REST=.25;
 const SPEED=.8; // 整体播放速度：动作时长按此缩放，单局演出总时长控制在约 5-8 秒。
 
-// 开心小演出动作库：fn(a,t,m) 每帧在 FRIEND 基础姿态之上覆写关节；t 为 0..1 进度，m 为减动幅缩放。
+// Each action follows one character's own body language; t is 0..1, m reduces motion.
 // fn 内所有曲线在 t=1 时归零，rest 阶段无需残留清理（reset 兜底旋转类覆写）。
 const ACTIONS=[
-  {id:'hop3',dur:1.8,fn:(a,t,m)=>{
-    const hop=Math.abs(Math.sin(t*Math.PI*3));
-    a.animalGroup.position.y+=hop*.15*m;
-    a.leftLeg.rotation.x=a.rightLeg.rotation.x=Math.sin(t*Math.PI*6)*.5*m;
-    a.leftEarGroup.rotation.x=a.rightEarGroup.rotation.x=-Math.sin(t*Math.PI*6)*.3*m;
-    a.leftArm.rotation.z=-Math.sin(t*Math.PI*6)*.4*m;a.rightArm.rotation.z=Math.sin(t*Math.PI*6)*.4*m;
-  }},
-  {id:'spin',dur:1.6,reset:a=>{a.animalGroup.rotation.y=0;a.animalGroup.rotation.z=0;},fn:(a,t,m)=>{
-    a.animalGroup.rotation.y=t*Math.PI*2;
-    a.animalGroup.rotation.z=Math.sin(t*Math.PI*4)*.035*m;
-    a.tailGroup.rotation.z=Math.sin(t*Math.PI*6)*.28*m;
-    a.headGroup.rotation.z=Math.sin(t*Math.PI*4)*.08*m;
-  }},
-  {id:'bow',dur:1.5,fn:(a,t,m)=>{
-    const bow=Math.sin(t*Math.PI);
-    a.bodyMesh.rotation.x=.42*bow*m;
-    a.headGroup.rotation.x=.30*bow*m;
-    a.leftArm.rotation.z=-.30*bow*m;a.rightArm.rotation.z=.30*bow*m;
-  }},
-  {id:'sway',dur:2.0,reset:a=>{a.animalGroup.rotation.z=0;},fn:(a,t,m)=>{
-    const s=Math.sin(t*Math.PI*4);
-    a.animalGroup.rotation.z=s*.085*m;
-    a.leftArm.rotation.z=-.55-s*.30*m;a.rightArm.rotation.z=.55+s*.30*m;
-    a.headGroup.rotation.z=-s*.08*m;
-    a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*4))*.02*m;
-  }},
-  {id:'laugh',dur:1.6,reset:a=>{a.animalGroup.rotation.z=0;},fn:(a,t,m)=>{
-    a.model.rotation.x=-.10*Math.sin(t*Math.PI)*m;
-    a.model.position.y=Math.abs(Math.sin(t*Math.PI*5))*.02*m;
-    a.animalGroup.rotation.z=Math.sin(t*Math.PI*6)*.03*m;
-  }},
   {id:'earWiggle',dur:1.4,animals:['bunny','cat'],fn:(a,t,m)=>{
     const w=Math.sin(t*Math.PI*7);
     a.leftEarGroup.rotation.z=.13+w*.26*m;
@@ -69,29 +38,6 @@ const ACTIONS=[
     a.animalGroup.position.y+=Math.sin(t*Math.PI*3)*.045*m;
     for(const [name,sign] of [['Whisker_L',-1],['Whisker_R',1]]){const w=a.model.getObjectByName(name);if(w)w.rotation.y=sign*Math.sin(t*Math.PI*3)*.10*m;}
   }},
-  {id:'wave',dur:1.6,fn:(a,t,m)=>{
-    const raise=Math.sin(t*Math.PI);
-    a.leftArm.rotation.set(-raise*.4,0,-1.55*raise*m+Math.sin(t*Math.PI*5)*.22*raise*m);
-    a.headGroup.rotation.z=Math.sin(t*Math.PI*2)*.08*raise*m;
-  }},
-  {id:'jellyWobble',dur:1.5,reset:a=>{a.bodyMesh.scale.set(1,1,1);},fn:(a,t,m)=>{
-    const w=Math.sin(t*Math.PI*6)*Math.sin(t*Math.PI)*m;
-    a.bodyMesh.scale.set(1+w*.07,1-w*.09,1+w*.07);
-    a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*6))*.015*m;
-  }},
-  {id:'starJump',dur:1.8,fn:(a,t,m)=>{
-    const k=Math.abs(Math.sin(t*Math.PI*2))*m;
-    a.leftArm.rotation.z=-.9*k;a.rightArm.rotation.z=.9*k;
-    a.leftLeg.rotation.x=a.rightLeg.rotation.x=-.4*k;
-    a.leftEarGroup.rotation.x=a.rightEarGroup.rotation.x=-.3*k;
-    a.animalGroup.position.y+=k*.10;
-  }},
-  {id:'nodDance',dur:1.6,fn:(a,t,m)=>{
-    const env=Math.sin(t*Math.PI),n=Math.sin(t*Math.PI*6)*m;
-    a.headGroup.rotation.x=.22*n*env;
-    a.animalGroup.position.y+=Math.abs(n)*.025;
-    a.leftArm.rotation.z=-n*.18*env;a.rightArm.rotation.z=n*.18*env;
-  }},
   {id:'skyHop',dur:1.5,animals:['bunny'],fn:(a,t,m)=>{
     const j=Math.sin(t*Math.PI)*m;
     a.animalGroup.position.y+=j*.30;
@@ -105,6 +51,19 @@ const ACTIONS=[
     a.tailGroup.rotation.y=Math.sin(t*Math.PI*4+1.2)*.18*m;
     a.headGroup.rotation.z=Math.sin(t*Math.PI*2)*.16*m;
     a.bodyMesh.rotation.y=Math.sin(t*Math.PI*2)*.04*m;
+  }},
+  {id:'catPounce',dur:1.6,animals:['cat'],reset:a=>{a.bodyMesh.scale.set(1,1,1);},fn:(a,t,m)=>{
+    const crouch=Math.sin(t*Math.PI),spring=Math.sin(t*Math.PI*2)*crouch;
+    a.bodyMesh.scale.set(1+crouch*.07*m,1-crouch*.12*m,1);
+    a.leftArm.rotation.x=a.rightArm.rotation.x=-crouch*.60*m;
+    a.animalGroup.position.y+=Math.max(0,spring)*.11*m;
+    a.tailGroup.rotation.z=crouch*.45*m;
+  }},
+  {id:'dogPawTap',dur:1.5,animals:['dog'],fn:(a,t,m)=>{
+    const paw=Math.abs(Math.sin(t*Math.PI*3))*Math.sin(t*Math.PI)*m;
+    a.rightArm.rotation.x=-paw*.85;
+    a.headGroup.rotation.z=-paw*.11;
+    a.tailGroup.rotation.y=Math.sin(t*Math.PI*9)*.48*m;
   }},
   {id:'headTilt',dur:1.4,animals:['dog','wolf','chase'],fn:(a,t,m)=>{
     const tilt=Math.sin(t*Math.PI*2)*m;
@@ -135,13 +94,6 @@ const ACTIONS=[
     a.tailGroup.rotation.y=Math.sin(t*Math.PI*4-.8)*.3*m;
     for(const [name,sign] of [['Whisker_L',-1],['Whisker_R',1]]){const w=a.model.getObjectByName(name);if(w)w.rotation.y=sign*Math.sin(t*Math.PI*4)*.14*m;}
     a.headGroup.rotation.z=Math.sin(t*Math.PI*2)*.06*m;
-  }},
-  {id:'finaleBow',dur:1.8,fn:(a,t,m)=>{
-    const bow=Math.sin(t*Math.PI)*m;
-    a.bodyMesh.rotation.x=.5*bow;
-    a.headGroup.rotation.x=.38*bow;
-    a.leftArm.rotation.z=-.45*bow;a.rightArm.rotation.z=.45*bow;
-    a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*.02*m;
   }},
   {id:'raceRev',dur:1.5,animals:['mcqueen'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*6)*m;a.bodyMesh.rotation.z=s*.04;a.headGroup.rotation.z=-s*.035;for(const p of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])p.rotation.x=t*Math.PI*4;}},
   {id:'raceSway',dur:1.5,animals:['mcqueen'],fn:(a,t,m)=>{const s=Math.sin(t*Math.PI*4)*m;a.model.rotation.z=s*.08;a.headGroup.rotation.z=-s*.05;}},
@@ -307,8 +259,29 @@ const ACTIONS=[
     a.bodyMesh.rotation.z=.025*curl*m;
   }},
 ];
-const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['earWiggle','tailSway'],dog:['tailChase','headTilt'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['wolfChinScheming','wolfCackle','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['trainWhistle','steamBurst','wheelRev','trainSway'],excavator:['bucketWave','scoopDig'],tayo:['busHonk','busHop','busWiggle'],triceratops:['dinoStomp','frillShake','hornNod'],krashy:['krashyHop','krashyWiggle','krashyCheer'],maiqi:['chickWingFlap','chickPeck']};
-const FINALE=ACTIONS.find(x=>x.id==='finaleBow');
+const SIGNATURES={bunny:['earWiggle','skyHop'],cat:['catPounce','tailSway'],dog:['dogPawTap','tailChase'],frog:['croak','leapFrog'],dragon:['barrelRoll','wingFlutter'],goldenDragon:['swimS','cloudHover'],mcqueen:['raceRev','raceSway'],wolf:['wolfChinScheming','wolfCackle','headTilt'],teddy:['bearHug','bearSway'],chase:['policeSalute','pupSpin','tailChase'],jett:['jettFly','jettLoop','jettWave'],peppa:['pigJump','pigGiggle','pigWave'],thomas:['trainWhistle','steamBurst','wheelRev','trainSway'],excavator:['bucketWave','scoopDig'],tayo:['busHonk','busHop','busWiggle'],triceratops:['dinoStomp','frillShake','hornNod'],krashy:['krashyHop','krashyWiggle','krashyCheer'],maiqi:['chickWingFlap','chickPeck']};
+const FINALES={
+  bunny:{id:'bunnyEarLeap',fn:(a,t,m)=>{const j=Math.sin(t*Math.PI)*m;a.animalGroup.position.y+=j*.33;a.leftEarGroup.rotation.z=.13+j*.48;a.rightEarGroup.rotation.z=-.13-j*.48;a.leftArm.rotation.z=-j*.65;a.rightArm.rotation.z=j*.65;}},
+  cat:{id:'catCurlPurr',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.headGroup.rotation.z=-s*.22;a.tailGroup.rotation.z=s*(.48+Math.sin(t*Math.PI*4)*.14);a.leftArm.rotation.x=-s*.36;a.rightArm.rotation.x=-s*.36;a.bodyMesh.rotation.y=s*.08;}},
+  frog:{id:'frogBigCroak',reset:a=>{a.bodyMesh.scale.set(1,1,1);},fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.bodyMesh.scale.set(1+s*.13,1-s*.17,1+s*.13);a.animalGroup.position.y+=Math.max(0,Math.sin((t-.38)/.62*Math.PI))*.23*m;a.leftLeg.rotation.x=a.rightLeg.rotation.x=-s*.55;a.leftArm.rotation.z=-s*.45;a.rightArm.rotation.z=s*.45;}},
+  dog:{id:'dogPlayBow',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.bodyMesh.rotation.x=s*.25;a.headGroup.rotation.x=s*.22;a.rightArm.rotation.x=-s*.65;a.tailGroup.rotation.y=Math.sin(t*Math.PI*10)*s*.72;}},
+  dragon:{id:'dragonWingRise',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.animalGroup.position.y+=s*.23;for(const [n,d]of [['Wing_L',-1],['Wing_R',1]]){const w=a.model.getObjectByName(n);if(w)w.rotation.y=d*(.18+s*.78);}a.headGroup.rotation.x=-s*.15;a.tailGroup.rotation.y=Math.sin(t*Math.PI*4)*s*.30;}},
+  goldenDragon:{id:'goldenDragonCoil',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.animalGroup.position.y+=s*.17;a.bodyMesh.rotation.z=Math.sin(t*Math.PI*3)*s*.12;a.tailGroup.rotation.y=Math.sin(t*Math.PI*3-.8)*s*.48;for(const [n,d]of [['Whisker_L',-1],['Whisker_R',1]]){const w=a.model.getObjectByName(n);if(w)w.rotation.y=d*s*.19;}}},
+  mcqueen:{id:'mcqueenVictoryLap',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.model.rotation.z=Math.sin(t*Math.PI*3)*s*.08;a.bodyMesh.rotation.z=-Math.sin(t*Math.PI*3)*s*.06;a.headGroup.rotation.z=s*.05;for(const w of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])w.rotation.x=t*Math.PI*8;}},
+  wolf:{id:'wolfProudPose',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.headGroup.rotation.x=-s*.15;a.leftEarGroup.rotation.z=.12+s*.27;a.rightEarGroup.rotation.z=-.12-s*.27;a.leftArm.rotation.z=-s*.55;a.rightArm.rotation.z=s*.55;a.tailGroup.rotation.y=Math.sin(t*Math.PI*5)*s*.32;}},
+  teddy:{id:'teddyBigHug',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.leftArm.rotation.z=-s*1.15;a.rightArm.rotation.z=s*1.15;a.headGroup.rotation.z=s*.13;a.model.scale.x=1+s*.09;a.model.scale.y=1-s*.06;}},
+  chase:{id:'chaseHeroSalute',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.rightArm.rotation.z=s*2.12;a.headGroup.rotation.z=-s*.12;a.leftEarGroup.rotation.z=.11+s*.14;a.tailGroup.rotation.y=Math.sin(t*Math.PI*8)*s*.43;}},
+  jett:{id:'jettSkyBank',reset:a=>{a.model.rotation.z=0;},fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.animalGroup.position.y+=s*.20;a.model.rotation.z=Math.sin(t*Math.PI*2)*s*.19;for(const [n,d]of [['Wing_L',-1],['Wing_R',1]]){const w=a.model.getObjectByName(n);if(w)w.rotation.y=d*(.08+s*.52);}a.leftArm.rotation.z=-s*.52;a.rightArm.rotation.z=s*.52;}},
+  peppa:{id:'peppaHappyBounce',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*s*.13;a.headGroup.rotation.z=Math.sin(t*Math.PI*4)*s*.12;a.leftArm.rotation.z=-s*.48;a.rightArm.rotation.z=s*.48;}},
+  thomas:{id:'thomasWhistleFinale',reset:a=>{a.headGroup.position.copy(a.headRestPosition);},fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.headGroup.position.y=a.headRestPosition.y+s*.018;a.headGroup.rotation.x=-s*.09;a.bodyMesh.rotation.z=Math.sin(t*Math.PI*4)*s*.035;for(const w of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])w.rotation.x=t*Math.PI*4;}},
+  excavator:{id:'excavatorScoopSalute',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;const boom=a.model.getObjectByName('Boom_Base'),elbow=a.model.getObjectByName('Boom_Elbow'),bucket=a.model.getObjectByName('Bucket');if(boom)boom.rotation.z=s*.36;if(elbow)elbow.rotation.z=-s*.25;if(bucket)bucket.rotation.z=s*.38;a.headGroup.rotation.z=-s*.06;}},
+  tayo:{id:'tayoHappyHonk',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.model.rotation.z=Math.sin(t*Math.PI*4)*s*.07;a.bodyMesh.rotation.z=-Math.sin(t*Math.PI*4)*s*.045;a.headGroup.rotation.x=-s*.08;for(const w of [a.leftArm,a.rightArm,a.leftLeg,a.rightLeg])w.rotation.x=t*Math.PI*3;}},
+  triceratops:{id:'triceratopsStrongStomp',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.headGroup.rotation.x=-s*.18;a.leftLeg.rotation.x=-s*.48;a.rightLeg.rotation.x=s*.23;a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*2))*s*.045;a.tailGroup.rotation.y=Math.sin(t*Math.PI*5)*s*.34;}},
+  krashy:{id:'krashyDoubleSpring',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.animalGroup.position.y+=Math.abs(Math.sin(t*Math.PI*3))*s*.18;a.leftEarGroup.rotation.z=Math.sin(t*Math.PI*5)*s*.30;a.rightEarGroup.rotation.z=-Math.sin(t*Math.PI*5)*s*.30;a.leftArm.rotation.z=-s*.58;a.rightArm.rotation.z=s*.58;}},
+  maiqi:{id:'maiqiWingFlutter',fn:(a,t,m)=>{const s=Math.sin(t*Math.PI)*m;a.animalGroup.position.y+=s*.12;const flap=Math.sin(t*Math.PI*8)*s*.23;a.leftArm.rotation.z=-.22-s*.70-flap;a.rightArm.rotation.z=.22+s*.70+flap;a.headGroup.rotation.z=Math.sin(t*Math.PI*3)*s*.08;}}
+};
+for(const finale of Object.values(FINALES)){finale.dur=1.8;finale.isFinale=true;}
+const CELEBRATION_COLORS={bunny:[0xf5ad9a,0xffdf81,0xffffff],cat:[0xf7aa52,0xffd585,0x8ac7ad],frog:[0x8bce75,0xffdf75,0x78c6dc],dog:[0xc78e62,0xffda83,0x8dc5df],dragon:[0x72c9b6,0xffd977,0x9bd1f0],goldenDragon:[0xf4c351,0xf5e58b,0xe88d64],mcqueen:[0xf15d56,0xffd253,0xffffff],wolf:[0x879db9,0xffd06a,0xf0b775],teddy:[0xc99a73,0xf6d5af,0xefb0a7],chase:[0x65a3e0,0xf5d476,0xffffff],jett:[0xf06d64,0xa8d7f3,0xffffff],peppa:[0xf4a4b7,0xf5d470,0xf38277],thomas:[0x6aa9d9,0xe0e5e7,0xe95d55],excavator:[0xf4c554,0x7baac7,0xffffff],tayo:[0x75b8ee,0xf6d174,0xffffff],triceratops:[0xefaa6d,0x93c49d,0xffdf85],krashy:[0x83cbec,0xf5c780,0xffffff],maiqi:[0xf7d35e,0xf1a475,0xffffff]};
 
 // 结算后的"开心小演出"：动物自己走到台前随机表演，孩子和家长可以休息。
 // 无输入、无计分、无引导；每个动作开始播一声该动物的 happy 音效。
@@ -318,7 +291,7 @@ export class HappyPerformance {
     this.group=new THREE.Group();this.group.name='Happy_Performance';this.group.visible=false;scene.add(this.group);
     this.platform=new THREE.Mesh(new THREE.CylinderGeometry(1,1.05,.08,40),new THREE.MeshStandardMaterial({color:0xeadbb6,roughness:1}));
     this.group.add(this.platform);
-    // Stage spotlight: barely lit during the show, blooms at the finale bow.
+    // Stage spotlight follows the character palette and brightens for its finale.
     this.spot=new THREE.SpotLight(0xfff1cf,0,12,.6,.7,1.1);this.spot.castShadow=false;
     this.spot.position.set(0,2.4,1.5);this.group.add(this.spot,this.spot.target);this.spot.target.position.set(0,0,0);
     this.plan=null;this.actionIdx=-1;this.confetti=[];
@@ -337,23 +310,20 @@ export class HappyPerformance {
     this.group.visible=true;
     this.updateLayout(false);
     this.plan=this.buildPlan();
+    this.spot.color.setHex((CELEBRATION_COLORS[a.animalId]||CELEBRATION_COLORS.bunny)[1]);
     return this.plan.map(p=>p.id);
   }
   buildPlan() {
-    // 两个角色招牌动作，偶尔加一个通用动作；车辆避开拟人跳跃。
+    // Each friend performs two of its own gestures, then its own closing pose.
     const id=this.animal.animalId;
     const sigs=(SIGNATURES[id]||[]).map(name=>ACTIONS.find(x=>x.id===name)).filter(Boolean);
     for(let i=sigs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[sigs[i],sigs[j]]=[sigs[j],sigs[i]];}
     const plan=sigs.slice(0,2);
-    const allowed=['mcqueen','thomas','excavator','tayo'].includes(id)?['sway','laugh','nodDance']:['hop3','spin','bow','sway','laugh','wave','jellyWobble','starJump','nodDance'];
-    if(Math.random()<.3){const options=ACTIONS.filter(x=>allowed.includes(x.id));plan.push(options[Math.floor(Math.random()*options.length)]);}
-    for(let i=plan.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[plan[i],plan[j]]=[plan[j],plan[i]];}
     if(this.lastPlan){
-      if(plan[0].id===this.lastPlan[0]){const j=1+Math.floor(Math.random()*(plan.length-1));[plan[0],plan[j]]=[plan[j],plan[0]];}
-      if(plan.map(p=>p.id).join()===this.lastPlan.join()){[plan[plan.length-1],plan[0]]=[plan[0],plan[plan.length-1]];}
+      if(plan[0].id===this.lastPlan[0])[plan[0],plan[1]]=[plan[1],plan[0]];
     }
     this.lastPlan=plan.map(p=>p.id);
-    return plan.concat([FINALE]);
+    return plan.concat([FINALES[id]||FINALES.bunny]);
   }
   updateLayout(instant=true) {
     if(!this.active)return;
@@ -363,7 +333,7 @@ export class HappyPerformance {
     const top=Math.max(getHudBottom()+(h<300?46:78),safe.top+(h<300?80:110));
     const floor=h-Math.max(safe.bottom+(h<300?30:62),h*.16);
     const available=Math.max(50,floor-top);
-    const height=Math.min(240,h*.36,available*.88);
+    const height=Math.min(280,h*.40,available*.88);
     const width=w*.5;
     this.targetScale=Math.min(height/this.localSize.y,width/this.localSize.x)*this.unit;
     this.floorY=(.5-floor/h)*vh;
@@ -392,18 +362,19 @@ export class HappyPerformance {
     const m=this.animal.reducedMotion?.25:1;
     this.animal.actionPoseFn=t=>act.fn(this.animal,t,m);
     this.animal.actionPoseT=0;
-    this.animal.performanceGlow=act.id==='finaleBow'?'finale':'star';
+    this.animal.performanceGlow=act.isFinale?'finale':'perform';
     this.audio?.playAnimalSound?.(this.animal.animalId,'happy');
-    if(act.id==='finaleBow')this.spawnConfetti();
-    this.animal.friendReact(act.id==='finaleBow'?3:i+1);
+    if(act.isFinale)this.spawnConfetti();
+    this.animal.friendReact(act.isFinale?3:i+1);
+    this.animal.glyphTimer=0; // The character's own face and pose carry the stage reaction.
   }
   spawnConfetti() {
     if(this.animal.reducedMotion)return;
-    const colors=[0xe8735c,0xf2b64b,0x7bb37a,0x6ea8d8,0xd77fa9];
+    const colors=CELEBRATION_COLORS[this.animal.animalId]||CELEBRATION_COLORS.bunny;
     const spread=Math.max(.55,this.localSize.x*this.targetScale*.85);
     if(!this.confettiGeo)this.confettiGeo=new THREE.PlaneGeometry(.05,.034);
     for(let i=0;i<28;i++){
-      const material=new THREE.MeshBasicMaterial({color:colors[i%5],side:THREE.DoubleSide,transparent:true,opacity:.95,depthWrite:false});
+      const material=new THREE.MeshBasicMaterial({color:colors[i%colors.length],side:THREE.DoubleSide,transparent:true,opacity:.95,depthWrite:false});
       const mesh=new THREE.Mesh(this.confettiGeo,material);
       mesh.position.set(this.centerX+(Math.random()-.5)*spread,this.floorY+1.05+Math.random()*.55,(Math.random()-.5)*.35);
       mesh.rotation.set(Math.random()*Math.PI*2,Math.random()*Math.PI*2,Math.random()*Math.PI*2);
@@ -439,7 +410,7 @@ export class HappyPerformance {
     const act=this.plan[this.actionIdx];
     this.actionElapsed+=dt;
     const t=this.actionElapsed/(act.dur*SPEED);
-    const finale=act.id==='finaleBow';
+    const finale=!!act.isFinale;
     if(finale&&!this.sparkled&&t>.45){
       this.sparkled=true;
       if(!this.animal.reducedMotion)for(let k=0;k<6;k++)this.animal.spawnParticle(this.animal.getTargetPosition());

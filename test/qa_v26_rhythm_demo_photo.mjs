@@ -5,7 +5,7 @@ import * as T from 'three';
 import {Game} from '../src/main.js';
 import {AudioManager} from '../src/audioManager.js';
 import {BubbleManager} from '../src/bubbleManager.js';
-import {RescueAnimal} from '../src/rescueAnimal.js';
+import {RescueAnimal,ANIMAL_MODELS} from '../src/rescueAnimal.js';
 import {HappyPerformance} from '../src/happyPerformance.js';
 import {WORDS_LIST,getWordById} from '../src/wordsConfig.js';
 const tick=async()=>{await Promise.resolve();await Promise.resolve();};
@@ -65,24 +65,46 @@ test('the happy performance plays itself: no input, no score change, pause freez
   x.f.setPaused(false);x.step(15);assert.equal(x.f.active,false,id);assert.equal(x.a.actionPoseFn,null,id);x.f.clear();}
 });
 
-test('each show draws a fresh plan with a signature move, a finale, and no repeats',()=>{
- const seen=new Set();
- for(let i=0;i<6;i++){const x=friend('cat');const ids=x.f.plan.map(p=>p.id);
-  seen.add(ids.join(','));assert.ok(ids.some(sid=>['earWiggle','tailSway'].includes(sid)),'a signature present');
-  assert.equal(ids[ids.length-1],'finaleBow','finale closes the show');
-  assert.equal(new Set(ids).size,ids.length,'no repeated actions');x.f.clear();}
- assert.ok(seen.size>1,'plans vary between shows');
+test('each show uses only its character gestures and a distinct finale',()=>{
+ const x=friend('cat'),first=x.f.plan.map(p=>p.id);
+ assert.ok(first.slice(0,2).every(id=>['catPounce','tailSway'].includes(id)));
+ assert.equal(first.length,3);
+ assert.equal(first[2],'catCurlPurr');
+ assert.equal(new Set(first).size,3);
+ x.f.start();const second=x.f.plan.map(p=>p.id);
+ assert.notEqual(second[0],first[0],'consecutive shows reverse the first gesture');
+ x.f.clear();
 });
 
-test('the finale bursts confetti under a blooming spotlight, with the performer glowing',()=>{
+test('all eighteen friends have three character moves, unique finales and their own eyes',()=>{
+ const finales=new Set();
+ for(const id of Object.keys(ANIMAL_MODELS)){
+  const x=friend(id),plan=x.f.plan;
+  assert.equal(plan.length,3,id);
+  assert.ok(plan.slice(0,2).every(action=>action.animals?.includes(id)),`${id} uses its own gestures`);
+  assert.equal(plan[2].isFinale,true,id);
+  assert.equal(new Set(plan.map(action=>action.id)).size,3,id);
+  finales.add(plan[2].id);
+  assert.equal(x.a.model.getObjectByName('Star_Eye_L'),undefined,id);
+  x.step(1.2);
+  assert.ok(x.a.expressionRig.smileEyes.every(({eye,smile})=>eye.visible||smile.visible),`${id} keeps readable eyes`);
+  x.step(10);
+  assert.equal(x.f.active,false,`${id} finishes the show`);
+  x.f.clear();
+ }
+ assert.equal(finales.size,Object.keys(ANIMAL_MODELS).length,'every friend has a different finale');
+});
+
+test('the character finale bursts matching confetti while keeping its own eyes',()=>{
  const x=friend('bunny');x.step(1.2);
- assert.equal(x.a.performanceGlow,'star','actions light star eyes');
- assert.equal(x.a.expressionRig.smileEyes[0].eye.visible,false,'eyes hidden for star pupils');
- assert.ok(x.a.expressionRig.starMat.opacity>.2,'star pupils brighten');
- let guard=0;while(x.f.currentAction()!=='finaleBow'&&guard++<120)x.step(.1);
- assert.equal(x.a.performanceGlow,'finale','the finale bow glows gratefully');
- assert.equal(x.a.expressionRig.smileEyes[0].smile.visible,true,'finale closes the eyes in a smile');
- x.step(.6);assert.ok(x.f.confetti.length>0,'confetti falls during the bow');
+ assert.equal(x.a.performanceGlow,'perform');
+ assert.equal(x.a.model.getObjectByName('Star_Eye_L'),undefined,'no eye replacement mesh');
+ assert.equal(x.a.expressionRig.smileEyes[0].smile.visible,true,'rabbit celebrates with smile eyes');
+ let guard=0;while(x.f.currentAction()!==x.f.plan.at(-1).id&&guard++<120)x.step(.1);
+ assert.equal(x.f.currentAction(),'bunnyEarLeap');
+ assert.equal(x.a.performanceGlow,'finale');
+ assert.equal(x.a.expressionRig.smileEyes[0].smile.visible,true);
+ x.step(.6);assert.ok(x.f.confetti.length>0,'confetti falls during the finale');
  assert.ok(x.f.spot.intensity>.9,'spotlight blooms at the finale');
  x.step(.5);assert.ok(x.f.confetti.some(c=>c.mesh.position.y<x.f.floorY+.6),'confetti descends toward the stage');
  x.f.clear();

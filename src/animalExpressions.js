@@ -8,6 +8,9 @@ const FACE={
  goldenDragon:{width:.048,depth:.046,top:1.63,colour:0xeac166},
  teddy:{width:.043,depth:.028,top:1.34,colour:0xe69891},wolf:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},mcqueen:{width:.05,depth:.028,top:1.10,colour:0xffca48},chase:{width:.044,depth:.032,top:1.4,colour:0xffd075},jett:{width:.044,depth:.028,top:1.35,colour:0x97c8eb},peppa:{width:.043,depth:.028,top:1.4,colour:0xf2a1b3},thomas:{width:.048,depth:.028,top:1.32,colour:0x8cc5df},excavator:{width:.07,depth:.035,top:1.48,colour:0xffd66b},tayo:{width:.048,depth:.028,top:1.32,colour:0x74b9ff},triceratops:{width:.054,depth:.030,top:1.32,colour:0xf97316},krashy:{width:.046,depth:.028,top:1.30,colour:0x38bdf8},maiqi:{width:.068,depth:.042,top:1.44,colour:0xf8d53d}
 };
+const STAGE_EYES={bunny:'smile',cat:'slowBlink',frog:'bright',dog:'wink',dragon:'bright',goldenDragon:'bright',
+ mcqueen:'bright',wolf:'wink',teddy:'smile',chase:'wink',jett:'bright',peppa:'smile',thomas:'bright',
+ excavator:'bright',tayo:'bright',triceratops:'bright',krashy:'smile',maiqi:'smile'};
 function stroke(parent,points,r,material){const path=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const m=new THREE.Mesh(new THREE.TubeGeometry(path,18,r,6,false),material);parent.add(m);return m;}
 function heart(){const s=new THREE.Shape();s.moveTo(0,-.035);s.bezierCurveTo(-.11,.03,-.055,.10,0,.055);s.bezierCurveTo(.055,.10,.11,.03,0,-.035);return new THREE.ShapeGeometry(s,16);}
 function star(){const s=new THREE.Shape();for(let i=0;i<10;i++){const a=i*Math.PI/5+Math.PI/2,r=i%2?.025:.055;i?s.lineTo(Math.cos(a)*r,Math.sin(a)*r):s.moveTo(Math.cos(a)*r,Math.sin(a)*r);}s.closePath();return new THREE.ShapeGeometry(s);}
@@ -31,15 +34,7 @@ export function createExpressionRig(model,id){
   const material=new THREE.MeshBasicMaterial({color:i===1?0xe8bf6d:profile.colour,side:THREE.DoubleSide,transparent:true,opacity:0,depthWrite:false});
   const m=new THREE.Mesh(i===1?star():heart(),material);effects.add(m);glyphs.push(m);
  }
- // Performance excitement: star pupils replace the eyes; a bunny also blushes through its cheeks.
- const starMat=new THREE.MeshBasicMaterial({color:0xffd778,side:THREE.DoubleSide,transparent:true,opacity:0,depthWrite:false});
- const starEyes=[];
- for(const side of ['L','R']){
-  const eye=model.getObjectByName('Eye_'+side);
-  const s=new THREE.Mesh(star(),starMat);s.name='Star_Eye_'+side;
-  s.position.copy(eye.position);s.position.z+=profile.depth+.006;s.rotation.copy(eye.rotation);
-  s.scale.setScalar(1.25);s.visible=false;root.add(s);starEyes.push(s);
- }
+ // Character expressions keep the model's own eyes. A bunny also blushes through its cheeks.
  let blush=null;
  if(id==='bunny'){
   const blushMat=new THREE.MeshBasicMaterial({color:0xf29b8e,transparent:true,opacity:0,depthWrite:false});
@@ -62,7 +57,7 @@ export function createExpressionRig(model,id){
   brows=[];
   for(const side of ['L','R']){const b=model.getObjectByName('Brow_'+side);if(b)brows.push({node:b,base:b.rotation.clone(),pos:b.position.clone()});}
  }
- return {profile,root,smileEyes,pupils,effects,glyphs,sac,starMat,starEyes,blush,brows};
+ return {profile,root,smileEyes,pupils,effects,glyphs,sac,blush,brows};
 }
 
 export function resetExpressionRig(rig){
@@ -70,8 +65,6 @@ export function resetExpressionRig(rig){
  for(const {node,base}of rig.pupils)node.position.copy(base);
  rig.effects.visible=false;for(const m of rig.glyphs)m.material.opacity=0;
  if(rig.sac)rig.sac.scale.set(.09,.025,.045);
- if(rig.starMat)rig.starMat.opacity=0;
- for(const s of rig.starEyes||[])s.visible=false;
  for(const b of rig.blush||[]){b.visible=false;b.material.opacity=0;}
  for(const b of rig.brows||[]){b.node.rotation.copy(b.base);b.node.position.copy(b.pos);}
 }
@@ -83,24 +76,23 @@ export function updateExpressionRig(animal,dt){
  const greeting=animal.state==='WAVING'||animal.state==='CHEERING';
  const happy=glow||!!animal.speaking||!!animal.speechListening||reaction>.10||greeting,curious=!happy&&animal.anticipating;
  animal.emotion=glow==='finale'?'grateful':glow?'delighted':greeting?'grateful':happy?(variant===1?'delighted':'happy'):curious?'curious':'content';
+ // Stage expressions follow the character's face instead of replacing eyes with symbols.
+ const stageMode=STAGE_EYES[animal.animalId]||'bright';
  // Slow blink for cats; puppy wink; other friends use upturned smiling eyelids.
  const smileWindow=greeting||(reaction<1.02&&reaction>.42);
  const closeBoth=happy&&(animal.animalId!=='cat'||reaction<1.05)&&!(animal.animalId==='dog'&&variant===1);
  for(let i=0;i<rig.smileEyes.length;i++){
   const {eye,smile}=rig.smileEyes[i];
-  if(glow==='star'){eye.visible=false;smile.visible=false;eye.scale.y=1;}
-  else if(glow==='finale'){eye.visible=false;smile.visible=true;eye.scale.y=1;}
-  else{
+  if(glow){
+   const catBlink=stageMode==='slowBlink'&&Math.sin(t*2.7)>.65;
+   const close=stageMode==='smile'||(stageMode==='wink'&&i===1)||catBlink||(glow==='finale'&&stageMode==='slowBlink');
+   eye.visible=!close;smile.visible=close;eye.scale.y=stageMode==='slowBlink'&&!close?.72:1;
+  }else{
    const close=happy&&smileWindow&&(closeBoth||(animal.animalId==='dog'&&variant===1&&i===1));
    eye.visible=!close;smile.visible=close;eye.scale.y=curious?1.12:happy&&!close?.90:1;
   }
  }
- // Star pupils glow with a soft pulse while performing; blush fades in only for the bunny.
- if(rig.starMat){
-  const target=glow==='star'?.85+Math.sin(t*6)*.15:0;
-  rig.starMat.opacity+=(target-rig.starMat.opacity)*(1-Math.exp(-dt*10));
-  for(const s of rig.starEyes||[])s.visible=glow==='star'||rig.starMat.opacity>.05;
- }
+ // Blush fades in only for the bunny.
  if(rig.blush){
   const target=glow?.5:0;
   for(const b of rig.blush){b.material.opacity+=(target-b.material.opacity)*(1-Math.exp(-dt*6));b.visible=b.material.opacity>.01;}
@@ -122,7 +114,7 @@ export function updateExpressionRig(animal,dt){
  for(const {node,base}of rig.pupils){node.position.x=THREE.MathUtils.lerp(node.position.x,base.x+lookX,1-Math.exp(-dt*12));node.position.y=THREE.MathUtils.lerp(node.position.y,base.y+lookY,1-Math.exp(-dt*12));}
  const glyphLife=animal.glyphTimer||0;animal.glyphTimer=Math.max(0,glyphLife-dt);rig.effects.visible=glyphLife>0&&!animal.reducedMotion;
  if(rig.effects.visible){const p=1-glyphLife/.95;for(let i=0;i<rig.glyphs.length;i++){const m=rig.glyphs[i];m.position.set((i-1)*.14,.05+p*.18+Math.sin(i*2)*.025,0);m.rotation.z=Math.sin(t*3+i)*.12;m.scale.setScalar(.65+Math.sin(Math.min(1,p*4)*Math.PI/2)*.35);m.material.opacity=Math.min(1,p*7)*(1-p)*.85;}}
- if(rig.sac){const inflate=happy?Math.sin(Math.min(1,(1.15-reaction)/.7)*Math.PI)*.5+.5:0;rig.sac.scale.set(.09+inflate*.045,.025+inflate*.055,.045+inflate*.03);}
+ if(rig.sac){const inflate=glow?.55+Math.sin(t*8)*.35:happy?Math.sin(Math.min(1,(1.15-reaction)/.7)*Math.PI)*.5+.5:0;rig.sac.scale.set(.09+inflate*.045,.025+inflate*.055,.045+inflate*.03);}
  if(animal.state!=='TRAPPED')return;
  const amount=happy?Math.sin(Math.max(0,1.15-reaction)*Math.PI):0;
  const motion=animal.reducedMotion?.25:1;
