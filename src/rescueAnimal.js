@@ -25,7 +25,7 @@ export class RescueAnimal {
     this.postGroup=new THREE.Group();this.animalGroup=new THREE.Group();this.ropesGroup=new THREE.Group();
     this.group.add(this.postGroup,this.animalGroup);scene.add(this.group);
     this.ropeCoils=[];this.particles=[];
-    this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.escapeDuration=4.1;
+    this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.escapeDuration=4.4;
     this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;
     this.receiveTimer=0;this.receivePower=1;this.comboMoveTimer=0;this.recoilTimer=0;
     this.moodWorried=0;this.moodExcited=0;this.onRopeSnap=null;
@@ -410,6 +410,117 @@ export class RescueAnimal {
     this.leftArm.rotation.x=this.rightArm.rotation.x=-Math.sin((phase+.12)*Math.PI*2)*.44;
     return y;
   }
+  applyFarewellPose() {
+    const p=clamp((this.escapeElapsed-3.15)/.95,0,1);
+    const motion=this.reducedMotion?.3:1;
+    const gesture=smooth(clamp(p/.22,0,1))*(1-smooth(clamp((p-.78)/.22,0,1)))*motion;
+    const beat=Math.sin(p*Math.PI*3)*gesture;
+    const bounce=Math.sin(p*Math.PI)*motion;
+    const wing=(name,angle)=>{const part=this.model.getObjectByName(name);if(part)part.rotation.y=angle;};
+    switch(this.animalId) {
+      case 'bunny': // A little hop with both ears lifting in reply.
+        this.animalGroup.position.y+=bounce*.12;
+        this.leftEarGroup.rotation.z=.15+gesture*.30;
+        this.rightEarGroup.rotation.z=-.15-gesture*.30;
+        this.rightArm.rotation.z=-.55-beat*.25;
+        break;
+      case 'cat': // Curious head tilt and a curling tail.
+        this.headGroup.rotation.z=-.08-gesture*.22;
+        this.tailGroup.rotation.z=.35+Math.sin(p*Math.PI*4)*gesture*.35;
+        this.leftEarGroup.rotation.z=.08-gesture*.12;
+        break;
+      case 'frog': // One unmistakable spring upward.
+        this.animalGroup.position.y+=Math.sin(p*Math.PI)*.24*motion;
+        this.leftLeg.rotation.x=-gesture*.50;this.rightLeg.rotation.x=gesture*.50;
+        this.leftArm.rotation.z=-gesture*.55;this.rightArm.rotation.z=gesture*.55;
+        break;
+      case 'dog': // Play bow and eager tail wag.
+        this.headGroup.rotation.x=gesture*.20;
+        this.bodyMesh.rotation.x=gesture*.12;
+        this.tailGroup.rotation.z=.30+Math.sin(p*Math.PI*9)*gesture*.30;
+        this.rightArm.rotation.x=-gesture*.30;
+        break;
+      case 'dragon': // Spread the wings before a tiny lift-off.
+        this.animalGroup.position.y+=bounce*.13;
+        wing('Wing_L',-.18-gesture*.65);wing('Wing_R',.18+gesture*.65);
+        this.headGroup.rotation.x=-gesture*.13;
+        this.tailGroup.rotation.z=beat*.20;
+        break;
+      case 'goldenDragon': // A long, flowing bow with whiskers and tail.
+        this.headGroup.rotation.z=-gesture*.20;
+        this.bodyMesh.rotation.z=Math.sin(p*Math.PI*2)*gesture*.09;
+        this.tailGroup.rotation.z=Math.sin(p*Math.PI*2-.8)*gesture*.22;
+        wing('Whisker_L',-gesture*.16);wing('Whisker_R',gesture*.16);
+        break;
+      case 'mcqueen': // Rev and tip the car body toward the child.
+        this.bodyMesh.rotation.z=beat*.08;
+        this.model.rotation.z=-gesture*.045;
+        this.headGroup.rotation.z=beat*.07;
+        break;
+      case 'wolf': // Ears perk up, then a proud little nod.
+        this.leftEarGroup.rotation.z=.10+gesture*.22;
+        this.rightEarGroup.rotation.z=-.10-gesture*.22;
+        this.headGroup.rotation.x=gesture*.15;
+        this.tailGroup.rotation.y=beat*.24;
+        break;
+      case 'teddy': // Open arms for a farewell hug.
+        this.leftArm.rotation.z=-.20-gesture*.75;
+        this.rightArm.rotation.z=.20+gesture*.75;
+        this.headGroup.rotation.z=beat*.08;
+        this.model.scale.x=1+gesture*.07;
+        break;
+      case 'chase': // Police pup salute, then a tail wag.
+        this.rightArm.rotation.z=-.45-gesture*.55;
+        this.headGroup.rotation.z=-gesture*.12;
+        this.tailGroup.rotation.z=Math.sin(p*Math.PI*7)*gesture*.22;
+        break;
+      case 'jett': // Bank like a little airplane.
+        wing('Wing_L',-.08-gesture*.45);wing('Wing_R',.08+gesture*.45);
+        this.animalGroup.rotation.z=beat*.09;
+        this.animalGroup.position.y+=bounce*.09;
+        this.leftArm.rotation.z=-gesture*.28;this.rightArm.rotation.z=gesture*.28;
+        break;
+      case 'peppa': // Cheerful bounce and a small arm greeting.
+        this.animalGroup.position.y+=Math.abs(Math.sin(p*Math.PI*2))*gesture*.07;
+        this.headGroup.rotation.z=beat*.12;
+        this.rightArm.rotation.z=.25+gesture*.40;
+        break;
+      case 'thomas': // A gentle locomotive nod; the face stays attached.
+        this.bodyMesh.rotation.z=beat*.06;
+        this.headGroup.rotation.x=-gesture*.11;
+        this.model.rotation.z=gesture*.025;
+        break;
+      case 'excavator': // Bucket dips like a mechanical bow.
+        this.bodyMesh.rotation.z=beat*.035;
+        {const boom=this.model.getObjectByName('Boom_Base'),elbow=this.model.getObjectByName('Boom_Elbow'),bucket=this.model.getObjectByName('Bucket');
+          if(boom)boom.rotation.z=gesture*.27;
+          if(elbow)elbow.rotation.z=-gesture*.20;
+          if(bucket)bucket.rotation.z=gesture*.30;}
+        break;
+      case 'tayo': // Bus rocks on its wheels with a friendly nod.
+        this.model.rotation.z=beat*.045;
+        this.bodyMesh.rotation.z=beat*.055;
+        this.headGroup.rotation.x=-gesture*.09;
+        break;
+      case 'triceratops': // Horned head dip and broad tail sweep.
+        this.headGroup.rotation.x=gesture*.20;
+        this.tailGroup.rotation.y=Math.sin(p*Math.PI*3)*gesture*.40;
+        this.bodyMesh.rotation.z=beat*.04;
+        break;
+      case 'krashy': // A springy two-step and ear wiggle.
+        this.animalGroup.position.y+=Math.abs(Math.sin(p*Math.PI*2))*gesture*.075;
+        this.leftEarGroup.rotation.z=.10+beat*.18;
+        this.rightEarGroup.rotation.z=-.10-beat*.18;
+        this.headGroup.rotation.z=beat*.10;
+        break;
+      case 'maiqi': // Chick flutters both wings and hops home.
+        this.animalGroup.position.y+=bounce*.08;
+        this.leftArm.rotation.z=-.22-gesture*(.45+Math.sin(p*Math.PI*8)*.18);
+        this.rightArm.rotation.z=.22+gesture*(.45+Math.sin(p*Math.PI*8)*.18);
+        this.headGroup.rotation.z=beat*.08;
+        break;
+    }
+  }
   update(dt,timeSeconds) {
     if(this.isPaused)return;
     this.idleTime+=dt;this.blinkTimer+=dt;
@@ -579,32 +690,30 @@ export class RescueAnimal {
         }else jump=this.animateHop(phase,this.reducedMotion?.025:(this.animalId==='frog'?.35:.22));
         this.dustClock+=dt;
         if(phase>.82&&this.dustClock>.25){this.dustClock=0;this.spawnRunDust(new THREE.Vector3(this.currentX-.12,this.groundY+.03,.16));}
-      }else if(t<3.8) {
+      }else if(t<4.1) {
         if(this.state!=='WAVING')this.onReachedExit?.();
         this.state='WAVING';this.currentX=this.endX;this.currentY=this.groundY;
-        this.animalGroup.position.set(this.endX,this.groundY,.06);this.animalGroup.rotation.x=0;this.model.scale.set(1,1,1);
+        this.animalGroup.position.set(this.endX,this.groundY,.06);this.animalGroup.rotation.set(0,0,0);
+        this.model.scale.set(1,1,1);this.model.rotation.z=0;this.bodyMesh.rotation.z=0;
         this.animalGroup.rotation.y=THREE.MathUtils.lerp(Math.PI/2,0,smooth(clamp((t-3.15)/.22,0,1)));
         this.setQuadrupedPosture(1-smooth(clamp((t-3.15)/.22,0,1)));
-        this.headGroup.rotation.z=-.1;
-        if(['cat','dog','chase'].includes(this.animalId))this.tailGroup.rotation.z=Math.sin((t-3.15)*12)*.3;
-        if(['thomas','excavator','tayo','triceratops'].includes(this.animalId)){this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);if(this.animalId==='triceratops'){this.headGroup.rotation.x=Math.sin((t-3.15)*10)*.12;this.tailGroup.rotation.y=Math.sin((t-3.15)*12)*.3;}}
-        else{this.leftArm.rotation.set(0,0,-1.7+Math.sin((t-3.15)*20)*.22);this.rightArm.rotation.set(0,0,-.1);}
-        this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
+        this.headGroup.rotation.z=0;this.tailGroup.rotation.z=0;
+        this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);
+        this.leftLeg.rotation.set(0,0,0);this.rightLeg.rotation.set(0,0,0);
         this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=0;
       }else {
-        const alpha=1-clamp((t-3.8)/.3,0,1);this.setOpacity(alpha);this.contactShadow.material.opacity=alpha;
+        const alpha=1-clamp((t-4.1)/.3,0,1);this.setOpacity(alpha);this.contactShadow.material.opacity=alpha;
         if(alpha===0){this.state='ESCAPED';this.animalGroup.visible=false;this.contactShadow.visible=false;}
       }
     }
     if(this.animalId==='excavator'){
       const boom=this.model.getObjectByName('Boom_Base'),elbow=this.model.getObjectByName('Boom_Elbow'),bucket=this.model.getObjectByName('Bucket');
       const reaction=this.reactionTimer>0?Math.sin((1-this.reactionTimer/1.15)*Math.PI):0;
-      const wave=this.state==='WAVING'?Math.sin((this.escapeElapsed-3.15)*18)*.20:0;
       const driving=this.state==='ESCAPING'?Math.sin(this.idleTime*11)*.075:0;
       const lively=this.reducedMotion?.35:1;
-      boom.rotation.z=(.06*Math.sin(this.idleTime*1.7)+reaction*.20+wave+driving)*lively;
-      elbow.rotation.z=(-.09*Math.sin(this.idleTime*1.7+.6)-reaction*.16-wave*.55)*lively;
-      bucket.rotation.z=(.10*Math.sin(this.idleTime*2.3)+reaction*.22+wave*.6)*lively;
+      boom.rotation.z=(.06*Math.sin(this.idleTime*1.7)+reaction*.20+driving)*lively;
+      elbow.rotation.z=(-.09*Math.sin(this.idleTime*1.7+.6)-reaction*.16)*lively;
+      bucket.rotation.z=(.10*Math.sin(this.idleTime*2.3)+reaction*.22)*lively;
       if(this.state==='TRAPPED'||this.state==='CHEERING'||this.state==='ESCAPING')this.headGroup.rotation.z+=reaction*.08*lively;
     }
     if(this.animalId==='maiqi'){
@@ -630,6 +739,7 @@ export class RescueAnimal {
       if(swimming){this.animalGroup.rotation.x=Math.sin(this.idleTime*3.5)*.035;this.headGroup.rotation.z=Math.sin(this.idleTime*3.5+.7)*.05;}
       for(const [name,sign]of [['Whisker_L',-1],['Whisker_R',1]]){const whisker=this.model.getObjectByName(name);if(whisker)whisker.rotation.y=sign*Math.sin(this.idleTime*2.7)*amplitude*2;}
     }
+    if(this.state==='WAVING')this.applyFarewellPose();
     if(this.friendFarewell&&this.escapeElapsed<.65){
       const blend=smooth(clamp(this.escapeElapsed/.65,0,1));
       this.animalGroup.position.y+=(this.escapeOriginY-this.groundY)*(1-blend);
