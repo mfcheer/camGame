@@ -158,3 +158,5 @@ Original prompt: 按 MVP_ACCEPTANCE_V0.2.md 验收《彩虹小队》，检查计
 2026-11-15 新增 6 对通关结束语（thanks-for-helping、great-team、my-hero、big-hug、play-again、make-me-smile），池增至 14 对。庆祝中文仍用 Kokoro zf_xiaoxiao / 0.95，离场英文仍用 af_heart / 0.92；未重录旧句。两个脚本从同一短句池取文本，先 dry-run，再定向生成；新增自动检查有效语音、音量和峰值，剥除模型静音并补齐旧音频路径镜像。新句 24 份发布文件与清单 SHA256 核对通过；完整 npm test、Pages 子目录构建通过。浏览器完整 0→8 解救选中 great-team，中文庆祝与英文离场均返回 200，无页面错误，截图目检通过。真机听感仍待家长验收。
 
 2026-11-15 本轮词库：新增16个可看图学习词条（head、arm、leg、finger、three、four、five、chick、butterfly、turtle、orange-fruit、lemon、paper、gray、bubble、sunny），词库总数126；新增数字分类并在词库中显示原有one/two。13张透明WebP和3张数字SVG已在浏览器目检，sunny底板已改为透明；每词英文短读、中文短读和双语音频共48个MP3沿用项目Kokoro/Tingting声线，低音量短读补偿后48文件解码、首音和峰值检查通过，清单哈希核对通过。全部npm test、Pages子目录构建、词库五个分类截图及实际点读检查通过。原有三份未提交QA结果文件保留；未修改玩法/游戏模式，未推送。待家长在iPad真机试听与儿童看图辨认。
+
+2026-11-16 角色制作规范沉淀：新增 docs/CHARACTER_MOTION_STANDARD.md，记录角色动作卡、形体与表情原则、三段庆祝/终点告别时序、18位角色参考、代码接入与浏览器验收。同步更新 AGENTS.md、docs/ADD_CHARACTER.md、docs/CHARACTER_DESIGN_PASS.md 和 README 入口及过时的通用演出描述。本轮只提交文档，工作区其他功能与 QA 文件改动仍保留本地。
