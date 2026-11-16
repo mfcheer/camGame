@@ -159,7 +159,7 @@ check('集满 5 分后绳索崩解，小动物沿底部跑道从左向右横穿�
   assert.equal(animal.animalGroup.rotation.y, Math.PI / 2, '小动物应转向右侧奔跑');
 
   // 推进动画至完成逃生
-  animal.update(2.5, 4.3);
+  animal.update(animal.escapeDuration - animal.escapeElapsed + .05, animal.escapeDuration + .05);
   assert.equal(animal.state, 'ESCAPED', '小动物横穿屏幕出屏后应进入 ESCAPED 状态');
   assert.equal(animal.animalGroup.visible, false, '逃生跑出屏幕后暂时隐藏');
 

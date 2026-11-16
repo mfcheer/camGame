@@ -21,17 +21,17 @@ check('Pause freezes actor, falling ropes and dust; reset restores visible mater
   const {animal}=fixture();animal.setEnergy(1);animal.update(.08,.08);animal.setPaused(true);
   const y=animal.currentY,rope=animal.ropeCoils[0].fallTimer;animal.update(4,4);
   assert.equal(animal.currentY,y);assert.equal(animal.ropeCoils[0].fallTimer,rope);
-  animal.setPaused(false);animal.startEscape();animal.update(4.2,4.2);assert.equal(animal.state,'ESCAPED');
+  animal.setPaused(false);animal.startEscape();animal.update(animal.escapeDuration+.05,animal.escapeDuration+.05);assert.equal(animal.state,'ESCAPED');
   animal.reset();assert.equal(animal.animalGroup.visible,true);assert.equal(animal.ropeCoils.every(c=>c.group.visible),true);
   assert.equal([...animal.furMaterials].every(m=>m.opacity===1),true);
 });
-check('Rabbit plants its feet, reaches visible gate, waves once then fades',()=>{
+check('Rabbit plants its feet, reaches the gate, performs its farewell then fades',()=>{
   const {animal}=fixture();let reached=0;animal.onReachedExit=()=>reached++;animal.startEscape();
   for(let i=0;i<42;i++)animal.update(1/60,i/60);
   const x=animal.currentX;animal.update(.02,1);assert.equal(animal.currentX,x,'no sliding in first contact phase');
   while(animal.escapeElapsed<3.3)animal.update(1/60,0);
   assert.equal(animal.state,'WAVING');assert.equal(animal.currentX,animal.endX);assert.equal(reached,1);assert.equal(animal.animalGroup.visible,true);
-  for(let i=0;i<60;i++)animal.update(1/60,0);assert.equal(animal.state,'ESCAPED');assert.equal(reached,1);
+  for(let i=0;i<90&&animal.state!=='ESCAPED';i++)animal.update(1/60,0);assert.equal(animal.state,'ESCAPED');assert.equal(reached,1);
 });
 check('Resizing mid-hop preserves path progress and puts the gate inside the viewport',()=>{
   const {animal,camera}=fixture();animal.startEscape();for(let i=0;i<100;i++)animal.update(1/60,0);

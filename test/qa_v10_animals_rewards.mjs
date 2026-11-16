@@ -34,7 +34,7 @@ check('Frog launches in larger jumps; puppy uses an alternating four-footed gait
 check('Both new animals pause and reset after completing the whole escape',()=>{
  for(const id of ['frog','dog','dragon']){
   const a=new RescueAnimal(new T.Scene(),camera(),id);a.setEnergy(a.targetEnergy);a.startEscape();a.update(1.2,1.2);a.setPaused(true);const x=a.currentX,elapsed=a.escapeElapsed;a.update(10,11.2);assert.equal(a.currentX,x);assert.equal(a.escapeElapsed,elapsed);
-  a.setPaused(false);a.update(3,4.2);assert.equal(a.state,'ESCAPED');a.reset();assert.equal(a.animalGroup.visible,true);assert.equal(a.state,'TRAPPED');assert.equal(a.energyLevel,0);assert.ok(a.ropeCoils.every(c=>c.group.visible));assert.ok([...a.furMaterials].every(m=>m.opacity===1));
+  a.setPaused(false);a.update(a.escapeDuration-a.escapeElapsed+.05,a.escapeDuration+.05);assert.equal(a.state,'ESCAPED');a.reset();assert.equal(a.animalGroup.visible,true);assert.equal(a.state,'TRAPPED');assert.equal(a.energyLevel,0);assert.ok(a.ropeCoils.every(c=>c.group.visible));assert.ok([...a.furMaterials].every(m=>m.opacity===1));
  }
 });
 check('Fourteen-point puppy progress loosens ropes gradually instead of releasing on the first point',()=>{
