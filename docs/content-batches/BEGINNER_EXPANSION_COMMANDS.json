@@ -1,0 +1,41 @@
+{
+  "phrases": [
+    "red-apple",
+    "yellow-banana",
+    "yellow-duck",
+    "red-heart",
+    "blue-circle",
+    "two-cats",
+    "two-balls",
+    "three-apples",
+    "eat-an-apple",
+    "drink-water",
+    "kick-the-ball",
+    "hug-the-teddy"
+  ],
+  "dialogueLines": [
+    "dialogue-what-is-it",
+    "dialogue-its-a-cat",
+    "dialogue-its-a-dog",
+    "dialogue-what-color",
+    "dialogue-its-red",
+    "dialogue-its-blue",
+    "dialogue-how-many-balls",
+    "dialogue-one-ball",
+    "dialogue-two-balls",
+    "dialogue-what-like",
+    "dialogue-like-apples",
+    "dialogue-like-bananas",
+    "dialogue-what-would-like",
+    "dialogue-milk-please",
+    "dialogue-water-please"
+  ],
+  "kinds": [
+    "learning-phrases",
+    "zh-learning-phrases",
+    "dialogue",
+    "zh-dialogue"
+  ],
+  "procedure": "每kind先 --only <对应ID列表> --dry-run，后同范围定向生成；不使用force。英文入口uv run --no-project --python 3.12 --with kokoro==0.9.4 --with soundfile python scripts/build-natural-phrases.py；中文python3 scripts/build-natural-phrases.py",
+  "art": "python3 scripts/build-beginner-art.py"
+}
