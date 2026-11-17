@@ -22,7 +22,7 @@ if args.force and not args.only:
 profile = json.loads((root/'scripts/voice-profile.json').read_text())
 
 def lift_quiet_word(path):
-    """Keep short word clips audible when one-pass loudnorm underestimates them."""
+    """Keep every clip audible when one-pass loudnorm underestimates short speech."""
     pcm = subprocess.check_output(['ffmpeg', '-v', 'error', '-i', str(path), '-f', 's16le', '-ac', '1', '-ar', '44100', '-'])
     samples = array('h')
     samples.frombytes(pcm)
@@ -34,7 +34,7 @@ def lift_quiet_word(path):
     temp = path.with_name(path.stem + '-boost.mp3')
     gain = 16000 / peak
     subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(path),
-                    '-af', f'volume={gain:.4f},alimiter=limit=0.9',
+                    '-af', f'volume={gain:.9f}',
                     '-ar', str(profile['output_sample_rate']), '-b:a', profile['output_bitrate'], str(temp)], check=True)
     temp.replace(path)
 # Countdown voice sets: one English (Kokoro) and one Chinese (Tingting) 3-2-1-GO per game start.
@@ -166,6 +166,9 @@ for entry in work:
         if args.force or not paths[1].exists():
             subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(wav), '-af', f"{trim},{profile['master_filter']}", *encode, str(paths[1])], check=True)
             lift_quiet_word(paths[1])
+    # Apply the decoded-peak floor to full bilingual clips and both countdown languages too.
+    for path in paths:
+        lift_quiet_word(path)
     record = {'kind': args.kind, 'id': entry['id'], 'text': text, 'zh': entry.get('zh'), 'profile': profile,
               'assets': [{'path': str(path.relative_to(root)), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()} for path in paths]}
     records = [item for item in records if (item['kind'], item['id']) != (args.kind, entry['id'])] + [record]

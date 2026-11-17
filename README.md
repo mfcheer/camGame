@@ -255,3 +255,5 @@ camGame/
 配音维护入口：[配音制作与验收规范](docs/VOICE_STANDARD.md)。智能体先读 [AGENTS.md](AGENTS.md)，英文统一使用已验收的Kokoro af_heart/0.92流程，定向生成并保留制作清单。
 
 角色扩展步骤见 [添加游戏角色](docs/ADD_CHARACTER.md)；形象、眼神、庆祝与告别的设计依据见 [角色形象、表情与动作制作规范](docs/CHARACTER_MOTION_STANDARD.md)。
+
+学习内容扩展入口：[单词与短语资源制作、接入和验收规范](docs/LEARNING_PHRASES.md)，包含资源清单、动静态选择、定向生成、来源记录和交接验收。

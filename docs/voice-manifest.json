@@ -23,7 +23,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/hello-play.mp3",
-        "sha256": "7265521c571e4102f20adafc3db7ba539b9c748990637c710b5718c785aebd01"
+        "sha256": "b545455e50cfd919a528caa1419454518bb847cf5bac15f52c887b63fee77775",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/hello-play.mp3",
+          "original_sha256": "7265521c571e4102f20adafc3db7ba539b9c748990637c710b5718c785aebd01",
+          "sha256": "b545455e50cfd919a528caa1419454518bb847cf5bac15f52c887b63fee77775",
+          "gain_db": 11.124964346993846,
+          "before_peak": 4445,
+          "after_peak": 15033
+        }
       }
     ]
   },
@@ -107,7 +115,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/like-red.mp3",
-        "sha256": "9c1434e722ae0441dcc212ca2fa37ee75d516ad26887332df78f1d3d755b2a47"
+        "sha256": "39b02220e12a8534cd3b1f5d31502e23cd27c63d0c3974dab6b2f84c216201cf",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/like-red.mp3",
+          "original_sha256": "9c1434e722ae0441dcc212ca2fa37ee75d516ad26887332df78f1d3d755b2a47",
+          "sha256": "39b02220e12a8534cd3b1f5d31502e23cd27c63d0c3974dab6b2f84c216201cf",
+          "gain_db": 10.952769337308524,
+          "before_peak": 4534,
+          "after_peak": 15226
+        }
       }
     ]
   },
@@ -135,7 +151,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/like-yellow.mp3",
-        "sha256": "d69e3844036b69cbf6189c66b1e283996436248c929e215a01300bcf9aea9c0f"
+        "sha256": "f884a21e21651161263cf5e173707f2b3c1312bf67049a8c4860cb9956803b16",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/like-yellow.mp3",
+          "original_sha256": "d69e3844036b69cbf6189c66b1e283996436248c929e215a01300bcf9aea9c0f",
+          "sha256": "f884a21e21651161263cf5e173707f2b3c1312bf67049a8c4860cb9956803b16",
+          "gain_db": 13.696342668409923,
+          "before_peak": 3306,
+          "after_peak": 15131
+        }
       }
     ]
   },
@@ -163,7 +187,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/like-blue.mp3",
-        "sha256": "9a6429ffb8c4c4f5dddc20463411c18dca006bc66ad6e1e5464ec9f203b952dd"
+        "sha256": "7eb90d4ca603685662d92d4695ee3b6d1069c1237594436163e8b2ed54a7b20a",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/like-blue.mp3",
+          "original_sha256": "9a6429ffb8c4c4f5dddc20463411c18dca006bc66ad6e1e5464ec9f203b952dd",
+          "sha256": "7eb90d4ca603685662d92d4695ee3b6d1069c1237594436163e8b2ed54a7b20a",
+          "gain_db": 11.187721104174646,
+          "before_peak": 4413,
+          "after_peak": 15169
+        }
       }
     ]
   },
@@ -191,7 +223,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/like-green.mp3",
-        "sha256": "eb8a9c31e607ae28697fecfab883925b4ef81c218baa204929be2cab8deb6eca"
+        "sha256": "900642aa9b3be40c4648620abca6575d67018b5f14c3d1ef27dedf7fd7e4b311",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/like-green.mp3",
+          "original_sha256": "eb8a9c31e607ae28697fecfab883925b4ef81c218baa204929be2cab8deb6eca",
+          "sha256": "900642aa9b3be40c4648620abca6575d67018b5f14c3d1ef27dedf7fd7e4b311",
+          "gain_db": 13.348706200699894,
+          "before_peak": 3441,
+          "after_peak": 15159
+        }
       }
     ]
   },
@@ -219,7 +259,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/like-orange.mp3",
-        "sha256": "38b7d132948b67f8da263d9f177d8806c4ed3632eb2885fb507de1612be60353"
+        "sha256": "325ceb0a501a4f119d8e9a472d0cb4b72343a5f2d4bfadcab95c4fb297c5f376",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/like-orange.mp3",
+          "original_sha256": "38b7d132948b67f8da263d9f177d8806c4ed3632eb2885fb507de1612be60353",
+          "sha256": "325ceb0a501a4f119d8e9a472d0cb4b72343a5f2d4bfadcab95c4fb297c5f376",
+          "gain_db": 10.266078493500185,
+          "before_peak": 4907,
+          "after_peak": 15263
+        }
       }
     ]
   },
@@ -247,7 +295,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/play-ball.mp3",
-        "sha256": "508234fafacddfca69675a2535c47df23590eedeec19cf571d36d176968171bc"
+        "sha256": "c57fb431fd615ef95d4bddeeb5838ae4b74eb99776fe09a925c96cb06093e53b",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/play-ball.mp3",
+          "original_sha256": "508234fafacddfca69675a2535c47df23590eedeec19cf571d36d176968171bc",
+          "sha256": "c57fb431fd615ef95d4bddeeb5838ae4b74eb99776fe09a925c96cb06093e53b",
+          "gain_db": 10.274933514797313,
+          "before_peak": 4902,
+          "after_peak": 15248
+        }
       }
     ]
   },
@@ -275,7 +331,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/thank-you.mp3",
-        "sha256": "41c987f82fcf8fbf2e9270feeac73391bbdcbdd1be68a3b25785bc1ddeacc7f8"
+        "sha256": "123ed9cb8d6f39e5669450fd00260691a7c7094fbe288c36feabf3a278593a17",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/thank-you.mp3",
+          "original_sha256": "41c987f82fcf8fbf2e9270feeac73391bbdcbdd1be68a3b25785bc1ddeacc7f8",
+          "sha256": "123ed9cb8d6f39e5669450fd00260691a7c7094fbe288c36feabf3a278593a17",
+          "gain_db": 10.362193826812785,
+          "before_peak": 4853,
+          "after_peak": 15193
+        }
       }
     ]
   },
@@ -359,7 +423,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/goodbye.mp3",
-        "sha256": "d1a62f0f6435a9af814dca8c1404b5e88db604e22b9ee0de9b479ce6ec0b793d"
+        "sha256": "f7cf1b19d4a14c142f977ccc49a5b62020820de687d56e9861d9872e2b7ef36a",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/goodbye.mp3",
+          "original_sha256": "d1a62f0f6435a9af814dca8c1404b5e88db604e22b9ee0de9b479ce6ec0b793d",
+          "sha256": "f7cf1b19d4a14c142f977ccc49a5b62020820de687d56e9861d9872e2b7ef36a",
+          "gain_db": 10.417855532289797,
+          "before_peak": 4822,
+          "after_peak": 15253
+        }
       }
     ]
   },
@@ -527,7 +599,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/teacher.mp3",
-        "sha256": "b5b81ea52370abc02b8f8319ca3dac00e1f368345f846b8811338624f824d428"
+        "sha256": "2949715f3c0da71355c890f98891a622b92052245c60506b539a25d051bdd5ea",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/teacher.mp3",
+          "original_sha256": "b5b81ea52370abc02b8f8319ca3dac00e1f368345f846b8811338624f824d428",
+          "sha256": "2949715f3c0da71355c890f98891a622b92052245c60506b539a25d051bdd5ea",
+          "gain_db": 14.949007064643345,
+          "before_peak": 2862,
+          "after_peak": 15205
+        }
       }
     ]
   },
@@ -975,7 +1055,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/toy.mp3",
-        "sha256": "f854e052036dc506ccecf19e2fc77f418209cf73d503eb220a1c6e816f3eed50"
+        "sha256": "f3a627d5e06129a00d35197e480f95c335fe83c98d49bf747cbe1dcb390cba58",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/toy.mp3",
+          "original_sha256": "f854e052036dc506ccecf19e2fc77f418209cf73d503eb220a1c6e816f3eed50",
+          "sha256": "f3a627d5e06129a00d35197e480f95c335fe83c98d49bf747cbe1dcb390cba58",
+          "gain_db": 16.172377167005976,
+          "before_peak": 2486,
+          "after_peak": 15195
+        }
       }
     ]
   },
@@ -1087,7 +1175,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/drum.mp3",
-        "sha256": "ecde06b1eabcdd272eece94b05003e163c9bea0e38613a6941982adb7b87bd9d"
+        "sha256": "b2cccd06b665214fdbf849e7ed56a56138cccfded6be5a685c4fdda4496e8314",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/drum.mp3",
+          "original_sha256": "ecde06b1eabcdd272eece94b05003e163c9bea0e38613a6941982adb7b87bd9d",
+          "sha256": "b2cccd06b665214fdbf849e7ed56a56138cccfded6be5a685c4fdda4496e8314",
+          "gain_db": 10.817806962461141,
+          "before_peak": 4605,
+          "after_peak": 15199
+        }
       }
     ]
   },
@@ -1227,7 +1323,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/two.mp3",
-        "sha256": "a589d87bfb15f90e0e835503a63c8a125f0e8a5b9a366d89bd31ff7a3c01d040"
+        "sha256": "0786e2d04e31a39d171f43f71956012d1d97b9e752d0700fee74d608bc11ef6a",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/two.mp3",
+          "original_sha256": "a589d87bfb15f90e0e835503a63c8a125f0e8a5b9a366d89bd31ff7a3c01d040",
+          "sha256": "0786e2d04e31a39d171f43f71956012d1d97b9e752d0700fee74d608bc11ef6a",
+          "gain_db": 13.445160671202308,
+          "before_peak": 3403,
+          "after_peak": 15201
+        }
       }
     ]
   },
@@ -1283,7 +1387,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/fish.mp3",
-        "sha256": "df247bac32ec9e42e37f34c5a97d79d58fecc11333f88a00b78b2d9c364544c2"
+        "sha256": "072ea45b428aab52963e57aa3e4bc26972ed50e7dc0a115760226a7247d69f35",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/fish.mp3",
+          "original_sha256": "df247bac32ec9e42e37f34c5a97d79d58fecc11333f88a00b78b2d9c364544c2",
+          "sha256": "072ea45b428aab52963e57aa3e4bc26972ed50e7dc0a115760226a7247d69f35",
+          "gain_db": 10.294446396692848,
+          "before_peak": 4891,
+          "after_peak": 15220
+        }
       }
     ]
   },
@@ -1311,7 +1423,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/bird.mp3",
-        "sha256": "3faec62f36212d4b3d7cc3f0b7f972230ab5c19acfd1d268ec16c5862a7f3c8c"
+        "sha256": "b4f73accd2cc75ce7a00c7bc5c4fedff10307ee010ad03e652bd590d5a76337e",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/bird.mp3",
+          "original_sha256": "3faec62f36212d4b3d7cc3f0b7f972230ab5c19acfd1d268ec16c5862a7f3c8c",
+          "sha256": "b4f73accd2cc75ce7a00c7bc5c4fedff10307ee010ad03e652bd590d5a76337e",
+          "gain_db": 12.089104077350159,
+          "before_peak": 3978,
+          "after_peak": 15203
+        }
       }
     ]
   },
@@ -1339,7 +1459,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/cat.mp3",
-        "sha256": "7a4ede29ca1deafeb564737161073a4667a7fb356400a960f6198a95d5e49d70"
+        "sha256": "8dfb1bb25c1e8c80c713d6deb0326eb067ba0ca1fbaec028efcd5fe719b3d722",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/cat.mp3",
+          "original_sha256": "7a4ede29ca1deafeb564737161073a4667a7fb356400a960f6198a95d5e49d70",
+          "sha256": "8dfb1bb25c1e8c80c713d6deb0326eb067ba0ca1fbaec028efcd5fe719b3d722",
+          "gain_db": 13.914498990457433,
+          "before_peak": 3224,
+          "after_peak": 15192
+        }
       }
     ]
   },
@@ -1367,7 +1495,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/dog.mp3",
-        "sha256": "37e8acf75cddc13129354367a4c98d8b30995848312b7e8b741545ffdc116cd6"
+        "sha256": "414964f36884ae8a7bc3706924c586c51603499d13b8e72a5da1233053eb703d",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/dog.mp3",
+          "original_sha256": "37e8acf75cddc13129354367a4c98d8b30995848312b7e8b741545ffdc116cd6",
+          "sha256": "414964f36884ae8a7bc3706924c586c51603499d13b8e72a5da1233053eb703d",
+          "gain_db": 13.043645745821753,
+          "before_peak": 3564,
+          "after_peak": 15192
+        }
       }
     ]
   },
@@ -1423,7 +1559,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/horse.mp3",
-        "sha256": "48090a2a3f5530041e99ffc7f94e01d4f12181f1511aad493555e0f65e5dba4c"
+        "sha256": "783c6101fe8cd23bde2b8bacb3322a448fb4b1d17c336bcc45ab5a8e9a16cc8c",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/horse.mp3",
+          "original_sha256": "48090a2a3f5530041e99ffc7f94e01d4f12181f1511aad493555e0f65e5dba4c",
+          "sha256": "783c6101fe8cd23bde2b8bacb3322a448fb4b1d17c336bcc45ab5a8e9a16cc8c",
+          "gain_db": 11.217295152623063,
+          "before_peak": 4398,
+          "after_peak": 15197
+        }
       }
     ]
   },
@@ -1451,7 +1595,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/kid.mp3",
-        "sha256": "97ccf054e417f81e1964f2ae13c8aab058f34e1959331a8f4d0ded732120d306"
+        "sha256": "afeb2c4bd5ffbd78a3d2bdf37ab5387cc9e0508be6b32dc2fff13212619e191d",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/kid.mp3",
+          "original_sha256": "97ccf054e417f81e1964f2ae13c8aab058f34e1959331a8f4d0ded732120d306",
+          "sha256": "afeb2c4bd5ffbd78a3d2bdf37ab5387cc9e0508be6b32dc2fff13212619e191d",
+          "gain_db": 16.416866644965488,
+          "before_peak": 2417,
+          "after_peak": 15205
+        }
       }
     ]
   },
@@ -1771,7 +1923,15 @@
       },
       {
         "path": "public/audio/words/review/oval.mp3",
-        "sha256": "dbc384fe26b78b22a43e76fcd4bcbcf74e9428d588170d6893aef92c3de0a72e"
+        "sha256": "a1a7c3ac63c85c2db96a3afb62bc16f725f73ce2225009d55fd9512e1bb1be89",
+        "volume_remaster": {
+          "path": "public/audio/words/review/oval.mp3",
+          "original_sha256": "dbc384fe26b78b22a43e76fcd4bcbcf74e9428d588170d6893aef92c3de0a72e",
+          "sha256": "a1a7c3ac63c85c2db96a3afb62bc16f725f73ce2225009d55fd9512e1bb1be89",
+          "gain_db": 10.865090093041111,
+          "before_peak": 4580,
+          "after_peak": 15265
+        }
       }
     ]
   },
@@ -1803,7 +1963,15 @@
       },
       {
         "path": "public/audio/words/review/pink.mp3",
-        "sha256": "90eba5e242d1b050be6bb52c78cee8c8f8a190ad7b055fd117295c7be7575f9f"
+        "sha256": "23b673619b3a56ab7abd7dc7db5e0bb2286d985783dc53121442cb05855fa61c",
+        "volume_remaster": {
+          "path": "public/audio/words/review/pink.mp3",
+          "original_sha256": "90eba5e242d1b050be6bb52c78cee8c8f8a190ad7b055fd117295c7be7575f9f",
+          "sha256": "23b673619b3a56ab7abd7dc7db5e0bb2286d985783dc53121442cb05855fa61c",
+          "gain_db": 10.403457038088252,
+          "before_peak": 4830,
+          "after_peak": 15194
+        }
       }
     ]
   },
@@ -1931,7 +2099,15 @@
       },
       {
         "path": "public/audio/words/review/eraser.mp3",
-        "sha256": "f33e0a086fcb373eae4d13c786bc724ab13db8024248b6e52692164a25b6733f"
+        "sha256": "90e43384ada7139f630e7607323f2970cbeb4584cf1e441a1535a1e7eb30ce51",
+        "volume_remaster": {
+          "path": "public/audio/words/review/eraser.mp3",
+          "original_sha256": "f33e0a086fcb373eae4d13c786bc724ab13db8024248b6e52692164a25b6733f",
+          "sha256": "90e43384ada7139f630e7607323f2970cbeb4584cf1e441a1535a1e7eb30ce51",
+          "gain_db": 12.337162659267811,
+          "before_peak": 3866,
+          "after_peak": 15178
+        }
       }
     ]
   },
@@ -1995,7 +2171,15 @@
       },
       {
         "path": "public/audio/words/review/schoolbag.mp3",
-        "sha256": "5e8a279b02a208dc8c3f8f969275977262190f609a17041c3fa7f4800cfe778e"
+        "sha256": "47bc765f77faece1fdb3f338f7be51cd77e89d731b81b8f669dc83d1a926a55a",
+        "volume_remaster": {
+          "path": "public/audio/words/review/schoolbag.mp3",
+          "original_sha256": "5e8a279b02a208dc8c3f8f969275977262190f609a17041c3fa7f4800cfe778e",
+          "sha256": "47bc765f77faece1fdb3f338f7be51cd77e89d731b81b8f669dc83d1a926a55a",
+          "gain_db": 10.188541126488813,
+          "before_peak": 4951,
+          "after_peak": 15203
+        }
       }
     ]
   },
@@ -2027,7 +2211,15 @@
       },
       {
         "path": "public/audio/words/review/scissors.mp3",
-        "sha256": "c1ce972397bf13e6af0004df8701389f853ae3b3f0ff7aa43b1937db49969469"
+        "sha256": "93e06e290de8e7649cc9e77863f914ab4019000d6e0815e33055f668a694b3a5",
+        "volume_remaster": {
+          "path": "public/audio/words/review/scissors.mp3",
+          "original_sha256": "c1ce972397bf13e6af0004df8701389f853ae3b3f0ff7aa43b1937db49969469",
+          "sha256": "93e06e290de8e7649cc9e77863f914ab4019000d6e0815e33055f668a694b3a5",
+          "gain_db": 10.269619418799149,
+          "before_peak": 4905,
+          "after_peak": 15199
+        }
       }
     ]
   },
@@ -2059,7 +2251,15 @@
       },
       {
         "path": "public/audio/words/review/puzzle.mp3",
-        "sha256": "2df18953ebac99a00ca61c1ca5bcd082d07399860b4eab3c3c6cb4739816f10b"
+        "sha256": "6322c2fb8d1d35d32ccb0218e9c58c9bf2752607d60091f1a61c2c78c5405426",
+        "volume_remaster": {
+          "path": "public/audio/words/review/puzzle.mp3",
+          "original_sha256": "2df18953ebac99a00ca61c1ca5bcd082d07399860b4eab3c3c6cb4739816f10b",
+          "sha256": "6322c2fb8d1d35d32ccb0218e9c58c9bf2752607d60091f1a61c2c78c5405426",
+          "gain_db": 10.369355970808007,
+          "before_peak": 4849,
+          "after_peak": 15179
+        }
       }
     ]
   },
@@ -2091,7 +2291,15 @@
       },
       {
         "path": "public/audio/words/review/balloon.mp3",
-        "sha256": "8a90ed9990abb7ade94ae955fec830a1b6e200cc223134f17c90dc8a91d72cdb"
+        "sha256": "d96196931b7455bde234b9dc78c6e1cdddef0d7883bf7b55e1d179e0af3fb126",
+        "volume_remaster": {
+          "path": "public/audio/words/review/balloon.mp3",
+          "original_sha256": "8a90ed9990abb7ade94ae955fec830a1b6e200cc223134f17c90dc8a91d72cdb",
+          "sha256": "d96196931b7455bde234b9dc78c6e1cdddef0d7883bf7b55e1d179e0af3fb126",
+          "gain_db": 10.276705602865903,
+          "before_peak": 4901,
+          "after_peak": 15164
+        }
       }
     ]
   },
@@ -2155,7 +2363,15 @@
       },
       {
         "path": "public/audio/words/review/swing.mp3",
-        "sha256": "936ea5f619e3a7aee9bbf0bc2fe8f7bcad3ee64eae1cd9e1063234f88c12cd36"
+        "sha256": "510ec019ed7b94c51628402083d50cc77ccacabfa9d4a3c7c708eeaf45fa99d2",
+        "volume_remaster": {
+          "path": "public/audio/words/review/swing.mp3",
+          "original_sha256": "936ea5f619e3a7aee9bbf0bc2fe8f7bcad3ee64eae1cd9e1063234f88c12cd36",
+          "sha256": "510ec019ed7b94c51628402083d50cc77ccacabfa9d4a3c7c708eeaf45fa99d2",
+          "gain_db": 10.326471425492603,
+          "before_peak": 4873,
+          "after_peak": 15208
+        }
       }
     ]
   },
@@ -2251,7 +2467,15 @@
       },
       {
         "path": "public/audio/words/review/frog.mp3",
-        "sha256": "78bb912255eaada5712d177dc50d3911653270edf7d4799c747a6b348c51c5c7"
+        "sha256": "7c47298e62a229c1a9f502b5d4bf511a0f149bcaa83d8db84b793a5585cd8709",
+        "volume_remaster": {
+          "path": "public/audio/words/review/frog.mp3",
+          "original_sha256": "78bb912255eaada5712d177dc50d3911653270edf7d4799c747a6b348c51c5c7",
+          "sha256": "7c47298e62a229c1a9f502b5d4bf511a0f149bcaa83d8db84b793a5585cd8709",
+          "gain_db": 10.297998907841784,
+          "before_peak": 4889,
+          "after_peak": 15238
+        }
       }
     ]
   },
@@ -2283,7 +2507,15 @@
       },
       {
         "path": "public/audio/words/review/sheep.mp3",
-        "sha256": "bd7541399f750e4cc85fb99262113211f6448c2c1b662d57b0836837a101271a"
+        "sha256": "37518532262d225a6698ffccf536ffddc48abc5b997a42b5471a55980779cad8",
+        "volume_remaster": {
+          "path": "public/audio/words/review/sheep.mp3",
+          "original_sha256": "bd7541399f750e4cc85fb99262113211f6448c2c1b662d57b0836837a101271a",
+          "sha256": "37518532262d225a6698ffccf536ffddc48abc5b997a42b5471a55980779cad8",
+          "gain_db": 10.283797572754134,
+          "before_peak": 4897,
+          "after_peak": 15205
+        }
       }
     ]
   },
@@ -2315,7 +2547,15 @@
       },
       {
         "path": "public/audio/words/review/face.mp3",
-        "sha256": "d893809b1eea8c6a105c0608588fb01b3c4f1ffdd2d95a829a57a59e58b563bd"
+        "sha256": "8f8d522e9da390063a2f9d6b274b6892c86077155ea9f8a8949615aafed41652",
+        "volume_remaster": {
+          "path": "public/audio/words/review/face.mp3",
+          "original_sha256": "d893809b1eea8c6a105c0608588fb01b3c4f1ffdd2d95a829a57a59e58b563bd",
+          "sha256": "8f8d522e9da390063a2f9d6b274b6892c86077155ea9f8a8949615aafed41652",
+          "gain_db": 10.484760810861246,
+          "before_peak": 4785,
+          "after_peak": 15187
+        }
       }
     ]
   },
@@ -2347,7 +2587,15 @@
       },
       {
         "path": "public/audio/words/review/eye.mp3",
-        "sha256": "c74237c6d0697e3f763adf6e0c700a36632c78051815dd44d13095af3f21b8b3"
+        "sha256": "a86f24e8aa3bc8ea6d1a7d76de99898a9ccdfeba23db508aa1a432a01c54d464",
+        "volume_remaster": {
+          "path": "public/audio/words/review/eye.mp3",
+          "original_sha256": "c74237c6d0697e3f763adf6e0c700a36632c78051815dd44d13095af3f21b8b3",
+          "sha256": "a86f24e8aa3bc8ea6d1a7d76de99898a9ccdfeba23db508aa1a432a01c54d464",
+          "gain_db": 11.370714326893893,
+          "before_peak": 4321,
+          "after_peak": 15195
+        }
       }
     ]
   },
@@ -2507,7 +2755,15 @@
       },
       {
         "path": "public/audio/words/review/weather.mp3",
-        "sha256": "1aaf1c819f034e47991cce194c4782694ee2d21d77c5f7918ee02debe111771d"
+        "sha256": "3c3aaa1b81b891b73fad4783b0d3abe92c2ee07d05b7e26099375afa29cd7062",
+        "volume_remaster": {
+          "path": "public/audio/words/review/weather.mp3",
+          "original_sha256": "1aaf1c819f034e47991cce194c4782694ee2d21d77c5f7918ee02debe111771d",
+          "sha256": "3c3aaa1b81b891b73fad4783b0d3abe92c2ee07d05b7e26099375afa29cd7062",
+          "gain_db": 10.3711474299539,
+          "before_peak": 4848,
+          "after_peak": 15185
+        }
       }
     ]
   },
@@ -2571,7 +2827,15 @@
       },
       {
         "path": "public/audio/words/review/happy.mp3",
-        "sha256": "3b70298426ca58f123102d50a69dea2f102812f76431cf6901b7975f748e1392"
+        "sha256": "4744e00a03d25894054782bd47e315721820b26fdf6ec5db0a85181a175a8f25",
+        "volume_remaster": {
+          "path": "public/audio/words/review/happy.mp3",
+          "original_sha256": "3b70298426ca58f123102d50a69dea2f102812f76431cf6901b7975f748e1392",
+          "sha256": "4744e00a03d25894054782bd47e315721820b26fdf6ec5db0a85181a175a8f25",
+          "gain_db": 10.32112571419161,
+          "before_peak": 4876,
+          "after_peak": 15179
+        }
       }
     ]
   },
@@ -2711,7 +2975,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/white.mp3",
-        "sha256": "8e5e83d5dae894821a51f46f09f35fd34bd8474d6522c84b979bc0b9a7952fba"
+        "sha256": "11900cf11794caf90a2a6e6e0c3a5b4072a8245a4416509551b47290d650971b",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/white.mp3",
+          "original_sha256": "8e5e83d5dae894821a51f46f09f35fd34bd8474d6522c84b979bc0b9a7952fba",
+          "sha256": "11900cf11794caf90a2a6e6e0c3a5b4072a8245a4416509551b47290d650971b",
+          "gain_db": 18.590007271293732,
+          "before_peak": 1882,
+          "after_peak": 15184
+        }
       }
     ]
   },
@@ -2963,7 +3235,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/slide.mp3",
-        "sha256": "04d3061aa6c92ef872b04c2364bb1bc9b5d24bf37a26f35ae0c3f0ab2abb716b"
+        "sha256": "af07493c245a9b69c6a8d50ad4178d279323d4779aca7c8b5235856d9aac2376",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/slide.mp3",
+          "original_sha256": "04d3061aa6c92ef872b04c2364bb1bc9b5d24bf37a26f35ae0c3f0ab2abb716b",
+          "sha256": "af07493c245a9b69c6a8d50ad4178d279323d4779aca7c8b5235856d9aac2376",
+          "gain_db": 14.069438385680257,
+          "before_peak": 3167,
+          "after_peak": 15183
+        }
       }
     ]
   },
@@ -3047,7 +3327,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/duck.mp3",
-        "sha256": "a00e5d2e0152fcf14cb38f5dd5c940ee9dae7bbcdbd6ac0dd37aaa5744875a2f"
+        "sha256": "926d5ce919520bc7738afee82d29cb4c3d7ede85cfcaa9f1a61b8b3ddfe5d279",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/duck.mp3",
+          "original_sha256": "a00e5d2e0152fcf14cb38f5dd5c940ee9dae7bbcdbd6ac0dd37aaa5744875a2f",
+          "sha256": "926d5ce919520bc7738afee82d29cb4c3d7ede85cfcaa9f1a61b8b3ddfe5d279",
+          "gain_db": 15.220270518373173,
+          "before_peak": 2774,
+          "after_peak": 15197
+        }
       }
     ]
   },
@@ -3131,7 +3419,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/face.mp3",
-        "sha256": "c53aa10303657a8675a15ae9fe7fc0a99ba3d771109a7af4596175da3f923da4"
+        "sha256": "986f88ac66ced686ea73fa8b2a42aba2961f0d770003576804184c107b54c839",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/face.mp3",
+          "original_sha256": "c53aa10303657a8675a15ae9fe7fc0a99ba3d771109a7af4596175da3f923da4",
+          "sha256": "986f88ac66ced686ea73fa8b2a42aba2961f0d770003576804184c107b54c839",
+          "gain_db": 14.67713071381693,
+          "before_peak": 2953,
+          "after_peak": 15177
+        }
       }
     ]
   },
@@ -3215,7 +3511,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/mouth.mp3",
-        "sha256": "5f68b11d125c8418eba3ac5433cf75ace20ec8543e2ccac143ab5789bb652ca3"
+        "sha256": "6eeb79b40498e9b777941143c6eda02606e0c119afd7f7c536dbd44a8ae44ffb",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/mouth.mp3",
+          "original_sha256": "5f68b11d125c8418eba3ac5433cf75ace20ec8543e2ccac143ab5789bb652ca3",
+          "sha256": "6eeb79b40498e9b777941143c6eda02606e0c119afd7f7c536dbd44a8ae44ffb",
+          "gain_db": 15.759579029751919,
+          "before_peak": 2607,
+          "after_peak": 15209
+        }
       }
     ]
   },
@@ -3327,7 +3631,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/one.mp3",
-        "sha256": "6d19791153f7ec3ea96425f3866e4114d792004df06a52c0c0a7d204551b6ecd"
+        "sha256": "fa7e30a38b78ed330064b7171cd1ed4b0527964008474cbf0988f1c58ec85e42",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/one.mp3",
+          "original_sha256": "6d19791153f7ec3ea96425f3866e4114d792004df06a52c0c0a7d204551b6ecd",
+          "sha256": "fa7e30a38b78ed330064b7171cd1ed4b0527964008474cbf0988f1c58ec85e42",
+          "gain_db": 10.280250863991885,
+          "before_peak": 4899,
+          "after_peak": 15185
+        }
       }
     ]
   },
@@ -3387,7 +3699,15 @@
       },
       {
         "path": "public/audio/countdown/zh/3.mp3",
-        "sha256": "46d15c04099f350bfddfb87887bf4f397d129b3fd327bb678dcc8901d6bd53f5"
+        "sha256": "e47c8148e620cd336b41a8232e334713b97900494ad7a89b7d11f0ea995dd318",
+        "volume_remaster": {
+          "path": "public/audio/countdown/zh/3.mp3",
+          "original_sha256": "46d15c04099f350bfddfb87887bf4f397d129b3fd327bb678dcc8901d6bd53f5",
+          "sha256": "e47c8148e620cd336b41a8232e334713b97900494ad7a89b7d11f0ea995dd318",
+          "gain_db": 12.411623268031454,
+          "before_peak": 3833,
+          "after_peak": 15218
+        }
       }
     ]
   },
@@ -3419,7 +3739,15 @@
       },
       {
         "path": "public/audio/countdown/zh/2.mp3",
-        "sha256": "a589d87bfb15f90e0e835503a63c8a125f0e8a5b9a366d89bd31ff7a3c01d040"
+        "sha256": "0786e2d04e31a39d171f43f71956012d1d97b9e752d0700fee74d608bc11ef6a",
+        "volume_remaster": {
+          "path": "public/audio/countdown/zh/2.mp3",
+          "original_sha256": "a589d87bfb15f90e0e835503a63c8a125f0e8a5b9a366d89bd31ff7a3c01d040",
+          "sha256": "0786e2d04e31a39d171f43f71956012d1d97b9e752d0700fee74d608bc11ef6a",
+          "gain_db": 13.445160671202308,
+          "before_peak": 3403,
+          "after_peak": 15201
+        }
       }
     ]
   },
@@ -3451,7 +3779,15 @@
       },
       {
         "path": "public/audio/countdown/zh/1.mp3",
-        "sha256": "6d19791153f7ec3ea96425f3866e4114d792004df06a52c0c0a7d204551b6ecd"
+        "sha256": "fa7e30a38b78ed330064b7171cd1ed4b0527964008474cbf0988f1c58ec85e42",
+        "volume_remaster": {
+          "path": "public/audio/countdown/zh/1.mp3",
+          "original_sha256": "6d19791153f7ec3ea96425f3866e4114d792004df06a52c0c0a7d204551b6ecd",
+          "sha256": "fa7e30a38b78ed330064b7171cd1ed4b0527964008474cbf0988f1c58ec85e42",
+          "gain_db": 10.280250863991885,
+          "before_peak": 4899,
+          "after_peak": 15185
+        }
       }
     ]
   },
@@ -3483,7 +3819,15 @@
       },
       {
         "path": "public/audio/countdown/zh/go.mp3",
-        "sha256": "8758d722b63c82a423873caaef83ce9303c9fc04124501784f9109518a71e872"
+        "sha256": "c8db710a831520c474f42034957fe6ed5eb7cb102c1b289d8d5186affb14f398",
+        "volume_remaster": {
+          "path": "public/audio/countdown/zh/go.mp3",
+          "original_sha256": "8758d722b63c82a423873caaef83ce9303c9fc04124501784f9109518a71e872",
+          "sha256": "c8db710a831520c474f42034957fe6ed5eb7cb102c1b289d8d5186affb14f398",
+          "gain_db": 15.752918071114081,
+          "before_peak": 2609,
+          "after_peak": 15199
+        }
       }
     ]
   },
@@ -3679,7 +4023,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/pear.mp3",
-        "sha256": "be45ce7ae29d31368ca84b1d1ca75b88a5667a8559d43bab9e91c286b5c4ff6d"
+        "sha256": "e77d7c8aa5a5b5b8b756e2d993942b2fd757b0d6a277920ca916b4e435316a35",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/pear.mp3",
+          "original_sha256": "be45ce7ae29d31368ca84b1d1ca75b88a5667a8559d43bab9e91c286b5c4ff6d",
+          "sha256": "e77d7c8aa5a5b5b8b756e2d993942b2fd757b0d6a277920ca916b4e435316a35",
+          "gain_db": 10.330037061683097,
+          "before_peak": 4871,
+          "after_peak": 15185
+        }
       }
     ]
   },
@@ -3991,7 +4343,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/water.mp3",
-        "sha256": "9b00649cb84b520979e6f16deecae16a64ce119f602de5d9edd631cd71087c2e"
+        "sha256": "2f0952db421c883aed4fcc23ba940fe0e324971e2b033e15a6a629065f5455a7",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/water.mp3",
+          "original_sha256": "9b00649cb84b520979e6f16deecae16a64ce119f602de5d9edd631cd71087c2e",
+          "sha256": "2f0952db421c883aed4fcc23ba940fe0e324971e2b033e15a6a629065f5455a7",
+          "gain_db": 12.292343727843223,
+          "before_peak": 3886,
+          "after_peak": 15216
+        }
       }
     ]
   },
@@ -4075,7 +4435,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/tea.mp3",
-        "sha256": "90583635fdf89277bec1363c1e9bdb6a96a2316ab8b3ad2b5c100cf110e4393c"
+        "sha256": "3f0b28daacd2196c1edc4173fd2b34b71613fbd706d3ac85dea4b79ca617fe5a",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/tea.mp3",
+          "original_sha256": "90583635fdf89277bec1363c1e9bdb6a96a2316ab8b3ad2b5c100cf110e4393c",
+          "sha256": "3f0b28daacd2196c1edc4173fd2b34b71613fbd706d3ac85dea4b79ca617fe5a",
+          "gain_db": 10.855612852997698,
+          "before_peak": 4585,
+          "after_peak": 15205
+        }
       }
     ]
   },
@@ -4131,7 +4499,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/soup.mp3",
-        "sha256": "1d84744d7259c54a634ee819b5833d76bd84797f52b4d510d464da3dd7a45c8d"
+        "sha256": "0e18625ced4a14c4ce5f6026dfda8771fb3f1c5e3344ae23ae3cdefd58bc5bc6",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/soup.mp3",
+          "original_sha256": "1d84744d7259c54a634ee819b5833d76bd84797f52b4d510d464da3dd7a45c8d",
+          "sha256": "0e18625ced4a14c4ce5f6026dfda8771fb3f1c5e3344ae23ae3cdefd58bc5bc6",
+          "gain_db": 10.555844975492093,
+          "before_peak": 4746,
+          "after_peak": 15207
+        }
       }
     ]
   },
@@ -4519,7 +4895,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/monkey.mp3",
-        "sha256": "7104a2bb35181d3a3bbe68ec0bfaaf40e0a0e78b9dad2e66d545226004b51e27"
+        "sha256": "c230cdbd0445666862df6b42d177dbcbe8a41113af59dc5d508d684b7f2a5b6d",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/monkey.mp3",
+          "original_sha256": "7104a2bb35181d3a3bbe68ec0bfaaf40e0a0e78b9dad2e66d545226004b51e27",
+          "sha256": "c230cdbd0445666862df6b42d177dbcbe8a41113af59dc5d508d684b7f2a5b6d",
+          "gain_db": 12.748936900996167,
+          "before_peak": 3687,
+          "after_peak": 15218
+        }
       }
     ]
   },
@@ -4547,7 +4931,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/pig.mp3",
-        "sha256": "86bb190c0684af9465a01d193382a36adc91801ea3070db95ed21f35d99bed2b"
+        "sha256": "88587a13c41477bac7658391f492598de8f6bbe2931bcab6331290833ee285f8",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/pig.mp3",
+          "original_sha256": "86bb190c0684af9465a01d193382a36adc91801ea3070db95ed21f35d99bed2b",
+          "sha256": "88587a13c41477bac7658391f492598de8f6bbe2931bcab6331290833ee285f8",
+          "gain_db": 14.653631505332513,
+          "before_peak": 2961,
+          "after_peak": 15193
+        }
       }
     ]
   },
@@ -4575,7 +4967,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/hand.mp3",
-        "sha256": "72df143051816b82b8b5dd11842bb346036db684c44e3c731226d41eb8199dac"
+        "sha256": "ebe571b067e4ab99fc11322fb6464d2635d4151ab2e91ea4aa8bc07584470fcd",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/hand.mp3",
+          "original_sha256": "72df143051816b82b8b5dd11842bb346036db684c44e3c731226d41eb8199dac",
+          "sha256": "ebe571b067e4ab99fc11322fb6464d2635d4151ab2e91ea4aa8bc07584470fcd",
+          "gain_db": 12.877091695864202,
+          "before_peak": 3633,
+          "after_peak": 15213
+        }
       }
     ]
   },
@@ -4603,7 +5003,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/foot.mp3",
-        "sha256": "32cc30c9a000d39876bc68c0297f42681b61b8e67b3e38d8196895970369f0eb"
+        "sha256": "bffd47e159dbde4dd73c78494800edbb0bc00f6922cdffddbcfc896a402a7fad",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/foot.mp3",
+          "original_sha256": "32cc30c9a000d39876bc68c0297f42681b61b8e67b3e38d8196895970369f0eb",
+          "sha256": "bffd47e159dbde4dd73c78494800edbb0bc00f6922cdffddbcfc896a402a7fad",
+          "gain_db": 12.447956454136522,
+          "before_peak": 3817,
+          "after_peak": 15187
+        }
       }
     ]
   },
@@ -4631,7 +5039,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/tooth.mp3",
-        "sha256": "623a27c21c29d7819fdc364466b22704bb818f25b1eae2eee0f68fdd7a6b2b04"
+        "sha256": "dff10117dc6f1b446b2ad198c1d7ee2acec0ec26c4f01c854b55184ec36e5a75",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/tooth.mp3",
+          "original_sha256": "623a27c21c29d7819fdc364466b22704bb818f25b1eae2eee0f68fdd7a6b2b04",
+          "sha256": "dff10117dc6f1b446b2ad198c1d7ee2acec0ec26c4f01c854b55184ec36e5a75",
+          "gain_db": 17.297346972464503,
+          "before_peak": 2184,
+          "after_peak": 15226
+        }
       }
     ]
   },
@@ -4659,7 +5075,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/bowl.mp3",
-        "sha256": "5c6d123f477776b5653893d2c49a5fa4abef23da777f94ae4f286eb6dd880bed"
+        "sha256": "a569dbb7f62efcd55e76c092ea0d367d97a714568aef641fe63406ee9ef2691a",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/bowl.mp3",
+          "original_sha256": "5c6d123f477776b5653893d2c49a5fa4abef23da777f94ae4f286eb6dd880bed",
+          "sha256": "a569dbb7f62efcd55e76c092ea0d367d97a714568aef641fe63406ee9ef2691a",
+          "gain_db": 12.366419472858476,
+          "before_peak": 3853,
+          "after_peak": 15200
+        }
       }
     ]
   },
@@ -4687,7 +5111,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/spoon.mp3",
-        "sha256": "9feee1d1b363ad1bde8a28d5e66bfb3cf5a871947ad0c6047b8743d62af40633"
+        "sha256": "0bfb72fe374daa9974afb2c83eaa62a6a2a1f256fc6b6d3333fe6a6448594781",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/spoon.mp3",
+          "original_sha256": "9feee1d1b363ad1bde8a28d5e66bfb3cf5a871947ad0c6047b8743d62af40633",
+          "sha256": "0bfb72fe374daa9974afb2c83eaa62a6a2a1f256fc6b6d3333fe6a6448594781",
+          "gain_db": 15.887117567791574,
+          "before_peak": 2569,
+          "after_peak": 15200
+        }
       }
     ]
   },
@@ -4715,7 +5147,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/bed.mp3",
-        "sha256": "e453dfe95b9d07f142adb87edf3fc6383e10b2353a7410017e6ec7f0c4759cd3"
+        "sha256": "fce8c31dfd5781c4909093288eec3788f81bf312069f0037f6c0bb14949ff027",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/bed.mp3",
+          "original_sha256": "e453dfe95b9d07f142adb87edf3fc6383e10b2353a7410017e6ec7f0c4759cd3",
+          "sha256": "fce8c31dfd5781c4909093288eec3788f81bf312069f0037f6c0bb14949ff027",
+          "gain_db": 11.93758957648364,
+          "before_peak": 4048,
+          "after_peak": 15202
+        }
       }
     ]
   },
@@ -4743,7 +5183,15 @@
     "assets": [
       {
         "path": "public/audio/words/zh/shoe.mp3",
-        "sha256": "a65a783dfa8a7504fcd54212119a3c39be3de8cbf5acd2189c9b3a220b9bf202"
+        "sha256": "b99dac74a0f60ea935c52630bafc9d3e3f97a2491f67f13dfe88f7e0e3bc80e6",
+        "volume_remaster": {
+          "path": "public/audio/words/zh/shoe.mp3",
+          "original_sha256": "a65a783dfa8a7504fcd54212119a3c39be3de8cbf5acd2189c9b3a220b9bf202",
+          "sha256": "b99dac74a0f60ea935c52630bafc9d3e3f97a2491f67f13dfe88f7e0e3bc80e6",
+          "gain_db": 13.636123749985147,
+          "before_peak": 3329,
+          "after_peak": 15222
+        }
       }
     ]
   },
@@ -5135,7 +5583,15 @@
       },
       {
         "path": "public/audio/words/review/monkey.mp3",
-        "sha256": "79e66dae5d1cce8b0ae51881a2c8aef9fde809c8bd2672b04c321bb25c529cd6"
+        "sha256": "47979936951661424b64ca5f4ad7545bcd7bea4984216d476f68517c95f8904b",
+        "volume_remaster": {
+          "path": "public/audio/words/review/monkey.mp3",
+          "original_sha256": "79e66dae5d1cce8b0ae51881a2c8aef9fde809c8bd2672b04c321bb25c529cd6",
+          "sha256": "47979936951661424b64ca5f4ad7545bcd7bea4984216d476f68517c95f8904b",
+          "gain_db": 11.45555392343984,
+          "before_peak": 4279,
+          "after_peak": 15176
+        }
       }
     ]
   },
@@ -5611,7 +6067,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/great-job.mp3",
-        "sha256": "d38bfe215fa41ff803cc5dab509aeafede023967b5a2b9fec82f95d0ad76490f"
+        "sha256": "7c14fb1acd4d377117f32b42e0d0be89a279d1c12348ddd4dbd9addd71cd3f0f",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/great-job.mp3",
+          "original_sha256": "d38bfe215fa41ff803cc5dab509aeafede023967b5a2b9fec82f95d0ad76490f",
+          "sha256": "7c14fb1acd4d377117f32b42e0d0be89a279d1c12348ddd4dbd9addd71cd3f0f",
+          "gain_db": 10.3104441514951,
+          "before_peak": 4882,
+          "after_peak": 15208
+        }
       }
     ]
   },
@@ -5667,7 +6131,15 @@
     "assets": [
       {
         "path": "public/audio/phrases/natural/so-much-fun.mp3",
-        "sha256": "1933b5ee094661ebb8eb18398f70967cf4703d25a61d684ef90b2fcc3a981e4a"
+        "sha256": "99d9483834ae0954612318c2bc4920a33753d987d73e126b5b31b6d40b18e312",
+        "volume_remaster": {
+          "path": "public/audio/phrases/natural/so-much-fun.mp3",
+          "original_sha256": "1933b5ee094661ebb8eb18398f70967cf4703d25a61d684ef90b2fcc3a981e4a",
+          "sha256": "99d9483834ae0954612318c2bc4920a33753d987d73e126b5b31b6d40b18e312",
+          "gain_db": 10.274933514797313,
+          "before_peak": 4902,
+          "after_peak": 15197
+        }
       }
     ]
   },
@@ -8114,7 +8586,15 @@
     "assets": [
       {
         "path": "public/audio/learning-phrases/bounce-the-ball.mp3",
-        "sha256": "fdddc3b39480289128afe2e78f6296e772bdf9332fc6844f5c33ffc51f75d39d"
+        "sha256": "9a5ad8fb70ee7eab5b0be2c3bf201c9e84445bc79592a08c907cdaa400f07620",
+        "volume_remaster": {
+          "path": "public/audio/learning-phrases/bounce-the-ball.mp3",
+          "original_sha256": "fdddc3b39480289128afe2e78f6296e772bdf9332fc6844f5c33ffc51f75d39d",
+          "sha256": "9a5ad8fb70ee7eab5b0be2c3bf201c9e84445bc79592a08c907cdaa400f07620",
+          "gain_db": 12.567100042384107,
+          "before_peak": 3765,
+          "after_peak": 15205
+        }
       },
       {
         "path": "public/audio/learning-phrases/review/bounce-the-ball.mp3",
