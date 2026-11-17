@@ -1,8 +1,10 @@
 import {getViewport} from './viewport.js';
 import {assetUrl} from './assetUrl.js';
-import { FilesetResolver, PoseLandmarker, HandLandmarker } from '@mediapipe/tasks-vision';
 import { GAME_CONFIG } from './config.js';
 import { HandAssociator, mapVideoPoint } from './handTracking.js';
+
+let visionTasksPromise;
+const getVisionTasks=()=>visionTasksPromise??=import('@mediapipe/tasks-vision').catch(error=>{visionTasksPromise=null;throw error;});
 
 /**
  * Local body ownership + dedicated 21-point hand tracking.
@@ -116,6 +118,7 @@ export class PoseDetector {
     this.useDedicatedHands = false;
     this.handLandmarker = null;
     this.worker = null; this.workerBusy = false; this.trackingSession = 0;
+    this.initCancelled=false;this.initGeneration=0;this.cancelWorkerInitialization=null;
     this.lastInferenceAt = -Infinity; this.lastBodyAt = -Infinity;
     this.metrics = { backend:'uninitialized', inferenceMs:0, resultAgeMs:0, frames:0 };
     this.handFilters = new Map(); // 手部 One-Euro 平滑滤波实例表
@@ -244,8 +247,10 @@ export class PoseDetector {
 
   // 初始化 MediaPipe PoseLandmarker (支持多级回退，失败后重新 init 可重入)
   async init() {
+    this.initCancelled=false;
+    const generation=++this.initGeneration;
     if (this.workerInitialization) {
-      try { await this.workerInitialization; this.useDedicatedHands=true;this.setStatus('ready');return true; } catch {}
+      try { await this.workerInitialization; if(generation!==this.initGeneration)return false;this.useDedicatedHands=true;this.setStatus('ready');return true; } catch {if(this.initCancelled||generation!==this.initGeneration)return false;}
     }
     if ((this.worker && this.metrics.backend.startsWith('worker-')) || (this.poseLandmarker && this.handLandmarker)) { this.setStatus('ready'); return true; }
     this.setStatus('loading', '正在加载姿态识别引擎...');
@@ -258,9 +263,14 @@ export class PoseDetector {
           this.useDedicatedHands = true;
           this.setStatus('ready','指尖识别准备就绪');
           return true;
-        } catch(error) { this.workerInitialization=null; console.warn('Tracking worker unavailable; using local main-thread fallback.',error.message); }
+        } catch(error) {
+          this.workerInitialization=null;
+          if(this.initCancelled||generation!==this.initGeneration)return false;
+          console.warn('Tracking worker unavailable; using local main-thread fallback.',error.message);
+        }
       }
       // 优先从本地 /wasm 与模型加载，保障离线与隐私
+      const {FilesetResolver,PoseLandmarker}=this.visionTasks=await getVisionTasks();
       const vision = await FilesetResolver.forVisionTasks(this.options.wasmLoaderPath);
 
       this.poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
@@ -283,6 +293,7 @@ export class PoseDetector {
       this.poseLandmarker?.close();this.poseLandmarker=null;this.handLandmarker?.close();this.handLandmarker=null;
       console.warn('GPU 模式加载失败，尝试 CPU 模式回退...', err);
       try {
+        const {FilesetResolver,PoseLandmarker}=this.visionTasks||await getVisionTasks();
         const vision = await FilesetResolver.forVisionTasks(this.options.wasmLoaderPath);
         this.poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
           baseOptions: {
@@ -313,6 +324,7 @@ export class PoseDetector {
   }
 
   async initHands(vision, delegate) {
+    const {HandLandmarker}=this.visionTasks||await getVisionTasks();
     this.handLandmarker = await HandLandmarker.createFromOptions(vision, {
       baseOptions:{modelAssetPath:assetUrl('models/hand_landmarker.task'),delegate},runningMode:'VIDEO',
       numHands:this.playerMode==='coop'?4:2,minHandDetectionConfidence:.4,minHandPresenceConfidence:.4,minTrackingConfidence:.4
@@ -323,16 +335,23 @@ export class PoseDetector {
   initWorker() {
     return new Promise((resolve,reject)=>{
       const worker=new Worker(assetUrl('tracking-worker.js'));this.worker=worker;
-      let initialized=false,frameErrors=0;
+      let initialized=false,settled=false,frameErrors=0;
       const timeout=setTimeout(()=>fail(new Error('Tracking engine timed out')),20000);
       const fail=error=>{
+        if(settled&&!initialized)return;
         clearTimeout(timeout);worker.terminate();if(this.worker===worker)this.worker=null;this.workerBusy=false;
+        this.cancelWorkerInitialization=null;
         if(initialized){this.stop();this.metrics.backend='error';this.setStatus('error',{type:'tracking_failed',message:'指尖识别暂时中断，请重新连接摄像头'});this.onErrorCallback?.(new Error('指尖识别暂时中断，请重新连接摄像头'));}
-        else reject(error);
+        else {settled=true;reject(error);}
       };
+      this.cancelWorkerInitialization=()=>fail(new Error('Tracking initialization cancelled'));
       worker.onerror=event=>fail(new Error(event.message||'Worker error'));
       worker.onmessage=({data})=>{
-        if(data.type==='ready'){initialized=true;clearTimeout(timeout);this.metrics.backend=`worker-${data.delegate}`;resolve();}
+        if(data.type==='status'){
+          const labels={'loading WASM':'正在准备识别引擎…','loading hands':'正在准备手指追踪…','loading body':'正在准备身体识别…'};
+          this.setStatus('loading',labels[data.step]||'正在准备识别模型…');
+        }
+        else if(data.type==='ready'){initialized=true;settled=true;this.cancelWorkerInitialization=null;clearTimeout(timeout);this.metrics.backend=`worker-${data.delegate}`;resolve();}
         else if(data.type==='error')fail(new Error(data.message));
         else if(data.type==='result') {
           this.workerBusy=false;
@@ -872,6 +891,9 @@ export class PoseDetector {
 
   // 完全停止并释放摄像头设备（立即作废所有正在进行的异步 startCamera 请求）
   stop() {
+    this.initCancelled=true;
+    ++this.initGeneration;
+    this.cancelWorkerInitialization?.();
     this.trackingSession++;
     if(typeof cancelAnimationFrame==='function')cancelAnimationFrame(this.detectionFrame);
     this.handAssociator.reset();

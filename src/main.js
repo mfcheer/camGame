@@ -18,6 +18,8 @@ import { GAME_CONFIG, resolveAnimal, PLAYABLE_ANIMALS } from './config.js';
 import {CelebrationAccessories} from './celebrationAccessories.js';
 import { CampManager } from './campManager.js';
 import { PolaroidManager } from './polaroidManager.js';
+import {ResourceWarmup} from './resourceWarmup.js';
+import {CacheManager} from './cacheManager.js';
 
 /**
  * 游戏主控制器《彩虹小队 · 森林大解救》 (v0.5.1 食指指尖追踪、柔性等待与小动物打磨)
@@ -116,6 +118,7 @@ export class Game {
     this.poseDetector = new PoseDetector(this.videoElement, {
       maxNumPoses: 2
     });
+    this.resourceWarmup=new ResourceWarmup(this.poseDetector);
 
     if (typeof document !== 'undefined' && document.getElementById('start-screen')) {
       this.uiManager = new UIManager({
@@ -167,7 +170,10 @@ export class Game {
     }
 
     const manualVoice={playWord:(id,options)=>this.voiceQueue.playManualWord(id,options),stopWord:()=>this.voiceQueue.cancel()};
-    this.wordLibrary=new WordLibrary(this.audioManager,()=>this.uiManager?.syncSoundButtons?.(this.audioManager.isMuted),manualVoice);
+    this.wordLibrary=new WordLibrary(this.audioManager,()=>this.uiManager?.syncSoundButtons?.(this.audioManager.isMuted),manualVoice,{
+      onOpen:()=>this.resourceWarmup?.setMode('library'),
+      onClose:()=>{if(this.state==='START')this.resourceWarmup?.setMode('home');this.cacheManager?.check();}
+    });
     this.wordFocus=new WordFocus(this.audioManager,()=>this.handleResume(),()=>this.uiManager?.syncSoundButtons?.(this.audioManager.isMuted),manualVoice);
     this.animalSpeech=new AnimalSpeech(this.voiceQueue,this.uiManager,this.rescueAnimal);this.animalSpeech.nonBlocking=true;
     if(this.uiManager)this.uiManager.flowLearning=true;
@@ -181,6 +187,9 @@ export class Game {
     this.setupBackgroundListener();
     this.setupDemoMouseTouchInput();
     this.setupHomeAmbientMusic();
+    this.resourceWarmup?.setMode('home');
+    this.cacheManager=new CacheManager(()=>this.state==='START'&&!document.hidden&&!this.wordLibrary?.overlay&&document.getElementById('camp-modal')?.classList.contains('hidden'));
+    this.cacheManager.start();
     this.setupOrientationHandler();
 
     // 启动主渲染循环 (仅在真实浏览器环境)
@@ -345,6 +354,9 @@ export class Game {
         this.uiManager.showError(err.message || '摄像头启动失败，请检查浏览器权限');
       }
     };
+    this.poseDetector.onStatusChangeCallback=(status,detail)=>{
+      if(this.state==='CALIBRATING'&&status==='loading'&&typeof detail==='string')this.uiManager?.setCalibrationReady?.(false,detail);
+    };
   }
 
   // 免手触自动 3-2-1 倒计时开局。每次开局随机选一套配音：合成音 / 中文人声 / 英文人声。
@@ -452,6 +464,7 @@ export class Game {
     this.bubbleManager.setPlayerMode(mode);
     this.poseDetector.setPlayerMode(mode);
     this.audioManager.init();
+    this.resourceWarmup?.setMode('game');
     this.bubbleManager?.prepareWordRound?.(this.targetCount);
     this.isCalibrationReady = false;
     this.isDemoMode = false;
@@ -559,6 +572,7 @@ export class Game {
   }
 
   async beginRoundGreeting() {
+    this.pendingVictory = false;
     this.currentEndPhrase=null;this.animalSpeech?.cancel();this.voiceQueue?.cancel();this.voiceQueue?.resume();this.speechPolicy?.beginRound();this.lastPlayWord=null;this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
     const token=this.wordRoundPreparationToken=(this.wordRoundPreparationToken||0)+1;
     this.pendingWordSpawn=null;
@@ -623,7 +637,7 @@ export class Game {
 
   // 碰破泡泡的核心计分与结算
   onBubblePopped(energyGained = (this.bubbleManager?.lastPoppedEnergy || 1)) {
-    if (this.state !== 'PLAYING') return;
+    if (this.state !== 'PLAYING' || this.pendingVictory) return;
 
     this.collectedCount = Math.min(this.targetCount, this.collectedCount + energyGained);
     const current = this.collectedCount;
@@ -672,6 +686,14 @@ export class Game {
 
   // 达成 6 个泡泡（偶数目标起步），解救成功，逃生大欢庆！
   handleVictory() {
+    // Finish the current reading and its visible closing beat before any
+    // celebration speech can stop the shared audio channel or cover the cue.
+    if (['word', 'pair'].includes(this.voiceQueue?.current?.kind) || this.wordCueRemaining > 0) {
+      this.pendingVictory = true;
+      this.bubbleManager?.clearActiveBubble?.();
+      return;
+    }
+    this.pendingVictory = false;
     if (this.voiceQueue?.current?.kind !== 'word') {
       this.voiceQueue?.cancel();
     }
@@ -992,6 +1014,7 @@ export class Game {
 
   // 重新开始当前关卡（彻底清除旧庆祝回调）
   handleRestart() {
+    this.pendingVictory = false;
     this.wordFocus?.close(false);this.voiceQueue?.cancel();this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
     this.uiManager?.showSoundRecovery?.(false);
     this.wordLibrary?.close();
@@ -1056,7 +1079,9 @@ export class Game {
 
   // 退出回首页（取消所有异步流程、旧定时器并彻底释放摄像头）
   handleExit() {
+    this.pendingVictory = false;
     this.wordRoundPreparationToken=(this.wordRoundPreparationToken||0)+1;this.pendingWordSpawn=null;
+    this.resourceWarmup?.setMode('game');
     this.bubbleManager?.discardPreparedWordRound?.();
     this.bubbleManager?.contrastSampler?.clear();
     this.wordFocus?.close(false);this.voiceQueue?.cancel();this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
@@ -1091,11 +1116,13 @@ export class Game {
     if (this.balloon) this.balloon.reset();
     if (this.rescueAnimal) this.rescueAnimal.reset();
     this.poseDetector.stop();
+    this.resourceWarmup?.setMode('home');
 
     if (this.uiManager) {
       if (this.uiManager.showStartScreen) this.uiManager.showStartScreen();
       if (this.uiManager.setPoseLostAlert) this.uiManager.setPoseLostAlert(false);
     }
+    this.cacheManager?.check();
   }
 
   // 启用模拟模式 (无摄像头或测试环境)
@@ -1113,6 +1140,7 @@ export class Game {
       this.videoElement?.classList?.remove?.('is-playing');
     }
     this.audioManager.init();
+    this.resourceWarmup?.setMode('game');
     this.bubbleManager?.prepareWordRound?.(this.targetCount);
     this.isSoftWaiting = false;
 
@@ -1341,6 +1369,7 @@ export class Game {
       if(this.state==='PLAYING'||(this.state==='CELEBRATING'&&!this.resultVisible))this.speechPolicy?.update(deltaSeconds);
       this.animalSpeech?.update(deltaSeconds);
       if(this.wordCueRemaining>0){this.wordCueRemaining=Math.max(0,this.wordCueRemaining-deltaSeconds);if(!this.wordCueRemaining)this.uiManager?.clearWordCue?.();}
+      if(this.pendingVictory && this.state==='PLAYING' && !this.voiceQueue?.current && !(this.wordCueRemaining>0))this.handleVictory();
       this.updateWordPresentation(deltaSeconds);
       this.gameTime = (this.gameTime || 0) + deltaSeconds;
       this.balloon?.update(deltaSeconds, this.gameTime);
@@ -1438,7 +1467,7 @@ export class Game {
     return JSON.stringify({
       coordinates:'screen pixels; origin top-left; x right, y down',
       mode:this.state, demo:this.isDemoMode, score:this.collectedCount, target:this.targetCount, combo:this.bubbleManager?.comboCount||this.comboCount||0, animalId:this.activeAnimalId,stage:this.sceneManager?.stageId,stageName:this.sceneManager?.stageName,bgmStage:this.audioManager?.currentStageId||this.sceneManager?.stageId||"forest", tracking:this.poseDetector?.metrics,autoNext:this.autoNextDeadline?Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)):null,celebrationDecorations:this.celebrationAccessories?.slots.filter(s=>s.prop.visible).map(s=>s.prop.name),
-      animalSpeech:this.animalSpeech?.toJSON()||null,
+      animalSpeech:this.animalSpeech?.toJSON()||null,pendingVictory:!!this.pendingVictory,
       flowLearning:{word:this.lastPlayWord?.word||null,cue:this.wordCueRemaining>0?this.cueWord?.word:null,detail:this.wordFocus?.overlay?this.wordFocus.word?.word:null,voice:this.voiceQueue?.toJSON()||null,speechPolicy:this.speechPolicy?.toJSON()||null},
       wordLearning:{enabled:this.bubbleManager?.wordMode!==false, word:this.currentWord?.word||null, review:!!this.wordPlaybackReview, speaking:!!this.currentWord&&!this.wordAudioDone, elapsed:Math.round((this.wordElapsed||0)*10)/10},
       bubble:bubble ? {...screen(bubble.group.position), type:bubble.type,playStyle:bubble.playStyle,motionElapsed:Math.round((bubble.motionElapsed||0)*100)/100,ease:Math.round((this.bubbleManager.roundEase||0)*100)/100,hitsReceived:bubble.hitsReceived,leftTouched:bubble.leftTouched,rightTouched:bubble.rightTouched,merging:bubble.merging,protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
