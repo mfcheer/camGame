@@ -141,9 +141,11 @@ export class BubbleManager {
     if(typeof document!=='undefined' && word.motion && !this.motionTextures?.has(word.id)){
       this.motionTextures ||= new Map();
       const entry={texture:null,elapsed:0};this.motionTextures.set(word.id,entry);
-      new THREE.TextureLoader().load(resolveAssetUrl(word.motion.src),tex=>{
-        tex.colorSpace=THREE.SRGBColorSpace;tex.repeat.set(1/word.motion.frames,1);entry.texture=tex;
-      },undefined,()=>{entry.failed=true;});
+      try{
+        new THREE.TextureLoader().load(resolveAssetUrl(word.motion.src),tex=>{
+          tex.colorSpace=THREE.SRGBColorSpace;tex.repeat.set(1/word.motion.frames,1);entry.texture=tex;
+        },undefined,()=>{entry.failed=true;});
+      }catch{entry.failed=true;} // A synchronous loader failure also keeps the poster.
     }
     const cardGeo = new THREE.PlaneGeometry(cardSize, cardSize);
     const cardMat = new THREE.MeshBasicMaterial({

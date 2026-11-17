@@ -1207,15 +1207,23 @@ export class AudioManager {
     if (this._wordAudioPromises.has(key)) return this._wordAudioPromises.get(key);
 
     const promise = (async () => {
-      if (typeof fetch === "undefined") return null;
+      // Let the promise enter the map before even a synchronous fetch failure cleans it up.
+      await Promise.resolve();
       try {
+        if (typeof fetch === "undefined") return null;
         const url = this.getWordAudioUrl(id,{review,phrase,lang});
         const controller=typeof AbortController!=='undefined'?new AbortController():null;
-        const abort=setTimeout(()=>controller?.abort(),6500);
-        let res;try{res=await withDeadline(fetch(url,controller?{signal:controller.signal}:undefined),7000,null);}finally{clearTimeout(abort);}
-        if(!res)return null;
-        if (!res.ok) throw new Error(`Failed to fetch word audio: ${res.status}`);
-        const arrayBuffer = await res.arrayBuffer();
+        // fetch resolves at response headers. Keep the deadline and abort signal
+        // through the body too, otherwise a stalled download occupies a slot forever.
+        let arrayBuffer;
+        try{
+          arrayBuffer=await withDeadline((async()=>{
+            const res=await fetch(url,controller?{signal:controller.signal}:undefined);
+            if(!res.ok)throw new Error(`Failed to fetch word audio: ${res.status}`);
+            return res.arrayBuffer();
+          })(),this.wordLoadTimeoutMs||6500,null);
+        }finally{controller?.abort();}
+        if(!arrayBuffer)return null;
         this.init();
         if (!this.ctx || typeof this.ctx.decodeAudioData !== "function") return null;
         const audioBuffer = await withDeadline(this.ctx.decodeAudioData(arrayBuffer),3000,null);
@@ -1368,25 +1376,6 @@ export class AudioManager {
     for (const id of ids) {
       this.loadWordBuffer(id,{review}).catch(() => {});
       this.loadWordBuffer(id,{lang:'zh'}).catch(() => {});
-      if (typeof Audio !== "undefined") {
-        if (!this._wordAudioElements) this._wordAudioElements = new Map();
-        const key=review?`review:${id}`:id;
-        if (!this._wordAudioElements.has(key)) {
-          try {
-            const a = new Audio(this.getWordAudioUrl(id,{review}));
-            a.preload = "auto";
-            this._wordAudioElements.set(key, a);
-          } catch (e) {}
-        }
-        const zhKey=`zh:${id}`;
-        if (!this._wordAudioElements.has(zhKey)) {
-          try {
-            const a = new Audio(this.getWordAudioUrl(id,{lang:'zh'}));
-            a.preload = "auto";
-            this._wordAudioElements.set(zhKey, a);
-          } catch (e) {}
-        }
-      }
     }
   }
 

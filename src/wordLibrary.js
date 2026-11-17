@@ -16,17 +16,12 @@ export function libraryWords(category='all'){
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text)node.textContent=text;return node;};
 
 export class WordLibrary {
-  constructor(audio,onMuteChange=()=>{},voice=audio){if(typeof document!=='undefined'){const count=document.querySelector('.vocabulary-entry-count');if(count)count.textContent=`${WORDS_LIST.length} 单词 · ${LEARNING_PHRASES.length} 短语`;}this.audio=audio;this.voice=voice;this.onMuteChange=onMuteChange;this.category='all';this.token=0;}
+  constructor(audio,onMuteChange=()=>{},voice=audio,resourceEvents={}){if(typeof document!=='undefined'){const count=document.querySelector('.vocabulary-entry-count');if(count)count.textContent=`${WORDS_LIST.length} 单词 · ${LEARNING_PHRASES.length} 短语`;}this.audio=audio;this.voice=voice;this.onMuteChange=onMuteChange;this.resourceEvents=resourceEvents;this.category='all';this.token=0;this.preloadToken=0;this.preloadSeen=new Set();}
   open(){
     if(this.overlay||typeof document==='undefined')return;
     this.audio?.recoverFromGesture?.();
-    const currentWords = libraryWords(this.category);
-    this.audio?.preloadWordAudios?.(currentWords.map(w=>w.id),{review:true});
-    if(typeof window!=='undefined'&&typeof window.requestIdleCallback==='function'){
-      window.requestIdleCallback(()=>{this.audio?.preloadWordAudios?.(WORDS_LIST.map(w=>w.id),{review:true});});
-    } else {
-      setTimeout(()=>{this.audio?.preloadWordAudios?.(WORDS_LIST.map(w=>w.id),{review:true});},250);
-    }
+    this.preloadSeen=new Set();
+    this.resourceEvents.onOpen?.();
     this.returnFocus=document.activeElement;this.home=document.getElementById('start-screen');if(this.home)this.home.inert=true;
     const overlay=el('div','word-library-overlay'),panel=el('section','word-library');overlay.id='word-library';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-labelledby','word-library-title');
     const header=el('header','word-library-header'),book=el('img','word-library-book');book.src=resolveAssetUrl('/images/words/learning/book.svg');book.alt='';
@@ -36,7 +31,7 @@ export class WordLibrary {
     for(const [id,label] of [['all','单词'],['learning-phrases','小短语']]){const b=el('button','word-library-filter',label);b.type='button';b.dataset.kind=id;b.onclick=()=>{this.stopPlayback();this.category=id;this.renderWords();};types.append(b);}
     this.types=types;
     const filters=el('nav','word-library-filters');filters.setAttribute('aria-label','单词分类');
-    for(const [id,label]of WORD_CATEGORIES){const button=el('button','word-library-filter',label);button.type='button';button.dataset.category=id;button.addEventListener('click',()=>{this.stopPlayback();this.category=id;this.renderWords();});filters.appendChild(button);}
+    for(const [id,label]of WORD_CATEGORIES){const button=el('button','word-library-filter',label);button.type='button';button.dataset.category=id;button.addEventListener('click',()=>{this.stopPlayback();this.category=id;this.resourceEvents.onCategory?.(id);this.renderWords();});filters.appendChild(button);}
     const grid=el('div','word-library-grid');grid.setAttribute('aria-label','单词图片列表');
     const footer=el('footer','word-library-footer'),status=el('span','word-library-status','选一张喜欢的卡片吧');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
     const sound=el('button','word-library-sound');sound.type='button';sound.addEventListener('click',()=>{if(this.audio?.recoveryNeeded&&!this.audio.isMuted){this.audio.recoverFromGesture?.({rebuild:true});if(this.lastWord&&this.lastCard?.isConnected)this.playWord(this.lastWord,this.lastCard);return;}this.audio?.toggleMute?.();this.onMuteChange();this.updateSound();});
@@ -58,26 +53,67 @@ export class WordLibrary {
     this.filters.style.display=phraseMode?'none':'';
     for(const b of this.types.children)b.setAttribute('aria-pressed',String((b.dataset.kind==='learning-phrases')===phraseMode));
     for(const button of this.filters.children)button.setAttribute('aria-pressed',String(button.dataset.category===this.category));
+    this.preloadObserver?.disconnect();
+    const preloadToken=++this.preloadToken;
+    // Downloads from the previous category/open still count until they settle.
+    this.preloadQueue=[];this.preloadActive=this.preloadActive||0;
     this.grid.replaceChildren();this.grid.scrollTop=0;
     const words = libraryWords(this.category);
-    this.audio?.preloadWordAudios?.(words.map(w=>w.id),{review:true});
-    for(const word of words){
+    for(const [index,word] of words.entries()){
       const card=el('button','library-word');card.type='button';card.dataset.word=word.id;card.setAttribute('aria-label',`${word.word}，${word.zh}，点击听英文`);
-      const picture=el('img','library-word-image');picture.src=resolveAssetUrl(word.itemImage||word.image);picture.alt='';picture.loading='lazy';picture.decoding='async';
+      const picture=el('img','library-word-image');picture.alt='';picture.loading=index<8?'eager':'lazy';picture.decoding='async';
+      const pictureUrl=resolveAssetUrl(word.itemImage||word.image);
+      if(index<8||typeof IntersectionObserver==='undefined'){
+        if(index<8)picture.fetchPriority='high';
+        picture.src=pictureUrl;
+      }else picture.dataset.src=pictureUrl;
       const en=el('strong','library-word-en',word.word);en.lang='en';const zh=el('span','library-word-zh',word.zh);zh.lang='zh-CN';
       const speaker=el('span','library-word-speaker','♪');speaker.setAttribute('aria-hidden','true');card.append(picture,en,zh,speaker);card.addEventListener('click',()=>this.playWord(word,card));this.grid.appendChild(card);
     }
+    this.preloadQueue=(this.category==='all'?words.slice(0,8):words).map(word=>word.id).filter(id=>!this.preloadSeen.has(id));
+    if(typeof IntersectionObserver!=='undefined'){
+      this.preloadObserver=new IntersectionObserver(entries=>{
+        if(preloadToken!==this.preloadToken)return;
+        for(const entry of entries)if(entry.isIntersecting){
+          const picture=entry.target.querySelector('img[data-src]');
+          if(picture){picture.src=picture.dataset.src;delete picture.dataset.src;}
+          this.prioritizeAudio(entry.target.dataset.word);
+        }
+      },{root:this.grid,rootMargin:'140px'});
+      for(const card of this.grid.children)this.preloadObserver.observe(card);
+    }
+    this.pumpAudioPreload(preloadToken);
     this.status.textContent=`${libraryWords(this.category).length} 张词卡 · 点一下听英文`;
+  }
+  prioritizeAudio(id){
+    if(!id||this.preloadSeen.has(id))return;
+    const index=this.preloadQueue.indexOf(id);
+    if(index>=0)this.preloadQueue.splice(index,1);
+    this.preloadQueue.unshift(id);
+    this.pumpAudioPreload(this.preloadToken);
+  }
+  pumpAudioPreload(token){
+    if(token!==this.preloadToken||!this.overlay||typeof this.audio?.loadWordBuffer!=='function')return;
+    while(this.preloadActive<2&&this.preloadQueue.length){
+      const id=this.preloadQueue.shift();
+      if(this.preloadSeen.has(id))continue;
+      this.preloadSeen.add(id);this.preloadActive++;
+      let loading;try{loading=this.audio.loadWordBuffer(id,{review:true});}catch{loading=null;}
+      Promise.resolve(loading).catch(()=>{}).finally(()=>{
+        this.preloadActive--;this.pumpAudioPreload(this.preloadToken);
+      });
+    }
   }
   async playWord(word,card){
     this.lastWord=word;this.lastCard=card;this.stopPlayback();if(this.audio?.isMuted){this.status.textContent='先点右边的小喇叭，再听英文吧';return;}
     const token=++this.token;this.playingCard=card;card.classList.add('is-speaking');this.status.textContent=`${word.word} · ${word.zh}`;
     this.audio?.recoverFromGesture?.();
-    try{await this.voice?.playWord?.(word.id,{review:true});}catch{/* The ordinary word player already attempts local media and speech fallbacks. */}finally{if(token===this.token){card.classList.remove('is-speaking');this.playingCard=null;if(this.status)this.status.textContent='再点一次，还可以听一遍';}}
+    let failed=false;
+    try{await this.voice?.playWord?.(word.id,{review:true});}catch{failed=true;}finally{if(token===this.token){card.classList.remove('is-speaking');this.playingCard=null;if(this.status)this.status.textContent=failed||['unavailable','blocked','timeout','stalled','interrupted'].includes(this.audio?.lastVoiceStatus)?'声音暂时没准备好，可以重试或换一张卡片':'再点一次，还可以听一遍';}}
   }
   stopPlayback(){++this.token;this.voice?.stopWord?.();this.playingCard?.classList.remove('is-speaking');this.playingCard=null;}
   close(){
-    if(!this.overlay)return;this.stopPlayback();document.removeEventListener('keydown',this.keyHandler,true);this.overlay.remove();this.overlay=null;
+    if(!this.overlay)return;this.stopPlayback();++this.preloadToken;this.preloadQueue=[];this.preloadObserver?.disconnect();this.preloadObserver=null;document.removeEventListener('keydown',this.keyHandler,true);this.overlay.remove();this.overlay=null;this.resourceEvents.onClose?.();
     if(this.home)this.home.inert=false;if(this.returnFocus?.isConnected)this.returnFocus.focus();
   }
 }
