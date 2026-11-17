@@ -38,7 +38,7 @@ test('all new words have image, complete bilingual audio and English-only review
 
 test('book words enter ordinary three-word themed rounds with no immediate repeat',()=>{
  const b=new BubbleManager(new T.Scene(),camera(),{},null);const original=Math.random;
- try{Math.random=()=>([...new Set(WORDS_LIST.map(w=>w.category))].indexOf('two_book')+.1)/new Set(WORDS_LIST.map(w=>w.category)).size;const seen=[];for(let i=0;i<8;i++){b.beginWordRound();const w=b.chooseRoundWord();assert.notEqual(w.id,seen.at(-1));seen.push(w.id);b.lastWordId=w.id;}assert.ok(b.wordPool.every(w=>w.category==='two_book'));assert.equal(new Set(seen.slice(0,3)).size,3);assert.equal(b.wordPool.length,3);}
+ try{Math.random=()=>([...new Set(WORDS_LIST.map(w=>w.category))].indexOf('two_book')+.1)/new Set(WORDS_LIST.map(w=>w.category)).size;const seen=[];for(let i=0;i<8;i++){b.beginWordRound();const w=b.chooseRoundWord();assert.notEqual(w.id,seen.at(-1));seen.push(w.id);b.lastWordId=w.id;}assert.ok(b.wordPool.filter(w=>w.kind!=='phrase').every(w=>w.category==='two_book'));assert.equal(new Set(seen.slice(0,3)).size,3);assert.equal(b.wordPool.length,3);}
  finally{Math.random=original;}
 });
 
@@ -57,7 +57,7 @@ test('alternate names for the same plush bear do not appear together in a round'
   for(let seed=1;seed<=50;seed++){
    Math.random=original;const b=new BubbleManager(new T.Scene(),camera(),{},null);
    let value=seed,first=true;Math.random=()=>{if(first){first=false;return ([...new Set(WORDS_LIST.map(w=>w.category))].indexOf('toys')+.1)/new Set(WORDS_LIST.map(w=>w.category)).size;}value=value*16807%2147483647;return value/2147483647;};
-   b.chooseRoundWord();assert.ok(b.wordPool.every(w=>w.category==='toys'));assert.equal(new Set(b.wordPool.map(w=>w.conceptId||w.id)).size,b.wordPool.length);
+   b.chooseRoundWord();assert.ok(b.wordPool.filter(w=>w.kind!=='phrase').every(w=>w.category==='toys'));assert.equal(new Set(b.wordPool.map(w=>w.conceptId||w.id)).size,b.wordPool.length);
   }
  }finally{Math.random=original;}
 });

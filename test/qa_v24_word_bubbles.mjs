@@ -97,7 +97,7 @@ test('2. 气泡内部单词卡片 Mesh 构建与随机/指定生成机制', () =
   const b1 = bm.activeBubble;
   assert.ok(b1, '应当生成活跃泡泡');
   assert.ok(b1.word, '泡泡应当绑定 word 元数据');
-  assert.ok(WORDS_MAP.has(b1.word.id), `绑定的单词 id (${b1.word.id}) 应当属于 126 个词库之一`);
+  assert.ok(getWordById(b1.word.id), `绑定的单词 id (${b1.word.id}) 应当属于单词或短语目录`);
   assert.ok(b1.cardGroup, '应当包含 cardGroup 容器');
   assert.ok(b1.core, '应当将 cardGroup 挂载为 core');
   assert.equal(b1.cardGroup.userData.word.id, b1.word.id, 'cardGroup 的 userData 应当记录相同单词');

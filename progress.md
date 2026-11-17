@@ -160,3 +160,9 @@ Original prompt: 按 MVP_ACCEPTANCE_V0.2.md 验收《彩虹小队》，检查计
 2026-11-15 本轮词库：新增16个可看图学习词条（head、arm、leg、finger、three、four、five、chick、butterfly、turtle、orange-fruit、lemon、paper、gray、bubble、sunny），词库总数126；新增数字分类并在词库中显示原有one/two。13张透明WebP和3张数字SVG已在浏览器目检，sunny底板已改为透明；每词英文短读、中文短读和双语音频共48个MP3沿用项目Kokoro/Tingting声线，低音量短读补偿后48文件解码、首音和峰值检查通过，清单哈希核对通过。全部npm test、Pages子目录构建、词库五个分类截图及实际点读检查通过。原有三份未提交QA结果文件保留；未修改玩法/游戏模式，未推送。待家长在iPad真机试听与儿童看图辨认。
 
 2026-11-16 角色制作规范沉淀：新增 docs/CHARACTER_MOTION_STANDARD.md，记录角色动作卡、形体与表情原则、三段庆祝/终点告别时序、18位角色参考、代码接入与浏览器验收。同步更新 AGENTS.md、docs/ADD_CHARACTER.md、docs/CHARACTER_DESIGN_PASS.md 和 README 入口及过时的通用演出描述。本轮只提交文档，工作区其他功能与 QA 文件改动仍保留本地。
+
+2026-11-17 小短语接入完成（本地，未提交/推送）：新增六项 green doll、blue ball、red car、red train、red bike、purple teddy，独立 learningPhrases 内容源和图片/音频目录，关联已有单词而不设置颜色/心情属性或固定去重字段。保留126词及其索引，通过统一查询读取短语。小花园加入单词/小短语切换；每轮混入一个短语，按实际生成记录轮换覆盖并避开近期内容；单词与关联短语双向互斥，短语之间共享词允许同轮。保留原内容名额及重复出泡。短语开局资源检查限时3.5秒，失败回退单词，重开/退出准备令牌取消，暂停准备结束后继续再出泡。
+
+新增6张SVG配色版本、18段静态MP3（英文短读、Tingting中文短读、主动完整双语）。标准脚本增加 learning-phrases/zh-learning-phrases，先dry-run，仅生成六项；英文固定Kokoro af_heart/0.92。完整短语英文段也双向裁静默，未重录既有词与角色配音。12条来源记录和18份SHA256、解码检查通过。无主观音频试听结论。
+
+验证：完整npm test通过（按新内容范围更新v24及v27单词限定断言），新增qa_v41关联冲突/六项覆盖/路径/失败检查通过，Pages子路径build、diff --check通过。使用指定Browser完成词库点击英文200、模拟鼠标0→6解救/庆祝暂停与自动下一轮、短语词签、学习卡英文及完整双语200且重听不计分、后台停音/保持暂停/手动继续、退出停音。指定浏览器内同源测试框提供834x1194与1194x834真实子文档视口（非iPad硬件），截图已打开检查；证据output/phrases/。保留工作区此前资源加载/缓存改动和三份原QA结果，未将其覆盖为本轮测试报告。待家长iPad真机确认触摸与自然配音听感。

@@ -7566,5 +7566,401 @@
         "sha256": "e5b54140bd10f61590681ad994de76a4fb2dadf3285d2404d1970b9d327bb106"
       }
     ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "green-doll",
+    "text": "绿色的娃娃",
+    "zh": "绿色的娃娃",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/green-doll.mp3",
+        "sha256": "1333fd8dda8ec5d3614be7ad4aa1e5b781189049016b352bce7fcfad96329060"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "blue-ball",
+    "text": "蓝色的球",
+    "zh": "蓝色的球",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/blue-ball.mp3",
+        "sha256": "8f4cf9a63656260dc551f663df8f52fc7fc5fd4d184182e9b58fd3a7c2a69ca1"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "red-car",
+    "text": "红色的小汽车",
+    "zh": "红色的小汽车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/red-car.mp3",
+        "sha256": "a8c1fce8f6064401491ace4224a2ef4f7bd32bcdca1f70a04ac9cbd3debd3d27"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "red-train",
+    "text": "红色的小火车",
+    "zh": "红色的小火车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/red-train.mp3",
+        "sha256": "13071f5b5b3cf1ba7641c9abd71c61420cba3d6e293bc41d38d0dd01c009e0d0"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "red-bike",
+    "text": "红色的自行车",
+    "zh": "红色的自行车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/red-bike.mp3",
+        "sha256": "166b5eaf205a90c5278af6d4f94f4b39db6bbe349df6085d621e4d4393d03fb9"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "purple-teddy",
+    "text": "紫色的泰迪熊",
+    "zh": "紫色的泰迪熊",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/purple-teddy.mp3",
+        "sha256": "3c1cdf2b3660417b4436cfeb9a25f37ccc35e69f0114e9cb619083fd2b62bf39"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "green-doll",
+    "text": "green doll",
+    "zh": "绿色的娃娃",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/green-doll.mp3",
+        "sha256": "a14a442b47dd08bde9dee4eebf75678b29589d0bb4cc59e57c8813636f0cfbda"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/green-doll.mp3",
+        "sha256": "8f2e7bb352d1b314a3bf6a84b5da2843d4dfa56e6f0fc310a348c4463b872dd7"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "blue-ball",
+    "text": "blue ball",
+    "zh": "蓝色的球",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/blue-ball.mp3",
+        "sha256": "0432861404f7020a3038b373003c685adce77faa6d9b6617bc938d3059544bee"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/blue-ball.mp3",
+        "sha256": "921e4135728695812f894e3594e5c4db467f9b763f2af2e35a7e81191067274e"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "red-car",
+    "text": "red car",
+    "zh": "红色的小汽车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/red-car.mp3",
+        "sha256": "f388ea429fb3f7d8b3567fd7beffaad8f7200d037d717798d629d224698ea03e"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/red-car.mp3",
+        "sha256": "e787631c12d7741f002099f8c3cbf3f55813ca5be4ead0004d7924e12e794e26"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "red-train",
+    "text": "red train",
+    "zh": "红色的小火车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/red-train.mp3",
+        "sha256": "f9eac549412e6d339f99b2637360c860f77465ce9c0cd01837729e53da911f63"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/red-train.mp3",
+        "sha256": "6efc62019cbde9ea64b22a527fc8e2f0eddb1a307f0350092705bac7e96aa8eb"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "red-bike",
+    "text": "red bike",
+    "zh": "红色的自行车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/red-bike.mp3",
+        "sha256": "63bb140846b4640dcf7288b2a8a5f29af936dbf166eefdce96337b39495ee2f1"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/red-bike.mp3",
+        "sha256": "255b525fa71e2e936ba9f87fccc8d57b3cc68dae71a279e466c50e1dcb7def21"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "purple-teddy",
+    "text": "purple teddy",
+    "zh": "紫色的泰迪熊",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/purple-teddy.mp3",
+        "sha256": "23f7b28b23f1d81ec27eeb195cf20ec03bd425265415b3f178d457111b71b13b"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/purple-teddy.mp3",
+        "sha256": "47bc5403203e629fa6197879831d876dade8b74b7de333863a9c3e2296ff7a11"
+      }
+    ]
   }
 ]

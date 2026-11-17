@@ -1190,6 +1190,8 @@ export class AudioManager {
     if(phrase)return resolveAssetUrl(phrase.audio);
     const raw = String(wordId || "").trim().toLowerCase();
     const id = getWordById(raw)?.id || raw;
+    const content = getWordById(id);
+    if(content?.kind==='phrase')return resolveAssetUrl(lang==='zh'?content.audioZh:review?content.audioEn:content.audio);
     const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
     const cleanBase = base.endsWith("/") ? base : base + "/";
     if (lang === "zh") return `${cleanBase}audio/words/zh/${id}.mp3`;

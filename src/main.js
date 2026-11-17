@@ -452,6 +452,7 @@ export class Game {
     this.bubbleManager.setPlayerMode(mode);
     this.poseDetector.setPlayerMode(mode);
     this.audioManager.init();
+    this.bubbleManager?.prepareWordRound?.(this.targetCount);
     this.isCalibrationReady = false;
     this.isDemoMode = false;
     this.poseDetector.isDemoMode = false;
@@ -483,6 +484,10 @@ export class Game {
       return;
     }
     if (!cameraReady) return;
+    if(typeof document!=='undefined'&&document.documentElement?.nodeType===1){
+      await this.bubbleManager?.readyPreparedWords?.();
+      if(this.lifecycleSessionId!==session||this.state!=='CALIBRATING')return;
+    }
     if (this.videoElement && this.videoElement.paused && this.videoElement.srcObject) {
       try { this.videoElement.play()?.catch?.(() => {}); } catch (_) {}
     }
@@ -553,10 +558,18 @@ export class Game {
     return true;
   }
 
-  beginRoundGreeting() {
+  async beginRoundGreeting() {
     this.currentEndPhrase=null;this.animalSpeech?.cancel();this.voiceQueue?.cancel();this.voiceQueue?.resume();this.speechPolicy?.beginRound();this.lastPlayWord=null;this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
+    const token=this.wordRoundPreparationToken=(this.wordRoundPreparationToken||0)+1;
+    this.pendingWordSpawn=null;
+    if(typeof document!=='undefined'&&document.documentElement?.nodeType===1){
+      if(!this.bubbleManager?.preparedWordRound)this.bubbleManager?.prepareWordRound?.(this.targetCount);
+      await this.bubbleManager?.readyPreparedWords?.();
+      if(token!==this.wordRoundPreparationToken||!['PLAYING','PAUSED'].includes(this.state))return;
+    }
     this.bubbleManager?.beginWordRound?.(this.targetCount);
     if(this.state==='PLAYING')this.bubbleManager.spawnNext(this.collectedCount,true);
+    else this.pendingWordSpawn=token;
   }
 
   presentPlayWord(word, options = {}) {
@@ -925,6 +938,7 @@ export class Game {
     this.audioManager?.recoverFromGesture?.();
     if(!this.isDemoMode&&this.videoElement?.srcObject){try{this.videoElement.play()?.catch?.(()=>{});}catch{}}
     this.state = this.prePauseState || 'PLAYING';
+    if(this.state==='PLAYING'&&this.pendingWordSpawn!=null&&this.pendingWordSpawn===this.wordRoundPreparationToken){this.pendingWordSpawn=null;this.bubbleManager?.spawnNext(this.collectedCount,true);}
     this.noPoseDetectedTime = 0;
     this.isSoftWaiting = false;
     this.coopLostDuration = 0;
@@ -1042,6 +1056,8 @@ export class Game {
 
   // 退出回首页（取消所有异步流程、旧定时器并彻底释放摄像头）
   handleExit() {
+    this.wordRoundPreparationToken=(this.wordRoundPreparationToken||0)+1;this.pendingWordSpawn=null;
+    this.bubbleManager?.discardPreparedWordRound?.();
     this.bubbleManager?.contrastSampler?.clear();
     this.wordFocus?.close(false);this.voiceQueue?.cancel();this.clearPlayWordCue();this.uiManager?.hidePlayWords?.();
     this.uiManager?.showSoundRecovery?.(false);
@@ -1083,9 +1099,10 @@ export class Game {
   }
 
   // 启用模拟模式 (无摄像头或测试环境)
-  handleEnableDemo(mode) {
+  async handleEnableDemo(mode) {
     this.prepareAnimal();
     this.lifecycleSessionId = (this.lifecycleSessionId || 0) + 1;
+    const session=this.lifecycleSessionId;
     this.isDemoMode = true;
     this.playerMode = 'single';
     this.bubbleManager.setPlayerMode(this.playerMode);
@@ -1096,6 +1113,7 @@ export class Game {
       this.videoElement?.classList?.remove?.('is-playing');
     }
     this.audioManager.init();
+    this.bubbleManager?.prepareWordRound?.(this.targetCount);
     this.isSoftWaiting = false;
 
     if (this.uiManager) {
@@ -1104,6 +1122,8 @@ export class Game {
       if (this.uiManager.showDemoBanner) this.uiManager.showDemoBanner(true);
     }
 
+    if(typeof document!=='undefined'&&document.documentElement?.nodeType===1)await this.bubbleManager?.readyPreparedWords?.();
+    if(this.lifecycleSessionId!==session)return;
     this.handleReadyToPlay();
   }
 

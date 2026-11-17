@@ -12,7 +12,7 @@ from voice_audio_quality import check_phrase
 
 root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--kind', choices=['phrases', 'words', 'zh-words', 'countdown'], default='phrases')
+parser.add_argument('--kind', choices=['phrases', 'words', 'zh-words', 'countdown', 'learning-phrases', 'zh-learning-phrases'], default='phrases')
 parser.add_argument('--only', nargs='+', help='Canonical ids; omit to inspect/build the complete selected bank')
 parser.add_argument('--force', action='store_true', help='Regenerate the explicitly selected existing audio')
 parser.add_argument('--dry-run', action='store_true', help='Print the plan without downloading models or writing files')
@@ -45,7 +45,9 @@ COUNTDOWN_ENTRIES = [
     {'id': 'go', 'en': 'Go!', 'zh': '出发！'},
 ]
 query = "import {ANIMAL_PHRASES} from './src/animalPhrases.js'; console.log(JSON.stringify(Object.values(ANIMAL_PHRASES).flat()));" if args.kind == 'phrases' else "import {WORDS_LIST} from './src/wordsConfig.js'; console.log(JSON.stringify(WORDS_LIST));"
-if args.kind == 'countdown':
+if args.kind in ('learning-phrases', 'zh-learning-phrases'):
+    entries = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', "import {LEARNING_PHRASES} from './src/learningPhrases.js'; console.log(JSON.stringify(LEARNING_PHRASES));"], cwd=root))
+elif args.kind == 'countdown':
     entries = [dict(e) for e in COUNTDOWN_ENTRIES]
 else:
     entries = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', query], cwd=root))
@@ -58,6 +60,10 @@ if args.only:
     entries = [entry for entry in entries if entry['id'] in args.only]
 
 def targets(entry):
+    if args.kind == 'zh-learning-phrases':
+        return [root/'public'/entry['audioZh'].lstrip('/')]
+    if args.kind == 'learning-phrases':
+        return [root/'public'/entry['audio'].lstrip('/'), root/'public'/entry['audioEn'].lstrip('/')]
     if args.kind == 'phrases':
         return [root/'public'/entry['audio'].lstrip('/'), root/'public/audio/phrases'/f"{entry['id']}.mp3"]
     if args.kind == 'zh-words':
@@ -74,7 +80,7 @@ if args.dry_run or not work:
 
 # Heavy dependencies/model loading are intentionally after planning and validation.
 # zh-words uses only macOS `say` (Tingting) + ffmpeg, following voice-profile.json.
-if args.kind == 'zh-words':
+if args.kind in ('zh-words', 'zh-learning-phrases'):
     rate = profile['output_sample_rate']
     manifest_path = root/'docs/voice-manifest.json'
     records = json.loads(manifest_path.read_text()) if manifest_path.exists() else []
@@ -154,7 +160,8 @@ for entry in work:
         subprocess.run(['/usr/bin/say', '-v', profile['chinese_voice'], '-r', str(profile['chinese_rate']), '-o', str(cn), entry['zh']], check=True)
         trim = f"aformat=sample_rates={rate}:channel_layouts=mono,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-45dB,areverse,apad=pad_dur=0.18,asetpts=N/SR/TB"
         if args.force or not paths[0].exists():
-            chain = f"[0:a]{trim},asplit=2[c1][c2];[1:a]aformat=sample_rates={rate}:channel_layouts=mono,asplit=2[e1][e2];[c1][e1][c2][e2]concat=n=4:v=0:a=1,{profile['master_filter']}[out]"
+            english_filter = trim if args.kind == 'learning-phrases' else f"aformat=sample_rates={rate}:channel_layouts=mono"
+            chain = f"[0:a]{trim},asplit=2[c1][c2];[1:a]{english_filter},asplit=2[e1][e2];[c1][e1][c2][e2]concat=n=4:v=0:a=1,{profile['master_filter']}[out]"
             subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(cn), '-i', str(wav), '-filter_complex', chain, '-map', '[out]', *encode, str(paths[0])], check=True)
         if args.force or not paths[1].exists():
             subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(wav), '-af', f"{trim},{profile['master_filter']}", *encode, str(paths[1])], check=True)

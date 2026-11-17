@@ -1,3 +1,5 @@
+import {mixPhrase,recordExposure,preparePhraseMedia,conflicts} from './contentSelection.js';
+import {resolveAssetUrl} from './wordsConfig.js';
 import {InteractionDemo} from './interactionDemo.js';
 import {getViewport,getSafeInsets,getHudBottom} from './viewport.js';
 import * as THREE from 'three';
@@ -95,9 +97,6 @@ export class BubbleManager {
     this.roundWord = null;
     this.wordTextureCache = new Map();
     this.onWordPop = null;
-    if (typeof document !== 'undefined') {
-      this.preloadWordTextures();
-    }
   }
 
 
@@ -107,7 +106,7 @@ export class BubbleManager {
     if (!this.wordTextureCache.has(wordId)) {
       try {
         const loader = new THREE.TextureLoader();
-        const word = WORDS_MAP.get(wordId);
+        const word = getWordById(wordId);
         const base = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) || '/';
         const cleanBase = base.endsWith('/') ? base : base + '/';
         const rawUrl = word?.bubbleImage || word?.image || `images/words/${wordId}.png`;
@@ -123,9 +122,9 @@ export class BubbleManager {
     return this.wordTextureCache.get(wordId);
   }
 
-  preloadWordTextures() {
+  preloadWordTextures(words = []) {
     if (typeof document === 'undefined') return;
-    for (const w of WORDS_LIST) {
+    for (const w of words) {
       this.getWordTexture(w.id);
     }
   }
@@ -582,9 +581,44 @@ export class BubbleManager {
         chosen.push(w);
       }
     }
-    this.wordPool = chosen.slice(0, poolSize);
+    this.wordPool = mixPhrase(chosen,WORDS_LIST,poolSize,{recentIds:this.recentWordIds});
+    this.preloadWordTextures(this.wordPool);
     this.onWordPoolReady?.(this.wordPool);
     this.wordQueue = this.buildEvenQueue(this.wordPool);
+  }
+
+  prepareWordRound(targetCount = 6) {
+    const currentPool = this.wordPool;
+    const currentQueue = this.wordQueue;
+    this.initEvenWordPool(targetCount);
+    this.preparedWordRound = {
+      targetCount,
+      pool: [...this.wordPool],
+      queue: [...this.wordQueue]
+    };
+    this.wordPool = currentPool;
+    this.wordQueue = currentQueue;
+  }
+
+  async readyPreparedWords() {
+    const prepared=this.preparedWordRound;
+    if(!prepared||prepared.ready)return;
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),3500);
+    try {
+      const ready=await preparePhraseMedia(prepared.pool,resolveAssetUrl,controller.signal);
+      if(this.preparedWordRound!==prepared)return;
+      const pool=ready.filter(Boolean);
+      for(const word of WORDS_LIST){
+        if(pool.length>=prepared.pool.length)break;
+        if(!pool.some(other=>conflicts(other,word)))pool.push(word);
+      }
+      prepared.pool=pool;prepared.queue=this.buildEvenQueue(pool);prepared.ready=true;
+    } finally {clearTimeout(timeout);}
+  }
+
+  discardPreparedWordRound() {
+    this.preparedWordRound = null;
   }
 
   buildEvenQueue(pool) {
@@ -642,6 +676,7 @@ export class BubbleManager {
     }
     const word = this.wordQueue.shift();
     if (word) {
+      if(!this.roundExposedIds?.has(word.id)){recordExposure(word.id);(this.roundExposedIds??=new Set()).add(word.id);}
       this.lastWordId = word.id;
       this.recentWordIds.push(word.conceptId || word.id);
       if (this.recentWordIds.length > 5) this.recentWordIds.shift();
@@ -650,6 +685,7 @@ export class BubbleManager {
   }
 
   beginWordRound(targetCount = 6) {
+    this.roundExposedIds=new Set();
     this.roundWord = null;
     if (!this.roundWordHits) this.roundWordHits = new Map();
     else this.roundWordHits.clear();
@@ -657,7 +693,15 @@ export class BubbleManager {
     this.roundTargetCount = typeof targetCount === 'number' && targetCount > 0 ? targetCount : 6;
     this.wordPool = [];
     this.wordQueue = [];
-    this.initEvenWordPool(this.roundTargetCount);
+    const prepared = this.preparedWordRound;
+    this.preparedWordRound = null;
+    if (prepared?.targetCount === this.roundTargetCount) {
+      this.wordPool = prepared.pool;
+      this.wordQueue = prepared.queue;
+      this.onWordPoolReady?.(this.wordPool);
+    } else {
+      this.initEvenWordPool(this.roundTargetCount);
+    }
   }
 
   createBubble(index, forceType = null, forceWord = null) {

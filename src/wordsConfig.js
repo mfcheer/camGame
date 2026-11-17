@@ -1,3 +1,4 @@
+import {LEARNING_PHRASES} from './learningPhrases.js';
 import {mergeVocabulary,normalizeWordKey} from './vocabularyMerge.js';
 import {STORYBOOK_WORDS} from './storybookVocabulary.js';
 import {CLASSROOM_WORDS} from './classroomVocabulary.js';
@@ -381,6 +382,7 @@ const BASE_WORDS_LIST = [
 export const WORDS_LIST = mergeVocabulary(BASE_WORDS_LIST, STORYBOOK_WORDS, CLASSROOM_WORDS, EXPANDED_WORDS, FRUITS_WORDS, DRINKS_WORDS, COMPLEMENTARY_WORDS, NEXT_WORDS);
 
 export const WORDS_MAP = new Map(WORDS_LIST.map(w => [w.id, w]));
+const CONTENT_MAP=new Map([...WORDS_LIST,...LEARNING_PHRASES].map(w=>[w.id,w]));
 const WORD_ALIASES = new Map(WORDS_LIST.flatMap(word=>word.aliases.map(alias=>[alias,word.id])));
 
 /**
@@ -401,7 +403,7 @@ export function getRandomWord(excludeId = null) {
 export function getWordById(id) {
   if (!id) return null;
   const key=normalizeWordKey(id);
-  return WORDS_MAP.get(WORD_ALIASES.get(key)||key) || null;
+  return CONTENT_MAP.get(WORD_ALIASES.get(key)||key) || null;
 }
 
 /**
