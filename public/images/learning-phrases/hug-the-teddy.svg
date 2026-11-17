@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><path d="M24 229H232" stroke="#b8d0c5" stroke-width="4" stroke-linecap="round"/><g stroke-linecap="round" stroke-linejoin="round"><path d="M107 163L93 215M147 163L163 215" stroke="#5575a6" stroke-width="20"/><path d="M104 90H151L163 173H93Z" fill="#67b8ae"/><circle cx="128" cy="53" r="29" fill="#ffdab9"/><path d="M100 43Q96 12 128 18Q157 13 157 44L133 33L110 44Z" fill="#72594c"/><circle cx="118" cy="53" r="3" fill="#49515d"/><circle cx="139" cy="53" r="3" fill="#49515d"/><path d="M118 66Q128 76 138 66" fill="none" stroke="#b07769" stroke-width="3"/><g transform="translate(38 68) scale(0.703125)">
+  <defs><linearGradient id="tone0" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#8D6E63"/><stop offset="1" stop-color="#8D6E63" stop-opacity=".82"/></linearGradient><linearGradient id="tone1" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#D7CCC8"/><stop offset="1" stop-color="#D7CCC8" stop-opacity=".82"/></linearGradient><linearGradient id="tone2" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#3E2723"/><stop offset="1" stop-color="#3E2723" stop-opacity=".82"/></linearGradient><linearGradient id="tone3" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#E74C3C"/><stop offset="1" stop-color="#E74C3C" stop-opacity=".82"/></linearGradient><linearGradient id="tone4" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#C0392B"/><stop offset="1" stop-color="#C0392B" stop-opacity=".82"/></linearGradient>
+    <filter id="itemShadow_teddy" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+  <g filter="url(#itemShadow_teddy)">
+
+      <!-- Super Cute Teddy Bear -->
+      <g transform="translate(128, 120)">
+        <circle cx="-32" cy="-42" r="16" fill="url(#tone0)" stroke="#5D4037" stroke-width="3"/>
+        <circle cx="-32" cy="-42" r="9" fill="url(#tone1)"/>
+        <circle cx="32" cy="-42" r="16" fill="url(#tone0)" stroke="#5D4037" stroke-width="3"/>
+        <circle cx="32" cy="-42" r="9" fill="url(#tone1)"/>
+        <circle cx="-38" cy="14" r="14" fill="url(#tone0)" stroke="#5D4037" stroke-width="3"/>
+        <circle cx="38" cy="14" r="14" fill="url(#tone0)" stroke="#5D4037" stroke-width="3"/>
+        <ellipse cx="-26" cy="48" rx="14" ry="12" fill="url(#tone0)" stroke="#5D4037" stroke-width="3"/>
+        <ellipse cx="-26" cy="48" rx="8" ry="7" fill="url(#tone1)"/>
+        <ellipse cx="26" cy="48" rx="14" ry="12" fill="url(#tone0)" stroke="#5D4037" stroke-width="3"/>
+        <ellipse cx="26" cy="48" rx="8" ry="7" fill="url(#tone1)"/>
+        <ellipse cx="0" cy="18" rx="34" ry="32" fill="url(#tone0)" stroke="#5D4037" stroke-width="4"/>
+        <ellipse cx="0" cy="18" rx="20" ry="18" fill="url(#tone1)"/>
+        <circle cx="0" cy="-22" r="34" fill="url(#tone0)" stroke="#5D4037" stroke-width="4"/>
+        <ellipse cx="0" cy="-14" rx="16" ry="12" fill="url(#tone1)"/>
+        <polygon points="-5,-18 5,-18 0,-13" fill="url(#tone2)"/>
+        <path d="M0 -13 L0 -8 M-5 -8 Q0 -4 5 -8" fill="none" stroke="#3E2723" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="-14" cy="-26" r="4.5" fill="url(#tone2)"/>
+        <circle cx="-12" cy="-28" r="1.5" fill="#FFFFFF"/>
+        <circle cx="14" cy="-26" r="4.5" fill="url(#tone2)"/>
+        <circle cx="16" cy="-28" r="1.5" fill="#FFFFFF"/>
+        <polygon points="0,-4 -12,-10 -12,2" fill="url(#tone3)"/>
+        <polygon points="0,-4 12,-10 12,2" fill="url(#tone3)"/>
+        <circle cx="0" cy="-4" r="4" fill="url(#tone4)"/>
+      </g>
+
+  </g>
+</g><path d="M104 103Q68.0 139 97.0 157M151 103Q188.0 139 159.0 157" fill="none" stroke="#ffdab9" stroke-width="15"/></g></svg>

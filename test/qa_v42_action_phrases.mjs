@@ -7,7 +7,7 @@ import {WORDS_LIST,getWordById} from '../src/wordsConfig.js';
 import * as THREE from 'three';
 import {BubbleManager} from '../src/bubbleManager.js';
 const actions=LEARNING_PHRASES.filter(p=>p.motion);
-assert.equal(actions.length,4);
+assert.equal(actions.length,8);
 for(const p of actions){
  assert(conflicts(p,getWordById(p.relatedWordIds[0])));
  assert(!conflicts(p,LEARNING_PHRASES[0]));
@@ -35,4 +35,4 @@ try{
  THREE.TextureLoader.prototype.load=oldLoad;
  if(oldDocument===undefined)delete globalThis.document;else globalThis.document=oldDocument;
 }
-console.log('四组动作素材、关联去重、帧循环、减少动态效果与十项覆盖通过');
+console.log('八组动作素材、关联去重、帧循环、减少动态效果与全部短语覆盖通过');

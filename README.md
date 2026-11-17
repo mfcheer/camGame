@@ -258,4 +258,5 @@ camGame/
 
 学习内容扩展入口：[单词与短语资源制作、接入和验收规范](docs/LEARNING_PHRASES.md)，包含资源清单、动静态选择、定向生成、来源记录和交接验收。
 
+- 当前另有22条入门短语（含8条动作）和7组解救后手势问答；本批12条短语与5组问答的[内容卡与资源记录](docs/content-batches/BEGINNER_EXPANSION.md)。
 - 解救后手势问答与新增对话资源：[制作与验收规范](docs/DIALOGUE_PRACTICE.md)。

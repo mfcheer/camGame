@@ -9102,5 +9102,1787 @@
         "sha256": "0f471a65393b15441ad88164d7ee6fcf6991b1894ee4fa44c9a36fa3e40d4557"
       }
     ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "red-apple",
+    "text": "red apple",
+    "zh": "红苹果",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/red-apple.mp3",
+        "sha256": "9801b836766f3ca90050b47c949b1098beb611081629aa7dfd02151630df2a47"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/red-apple.mp3",
+        "sha256": "1821882187bd3e8bff5cf8e93196207ac7d9b8bfb7a877939a3df5c5c5f38379"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "yellow-banana",
+    "text": "yellow banana",
+    "zh": "黄香蕉",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/yellow-banana.mp3",
+        "sha256": "dc2513ae7c1a52c5d22d16a369625fc815ce171505b92e8d742a3666563c1c72"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/yellow-banana.mp3",
+        "sha256": "1cd9dd18463b62ae5b9f6418f965d876ff55ecdbd1aae0c1019a58e33b725c90"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "yellow-duck",
+    "text": "yellow duck",
+    "zh": "黄色的小鸭",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/yellow-duck.mp3",
+        "sha256": "c165dbe4f535def3399f144758809269a4dadc394e298ab12b4089c6b1ec8f70"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/yellow-duck.mp3",
+        "sha256": "0331ade9a7a40eadb9e34942e7d254cc947c4ffdb1a462d7549903440d64be59"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "red-heart",
+    "text": "red heart",
+    "zh": "红色的爱心",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/red-heart.mp3",
+        "sha256": "04d705ef9eae97277fd92646f0730f27ab3351b20e4cd29b13e0b1a96a8cf9d5"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/red-heart.mp3",
+        "sha256": "40fdb07cf169dac7fd1fdc756dd31ad8231efcd4e3922c2231404fd052450629"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "blue-circle",
+    "text": "blue circle",
+    "zh": "蓝色的圆形",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/blue-circle.mp3",
+        "sha256": "571fadffbea797ee208855dcf203d7a34bb04541b466fa649d93b181160b3426"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/blue-circle.mp3",
+        "sha256": "c7d3bbdf2848b110d4b3b63e8a86a4ed7f038ec8e4b477388701b219c208e53b"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "two-cats",
+    "text": "two cats",
+    "zh": "两只猫",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/two-cats.mp3",
+        "sha256": "d6e327ec4309b870725c45a7a970d70d6400d78ae18076ddaeff68922a316d84"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/two-cats.mp3",
+        "sha256": "50fef4b80d03deb343eaed3c7b96fda786d2e5d4050b2b06d3f2ab4751967abc"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "two-balls",
+    "text": "two balls",
+    "zh": "两个球",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/two-balls.mp3",
+        "sha256": "39c766e6e12576f9eab08abed1156df1a19b160f8e568c70bbc3a6832f63bb5e"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/two-balls.mp3",
+        "sha256": "f7247ebfa00d632851de5c576cfadab40fccc4415ad4961026409fc1449344d2"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "three-apples",
+    "text": "three apples",
+    "zh": "三个苹果",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/three-apples.mp3",
+        "sha256": "a33c51b7954d320c1c7ca8d45ef5d1c84c20932e5f0d3eaf766117d447a792b7"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/three-apples.mp3",
+        "sha256": "f6b00bf88583d766d70bcb02bde6df7bc87aaf7a090c7ea67104a630219a6cfd"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "eat-an-apple",
+    "text": "eat an apple",
+    "zh": "吃苹果",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/eat-an-apple.mp3",
+        "sha256": "84830eb857aeb1c7d0f4eac9d28166780fc41339a6776a63bef3374653f92759"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/eat-an-apple.mp3",
+        "sha256": "699d535785fd4f83203f077860bc8209372449cd6fa33d1803ad46c038aa12c5"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "drink-water",
+    "text": "drink water",
+    "zh": "喝水",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/drink-water.mp3",
+        "sha256": "e2eb73f73d08429cf33eca5010852e6db4482c0c2c7e28017c964f1148fb7a87"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/drink-water.mp3",
+        "sha256": "a8debde0d4adcd5d04be28034c2ee66acddc8860681fbbb76349c2ea22a363a2"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "kick-the-ball",
+    "text": "kick the ball",
+    "zh": "踢球",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/kick-the-ball.mp3",
+        "sha256": "df00eb4137378d9dde1214712d7b6e888a6ce82a218e0a46e299f0aba70fbb0a"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/kick-the-ball.mp3",
+        "sha256": "75b5b8c3e5bfa97e3754887ac93725873cbcdf7cc3545f784c321d9661dd9916"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "hug-the-teddy",
+    "text": "hug the teddy",
+    "zh": "抱抱泰迪熊",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/hug-the-teddy.mp3",
+        "sha256": "545202a21ebbd1e24fd68fafb727a60feb51f12769460e69c3f80ce2f11c24cf"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/hug-the-teddy.mp3",
+        "sha256": "33b450d5765778c0204727adf8766193c47a1cd0a8741bb8bca3b6bf4309ce1a"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-what-is-it",
+    "text": "What is it?",
+    "zh": "这是什么？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/what-is-it.mp3",
+        "sha256": "e670d93b8aef5e446aa40567e2e035b98b2f42cd616e35874e4cbee7066daf39"
+      },
+      {
+        "path": "public/audio/dialogue/review/what-is-it.mp3",
+        "sha256": "a9d441ed83726a9d622e20dcdf60b0694799a5c182a979d1233753b78bd96309"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-its-a-cat",
+    "text": "It's a cat.",
+    "zh": "这是一只猫。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/its-a-cat.mp3",
+        "sha256": "404bc05a52d1e8e5ee67503e9cf5e2be102df8ed1f94eff2b5dc61da2ad3113a"
+      },
+      {
+        "path": "public/audio/dialogue/review/its-a-cat.mp3",
+        "sha256": "7019c0882614a03253644c93d83104aa1f37dfef3f324f6f2ed92bfbfcb0766e"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-its-a-dog",
+    "text": "It's a dog.",
+    "zh": "这是一只狗。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/its-a-dog.mp3",
+        "sha256": "c499d115dd870acc08e2b9310088cc09101cd462ae409d295cc2fd07d704ec67"
+      },
+      {
+        "path": "public/audio/dialogue/review/its-a-dog.mp3",
+        "sha256": "56b8e67fe515c4067f56f22590f3d54bc19e8bcafe8b4f596a1832a872acf1a6"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-what-color",
+    "text": "What color is it?",
+    "zh": "它是什么颜色？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/what-color.mp3",
+        "sha256": "d9e2be21042c71c11af4e9e26c444249afd1897f749e3f4a3529e25236743fde"
+      },
+      {
+        "path": "public/audio/dialogue/review/what-color.mp3",
+        "sha256": "27f4875f338b05e58477a186f6135de48fa4de673ff963ede71a82b03a6dd2c4"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-its-red",
+    "text": "It's red.",
+    "zh": "它是红色的。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/its-red.mp3",
+        "sha256": "26ff0be41a614118e749572e3a1a343634b535d190fbfbcb97c52ce642492c4f"
+      },
+      {
+        "path": "public/audio/dialogue/review/its-red.mp3",
+        "sha256": "02e00db53612252be0d28230d68b920497aee4fac43af21bc1a2e74ce7c47132"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-its-blue",
+    "text": "It's blue.",
+    "zh": "它是蓝色的。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/its-blue.mp3",
+        "sha256": "ad3414f2148758e9304a3ebfb217cb47a51794966e5f56e292a0d0076825be01"
+      },
+      {
+        "path": "public/audio/dialogue/review/its-blue.mp3",
+        "sha256": "cd333a516aadcfecac4184681d281dd0bc5ac5d239f84310fa3b46172e631e9f"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-how-many-balls",
+    "text": "How many balls?",
+    "zh": "有几个球？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/how-many-balls.mp3",
+        "sha256": "c6175d929f87d82bf59ebb5f383f4f4fe383506754d6ead54bf02d2f8a16ffd0"
+      },
+      {
+        "path": "public/audio/dialogue/review/how-many-balls.mp3",
+        "sha256": "2cae1ed282ee51cb7b798e699034433f51d8622c75c4e45e1d46fb196c1302fc"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-one-ball",
+    "text": "One ball.",
+    "zh": "一个球。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/one-ball.mp3",
+        "sha256": "9778bddef7f23fcbe61af00b4b585cb3c1298bb26bd832a507f226d21fd615cd"
+      },
+      {
+        "path": "public/audio/dialogue/review/one-ball.mp3",
+        "sha256": "ef372b103b364b182552b0576cfac76bb70900654d5538105059d4708337176d"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-two-balls",
+    "text": "Two balls.",
+    "zh": "两个球。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/two-balls.mp3",
+        "sha256": "2a4a849ba5636192b8f5303e842dcfbbf8330e5579b7ab431e68a658c744113b"
+      },
+      {
+        "path": "public/audio/dialogue/review/two-balls.mp3",
+        "sha256": "1edb187bde475d682cbd626732a950fbb7a4ffb66d7aa87db6c49e09ec90a991"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-what-like",
+    "text": "What do you like?",
+    "zh": "你喜欢什么？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/what-like.mp3",
+        "sha256": "e722b05edcb398c7fcaf5f88765cc516e6314c18998319e49a2c99dabe2fa592"
+      },
+      {
+        "path": "public/audio/dialogue/review/what-like.mp3",
+        "sha256": "3fb8f93866c5905277ba3ca84c2c27d4fd14be06a5bb8c236807feead6257e9d"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-like-apples",
+    "text": "I like apples.",
+    "zh": "我喜欢苹果。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/like-apples.mp3",
+        "sha256": "1957f8663f0388b81dc08b556bffcecfb3035a7ff0248f69e5fe6100542dae79"
+      },
+      {
+        "path": "public/audio/dialogue/review/like-apples.mp3",
+        "sha256": "a9384c06d23cf0137baa1056063e764aa0f94d607e837d34f409955aecaa6f09"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-like-bananas",
+    "text": "I like bananas.",
+    "zh": "我喜欢香蕉。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/like-bananas.mp3",
+        "sha256": "9c8576a42837be7f3b0d93ce2656610cd8010dd9d3ce65b3d3ff65c2ba78cb8f"
+      },
+      {
+        "path": "public/audio/dialogue/review/like-bananas.mp3",
+        "sha256": "009e3f49753c1d2b7d83f8977f269488ba17bff84abca716636aab3f6bac80df"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-what-would-like",
+    "text": "What would you like?",
+    "zh": "你想要什么？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/what-would-like.mp3",
+        "sha256": "deeab84b29910eeab4128daac619a44142b88450b8a104ce0b437608333ff6c7"
+      },
+      {
+        "path": "public/audio/dialogue/review/what-would-like.mp3",
+        "sha256": "2d02e7b29bde76388ae2e4081c2bf297d52a2d3d8b45fb1fca36a9f0bc954499"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-milk-please",
+    "text": "Milk, please.",
+    "zh": "请给我牛奶。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/milk-please.mp3",
+        "sha256": "469b393372aeddef4786f6ac1e508752feb024884fca8a1dea209ede945de1bd"
+      },
+      {
+        "path": "public/audio/dialogue/review/milk-please.mp3",
+        "sha256": "c76a2514edab534ceea80000b83f11e2a79839386e5b18c06e0699535be901eb"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-water-please",
+    "text": "Water, please.",
+    "zh": "请给我水。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/water-please.mp3",
+        "sha256": "6076553a9f837023756add394e904b24ebbb245d047d3a2c015c80ca2b75c76f"
+      },
+      {
+        "path": "public/audio/dialogue/review/water-please.mp3",
+        "sha256": "efa7f89f83d928cbf2c56cdf6ccd1a30c18e287a94220e3284d9db18b9b49d9f"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "red-apple",
+    "text": "红苹果",
+    "zh": "红苹果",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/red-apple.mp3",
+        "sha256": "613ef60714cf7db87668f5c72cf001ccd293882a10085c1be6051955d2ab5075"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "yellow-banana",
+    "text": "黄香蕉",
+    "zh": "黄香蕉",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/yellow-banana.mp3",
+        "sha256": "b91904ae0d4a52580dc7b943b9582ad3e6c1cb834025db08ffa08543195a93d7"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "yellow-duck",
+    "text": "黄色的小鸭",
+    "zh": "黄色的小鸭",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/yellow-duck.mp3",
+        "sha256": "df9fc6010283c6360ee592d403f87fe90594cb71fbf77a9a9ff950a97c2aec14"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "red-heart",
+    "text": "红色的爱心",
+    "zh": "红色的爱心",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/red-heart.mp3",
+        "sha256": "0de1498ebd4b72fb1a3683f45999c800f9bbfa17c3ec07e08bacae549a7e8893"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "blue-circle",
+    "text": "蓝色的圆形",
+    "zh": "蓝色的圆形",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/blue-circle.mp3",
+        "sha256": "f2e2430f79fddb2ae86a999062338ce7e1190077c76456ffba4b31880058de82"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "two-cats",
+    "text": "两只猫",
+    "zh": "两只猫",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/two-cats.mp3",
+        "sha256": "c223fb99e093a937370676682a795d2a5f5e4153a6e5cb7ba9446abfb8b891c3"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "two-balls",
+    "text": "两个球",
+    "zh": "两个球",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/two-balls.mp3",
+        "sha256": "955bdb3045986858bf698bcb99981c50b574c46844190226a4e8162bf54327c8"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "three-apples",
+    "text": "三个苹果",
+    "zh": "三个苹果",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/three-apples.mp3",
+        "sha256": "18527b5adb363bf9a37cfe7383b9f2b80eff79d6dc6627954f0c0778bc67612e"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "eat-an-apple",
+    "text": "吃苹果",
+    "zh": "吃苹果",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/eat-an-apple.mp3",
+        "sha256": "a06bc16df32d980800bcbae06d52e96f7cd3255881d1b4ccfbce3938785b5528"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "drink-water",
+    "text": "喝水",
+    "zh": "喝水",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/drink-water.mp3",
+        "sha256": "c12758650a231421865c15b682425e7f9a0645e3a00f840967186b63781140cc"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "kick-the-ball",
+    "text": "踢球",
+    "zh": "踢球",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/kick-the-ball.mp3",
+        "sha256": "cfd4901b598e1e6fb9b11ba8031d9b123d633a827e2f080ce1bb5cf291f66c21"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "hug-the-teddy",
+    "text": "抱抱泰迪熊",
+    "zh": "抱抱泰迪熊",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/hug-the-teddy.mp3",
+        "sha256": "3cab81c78f7bb18ae3bbfc6793fe4ba648647fc7b58f4c83d7e1b93c8531de01"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-what-is-it",
+    "text": "这是什么？",
+    "zh": "这是什么？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/what-is-it.mp3",
+        "sha256": "68b99074efaaf9716b57d66417f8c92036b7d6c1caa959b44072edef743c73b0"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-its-a-cat",
+    "text": "这是一只猫。",
+    "zh": "这是一只猫。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/its-a-cat.mp3",
+        "sha256": "68abac8a7bb5f994ae249d6595a2f5fe4ba1b079397eb02908d456e70d033dd4"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-its-a-dog",
+    "text": "这是一只狗。",
+    "zh": "这是一只狗。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/its-a-dog.mp3",
+        "sha256": "56233938114393f4617e13b8fc0e5f32faa4430460218ae5ab120fc54108d15e"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-what-color",
+    "text": "它是什么颜色？",
+    "zh": "它是什么颜色？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/what-color.mp3",
+        "sha256": "ab0649f9e698b388cb40048e2e2c9568cc7aa74419f4439a429ccc2bea49a1cc"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-its-red",
+    "text": "它是红色的。",
+    "zh": "它是红色的。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/its-red.mp3",
+        "sha256": "1b762546db6d3b0f2406c7e5c39191b8897a015e947a6bcdfc8099b1467dfbe9"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-its-blue",
+    "text": "它是蓝色的。",
+    "zh": "它是蓝色的。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/its-blue.mp3",
+        "sha256": "9daaaac982c60cf0ceb14b483aef164f1601cbed15fbbd9ec193c176f1a76a6e"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-how-many-balls",
+    "text": "有几个球？",
+    "zh": "有几个球？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/how-many-balls.mp3",
+        "sha256": "21dc57aff3ddebb873921fd2c61763696cbcb423ae99cab1c9fce8ea47d50806"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-one-ball",
+    "text": "一个球。",
+    "zh": "一个球。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/one-ball.mp3",
+        "sha256": "5f0ae8a4e97271638c4b3830ea9c04d2f05f2d1ace9afeea60ace30d7c456b71"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-two-balls",
+    "text": "两个球。",
+    "zh": "两个球。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/two-balls.mp3",
+        "sha256": "955bdb3045986858bf698bcb99981c50b574c46844190226a4e8162bf54327c8"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-what-like",
+    "text": "你喜欢什么？",
+    "zh": "你喜欢什么？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/what-like.mp3",
+        "sha256": "4e29a047e276ca0e74ce221d5cfe237fa7fdd8851999198cfa0f79564e9854c3"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-like-apples",
+    "text": "我喜欢苹果。",
+    "zh": "我喜欢苹果。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/like-apples.mp3",
+        "sha256": "d652c11e78f1e7ccb0a34f8432c1eedbb572270e32bf71bf1c607189b4274d4f"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-like-bananas",
+    "text": "我喜欢香蕉。",
+    "zh": "我喜欢香蕉。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/like-bananas.mp3",
+        "sha256": "095ff56d167131d7ff50634616d6badbf7ed332aaa3b70c3f9069f3c1ce63cc7"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-what-would-like",
+    "text": "你想要什么？",
+    "zh": "你想要什么？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/what-would-like.mp3",
+        "sha256": "f35abb3777f1092d73b8dc2d728545ad1e4ee9b14e6dfbb8f260a0f89092b5cb"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-milk-please",
+    "text": "请给我牛奶。",
+    "zh": "请给我牛奶。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/milk-please.mp3",
+        "sha256": "e6f20d706ca60999407849e38b85b018fe1ebaa2af91f1f8b866ee04d1fc99a4"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-water-please",
+    "text": "请给我水。",
+    "zh": "请给我水。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/water-please.mp3",
+        "sha256": "4290d61940f6416cda638c4e6e9bfbb2af4082977db6c1fc8bc48d330814e546"
+      }
+    ]
   }
 ]

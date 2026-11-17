@@ -5,11 +5,14 @@ import {getViewport} from './viewport.js';
 
 // One active-time state machine. Async voice completion never advances an old screen.
 export class DialoguePractice {
-  constructor(voice,animal,onDone){this.voice=voice;this.animal=animal;this.onDone=onDone;this.ticket=0;this.active=false;this.lastTopic=null;this.weatherIndex=0;this.hands=[];}
+  constructor(voice,animal,onDone){this.voice=voice;this.animal=animal;this.onDone=onDone;this.ticket=0;this.active=false;this.lastTopic=null;this.sceneIndices={};this.hands=[];}
   start(){
     this.clear();this.active=true;this.paused=false;this.attempts=0;this.selected=null;
-    this.topic=DIALOGUES.find(t=>t.id!==this.lastTopic)||DIALOGUES[0];this.lastTopic=this.topic.id;
-    this.correct=this.topic.free?null:['sunny','rainy'][this.weatherIndex++%2];
+    const previous=DIALOGUES.findIndex(t=>t.id===this.lastTopic);
+    this.topic=DIALOGUES[(previous+1)%DIALOGUES.length];this.lastTopic=this.topic.id;
+    const index=this.sceneIndices[this.topic.id]||0;
+    this.correct=this.topic.free?null:this.topic.options[index%this.topic.options.length].id;
+    if(!this.topic.free)this.sceneIndices[this.topic.id]=index+1;
     this.animal?.startFriendPlay?.();this.measureAnimal();this.layoutAnimal();this.setStage('asking');
     this.say(this.topic.question,()=>this.setStage('choosing'));
   }
@@ -96,8 +99,9 @@ export class DialoguePractice {
     if(typeof document==='undefined')return;
     this.root?.remove();const root=document.createElement('section');this.root=root;root.className='dialogue-practice';root.setAttribute('aria-label','和朋友聊一句');root.hidden=!!this.paused;
     const question=dialogueLine(this.topic.question),answer=this.selected&&this.topic.options.find(o=>o.id===this.selected);
+    const correctOption=this.topic.options.find(o=>o.id===this.correct);
     const img=id=>`<img src="${assetUrl(`/images/dialogue/${id}.svg`)}" alt="" draggable="false">`;
-    root.innerHTML=`<div class="dialogue-question"><span>${this.topic.free?'说说你的心情':'看看这里的天气'}</span><strong>${answer?dialogueLine(answer.line).word:question.word}</strong><small>${this.stage==='hint'?'看看上面的天气，再试一次':answer?(this.selected==='sad'?'我陪着你，难过也没关系':'可以跟着说一句'):'听朋友问，再碰一个泡泡'}</small></div>${this.correct?`<div class="dialogue-scene ${this.stage==='hint'?'dialogue-hint':''}" aria-label="游戏里的天气：${this.correct==='sunny'?'晴天':'下雨'}">${img(this.correct)}<span>游戏里的天气</span></div>`:''}<div class="dialogue-answers" ${this.stage==='asking'?'hidden':''}>${this.topic.options.map(o=>`<button type="button" class="dialogue-bubble ${answer?.id===o.id?'selected':''}" data-dialogue-target="${o.id}" aria-label="${o.label}，${dialogueLine(o.line).word}" ${this.stage!=='choosing'?'disabled':''} ${answer&&answer.id!==o.id?'style="visibility:hidden"':''}>${img(o.id)}<span>${o.label}</span></button>`).join('')}</div>${['choosing','holding'].includes(this.stage)?'<button type="button" class="dialogue-replay" data-dialogue-target="replay" aria-label="再听一次">↻<span>再听</span></button>':''}<div class="dialogue-hands" aria-hidden="true"></div>`;
+    root.innerHTML=`<div class="dialogue-question"><span>${this.topic.prompt}</span><strong>${answer?dialogueLine(answer.line).word:question.word}</strong><small>${this.stage==='hint'?this.topic.hint:answer?(this.selected==='sad'?'我陪着你，难过也没关系':'可以跟着说一句'):'听朋友问，再碰一个泡泡'}</small></div>${this.correct?`<div class="dialogue-scene ${this.stage==='hint'?'dialogue-hint':''}" aria-label="${this.topic.sceneLabel}：${correctOption.label}">${img(correctOption.scene||this.correct)}<span>${this.topic.sceneLabel}</span></div>`:''}<div class="dialogue-answers" ${this.stage==='asking'?'hidden':''}>${this.topic.options.map(o=>`<button type="button" class="dialogue-bubble ${answer?.id===o.id?'selected':''}" data-dialogue-target="${o.id}" aria-label="${o.label}，${dialogueLine(o.line).word}" ${this.stage!=='choosing'?'disabled':''} ${answer&&answer.id!==o.id?'style="visibility:hidden"':''}>${img(o.id)}<span>${o.label}</span></button>`).join('')}</div>${['choosing','holding'].includes(this.stage)?'<button type="button" class="dialogue-replay" data-dialogue-target="replay" aria-label="再听一次">↻<span>再听</span></button>':''}<div class="dialogue-hands" aria-hidden="true"></div>`;
     root.addEventListener('pointerdown',e=>{const target=e.target.closest('[data-dialogue-target]');if(!target||target.disabled)return;e.preventDefault();if(target.dataset.dialogueTarget==='replay')this.replay();else this.choose(target.dataset.dialogueTarget);});
     document.body.append(root);this.drawHands();
   }
