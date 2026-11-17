@@ -1,3 +1,4 @@
+import {motionFrame} from './contentMotion.js';
 import {mixPhrase,recordExposure,preparePhraseMedia,conflicts} from './contentSelection.js';
 import {resolveAssetUrl} from './wordsConfig.js';
 import {InteractionDemo} from './interactionDemo.js';
@@ -137,6 +138,13 @@ export class BubbleManager {
     }
     const cardSize = radius * 1.35;
     const texture = this.getWordTexture(word.id);
+    if(typeof document!=='undefined' && word.motion && !this.motionTextures?.has(word.id)){
+      this.motionTextures ||= new Map();
+      const entry={texture:null,elapsed:0};this.motionTextures.set(word.id,entry);
+      new THREE.TextureLoader().load(resolveAssetUrl(word.motion.src),tex=>{
+        tex.colorSpace=THREE.SRGBColorSpace;tex.repeat.set(1/word.motion.frames,1);entry.texture=tex;
+      },undefined,()=>{entry.failed=true;});
+    }
     const cardGeo = new THREE.PlaneGeometry(cardSize, cardSize);
     const cardMat = new THREE.MeshBasicMaterial({
       map: texture || null,
@@ -1713,6 +1721,15 @@ export class BubbleManager {
     const dt = Math.min(deltaSeconds, 0.06);
 
     this.interactionClock += dt;
+    const reduced=this.rescueAnimal?.reducedMotion || (typeof window!=='undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+    this.activeBubble?.group.traverse(node=>{
+      const word=node.userData?.word,entry=word?.motion&&this.motionTextures?.get(word.id);
+      if(!entry?.texture)return;
+      const mesh=node.userData.cardMesh;
+      if(reduced){mesh.material.map=this.getWordTexture(word.id);return;}
+      entry.elapsed+=dt;entry.texture.offset.x=motionFrame(word.motion,entry.elapsed)/word.motion.frames;
+      if(mesh.material.map!==entry.texture){mesh.material.map=entry.texture;mesh.material.needsUpdate=true;}
+    });
     this.layoutGraceSeconds = Math.max(0, this.layoutGraceSeconds - dt);
     this.contrastSampler?.update(dt);
     this.handsAgeSeconds=this.pointerSimulation?0:this.handsAgeSeconds+dt;

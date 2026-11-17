@@ -7962,5 +7962,269 @@
         "sha256": "47bc5403203e629fa6197879831d876dade8b74b7de333863a9c3e2296ff7a11"
       }
     ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "bounce-the-ball",
+    "text": "拍球",
+    "zh": "拍球",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/bounce-the-ball.mp3",
+        "sha256": "20792f92a28e328fbf5e25aa3edded6a880aa7b734d5a8f0a720854e7a152d9a"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "move-the-train",
+    "text": "移动小火车",
+    "zh": "移动小火车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/move-the-train.mp3",
+        "sha256": "0b1b809fc21cf5c07c86d8945dc83f1c0c54384ad1371abab0da63dc628e3a02"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "move-the-car",
+    "text": "移动小汽车",
+    "zh": "移动小汽车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/move-the-car.mp3",
+        "sha256": "a04c6e429afd69c679ec670a326e3db09227a35ce8aa7db8a3be25813e3bf258"
+      }
+    ]
+  },
+  {
+    "kind": "zh-learning-phrases",
+    "id": "ride-the-bike",
+    "text": "骑自行车",
+    "zh": "骑自行车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/zh/ride-the-bike.mp3",
+        "sha256": "b17816ee56d69d8cadfcdd76b8e6d631525e07d7b2b005f067d303af5f311acd"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "bounce-the-ball",
+    "text": "bounce the ball",
+    "zh": "拍球",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/bounce-the-ball.mp3",
+        "sha256": "fdddc3b39480289128afe2e78f6296e772bdf9332fc6844f5c33ffc51f75d39d"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/bounce-the-ball.mp3",
+        "sha256": "973a29e95f45b9e63defffcc4ba03c5745e64a31b6e80bfeaa63452aba8479aa"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "move-the-train",
+    "text": "move the train",
+    "zh": "移动小火车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/move-the-train.mp3",
+        "sha256": "ba236af34d657ea5a00c81742e387374d77c744620df2b0891c4d09bbc618bc9"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/move-the-train.mp3",
+        "sha256": "361dc196f214eacc2aaa4ba376caf684b4508e118ea0c5deee3898877eec5724"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "move-the-car",
+    "text": "move the car",
+    "zh": "移动小汽车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/move-the-car.mp3",
+        "sha256": "38911a811711c3be55963da1b3c10dcc3e2c883adf474e1d3091bd324ce98f81"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/move-the-car.mp3",
+        "sha256": "9ede19a641a685e6338ecccc207b62ef5f1a2b84e9f03317790b77625a2fd820"
+      }
+    ]
+  },
+  {
+    "kind": "learning-phrases",
+    "id": "ride-the-bike",
+    "text": "ride the bike",
+    "zh": "骑自行车",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/learning-phrases/ride-the-bike.mp3",
+        "sha256": "aa5e72ee98ed9f487e561e361b02bfdd81e8b5088102f213fc4844921cbc42c2"
+      },
+      {
+        "path": "public/audio/learning-phrases/review/ride-the-bike.mp3",
+        "sha256": "02534b5552a56bfa8cb6446a3bac5e5c53d2866928c32ca1950537ccee8ce65d"
+      }
+    ]
   }
 ]

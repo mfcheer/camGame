@@ -19,3 +19,10 @@ python3 scripts/build-natural-phrases.py --kind zh-learning-phrases
 ```
 
 修改已有短语时必须 `--only <id> --force`。不移动或重录既有单词、角色问候。
+
+## 动作短语（2026-11-17）
+新增 bounce the ball／拍球、move the train／移动小火车、move the car／移动小汽车、ride the bike／骑自行车。沿用每轮一个短语、十项轮换和关联单词双向去重。
+
+可选 `motion: {src, frames:16, duration:2}` 指向无声 SVG 横向逐帧图。`scripts/build-action-illustrations.py` 生成项目原创矢量封面和动作图，手拍球、手移动玩具与坐姿踩踏分别表达动作，无第三方素材依赖。内容展示与发音、碰撞计分独立。
+
+泡泡由有效游戏时间驱动纹理帧；学习卡按可见时间播放，关闭后取消绘制；小花园和词签仍显示静态封面。暂停/后台冻结，减少动态效果及动作加载失败显示封面；不增加观看或模仿任务。四组配音仅定向生成，沿用已认可的英文与中文标准。
