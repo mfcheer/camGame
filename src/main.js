@@ -1471,7 +1471,7 @@ export class Game {
       flowLearning:{word:this.lastPlayWord?.word||null,cue:this.wordCueRemaining>0?this.cueWord?.word:null,detail:this.wordFocus?.overlay?this.wordFocus.word?.word:null,voice:this.voiceQueue?.toJSON()||null,speechPolicy:this.speechPolicy?.toJSON()||null},
       wordLearning:{enabled:this.bubbleManager?.wordMode!==false, word:this.currentWord?.word||null, review:!!this.wordPlaybackReview, speaking:!!this.currentWord&&!this.wordAudioDone, elapsed:Math.round((this.wordElapsed||0)*10)/10},
       bubble:bubble ? {...screen(bubble.group.position), type:bubble.type,playStyle:bubble.playStyle,motionElapsed:Math.round((bubble.motionElapsed||0)*100)/100,ease:Math.round((this.bubbleManager.roundEase||0)*100)/100,hitsReceived:bubble.hitsReceived,leftTouched:bubble.leftTouched,rightTouched:bubble.rightTouched,merging:bubble.merging,protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
-      animal:animal ? {state:animal.state,emotion:animal.emotion,reaction:animal.reactionVariant,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,
+      animal:animal ? {state:animal.state,emotion:animal.emotion,reaction:animal.reactionVariant,response:animal.energyReaction,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,
       friendPlay:this.friendInteraction?.toJSON() || null,
       photoCountdown:this.photoRemaining ?? null, resultVisible:!!this.resultVisible,
       energyInFlight:this.bubbleManager?.energyProjectiles.length || 0

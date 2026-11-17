@@ -1,3 +1,4 @@
+import {applyEnergyReaction} from './energyReactions.js';
 import {getViewport,getSafeInsets} from './viewport.js';
 import * as THREE from 'three';
 import {assetUrl} from './assetUrl.js';
@@ -272,6 +273,7 @@ export class RescueAnimal {
       bucket.rotation.z=(Math.sin(t*2.4)*.10+pulse*.27)*motion;
     }
     this.updateAttention(dt);this.updateExpression(dt);updateExpressionRig(this,dt);
+    applyEnergyReaction(this);
     // HappyPerformance 动作覆写层：在 FRIEND 基础姿态之后应用，动画帧内拥有最终决定权。
     if(this.actionPoseFn)this.actionPoseFn(this.actionPoseT||0);
     if(this.contactShadow){this.contactShadow.visible=true;this.contactShadow.position.set(this.currentX,(this.friendFloor??this.currentY)+.01,.1);this.contactShadow.scale.setScalar(this.animalGroup.scale.y);}
@@ -296,14 +298,14 @@ export class RescueAnimal {
   setAnticipation(active){this.anticipating=!!active;}
   setSpeechListening(listening){this.speechListening=listening;}
   setSpeaking(speaking){this.speaking=speaking;this.speakingTime=0;}
-  reactToCombo(count){if(count<2||this.state!=='TRAPPED')return;this.reactionTimer=1.15;this.reactionVariant=1;this.glyphTimer=count>=3?1.05:.95;if(count>=3)this.comboMoveTimer=.85;}
+  reactToCombo(count){if(count<2||this.state!=='TRAPPED')return;this.reactionTimer=1.15;this.glyphTimer=count>=3?1.05:.95;if(count>=3)this.comboMoveTimer=.85;}
   setOpacity(alpha) {
     for(const mat of this.furMaterials){mat.transparent=alpha<1;mat.opacity=alpha;mat.depthWrite=alpha>.5;}
   }
   reset() {
     this.speechListening=false;this.speaking=false;this.speakingTime=0;this.friendFarewell=false;this.escapeOriginX=null;this.friendResponse=0;this.model.position.y=0;
     this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;this.reactionTimer=0;
-    this.anticipating=false;this.reactionVariant=0;this.glyphTimer=0;this.emotion='content';this.attentionPhase='player';this.attentionFocus=null;this.targetFocus=null;this.energyFocus=null;this.energyAttentionRemaining=0;resetExpressionRig(this.expressionRig);
+    this.anticipating=false;this.reactionVariant=0;this.energyReaction='';this.glyphTimer=0;this.emotion='content';this.attentionPhase='player';this.attentionFocus=null;this.targetFocus=null;this.energyFocus=null;this.energyAttentionRemaining=0;resetExpressionRig(this.expressionRig);
     this.receiveTimer=0;this.receivePower=1;this.comboMoveTimer=0;this.recoilTimer=0;this.moodWorried=0;this.moodExcited=0;
     this.actionPoseFn=null;this.actionPoseT=0;this.performanceGlow=null;
     if(this.happyMouth)this.happyMouth.visible=false;if(this.happyTongue){this.happyTongue.visible=false;this.happyTongue.rotation.z=0;if(this.animalId==='dog')this.happyTongue.scale.set(.034,.048,.012);if(this.animalId==='chase')this.happyTongue.scale.set(.034,.022,.012);}
@@ -312,7 +314,7 @@ export class RescueAnimal {
     this.currentX=this.startX;this.currentY=this.groundY;
     this.group.visible=true;this.animalGroup.visible=true;this.postGroup.visible=true;this.ropesGroup.visible=true;this.setOpacity(1);
     this.animalGroup.position.set(this.startX,this.groundY,.06);this.animalGroup.rotation.set(0,0,0);this.animalGroup.scale.setScalar(this.modelScale);
-    for(const g of [this.headGroup,this.leftArm,this.rightArm,this.leftLeg,this.tailGroup])g.rotation.set(0,0,0);
+    for(const g of [this.headGroup,this.leftArm,this.rightArm,this.leftLeg,this.rightLeg,this.tailGroup])g.rotation.set(0,0,0);
     if(this.animalId==='thomas')this.headGroup.position.copy(this.headRestPosition);
     this.leftEarGroup.rotation.set(0,0,.13);this.rightEarGroup.rotation.set(0,0,-.13);this.eyesGroup.scale.set(1,1,1);
     this.bodyMesh.rotation.set(0,0,0);
@@ -563,33 +565,17 @@ export class RescueAnimal {
       this.headGroup.rotation.z=Math.sin(this.idleTime*.8)*.045;
       this.leftEarGroup.rotation.z=.13+Math.sin(this.idleTime*1.9)*.045-this.moodWorried*.22;
       this.rightEarGroup.rotation.z=-.13+Math.sin(this.idleTime*1.7+1)*.045+this.moodWorried*.22;
-      if(this.comboMoveTimer>0) {
-        // combo≥3 专属大反应：整圈旋转的大型庆祝，结束时由闲置分支复位
-        this.comboMoveTimer=Math.max(0,this.comboMoveTimer-dt);this.hopTimer=Math.max(0,this.hopTimer-dt);
-        const t=1-this.comboMoveTimer/.85,m=this.reducedMotion?.25:1,spin=smooth(t)*Math.PI*2*m;
-        if(this.animalId==='goldenDragon'){
-          jump=this.reducedMotion?0:Math.sin(t*Math.PI)*.07*m;this.animalGroup.position.y=this.groundY+jump;
-          this.bodyMesh.rotation.z=Math.sin(t*Math.PI*3)*.11*m;this.tailGroup.rotation.y=Math.sin(t*Math.PI*3-.8)*.4*m;
-          this.headGroup.rotation.z=Math.sin(t*Math.PI*2)*.12*m;
-        }else if(this.animalId==='dragon'){
-          if(this.comboMoveTimer===0)this.model.rotation.z=0;else this.model.rotation.z=spin;
-          this.animalGroup.rotation.y=.15+spin;
-          for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=sign*(.18+Math.sin(t*Math.PI)*.5*m);}
-          this.tailGroup.rotation.y=Math.sin(t*Math.PI*2)*.3*m;
-        }else{
-          this.animalGroup.rotation.y=.15+spin;
-          const hop=Math.sin(Math.min(1,t*2)*Math.PI)*.15*m+Math.sin(clamp(t*2-1,0,1)*Math.PI)*.2*m;
-          this.currentY=this.groundY+hop;this.animalGroup.position.y=this.currentY;
-          this.leftArm.rotation.z=-Math.sin(t*Math.PI)*.7*m-.2;this.rightArm.rotation.z=Math.sin(t*Math.PI)*.7*m+.2;
-          this.tailGroup.rotation.z=Math.sin(t*Math.PI*4)*.35*m;
-        }
-        for(const mt of this.bowMaterials){mt.emissive=new THREE.Color(0xe6a94e);mt.emissiveIntensity=Math.sin(t*Math.PI)*.9;}
-      }else if(this.hopTimer>0) {
+      this.comboMoveTimer=Math.max(0,this.comboMoveTimer-dt);
+      this.model.rotation.x=0;this.model.rotation.z=0;
+      this.bodyMesh.rotation.z=0;
+      this.leftArm.rotation.x=this.rightArm.rotation.x=0;
+      this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
+      if(this.hopTimer>0) {
         this.hopTimer=Math.max(0,this.hopTimer-dt);const p=1-this.hopTimer/.7;const boost=this.reducedMotion?1:1+.5*progress;
         if(this.animalId==='goldenDragon'){
           jump=this.reducedMotion?0:Math.sin(p*Math.PI)*.045*boost;this.animalGroup.position.y=this.groundY+jump;
           this.headGroup.rotation.x=-Math.sin(p*Math.PI)*.10;this.rightArm.rotation.x=-Math.sin(p*Math.PI)*.45;
-        }else if(this.animalId==='excavator'){
+        }else if(['excavator','mcqueen','thomas','tayo'].includes(this.animalId)){
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
           this.headGroup.rotation.z=Math.sin(p*Math.PI)*.10;
         }else if(this.animalId==='triceratops'){
@@ -612,7 +598,8 @@ export class RescueAnimal {
           this.rightArm.rotation.x=-Math.sin(p*Math.PI)*(this.animalId==='dog'?1.05:.8);
           if(this.animalId==='dog'){this.leftEarGroup.rotation.x=this.rightEarGroup.rotation.x=Math.sin(p*Math.PI*2)*.12;this.model.scale.y=1+Math.sin(p*Math.PI)*.025;}
           this.tailGroup.rotation.z=Math.sin(p*Math.PI*2)*.22;
-        }else jump=this.animateHop(p,this.reducedMotion?.025:(this.animalId==='frog'?.22:.14)*boost);
+        }else if(this.reactionVariant===0)jump=this.animateHop(p,this.reducedMotion?.025:(this.animalId==='frog'?.22:.14)*boost);
+        else{this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;}
         if(!['thomas','excavator','mcqueen','tayo','triceratops'].includes(this.animalId)){this.leftArm.rotation.z=-Math.sin(p*Math.PI)*.45;this.rightArm.rotation.z=Math.sin(p*Math.PI)*.45;}
         for(const m of this.bowMaterials){m.emissive=new THREE.Color(0xe6a94e);m.emissiveIntensity=Math.sin(p*Math.PI)*.6;}
       }else {
@@ -760,6 +747,7 @@ export class RescueAnimal {
     }
     this.updateAttention(dt);
     this.updateExpression(dt);updateExpressionRig(this,dt);
+    applyEnergyReaction(this);
     this.currentY=this.animalGroup.position.y;
     if(this.contactShadow){this.contactShadow.position.set(this.currentX,this.groundY+.014,.09);this.contactShadow.scale.setScalar(this.modelScale*(1+jump*.5));if(this.state!=='ESCAPED')this.contactShadow.visible=true;}
     this.updateSprings(dt);

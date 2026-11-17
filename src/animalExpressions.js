@@ -75,7 +75,7 @@ export function updateExpressionRig(animal,dt){
  const glow=animal.performanceGlow||null;
  const greeting=animal.state==='WAVING'||animal.state==='CHEERING';
  const happy=glow||!!animal.speaking||!!animal.speechListening||reaction>.10||greeting,curious=!happy&&animal.anticipating;
- animal.emotion=glow==='finale'?'grateful':glow?'delighted':greeting?'grateful':happy?(variant===1?'delighted':'happy'):curious?'curious':'content';
+ animal.emotion=glow==='finale'?'grateful':glow?'delighted':greeting?'grateful':happy?(variant===1||animal.comboMoveTimer>0?'delighted':'happy'):curious?'curious':'content';
  // Stage expressions follow the character's face instead of replacing eyes with symbols.
  const stageMode=STAGE_EYES[animal.animalId]||'bright';
  // Slow blink for cats; puppy wink; other friends use upturned smiling eyelids.

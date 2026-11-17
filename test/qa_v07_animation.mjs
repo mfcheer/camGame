@@ -13,7 +13,7 @@ check('Shipped GLB is a real binary glTF with the named animation rig',()=>{
   for(const name of ['Head','Ear_L','Ear_R','Leg_L','Leg_R','Bow'])assert.ok(json.nodes.some(n=>n.name===name));
 });
 check('Target follows actual bow through scaling and hops',()=>{
-  const {animal}=fixture();animal.setEnergy(2);animal.update(.3,.3);
+  const {animal}=fixture();animal.setEnergy(1);animal.update(.3,.3);
   assert.ok(animal.getTargetPosition().distanceTo(animal.bowtieGroup.getWorldPosition(new T.Vector3()))<1e-7);
   assert.ok(animal.currentY>animal.groundY);
 });
