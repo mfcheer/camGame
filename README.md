@@ -257,3 +257,5 @@ camGame/
 角色扩展步骤见 [添加游戏角色](docs/ADD_CHARACTER.md)；形象、眼神、庆祝与告别的设计依据见 [角色形象、表情与动作制作规范](docs/CHARACTER_MOTION_STANDARD.md)。
 
 学习内容扩展入口：[单词与短语资源制作、接入和验收规范](docs/LEARNING_PHRASES.md)，包含资源清单、动静态选择、定向生成、来源记录和交接验收。
+
+- 解救后手势问答与新增对话资源：[制作与验收规范](docs/DIALOGUE_PRACTICE.md)。

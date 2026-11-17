@@ -100,3 +100,8 @@
 - **回归**：在不覆盖用户已有 QA 结果的隔离副本运行 `npm test` 与 Pages 子路径构建；用 develop-web-game 浏览器流程截取动作中段、收尾、离场和结算画面并实际打开检查。现有专项可参考 `test/qa_v26_rhythm_demo_photo.mjs`、`test/qa_v38_character_details.mjs`、`test/qa_v41_character_farewells.mjs` 与 `test/qa_v42_character_celebrations_browser.mjs`。
 
 如需新建或修改英语/中文语音素材，先读 [配音标准](VOICE_STANDARD.md)。不要因加角色而顺带重新生成已验收词库或短句。
+
+
+## 解救后对话（2026-11-17）
+
+用户确认的独立问答流程与自动人声例外见 [DIALOGUE_PRACTICE.md](DIALOGUE_PRACTICE.md)。新增或修改问答须先按该文档写内容卡；解救后直接提问、再出两个手势回答泡泡、自然告别，不增加聊一句／告别选择入口。对话与泡泡自动读词分开限制，共用语音通道；暂停及后台返回不重播。

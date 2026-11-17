@@ -8706,5 +8706,401 @@
         "sha256": "02534b5552a56bfa8cb6446a3bac5e5c53d2866928c32ca1950537ccee8ce65d"
       }
     ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-how-are-you",
+    "text": "How are you today?",
+    "zh": "你今天感觉怎么样？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/how-are-you.mp3",
+        "sha256": "53485264383e5d9c8df8f80e9459fe55ae6c53bb6ac274a0082cf006e04b9ebe"
+      },
+      {
+        "path": "public/audio/dialogue/review/how-are-you.mp3",
+        "sha256": "0deefb009b207f4ae252c564fd6bf759395962cc129154d65738f704786c3a77"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-im-happy",
+    "text": "I'm happy.",
+    "zh": "我很开心。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/im-happy.mp3",
+        "sha256": "3ad7e0b7a8fcf7406024e199f3460d2e8d343b286a09f9a125341ba2128931f6"
+      },
+      {
+        "path": "public/audio/dialogue/review/im-happy.mp3",
+        "sha256": "993e9080aaacb9249bd1be0253975562b32dac5f417cdbd52287ffaf4bfd4178"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-im-sad",
+    "text": "I'm sad.",
+    "zh": "我有点难过。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/im-sad.mp3",
+        "sha256": "d40feb1b6b9b8f424c3c751c1fd8edda308304714d2df59878a010817c3e8dae"
+      },
+      {
+        "path": "public/audio/dialogue/review/im-sad.mp3",
+        "sha256": "bd63dfa0df6f7b408160d26532f3570588c4dad328cd978e09162632b6c8bdbc"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-hows-weather",
+    "text": "How’s the weather today?",
+    "zh": "今天天气怎么样？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/hows-weather.mp3",
+        "sha256": "32ee33b67bd8b9838ae48b0234cccededfa6b9ad66f168b18c94321fdb0bfe7f"
+      },
+      {
+        "path": "public/audio/dialogue/review/hows-weather.mp3",
+        "sha256": "e72506c3739ad1f5e61035194b0a10d32dd2508c4a0f2b1b4f1ce3ebc82bbe33"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-its-sunny",
+    "text": "It's sunny.",
+    "zh": "今天是晴天。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/its-sunny.mp3",
+        "sha256": "1f1c4254879daea671193b924a67d90a9e1619274550e6fcd4df1833db1d8651"
+      },
+      {
+        "path": "public/audio/dialogue/review/its-sunny.mp3",
+        "sha256": "207383a5b3d0c1b11ec203610960b7cb64c73b57646c08e2f6a68781e8ec8a25"
+      }
+    ]
+  },
+  {
+    "kind": "dialogue",
+    "id": "dialogue-its-rainy",
+    "text": "It's rainy.",
+    "zh": "今天下雨。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/its-rainy.mp3",
+        "sha256": "4a472a425ce8ea9ac2083c738f961cfbd0dc8851f560703367998408fa08990c"
+      },
+      {
+        "path": "public/audio/dialogue/review/its-rainy.mp3",
+        "sha256": "cf818fc2ebb1f4ceb5f017668f83bb575a7a54245eb2e117c5f23fd0b0c9f666"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-how-are-you",
+    "text": "你今天感觉怎么样？",
+    "zh": "你今天感觉怎么样？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/how-are-you.mp3",
+        "sha256": "19429dc33e8acd7f55ed8198e6659865f263e0bfc1c58fdc9d5615479870cbf0"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-im-happy",
+    "text": "我很开心。",
+    "zh": "我很开心。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/im-happy.mp3",
+        "sha256": "9c2e76e810e8c6ac9374ed6da0fa1858df6f699a6bc7ce1f48ae7230b553d00d"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-im-sad",
+    "text": "我有点难过。",
+    "zh": "我有点难过。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/im-sad.mp3",
+        "sha256": "ce14c428857a7534c2d7ea5b6895163226a4a52e0bf7e1d4ab906ded310a04ec"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-hows-weather",
+    "text": "今天天气怎么样？",
+    "zh": "今天天气怎么样？",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/hows-weather.mp3",
+        "sha256": "a0ebf2c2bac82c0c4b7943ff24dbcfa95bbfc4422ef8882cc05b2c09e52fd96c"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-its-sunny",
+    "text": "今天是晴天。",
+    "zh": "今天是晴天。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/its-sunny.mp3",
+        "sha256": "5d0e8fc6bed17606cf1834419527c885080aaa438da9b9d80bf1ae44ff185354"
+      }
+    ]
+  },
+  {
+    "kind": "zh-dialogue",
+    "id": "dialogue-its-rainy",
+    "text": "今天下雨。",
+    "zh": "今天下雨。",
+    "profile": {
+      "model": "hexgrad/Kokoro-82M",
+      "model_sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4",
+      "kokoro_version": "0.9.4",
+      "language": "a",
+      "voice": "af_heart",
+      "speed": 0.92,
+      "model_sample_rate": 24000,
+      "head_silence_seconds": 0.1,
+      "tail_silence_seconds": 0.18,
+      "output_sample_rate": 44100,
+      "output_bitrate": "128k",
+      "master_filter": "loudnorm=I=-18:TP=-2:LRA=7,afade=t=in:st=0:d=0.015",
+      "chinese_voice": "Tingting",
+      "chinese_rate": 210,
+      "end_chinese_language": "z",
+      "end_chinese_voice": "zf_xiaoxiao",
+      "end_chinese_speed": 0.95
+    },
+    "assets": [
+      {
+        "path": "public/audio/dialogue/zh/its-rainy.mp3",
+        "sha256": "0f471a65393b15441ad88164d7ee6fcf6991b1894ee4fa44c9a36fa3e40d4557"
+      }
+    ]
   }
 ]
