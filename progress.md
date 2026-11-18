@@ -224,3 +224,6 @@ Actions 44083368345 在 qa_landscape_retest 失败，错误 document.createEleme
 新增qa_v48三项序列/间隔/同卡重听/换卡/后台与关闭同路径取消/晚到回调检查，qa_v43失败与旧卡回调回归适配双段。完整npm test、Pages子路径构建、diff检查通过，三份既有QA报告运行前后逐字节保留。指定Browser按develop-web-game动作—观察流程验证（遵守会话界面约束，不另启shell浏览器）：chair中文及英文均ended、间隔501ms；drink-water连续两次原生点击只有一组中英，动作出现且结束回封面；换图和后台取消后仅有中文起始、不启动旧英文，返回不重播、重新主动点击和关闭无迟到播放。无新增window error/unhandledrejection。横屏1280×720与834×1194同源子文档截图已打开目检，后者无越界；证据output/library-bilingual/。后台通过调用实际Game生命周期模拟，不能替代真实iPad系统切后台；主观试听/真机待用户确认。未使用技能自带的另启浏览器脚本，因本会话限定只能用指定Browser；实际浏览器流程使用已挂载界面完成。最终切空白页停止调试声音。
 
 2026-11-18 跳跳逐泡表情修复：把 `Happy_Mouth` 中深色填充椭圆改成上扬细线笑口，保留两颗门牙；重新导出 `babyriki-krashy.glb`，中性首页预览无需改变。浏览器实选跳跳、加载 GLB 并真实戳破 3 颗泡泡，三种逐泡回应均得分、开心口形显示、门牙保留，模型中无 `Happy_Cavity`；开心近景和第三次回应截图已打开目检。`qa_v45_energy_reactions`、`qa_v38_character_details` 与 Pages 子路径构建通过。三份既有 QA JSON 保留原有改动；真实 iPad 观感待家长体验。
+
+
+2026-11-18 托马斯双嘴线修复（本地，未提交/推送）：开心口形显示时，原 Train_Smile 未加入中性嘴部隐藏列表，形成两条弧线叠加。将其加入表情切换和 reset 恢复列表，保留既有模型与形象，不重生成资源。qa_v38 增加原生/已发布GLB两路径、正常/减少动态两档，三种能量回应全帧单一嘴线、暂停、复位、告别检查。qa_v38/qa_v45通过；隔离副本完整 npm test 和 Pages 子路径构建通过，三份既有QA报告未覆盖。按 develop-web-game 动作—观察流程使用指定 Browser（不另启技能脚本浏览器），实际选择托马斯/模拟开局，通过模拟指尖离开再触碰成功得分1，能量抵达后开心口显示、中性笑线隐藏，暂停近景截图已打开目检，output/thomas-mouth/happy-closeup.png；采样未出现双线，无新增 window error/unhandledrejection。后续两次尝试未新增得分，不算浏览器三回应验证，三档闭环以模块测试为据。真机观感仍待家长体验。

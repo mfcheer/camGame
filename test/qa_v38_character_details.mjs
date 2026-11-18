@@ -28,3 +28,26 @@ test('Thomas keeps his face anchored through whistle, celebration and rightward 
  assert.equal(drove,true);
  assert.equal(a.state,'ESCAPED');
 });
+
+// Both native fallback and shipped GLB must swap mouth outlines, never layer them.
+test('Thomas has one mouth outline through energy replies, pause, reset and farewell',async()=>{
+ const {GLTFLoader}=await import('three/addons/loaders/GLTFLoader.js');
+ const bytes=fs.readFileSync('public/models/thomas-train.glb');
+ const gltf=await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),'');
+ for(const reduced of [false,true])for(const model of [ANIMAL_MODELS.thomas(),gltf.scene.clone(true)]){
+  const a=new RescueAnimal(new THREE.Scene(),camera(),'thomas');a.installModel(model);a.reducedMotion=reduced;
+  const smile=a.model.getObjectByName('Train_Smile');
+  const check=()=>assert.equal(Number(smile.visible)+Number(!!a.happyMouth.visible),1,'exactly one mouth outline');
+  check();
+  for(let score=1;score<=3;score++){
+   a.setEnergy(score);
+   for(let n=0;n<100;n++){a.update(1/60,n/60);check();}
+  }
+  a.setEnergy(4);a.update(1/60,0);assert.equal(smile.visible,false);assert.ok(a.happyMouth.visible);
+  a.setPaused(true);a.update(2,0);check();assert.equal(smile.visible,false);
+  a.setPaused(false);a.reset();check();assert.equal(smile.visible,true);
+  a.startFriendPlay();a.startEscape();
+  for(let n=0;n<280;n++){a.update(1/60,n/60);check();}
+  assert.equal(a.state,'ESCAPED');a.reset();check();assert.equal(smile.visible,true);
+ }
+});
