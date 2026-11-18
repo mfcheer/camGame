@@ -13,5 +13,5 @@ export function mountContentMotion(image,content){
   sheet.onload=()=>{if(disposed||reduced.matches)return;image.replaceWith(canvas);request=requestAnimationFrame(tick);};
   const change=()=>{if(reduced.matches){canvas.replaceWith(image);}else if(sheet.complete&&sheet.naturalWidth){image.replaceWith(canvas);if(!request)request=requestAnimationFrame(tick);}};
   reduced.addEventListener('change',change);sheet.src=resolveAssetUrl(motion.src);
-  return ()=>{disposed=true;cancelAnimationFrame(request);reduced.removeEventListener('change',change);sheet.onload=null;};
+  return ()=>{disposed=true;canvas.replaceWith(image);cancelAnimationFrame(request);reduced.removeEventListener('change',change);sheet.onload=null;};
 }

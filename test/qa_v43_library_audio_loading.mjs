@@ -59,6 +59,7 @@ test('a failed voice shows retry feedback and stale completion cannot clear the 
   const next=library.playWord({id:'red',word:'red',zh:'红色'},card('red'));
   pending[0].resolve();await first;
   assert.match(library.status.textContent,/red/);assert.deepEqual([...marked],['red']);
-  pending[1].resolve();await next;
+  pending[1].resolve();await new Promise(r=>setTimeout(r,550));
+  pending[2].resolve();await next;
   assert.match(library.status.textContent,/重试/);assert.equal(marked.size,0);
 });
