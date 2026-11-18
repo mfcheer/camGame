@@ -960,9 +960,7 @@ export function createKrashyModel() {
         creamWhite = mat(0xffffff, .95),
         darkPupil = mat(0x182438, .45),
         nosePink = mat(0xf8719d, .85),
-        blush = mat(0xfb7185, .75),
-        mouthDark = mat(0x7c1d3c, .6),
-        tonguePink = mat(0xf43f5e, .85);
+        blush = mat(0xfb7185, .75);
 
   // 1. 经典圆滚滚气球身体 (纯正《瑞奇宝宝》极简圆球幼态身躯)
   const body = pivot(root, "Torso", [0, .44, 0]);
@@ -1010,10 +1008,10 @@ export function createKrashyModel() {
     ellipsoid(teeth, s < 0 ? "Tooth_L" : "Tooth_R", creamWhite, [s * .013, -.008, 0], [.011, .014, .006]);
   }
 
-  // 欢庆张开大嘴 (Happy_Mouth) - 1:1 还原《瑞奇宝宝》纯粹可爱的卡通月牙笑口，告别深邃喉咙与厚舌头
+  // 得到能量时只换成更大的线条笑口；保留门牙，避免深色填充被看成厚嘴唇。
   const happy = pivot(mouth, "Happy_Mouth", [0, -.015, .022]);
   happy.visible = false;
-  ellipsoid(happy, "Happy_Cavity", mouthDark, [0, 0, 0], [.054, .028, .010]);
+  curve(happy, "Happy_Smile_Arc", [[-.068, .019, .008], [-.040, -.003, .026], [0, -.018, .030], [.040, -.003, .026], [.068, .019, .008]], .005, darkPupil);
 
   // 3. 极简软萌幼儿小手 (Arm_L, Arm_R) - 纯净天蓝小手滴，告别多余白手心垫
   for (const s of [-1, 1]) {
