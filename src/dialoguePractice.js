@@ -2,16 +2,20 @@ import * as THREE from 'three';
 import {DIALOGUES,dialogueLine} from './dialogueContent.js';
 import {assetUrl} from './assetUrl.js';
 import {getViewport} from './viewport.js';
+import {selectDialogue} from './dialogueSelection.js';
 
 // One active-time state machine. Async voice completion never advances an old screen.
 export class DialoguePractice {
   constructor(voice,animal,onDone){this.voice=voice;this.animal=animal;this.onDone=onDone;this.ticket=0;this.active=false;this.lastTopic=null;this.sceneIndices={};this.hands=[];}
-  start(){
+  start(poppedIds=[]){
     this.clear();this.active=true;this.paused=false;this.attempts=0;this.selected=null;
     const previous=DIALOGUES.findIndex(t=>t.id===this.lastTopic);
-    this.topic=DIALOGUES[(previous+1)%DIALOGUES.length];this.lastTopic=this.topic.id;
+    const selection=selectDialogue(poppedIds,{lastTopic:this.lastTopic,counts:this.topicCounts||{},fallbackIndex:this.fallbackIndex??(previous+1)%DIALOGUES.length});
+    this.topic=selection.topic;this.lastTopic=this.topic.id;this.selection=selection;
+    this.fallbackIndex=selection.fallbackIndex;
+    this.topicCounts??={};this.topicCounts[this.topic.id]=(this.topicCounts[this.topic.id]||0)+1;
     const index=this.sceneIndices[this.topic.id]||0;
-    this.correct=this.topic.free?null:this.topic.options[index%this.topic.options.length].id;
+    this.correct=this.topic.free?null:selection.correct||this.topic.options[index%this.topic.options.length].id;
     if(!this.topic.free)this.sceneIndices[this.topic.id]=index+1;
     this.animal?.startFriendPlay?.();this.measureAnimal();this.layoutAnimal();this.setStage('asking');
     this.say(this.topic.question,()=>this.setStage('choosing'));
@@ -107,5 +111,5 @@ export class DialoguePractice {
   }
   finish(){if(!this.active)return;this.clear();this.onDone?.();}
   clear(){this.ticket++;if(this.active)this.voice?.cancel();this.active=false;this.paused=false;this.animal?.setSpeaking?.(false);this.root?.remove();this.root=null;this.hands=[];this.inside=new Map();}
-  toJSON(){return {active:this.active,paused:!!this.paused,topic:this.topic?.id,stage:this.stage,selected:this.selected,correct:this.correct,attempts:this.attempts,elapsed:this.elapsed,targets:this.targets().map(e=>{const r=e.getBoundingClientRect(),v=getViewport();return {id:e.dataset.dialogueTarget,x:(r.left+r.width/2-v.left)/v.width,y:(r.top+r.height/2-v.top)/v.height};})};}
+  toJSON(){return {active:this.active,paused:!!this.paused,topic:this.topic?.id,linked:!!this.selection?.linked,contentId:this.selection?.contentId||null,stage:this.stage,selected:this.selected,correct:this.correct,attempts:this.attempts,elapsed:this.elapsed,targets:this.targets().map(e=>{const r=e.getBoundingClientRect(),v=getViewport();return {id:e.dataset.dialogueTarget,x:(r.left+r.width/2-v.left)/v.width,y:(r.top+r.height/2-v.top)/v.height};})};}
 }

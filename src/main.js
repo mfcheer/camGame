@@ -707,6 +707,8 @@ export class Game {
       this.uiManager?.hidePlayWords?.();
     }
     this.state = 'CELEBRATING';
+    // Snapshot only popped content before celebration cleanup can clear the round.
+    const poppedContentIds=[...(this.bubbleManager?.roundSeenWords||[])];
     this.prePauseState = 'CELEBRATING';
     this.isSoftWaiting = false;
     this.waitingForEscape = false;this.resultVisible=false;
@@ -749,7 +751,7 @@ export class Game {
     }
     this.celebrationSessionId = (this.celebrationSessionId || 0) + 1;
     if(this.dialogue){
-      this.celebrationRemainingMs=0;this.dialogue.start();this.dialogue.feed(this.lastPlayers||[]);
+      this.celebrationRemainingMs=0;this.dialogue.start(poppedContentIds);this.dialogue.feed(this.lastPlayers||[]);
       this.bubbleManager?.hideHandIndicators?.();return;
     }
     if(this.friendInteraction){
