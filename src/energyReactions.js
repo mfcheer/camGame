@@ -1,5 +1,6 @@
 // Each row is an action card: three readable replies using the character's own shape.
 export const ENERGY_REACTIONS = {
+ airplane:['机头轻抬','左右压翼','尾舵致意'],
  bunny:['竖耳小跳','侧耳倾听','双耳点头'], cat:['歪头摆尾','双爪轻拍','低头蹭爪'],
  frog:['鼓腮弹跳','张腿蹲伏','抬臂鼓劲'], dog:['歪头摇尾','抬爪致谢','俯身邀玩'],
  dragon:['展翼','侧身扇翼','低头翘尾'], goldenDragon:['昂首','左右游摆','低头摆须'],
@@ -24,6 +25,11 @@ export function applyEnergyReaction(a) {
  const arms=(l,r)=>{a.leftArm.rotation.x=l*s;a.rightArm.rotation.x=r*s;};
  const ears=(l,r)=>{a.leftEarGroup.rotation.z=l*s;a.rightEarGroup.rotation.z=r*s;};
  switch(a.animalId){
+ case 'airplane':
+  a.animalGroup.position.y=a.groundY;
+  if(v===0){a.model.rotation.x=-.14*s;a.tailGroup.rotation.y=.12*s;}
+  else if(v===1){tilt(.18);a.tailGroup.rotation.y=-.16*s;}
+  else{a.tailGroup.rotation.y=Math.sin(p*Math.PI*4)*s*.38;a.model.rotation.x=.08*s;}break;
  case 'bunny':case 'krashy':
   if(v===0){ears(.05,-.05);a.model.position.y=.08*s;}
   else if(v===1){ears(.65,.18);tilt(.12);}

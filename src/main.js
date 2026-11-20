@@ -873,7 +873,7 @@ export class Game {
       videoElement: this.videoElement,
       webglCanvas: this.sceneManager?.renderer?.domElement,
       animalId, animalName: this.currentAnimalName, targetBubbles: this.targetCount,
-      animalEmoji: {bunny:'🐰',cat:'🐱',frog:'🐸',dog:'🐶',dragon:'🐲',goldenDragon:'🐉',mcqueen:'🏎️',wolf:'🐺',teddy:'🧸',chase:'🐶',jett:'✈️',peppa:'🐷',thomas:'🚂',excavator:'🚜',tayo:'🚌',triceratops:'🦕',krashy:'🐰',maiqi:'🐤'}[animalId] || '🐾'
+      animalEmoji: {bunny:'🐰',cat:'🐱',frog:'🐸',dog:'🐶',dragon:'🐲',goldenDragon:'🐉',mcqueen:'🏎️',wolf:'🐺',teddy:'🧸',chase:'🐶',jett:'✈️',peppa:'🐷',thomas:'🚂',excavator:'🚜',tayo:'🚌',triceratops:'🦕',krashy:'🐰',maiqi:'🐤',airplane:'🛩️'}[animalId] || '🐾'
     });
     this.audioManager?.playCameraShutter?.();
     this.uiManager?.triggerCameraFlash?.();

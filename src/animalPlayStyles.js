@@ -16,6 +16,7 @@ export const ANIMAL_PLAY_STYLES = {
   teddy:{name:'温暖抱抱',motion:'drift',amplitudeX:9,amplitudeY:4,size:1.07,period:7.2,comboMs:2300,cooldownMs:950,jellyAt:[2],rainbowAt:[],hint:'慢慢伸手，和抱抱一起玩'},
   tayo:{name:'快乐小巴士',motion:'drift',amplitudeX:15,amplitudeY:4,size:1.06,period:6.0,comboMs:2300,cooldownMs:850,jellyAt:[3],rainbowAt:[5],hint:'哔哔——小公交车太友出发，跟着巡游节奏找泡泡'},
   triceratops:{name:'远古盾甲',motion:'drift',amplitudeX:11,amplitudeY:5,size:1.08,period:5.4,comboMs:2300,cooldownMs:880,jellyAt:[3],rainbowAt:[5],hint:'大泡泡稳稳飘，三角龙嘟嘟踩着稳健步伐为你加油'},
+  airplane:{name:'云朵飞行',motion:'arc',amplitudeX:10,amplitudeY:5,size:1.09,period:7,comboMs:2300,cooldownMs:920,jellyAt:[3],rainbowAt:[],hint:'和云朵一起，慢慢伸手碰大泡泡'},
   maiqi:{name:'森林小探险',motion:'drift',amplitudeX:8,amplitudeY:4,size:1.10,period:6.7,comboMs:2300,cooldownMs:920,jellyAt:[3],rainbowAt:[],hint:'麦奇的小翅膀在等你，慢慢碰大泡泡'},
   krashy:{name:'活力弹跳',motion:'hop',amplitudeX:0,amplitudeY:18,size:1.06,period:4.0,comboMs:2300,cooldownMs:850,jellyAt:[2],rainbowAt:[4],hint:'和跳跳一起轻快弹跳找泡泡'}
 };

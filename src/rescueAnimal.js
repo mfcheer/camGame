@@ -1,3 +1,5 @@
+import {createAirplaneModel} from './airplaneModel.js';
+import {neutralAirplaneParts,rollAirplaneWheels,resetAirplaneMotion} from './airplaneMotion.js';
 import {applyEnergyReaction} from './energyReactions.js';
 import {getViewport,getSafeInsets} from './viewport.js';
 import * as THREE from 'three';
@@ -15,7 +17,7 @@ import {createExcavatorModel} from './excavatorModel.js';
 import {createMaiqiModel} from './maiqiModel.js';
 import { GAME_CONFIG } from './config.js';
 
-export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel,chase:createChaseModel,jett:createJettModel,peppa:createPeppaModel,thomas:createThomasModel,excavator:createExcavatorModel,tayo:createTayoModel,triceratops:createTriceratopsModel,krashy:createKrashyModel,maiqi:createMaiqiModel};
+export const ANIMAL_MODELS={bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel,chase:createChaseModel,jett:createJettModel,peppa:createPeppaModel,thomas:createThomasModel,excavator:createExcavatorModel,tayo:createTayoModel,triceratops:createTriceratopsModel,krashy:createKrashyModel,maiqi:createMaiqiModel,airplane:createAirplaneModel};
 const smooth = t => t*t*(3-2*t);
 const clamp = THREE.MathUtils.clamp;
 
@@ -131,10 +133,10 @@ export class RescueAnimal {
     const vw=vh*w/h;
     const oldStart=this.startX,oldEnd=this.endX;
     const progress=oldEnd>oldStart?clamp((this.currentX-oldStart)/(oldEnd-oldStart),0,1):0;
-    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,chase:1.02,jett:1.02,peppa:1.02,thomas:1.05,excavator:.92,wolf:1.02,teddy:1.02,tayo:1.05,triceratops:1.02,krashy:1.02,maiqi:1.06})[this.animalId];
+    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,chase:1.02,jett:1.02,peppa:1.02,thomas:1.05,excavator:.92,wolf:1.02,teddy:1.02,tayo:1.05,triceratops:1.02,krashy:1.02,maiqi:1.06,airplane:1.05})[this.animalId];
     this.groundY=-vh/2+.45+getSafeInsets().bottom*vh/h;
     this.startX=-vw/2+Math.min(1.5,vw*.24)+getSafeInsets().left*vh/h;
-    this.endX=vw/2-1.0-getSafeInsets().right*vh/h;
+    this.endX=vw/2-(this.animalId==='airplane'?1.35:1.0)-getSafeInsets().right*vh/h;
     this.currentX=this.state==='TRAPPED'?this.startX:THREE.MathUtils.lerp(this.startX,this.endX,progress);
     this.currentY=this.groundY;
     this.postGroup.position.set(this.startX,this.groundY,.03);this.postGroup.scale.setScalar(this.modelScale);
@@ -169,6 +171,7 @@ export class RescueAnimal {
       this.bodyMesh.rotation.set(0,0,0);
       this.model.rotation.set(0,-.12,0);
     }
+    if(this.animalId==='airplane')resetAirplaneMotion(this);
     this.state='CHEERING';this.escapeElapsed=0;this.ropesGroup.visible=false;this.hopTimer=0;
     this.comboMoveTimer=0;this.receiveTimer=0;this.moodWorried=0;this.moodExcited=0;
     this.spawnRopeBreakParticles();
@@ -274,6 +277,7 @@ export class RescueAnimal {
     }
     this.updateAttention(dt);this.updateExpression(dt);updateExpressionRig(this,dt);
     applyEnergyReaction(this);
+    if(this.animalId==='airplane'){neutralAirplaneParts(this);this.model.rotation.z=0;this.model.position.y=0;rollAirplaneWheels(this,0);}
     // HappyPerformance 动作覆写层：在 FRIEND 基础姿态之后应用，动画帧内拥有最终决定权。
     if(this.actionPoseFn)this.actionPoseFn(this.actionPoseT||0);
     if(this.contactShadow){this.contactShadow.visible=true;this.contactShadow.position.set(this.currentX,(this.friendFloor??this.currentY)+.01,.1);this.contactShadow.scale.setScalar(this.animalGroup.scale.y);}
@@ -303,6 +307,7 @@ export class RescueAnimal {
     for(const mat of this.furMaterials){mat.transparent=alpha<1;mat.opacity=alpha;mat.depthWrite=alpha>.5;}
   }
   reset() {
+    if(this.animalId==='airplane')resetAirplaneMotion(this);
     this.speechListening=false;this.speaking=false;this.speakingTime=0;this.friendFarewell=false;this.escapeOriginX=null;this.friendResponse=0;this.model.position.y=0;
     this.state='TRAPPED';this.energyLevel=0;this.idleTime=0;this.escapeElapsed=0;this.hopTimer=0;this.blinkTimer=0;this.isPaused=false;this.dustClock=0;this.reactionTimer=0;
     this.anticipating=false;this.reactionVariant=0;this.energyReaction='';this.glyphTimer=0;this.emotion='content';this.attentionPhase='player';this.attentionFocus=null;this.targetFocus=null;this.energyFocus=null;this.energyAttentionRemaining=0;resetExpressionRig(this.expressionRig);
@@ -321,7 +326,7 @@ export class RescueAnimal {
     for(const name of ['Whisker_L','Whisker_R'])this.model.getObjectByName(name)?.rotation.set(0,0,0);
     for(const s of this.springs||[]){s.pos=s.get();s.vel=0;}
     this.model.scale.set(1,1,1);this.model.rotation.set(0,-.16,0);this.setQuadrupedPosture(0);
-    for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=sign*.18;}
+    for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=this.animalId==='airplane'?0:sign*.18;}
     for(const c of this.ropeCoils){Object.assign(c,{loosened:false,falling:false,fallTimer:0,stage:null,slackTimer:0,taut:false});c.group.visible=true;c.group.position.set(0,0,0);c.group.rotation.z=0;c.group.scale.set(1,1,1);c.mesh.material.opacity=1;}
     for(const p of this.particles){this.scene.remove(p.mesh);p.mesh.geometry.dispose();p.mesh.material.dispose();}this.particles=[];
     if(this.contactShadow){this.contactShadow.visible=true;this.contactShadow.material.opacity=1;}
@@ -476,6 +481,11 @@ export class RescueAnimal {
         this.headGroup.rotation.z=-gesture*.12;
         this.tailGroup.rotation.z=Math.sin(p*Math.PI*7)*gesture*.22;
         break;
+      case 'airplane':
+        this.animalGroup.position.y=this.groundY+.24*(this.reducedMotion?.25:1);
+        this.model.rotation.z=beat*.15;this.tailGroup.rotation.y=beat*.28;
+        this.model.rotation.x=-gesture*.07;
+        break;
       case 'jett': // Bank like a little airplane.
         wing('Wing_L',-.08-gesture*.45);wing('Wing_R',.08+gesture*.45);
         this.animalGroup.rotation.z=beat*.09;
@@ -622,7 +632,7 @@ export class RescueAnimal {
         if(this.animalId==='goldenDragon'){
           jump=this.reducedMotion?0:Math.sin(t/.65*Math.PI)*.10;this.animalGroup.position.y=this.groundY+jump;
           this.model.scale.set(1,1,1);
-        }else if(['excavator','thomas','tayo','triceratops'].includes(this.animalId)){
+        }else if(['excavator','thomas','tayo','triceratops','airplane'].includes(this.animalId)){
           if(this.animalId==='triceratops'){
             this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
             this.headGroup.rotation.x=-Math.sin(t/.65*Math.PI)*.16;
@@ -643,7 +653,7 @@ export class RescueAnimal {
         this.state='ESCAPING';const p=(t-.65)/2.5;const count=this.animalId==='frog'?4:5;
         const hopPos=p*count;const phase=hopPos%1;
         // Advance mainly in the airborne interval, so planted feet do not slide.
-        const step=['cat','dog','dragon','goldenDragon','mcqueen','chase','jett','thomas','excavator','tayo','triceratops'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
+        const step=['cat','dog','dragon','goldenDragon','mcqueen','chase','jett','airplane','thomas','excavator','tayo','triceratops'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
         this.currentX=THREE.MathUtils.lerp(this.escapeOriginX??this.startX,this.endX,step);
         this.animalGroup.position.x=this.currentX;this.animalGroup.rotation.y=Math.PI/2;this.animalGroup.rotation.z=-.035;
         if(['mcqueen','thomas','excavator','tayo'].includes(this.animalId)){
@@ -747,6 +757,23 @@ export class RescueAnimal {
     }
     this.updateAttention(dt);
     this.updateExpression(dt);updateExpressionRig(this,dt);
+    if(this.animalId==='airplane'){
+      neutralAirplaneParts(this);this.model.rotation.x=0;this.model.rotation.z=0;
+      const m=this.reducedMotion?.25:1;
+      if(this.state==='TRAPPED'){
+        this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
+        const curious=this.anticipating?.04*m:0;this.model.rotation.z=curious;
+        this.model.position.y=0;rollAirplaneWheels(this,0);
+      }else if(this.state==='CHEERING'){
+        this.model.scale.set(1,1,1);this.animalGroup.position.y=this.groundY;
+        rollAirplaneWheels(this,this.escapeElapsed*7*m);
+      }else if(this.state==='ESCAPING'){
+        const p=(this.escapeElapsed-.65)/2.5;
+        const lift=smooth(clamp((p-.28)/.72,0,1));
+        this.animalGroup.position.y=this.groundY+lift*.24*m;this.model.rotation.x=-Math.sin(lift*Math.PI/2)*.13*m;
+        rollAirplaneWheels(this,p*12*m);
+      }else if(this.state==='WAVING')this.applyFarewellPose();
+    }
     applyEnergyReaction(this);
     this.currentY=this.animalGroup.position.y;
     if(this.contactShadow){this.contactShadow.position.set(this.currentX,this.groundY+.014,.09);this.contactShadow.scale.setScalar(this.modelScale*(1+jump*.5));if(this.state!=='ESCAPED')this.contactShadow.visible=true;}

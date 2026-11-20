@@ -16,7 +16,7 @@ if(params.get('happy')==='1'){
 }
 const targetObj=(params.get('closeup')==='1'&&(model.getObjectByName('Head')||model.getObjectByName('Round_Train_Face')))||model;
 const bounds=new THREE.Box3().setFromObject(targetObj),center=bounds.getCenter(new THREE.Vector3()),size=bounds.getSize(new THREE.Vector3());const camera=new THREE.PerspectiveCamera(40,1,.1,100);
-const framing=params.get('closeup')==='1'?1.8:(id==='maiqi'?1.48:id==='krashy'?1.45:id==='triceratops'?1.52:id==='tayo'?1.42:id==='excavator'?1.47:id==='mcqueen'?1.26:['dragon','goldenDragon','jett'].includes(id)?1.72:1.55);
+const framing=params.get('closeup')==='1'?1.8:(id==='airplane'?1.42:id==='maiqi'?1.48:id==='krashy'?1.45:id==='triceratops'?1.52:id==='tayo'?1.42:id==='excavator'?1.47:id==='mcqueen'?1.26:['dragon','goldenDragon','jett','airplane'].includes(id)?1.72:1.55);
 camera.position.set(center.x,center.y+(params.get('closeup')==='1'?0:.06),center.z+size.z/2+Math.max(size.x,size.y)*framing);camera.lookAt(center);
 renderer.render(scene,camera);window.previewReady=true;window.previewModel=model;
 </script>

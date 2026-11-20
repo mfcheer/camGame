@@ -23,4 +23,4 @@ for(const id of Object.keys(ANIMAL_MODELS)){
   assert.equal(new Set(signatures).size,3,`${id}: three visibly distinct poses (reduced=${reduced})`);
  }
 }
-console.log('18 characters: three replies, combo preservation, pause/resume, reduced motion, reset and farewell passed');
+console.log(`${Object.keys(ANIMAL_MODELS).length} characters: three replies, combo preservation, pause/resume, reduced motion, reset and farewell passed`);

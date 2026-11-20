@@ -23,6 +23,7 @@ export const CAMP_ANIMALS = [
   { id:'tayo',name:'小公交车 太友',preview:'models/tayo-preview.png?v=20261115r1',title:'快乐小巴士',badge:'🚌',target:10 },
   { id:'triceratops',name:'三角龙 嘟嘟',preview:'models/triceratops-preview.png?v=20261115r1',title:'远古盾甲',badge:'🦕',target:10 },
   { id:'krashy',name:'瑞奇宝宝 跳跳',preview:'models/krashy-preview.png?v=20261116r1',title:'瑞奇跳跳',badge:'🐰',target:8 },
+  {id:'airplane',name:'小飞机 云朵',preview:'models/airplane-preview.png',title:'云朵飞行',badge:'🛩️',target:8},
   { id:'maiqi',name:'萌鸡小队 麦奇',preview:'models/maiqi-preview.png?v=20261116r1',title:'森林小探险',badge:'🐤',target:8 }
 ];
 
