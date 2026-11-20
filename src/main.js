@@ -21,6 +21,7 @@ import { CampManager } from './campManager.js';
 import { PolaroidManager } from './polaroidManager.js';
 import {ResourceWarmup} from './resourceWarmup.js';
 import {CacheManager} from './cacheManager.js';
+import {initHomeLauncher} from './homeLauncher.js';
 
 /**
  * 游戏主控制器《彩虹小队 · 森林大解救》 (v0.5.1 食指指尖追踪、柔性等待与小动物打磨)
@@ -1483,6 +1484,7 @@ export class Game {
     };
     return JSON.stringify({
       coordinates:'screen pixels; origin top-left; x right, y down',
+      homeLauncher:typeof document!=='undefined'&&!!document.getElementById('home-launcher'),
       mode:this.state, demo:this.isDemoMode, score:this.collectedCount, target:this.targetCount, combo:this.bubbleManager?.comboCount||this.comboCount||0, animalId:this.activeAnimalId,stage:this.sceneManager?.stageId,stageName:this.sceneManager?.stageName,bgmStage:this.audioManager?.currentStageId||this.sceneManager?.stageId||"forest", tracking:this.poseDetector?.metrics,autoNext:this.autoNextDeadline?Math.max(0,Math.ceil((this.autoNextDeadline-performance.now())/1000)):null,celebrationDecorations:this.celebrationAccessories?.slots.filter(s=>s.prop.visible).map(s=>s.prop.name),
       animalSpeech:this.animalSpeech?.toJSON()||null,pendingVictory:!!this.pendingVictory,
       flowLearning:{word:this.lastPlayWord?.word||null,cue:this.wordCueRemaining>0?this.cueWord?.word:null,detail:this.wordFocus?.overlay?this.wordFocus.word?.word:null,voice:this.voiceQueue?.toJSON()||null,speechPolicy:this.speechPolicy?.toJSON()||null},
@@ -1501,6 +1503,7 @@ export class Game {
 // 自动初始化挂载 (如果在真实浏览器环境中)
 if (typeof window !== 'undefined' && typeof document !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
+    initHomeLauncher();
     window.gameInstance = new Game();
     window.render_game_to_text = () => window.gameInstance.renderGameToText();
     window.advanceTime = ms => {
