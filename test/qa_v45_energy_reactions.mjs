@@ -3,7 +3,7 @@ import * as T from 'three';
 import {RescueAnimal,ANIMAL_MODELS} from '../src/rescueAnimal.js';
 import {ENERGY_REACTIONS} from '../src/energyReactions.js';
 const camera=new T.PerspectiveCamera(48,1194/834,.1,100);camera.position.z=7.5;
-function pose(a){return [a.model.position.y,...a.model.rotation.toArray().slice(0,3),...a.headGroup.rotation.toArray().slice(0,3),a.leftArm.rotation.x,a.rightArm.rotation.x,a.leftArm.rotation.z,a.rightArm.rotation.z,a.leftEarGroup.rotation.z,a.rightEarGroup.rotation.z,a.tailGroup.rotation.y,...['Boom_Base','Boom_Elbow','Bucket'].map(n=>a.model.getObjectByName(n)?.rotation.z||0)];}
+function pose(a){return [a.model.position.y,...a.model.rotation.toArray().slice(0,3),...a.headGroup.rotation.toArray().slice(0,3),a.leftArm.rotation.x,a.rightArm.rotation.x,a.leftArm.rotation.z,a.rightArm.rotation.z,a.leftEarGroup.rotation.z,a.rightEarGroup.rotation.z,a.tailGroup.rotation.y,...['Falcon_L','Falcon_R','Boom_Base','Boom_Elbow','Bucket'].map(n=>a.model.getObjectByName(n)?.rotation.z||0)];}
 for(const id of Object.keys(ANIMAL_MODELS)){
  assert.equal(new Set(ENERGY_REACTIONS[id]).size,3,id);
  for(const reduced of [false,true]){

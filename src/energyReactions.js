@@ -1,5 +1,7 @@
+import {setFalcon} from './modelxMotion.js';
 // Each row is an action card: three readable replies using the character's own shape.
 export const ENERGY_REACTIONS = {
+ modelx:['鹰翼舒展','车身轻摆','车头轻抬'],
  airplane:['机头轻抬','左右压翼','尾舵致意'],
  bunny:['竖耳小跳','侧耳倾听','双耳点头'], cat:['歪头摆尾','双爪轻拍','低头蹭爪'],
  frog:['鼓腮弹跳','张腿蹲伏','抬臂鼓劲'], dog:['歪头摇尾','抬爪致谢','俯身邀玩'],
@@ -25,6 +27,8 @@ export function applyEnergyReaction(a) {
  const arms=(l,r)=>{a.leftArm.rotation.x=l*s;a.rightArm.rotation.x=r*s;};
  const ears=(l,r)=>{a.leftEarGroup.rotation.z=l*s;a.rightEarGroup.rotation.z=r*s;};
  switch(a.animalId){
+ case 'modelx':
+  if(v===0)setFalcon(a,.7*s);else if(v===1)tilt(.055);else a.model.rotation.x=-.06*s;break;
  case 'airplane':
   a.animalGroup.position.y=a.groundY;
   if(v===0){a.model.rotation.x=-.14*s;a.tailGroup.rotation.y=.12*s;}

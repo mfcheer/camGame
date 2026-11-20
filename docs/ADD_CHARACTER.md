@@ -2,7 +2,7 @@
 
 目前新朋友无需事先解锁即可选择；营地点亮表示曾经成功解救，不限制游玩。接入新角色时检查以下整条链路：
 
-开始建模前，先按 [角色形象、表情与动作制作规范](CHARACTER_MOTION_STANDARD.md) 写一张角色动作卡，确定识别锚点、运动方式、眼神、两段招牌动作、专属收尾、终点告别和声音配色。现有 19 位角色的动作与代码位置也列在该规范中。
+开始建模前，先按 [角色形象、表情与动作制作规范](CHARACTER_MOTION_STANDARD.md) 写一张角色动作卡，确定识别锚点、运动方式、眼神、两段招牌动作、专属收尾、终点告别和声音配色。现有 20 位角色的动作与代码位置也列在该规范中。
 
 1. **角色与玩法**：在 `src/config.js` 注册唯一 ID、名称、目标能量、GLB 文件名、角色简介和结算文案，并加入 `PLAYABLE_ANIMALS`。在 `src/animalPlayStyles.js` 设置泡泡运动、尺寸、提示和特殊泡泡出现点；首泡静止，所有泡泡一次触碰即破。
 2. **模型与骨架**：用 Three.js 建模并在 `src/rescueAnimal.js` 注册工厂及模型缩放。模型必须包含 `Head`、`Torso`、`Eyes`、`Eye_L/R`、`Ear_L/R`、`Arm_L/R`、`Leg_L/R`、`Bow`、`Tail`，以及可隐藏的 `Happy_Mouth`；为表情补充 `src/animalExpressions.js` 的尺寸配置。导出 GLB 与首页透明预览，避免覆盖其他角色：`node scripts/build-rabbit.mjs <asset-name>`；运行 `scripts/render-previews.mjs <id>` 前先启动 `npm run dev:local`（必要时配置 `PREVIEW_BASE`、`PLAYWRIGHT_MODULE` 和 `PLAYWRIGHT_CHROMIUM_EXECUTABLE`）。
