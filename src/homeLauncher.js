@@ -1,13 +1,10 @@
 // Inspired by mfcheer.github.io's Canvas star-dust reveal; no media or game state.
-const SEEN_KEY = 'camgame:rainbow-reveal:v1';
 const COLORS = ['#ed849c', '#edac54', '#d3b844', '#66b89b', '#63aeda', '#a28acb'];
 
 export function initHomeLauncher() {
   const home = document.getElementById('start-screen');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let seen = false;
-  try { seen = sessionStorage.getItem(SEEN_KEY) === '1'; } catch (_) { /* private mode */ }
-  if (!home || seen || reduced.matches || document.hidden) return null;
+  if (!home || document.getElementById('home-launcher') || reduced.matches || document.hidden) return null;
 
   const overlay = document.createElement('section');
   overlay.id = 'home-launcher';
@@ -15,8 +12,7 @@ export function initHomeLauncher() {
   overlay.innerHTML = `<canvas aria-hidden="true"></canvas>
     <div class="launcher-copy"><div class="launcher-eyebrow">每一份小小的勇气，都有彩虹回应</div>
     <img class="launcher-logo" src="${import.meta.env.BASE_URL}icons/icon-192.png?v=20261115r2" alt="" />
-    <h2>彩虹小队</h2><p>森林大解救</p><span class="launcher-invite">森林朋友，在等你一起出发</span></div>
-    <button class="launcher-skip" type="button">跳过开场 <span aria-hidden="true">↗</span></button>`;
+    <h2>彩虹小队</h2><p>森林大解救</p><span class="launcher-invite">森林朋友，在等你一起出发</span></div>`;
   const canvas = overlay.querySelector('canvas');
   let ctx;
   try { ctx = canvas.getContext('2d'); } catch (_) { return null; }
@@ -50,7 +46,6 @@ export function initHomeLauncher() {
     home.inert = previousInert;
     overlay.remove();
     canvas.width = canvas.height = 0;
-    try { sessionStorage.setItem(SEEN_KEY, '1'); } catch (_) { /* no persistence required */ }
     if (restoreFocus) {
       const target = previousFocus !== document.body && previousFocus?.isConnected ? previousFocus : home.querySelector('button');
       target?.focus({ preventScroll: true });
@@ -95,7 +90,6 @@ export function initHomeLauncher() {
 
   document.body.append(overlay);
   home.inert = true;
-  overlay.querySelector('button').addEventListener('click', finish);
   overlay.addEventListener('keydown', onKey);
   window.addEventListener('resize', resize);
   window.addEventListener('pagehide', finish);
