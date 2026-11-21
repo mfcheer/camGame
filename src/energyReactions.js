@@ -2,6 +2,7 @@ import {setFalcon} from './modelxMotion.js';
 import {setBicycleFork, setBicycleBell} from './bicycleMotion.js';
 // Each row is an action card: three readable replies using the character's own shape.
 export const ENERGY_REACTIONS = {
+ snowking:['权杖轻扬','萌趣摇晃','甜蜜点赞'],
  bicycle:['前轮轻转','车身轻摆','铃铛轻颤'],
  modelx:['鹰翼舒展','车身轻摆','车头轻抬'],
  airplane:['机头轻抬','左右压翼','尾舵致意'],
@@ -29,6 +30,18 @@ export function applyEnergyReaction(a) {
  const arms=(l,r)=>{a.leftArm.rotation.x=l*s;a.rightArm.rotation.x=r*s;};
  const ears=(l,r)=>{a.leftEarGroup.rotation.z=l*s;a.rightEarGroup.rotation.z=r*s;};
  switch(a.animalId){
+ case 'snowking':
+  if(v===0){
+    a.rightArm.rotation.x=-.26*s;
+    const crown=a.model.getObjectByName('Crown');if(crown)crown.rotation.z=Math.sin(p*Math.PI*4)*.12*s;
+    nod(-.06);
+  }else if(v===1){
+    tilt(Math.sin(p*Math.PI*2)*.12);
+    const cape=a.model.getObjectByName('Cape');if(cape)cape.rotation.x=.18+.22*s;
+  }else{
+    a.rightArm.rotation.x=-.18*s;a.rightArm.rotation.z=-.38-.15*s;
+    nod(.10);
+  }break;
  case 'bicycle':
   if(v===0){a.leftArm.rotation.x=-p*Math.PI*s;a.headGroup.rotation.x=-.06*s;setBicycleBell(a,.15*s);}
   else if(v===1)tilt(.055);

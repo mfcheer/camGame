@@ -1,3 +1,5 @@
+import {createSnowKingModel} from './snowkingModel.js';
+import {resetSnowKing,SNOWKING_BASE_ROT_Y} from './snowkingMotion.js';
 import {createBicycleModel} from './bicycleModel.js';
 import {resetBicycle,setBicycleFork,setBicycleBell,rollBicycleWheels,BICYCLE_BASE_ROT_Y} from './bicycleMotion.js';
 import {createModelXModel} from './modelxModel.js';
@@ -21,7 +23,7 @@ import {createExcavatorModel} from './excavatorModel.js';
 import {createMaiqiModel} from './maiqiModel.js';
 import { GAME_CONFIG } from './config.js';
 
-export const ANIMAL_MODELS={bicycle:createBicycleModel,modelx:createModelXModel,bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel,chase:createChaseModel,jett:createJettModel,peppa:createPeppaModel,thomas:createThomasModel,excavator:createExcavatorModel,tayo:createTayoModel,triceratops:createTriceratopsModel,krashy:createKrashyModel,maiqi:createMaiqiModel,airplane:createAirplaneModel};
+export const ANIMAL_MODELS={snowking:createSnowKingModel,bicycle:createBicycleModel,modelx:createModelXModel,bunny:createRabbitModel,cat:createCatModel,frog:createFrogModel,dog:createDogModel,dragon:createDragonModel,goldenDragon:createGoldenDragonModel,mcqueen:createMcqueenModel,wolf:createWolfModel,teddy:createTeddyModel,chase:createChaseModel,jett:createJettModel,peppa:createPeppaModel,thomas:createThomasModel,excavator:createExcavatorModel,tayo:createTayoModel,triceratops:createTriceratopsModel,krashy:createKrashyModel,maiqi:createMaiqiModel,airplane:createAirplaneModel};
 const smooth = t => t*t*(3-2*t);
 const clamp = THREE.MathUtils.clamp;
 
@@ -124,7 +126,7 @@ export class RescueAnimal {
     while(this.ropesGroup.children.length){const c=this.ropesGroup.children[0];this.ropesGroup.remove(c);c.traverse(o=>{if(o.geometry)o.geometry.dispose();});}
     this.ropeCoils=[];
     for(let i=0;i<4;i++) {
-      const g=new THREE.Group(),pts=[];const isBicycle=this.animalId==="bicycle";const baseY=isBicycle?(.16+i*.052):(.30+i*.078);const rx=isBicycle?.28:.35,rz=isBicycle?.24:.40,cz=isBicycle?-.08:-.025;
+      const g=new THREE.Group(),pts=[];const isBicycle=this.animalId==="bicycle",isSnowking=this.animalId==="snowking";const baseY=isBicycle?(.16+i*.052):(isSnowking?(.18+i*.042):(.30+i*.078));const rx=isBicycle?.28:(isSnowking?.34:.35),rz=isBicycle?.24:(isSnowking?.34:.40),cz=isBicycle?-.08:(isSnowking?0:-.025);
       for(let j=0;j<40;j++) {
         const a=j/40*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*rx,baseY+Math.sin(a)*.018,Math.sin(a)*rz+cz));
       }
@@ -141,7 +143,7 @@ export class RescueAnimal {
     const vw=vh*w/h;
     const oldStart=this.startX,oldEnd=this.endX;
     const progress=oldEnd>oldStart?clamp((this.currentX-oldStart)/(oldEnd-oldStart),0,1):0;
-    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,chase:1.02,jett:1.02,peppa:1.02,thomas:1.05,excavator:.92,wolf:1.02,teddy:1.02,tayo:1.05,triceratops:1.02,krashy:1.02,maiqi:1.06,airplane:1.05,modelx:1.0,bicycle:1.15})[this.animalId];
+    this.modelScale=({bunny:.88,cat:1.02,frog:1.23,dog:1.02,dragon:.94,goldenDragon:.94,mcqueen:1.10,chase:1.02,jett:1.02,peppa:1.02,thomas:1.05,excavator:.92,wolf:1.02,teddy:1.02,tayo:1.05,triceratops:1.02,krashy:1.02,maiqi:1.06,airplane:1.05,modelx:1.0,bicycle:1.15,snowking:1.05})[this.animalId];
     this.groundY=-vh/2+.45+getSafeInsets().bottom*vh/h;
     this.startX=-vw/2+Math.min(1.5,vw*.24)+getSafeInsets().left*vh/h;
     this.endX=vw/2-(this.animalId==='airplane'?1.35:1.0)-getSafeInsets().right*vh/h;
@@ -288,6 +290,16 @@ export class RescueAnimal {
     this.updateAttention(dt);this.updateExpression(dt);updateExpressionRig(this,dt);
     applyEnergyReaction(this);
     if(this.animalId==='modelx'){resetModelX(this);this.model.rotation.y=.24;}
+    if(this.animalId==='snowking'){
+      resetSnowKing(this);const m=this.reducedMotion?.25:1;
+      if(this.state==='TRAPPED'){
+        this.model.rotation.y=SNOWKING_BASE_ROT_Y;
+        this.animalGroup.position.y=this.groundY;
+        this.model.rotation.z=Math.sin(this.idleTime*3)*.03*m;
+      }else if(this.state==='CHEERING'){
+        this.model.rotation.y=SNOWKING_BASE_ROT_Y;
+      }else if(this.state==='WAVING')this.applyFarewellPose();
+    }
     if(this.animalId==='bicycle'){resetBicycle(this);this.model.rotation.y=BICYCLE_BASE_ROT_Y;}
     if(this.animalId==='airplane'){neutralAirplaneParts(this);this.model.rotation.z=0;this.model.position.y=0;rollAirplaneWheels(this,0);}
     // HappyPerformance 动作覆写层：在 FRIEND 基础姿态之后应用，动画帧内拥有最终决定权。
@@ -439,6 +451,15 @@ export class RescueAnimal {
     const bounce=Math.sin(p*Math.PI)*motion;
     const wing=(name,angle)=>{const part=this.model.getObjectByName(name);if(part)part.rotation.y=angle;};
     switch(this.animalId) {
+      case 'snowking': {
+        this.model.rotation.y = THREE.MathUtils.lerp(SNOWKING_BASE_ROT_Y, 0, smooth(clamp(p / .25, 0, 1)));
+        this.headGroup.rotation.z = Math.sin(p * Math.PI * 2) * .08 * motion;
+        this.rightArm.rotation.x = -.15 - beat * .20;
+        this.rightArm.rotation.z = -.38 + beat * .10;
+        const cape = this.model.getObjectByName('Cape');
+        if (cape) cape.rotation.x = .18 + Math.sin(p * Math.PI * 2) * .12 * motion;
+        break;
+      }
       case 'bunny': // A little hop with both ears lifting in reply.
         this.animalGroup.position.y+=bounce*.12;
         this.leftEarGroup.rotation.z=.15+gesture*.30;
@@ -607,7 +628,7 @@ export class RescueAnimal {
         if(this.animalId==='goldenDragon'){
           jump=this.reducedMotion?0:Math.sin(p*Math.PI)*.045*boost;this.animalGroup.position.y=this.groundY+jump;
           this.headGroup.rotation.x=-Math.sin(p*Math.PI)*.10;this.rightArm.rotation.x=-Math.sin(p*Math.PI)*.45;
-        }else if(['bicycle','modelx','excavator','mcqueen','thomas','tayo'].includes(this.animalId)){
+        }else if(['snowking','bicycle','modelx','excavator','mcqueen','thomas','tayo'].includes(this.animalId)){
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
           this.headGroup.rotation.z=Math.sin(p*Math.PI)*.10;
         }else if(this.animalId==='triceratops'){
@@ -632,7 +653,7 @@ export class RescueAnimal {
           this.tailGroup.rotation.z=Math.sin(p*Math.PI*2)*.22;
         }else if(this.reactionVariant===0)jump=this.animateHop(p,this.reducedMotion?.025:(this.animalId==='frog'?.22:.14)*boost);
         else{this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;}
-        if(!['bicycle','modelx','thomas','excavator','mcqueen','tayo','triceratops'].includes(this.animalId)){this.leftArm.rotation.z=-Math.sin(p*Math.PI)*.45;this.rightArm.rotation.z=Math.sin(p*Math.PI)*.45;}
+        if(!['snowking','bicycle','modelx','thomas','excavator','mcqueen','tayo','triceratops'].includes(this.animalId)){this.leftArm.rotation.z=-Math.sin(p*Math.PI)*.45;this.rightArm.rotation.z=Math.sin(p*Math.PI)*.45;}
         for(const m of this.bowMaterials){m.emissive=new THREE.Color(0xe6a94e);m.emissiveIntensity=Math.sin(p*Math.PI)*.6;}
       }else {
         this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;this.headGroup.rotation.x=0;
@@ -640,6 +661,9 @@ export class RescueAnimal {
         if(this.animalId==='triceratops'){
           this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);
           this.leftLeg.rotation.set(0,0,0);this.rightLeg.rotation.set(0,0,0);
+        }else if(this.animalId==='snowking'){
+          this.leftArm.rotation.set(0.05,0,0.22);this.rightArm.rotation.set(0,-0.10,-0.38);
+          this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
         }else{
           this.leftArm.rotation.set(-.12,0,.17);this.rightArm.rotation.set(-.12,0,-.17);
           this.leftLeg.rotation.x=this.rightLeg.rotation.x=0;
@@ -664,6 +688,8 @@ export class RescueAnimal {
           }else
           this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
           this.bodyMesh.rotation.z=Math.sin(t/.65*Math.PI)*.035;
+        }else if(this.animalId==='snowking'){
+          this.currentY=this.groundY;this.animalGroup.position.y=this.groundY;
         }else if(['cat','dog','chase'].includes(this.animalId)) {
           this.setQuadrupedPosture(smooth(t/.65));
           const stretch=Math.sin(t/.65*Math.PI);this.model.scale.set(1+.10*stretch,1-.06*stretch,1);
@@ -676,7 +702,7 @@ export class RescueAnimal {
         this.state='ESCAPING';const p=(t-.65)/2.5;const count=this.animalId==='frog'?4:5;
         const hopPos=p*count;const phase=hopPos%1;
         // Advance mainly in the airborne interval, so planted feet do not slide.
-        const step=['bicycle','modelx','cat','dog','dragon','goldenDragon','mcqueen','chase','jett','airplane','thomas','excavator','tayo','triceratops'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
+        const step=['snowking','bicycle','modelx','cat','dog','dragon','goldenDragon','mcqueen','chase','jett','airplane','thomas','excavator','tayo','triceratops'].includes(this.animalId)?smooth(p):(Math.floor(hopPos)+smooth(clamp((phase-.18)/.64,0,1)))/count;
         this.currentX=THREE.MathUtils.lerp(this.escapeOriginX??this.startX,this.endX,step);
         this.animalGroup.position.x=this.currentX;this.animalGroup.rotation.y=Math.PI/2;this.animalGroup.rotation.z=-.035;
         if(['bicycle','modelx','mcqueen','thomas','excavator','tayo'].includes(this.animalId)){
@@ -695,6 +721,18 @@ export class RescueAnimal {
               }
             }
           }
+        }else if(this.animalId==='snowking'){
+          this.model.scale.set(1,1,1);
+          const waddleFreq=24;
+          const stride=Math.sin(p*waddleFreq);
+          const waddle=Math.sin(p*waddleFreq)*(this.reducedMotion?.04:.10);
+          jump=this.reducedMotion?0:Math.abs(stride)*.035;
+          this.currentY=this.groundY+jump;this.animalGroup.position.y=this.currentY;
+          this.model.rotation.z=waddle;
+          this.leftArm.rotation.z=.22-waddle*.4;
+          this.rightArm.rotation.z=-.38-waddle*.4;
+          const cape=this.model.getObjectByName('Cape');
+          if(cape)cape.rotation.x=.18+Math.sin(p*waddleFreq*.5)*.15;
         }else if(['cat','dog','chase'].includes(this.animalId)) {
           this.setQuadrupedPosture(1);
           const stride=Math.sin(p*Math.PI*(this.animalId==='dog'?24:20));
@@ -717,6 +755,7 @@ export class RescueAnimal {
         this.model.scale.set(1,1,1);this.model.rotation.z=0;this.bodyMesh.rotation.z=0;
         this.animalGroup.rotation.y=THREE.MathUtils.lerp(Math.PI/2,0,smooth(clamp((t-3.15)/.22,0,1)));
         if(this.animalId==='bicycle'){this.model.rotation.y=THREE.MathUtils.lerp(0,BICYCLE_BASE_ROT_Y,smooth(clamp((t-3.15)/.22,0,1)));}
+        if(this.animalId==='snowking'){this.model.rotation.y=THREE.MathUtils.lerp(0,SNOWKING_BASE_ROT_Y,smooth(clamp((t-3.15)/.22,0,1)));}
         this.setQuadrupedPosture(1-smooth(clamp((t-3.15)/.22,0,1)));
         this.headGroup.rotation.z=0;this.tailGroup.rotation.z=0;
         this.leftArm.rotation.set(0,0,0);this.rightArm.rotation.set(0,0,0);

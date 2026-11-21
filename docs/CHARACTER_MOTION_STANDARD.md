@@ -47,6 +47,7 @@
 | 挖掘机 | 举臂 | 铲斗点头 | 挖掘收臂 |
 | 三角龙 | 颈盾点头 | 左右甩尾 | 前足踏步 |
 | Model X / 小飞机 / 自行车 | 双门舒展 / 跑道热身 / 前轮轻转 | 车身轻摆 / 云间压翼 / 车身轻摆 | 前悬轻抬 / 抬头起飞 / 铃铛轻颤 |
+| 雪王 | 权杖轻扬 | 萌趣摇晃 | 甜蜜点赞 |
 
 上述名称描述动作意图，不添加汽笛等新音频。新增角色必须补齐三种可辨认的逐泡回应，并通过 `test/qa_v45_energy_reactions.mjs`：正常/减少动态两档、连击不覆盖、暂停不推进、结束复位、重开和告别闭环。浏览器仍需检查实际模型截图，不能仅凭动作名称或关节数字认定幼儿能辨认。
 
@@ -93,6 +94,7 @@
 | `modelx` | 保留风挡眉眼 | 鹰翼迎风、音乐轻舞 | 整装启程 | 双门舒展合拢 |
 | `airplane` | 保留驾驶舱眼睛与眉毛 | 跑道热身、云间压翼 | 抬头起飞 | 低空压翼摆尾舵 |
 | `bicycle` | 保留篮筐双眼与眉毛 | 双轮画圈、铃声小舞步 | 勇敢出发 | 车把转向、金铃轻颤 |
+| `snowking` | 笑眼、灵动大圆眼 | 甜蜜摇摆舞、冰爽火炬 | 雪王加冕 | 权杖轻点致意、微倾回望 |
 
 小飞机完整动作卡见 [AIRPLANE_CHARACTER.md](AIRPLANE_CHARACTER.md)。当前默认解救后走问答与告别；三段中央演出接入已有 HappyPerformance 通道，独立验证，不额外插入问答前后。
 
@@ -103,14 +105,4 @@
 - **完整演出**：三段动作都能从身体轮廓看出差别；眼睛仍属于原角色；两段招牌动作与一个专属收尾都可见；没有通用鞠躬、星星眼或反复的悬浮图标；完成后不留错位关节。
 - **告别闭环**：角色沿自己的运动方式到右侧，执行一个清楚的告别动作，`onReachedExit` 仅触发一次；4.4 秒左右完成淡出，随后正常结算和下一轮。
 - **设备与资源**：在 11 英寸 iPad 横竖屏检查全身、舞台和终点不被裁切；模拟和摄像头模式均可走通；GLB/首页图、本地音效按需加载，失败时原生模型仍可用。
-- **回归**：在不覆盖用户已有 QA 结果的隔离副本运行 `npm test` 与 Pages 子路径构建；用 develop-web-game 浏览器流程截取动作中段、收尾、离场和结算画面并实际打开检查。现有专项可参考 `test/qa_v26_rhythm_demo_photo.mjs`、`test/qa_v38_character_details.mjs`、`test/qa_v41_character_farewells.mjs` 与 `test/qa_v42_character_celebrations_browser.mjs`。
-
-如需新建或修改英语/中文语音素材，先读 [配音标准](VOICE_STANDARD.md)。不要因加角色而顺带重新生成已验收词库或短句。
-
-
-## 解救后对话（2026-11-17）
-
-用户确认的独立问答流程与自动人声例外见 [DIALOGUE_PRACTICE.md](DIALOGUE_PRACTICE.md)。新增或修改问答须先按该文档写内容卡；解救后直接提问、再出两个手势回答泡泡、自然告别，不增加聊一句／告别选择入口。对话与泡泡自动读词分开限制，共用语音通道；暂停及后台返回不重播。
-
-Model X 完整动作卡见 [MODELX_CHARACTER.md](MODELX_CHARACTER.md)。
-自行车完整动作卡见 [BICYCLE_CHARACTER.md](BICYCLE_CHARACTER.md)。
+- **回归**：在不覆盖用户已有 QA 结果的隔离副本运行 `npm test` 与 Pages 子路径构建；用 develop-web-game 浏览器流程截取动作中段、收尾、离场和结算画面并实际打开检查。现有专项可参考 `test/qa_v26_rhythm_demo_photo.mjs`、`test/qa_v38_character_details.mjs`、`test/qa_v41_character_farewells.mjs` 与 `test/qa_v42_character_celebrations_browser.mjs`。\n\n如需新建或修改英语/中文语音素材，先读 [配音标准](VOICE_STANDARD.md)。不要因加角色而顺带重新生成已验收词库或短句。\n\n\n## 解救后对话（2026-11-17）\n\n用户确认的独立问答流程与自动人声例外见 [DIALOGUE_PRACTICE.md](DIALOGUE_PRACTICE.md)。新增或修改问答须先按该文档写内容卡；解救后直接提问、再出两个手势回答泡泡、自然告别，不增加聊一句／告别选择入口。对话与泡泡自动读词分开限制，共用语音通道；暂停及后台返回不重播。\n\nModel X 完整动作卡见 [MODELX_CHARACTER.md](MODELX_CHARACTER.md)。\n自行车完整动作卡见 [BICYCLE_CHARACTER.md](BICYCLE_CHARACTER.md)。\n雪王完整动作卡见 [SNOWKING_CHARACTER.md](SNOWKING_CHARACTER.md)。\n

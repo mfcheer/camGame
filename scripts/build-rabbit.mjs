@@ -1,3 +1,4 @@
+import {createSnowKingModel} from '../src/snowkingModel.js';
 import {createBicycleModel} from '../src/bicycleModel.js';
 import {createModelXModel} from '../src/modelxModel.js';
 import {createAirplaneModel} from '../src/airplaneModel.js';
@@ -17,7 +18,7 @@ globalThis.FileReader = class {
   readAsArrayBuffer(blob) { blob.arrayBuffer().then(result => {this.result=result;this.onloadend?.();}); }
   readAsDataURL(blob) { blob.arrayBuffer().then(result => {this.result=`data:${blob.type};base64,${Buffer.from(result).toString('base64')}`;this.onloadend?.();}); }
 };
-for(const [name,factory] of [['mint-bicycle',createBicycleModel],['pearl-modelx',createModelXModel],['forest-bunny',createRabbitModel],['marmalade-cat',createCatModel],['pond-frog',createFrogModel],['sunny-puppy',createDogModel],['jade-dragon',createDragonModel],['golden-dragon',createGoldenDragonModel],['lightning-mcqueen',createMcqueenModel],['friendly-wolf',createWolfModel],['teddy-bear',createTeddyModel],['rescue-chase',createChaseModel],['airplane-jett',createJettModel],['peppa-pig',createPeppaModel],['thomas-train',createThomasModel],['sunny-excavator',createExcavatorModel],['bus-tayo',createTayoModel],['sunny-triceratops',createTriceratopsModel],['babyriki-krashy',createKrashyModel],['mengji-maiqi',createMaiqiModel],['cloud-airplane',createAirplaneModel]]) {
+for(const [name,factory] of [['snowking',createSnowKingModel],['mint-bicycle',createBicycleModel],['pearl-modelx',createModelXModel],['forest-bunny',createRabbitModel],['marmalade-cat',createCatModel],['pond-frog',createFrogModel],['sunny-puppy',createDogModel],['jade-dragon',createDragonModel],['golden-dragon',createGoldenDragonModel],['lightning-mcqueen',createMcqueenModel],['friendly-wolf',createWolfModel],['teddy-bear',createTeddyModel],['rescue-chase',createChaseModel],['airplane-jett',createJettModel],['peppa-pig',createPeppaModel],['thomas-train',createThomasModel],['sunny-excavator',createExcavatorModel],['bus-tayo',createTayoModel],['sunny-triceratops',createTriceratopsModel],['babyriki-krashy',createKrashyModel],['mengji-maiqi',createMaiqiModel],['cloud-airplane',createAirplaneModel]]) {
   if(process.argv.length>2&&!process.argv.slice(2).includes(name))continue;
   const result=await new GLTFExporter().parseAsync(factory(),{binary:true,onlyVisible:false});
   await fs.writeFile(new URL(`../public/models/${name}.glb`,import.meta.url),Buffer.from(result));

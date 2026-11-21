@@ -26,7 +26,8 @@ export const CAMP_ANIMALS = [
   {id:'modelx',name:'特斯拉 Model X 小白',preview:'models/modelx-preview.png',title:'鹰翼轻舞',badge:'🚙',target:8},
   {id:'airplane',name:'小飞机 云朵',preview:'models/airplane-preview.png',title:'云朵飞行',badge:'🛩️',target:8},
   { id:'maiqi',name:'萌鸡小队 麦奇',preview:'models/maiqi-preview.png?v=20261116r1',title:'森林小探险',badge:'🐤',target:8 },
-  { id:'bicycle',name:'自行车 铃铃',preview:'models/bicycle-preview.png',title:'微风探路',badge:'🚲',target:8 }
+  { id:'bicycle',name:'自行车 铃铃',preview:'models/bicycle-preview.png',title:'微风探路',badge:'🚲',target:8 },
+  { id:'snowking',name:'蜜雪冰城 雪王',preview:'models/snowking-preview.png',title:'甜蜜王者',badge:'👑',target:8 }
 ];
 
 export const CAMP_STORAGE_KEY = 'camgame_forest_camp_v1';

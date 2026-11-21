@@ -33,7 +33,8 @@ export const ESSENTIAL_RESOURCES = [
   { url: 'models/modelx-preview.png', weight: 40, label: 'Model X 预览图' },
   { url: 'models/airplane-preview.png', weight: 30, label: '小飞机预览图' },
   { url: 'models/maiqi-preview.png?v=20261116r1', weight: 60, label: '麦奇预览图' },
-  { url: 'models/bicycle-preview.png', weight: 40, label: '自行车预览图' }
+  { url: 'models/bicycle-preview.png', weight: 40, label: '自行车预览图' },
+  { url: 'models/snowking-preview.png', weight: 40, label: '雪王预览图' }
 ];
 
 export function preloadEssentialResources({

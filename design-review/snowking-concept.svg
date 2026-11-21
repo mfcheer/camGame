@@ -1,0 +1,268 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">蜜雪冰城雪王角色设计视觉概念稿</title>
+  <desc id="desc">经典蜜雪冰城雪王形象设计：圆滚雪人身躯、金色三峰皇冠、红色系带披风、外展手持甜筒火炬权杖、黑色大圆眼与微笑脸颊，3/4黄金视角防遮挡规范。</desc>
+  <defs>
+    <!-- 背景渐变 -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0f7ff"/>
+      <stop offset="60%" stop-color="#fff8f8"/>
+      <stop offset="100%" stop-color="#fdf4f4"/>
+    </linearGradient>
+
+    <!-- 舞台阴影滤镜 -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.5  0 0 0 0 0.2  0 0 0 0 0.25  0 0 0 0.18 0"/>
+    </filter>
+    <filter id="bodyShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="8" stdDeviation="6" flood-color="#0e2840" flood-opacity="0.12"/>
+    </filter>
+
+    <!-- 雪人身躯球形质感渐变 -->
+    <radialGradient id="snowBody" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="65%" stop-color="#f6f9fc"/>
+      <stop offset="88%" stop-color="#e3ecf5"/>
+      <stop offset="100%" stop-color="#cadbe9"/>
+    </radialGradient>
+    <radialGradient id="snowHead" cx="32%" cy="28%" r="68%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f8fafc"/>
+      <stop offset="90%" stop-color="#e6eff7"/>
+      <stop offset="100%" stop-color="#cddde8"/>
+    </radialGradient>
+
+    <!-- 披风红色渐变 -->
+    <linearGradient id="capeRed" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff4a58"/>
+      <stop offset="45%" stop-color="#ff2535"/>
+      <stop offset="100%" stop-color="#d61121"/>
+    </linearGradient>
+    <linearGradient id="capeFold" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0%" stop-color="#d61121"/>
+      <stop offset="100%" stop-color="#a00815"/>
+    </linearGradient>
+
+    <!-- 皇冠金色渐变 -->
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff280"/>
+      <stop offset="35%" stop-color="#ffc72c"/>
+      <stop offset="80%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#c27803"/>
+    </linearGradient>
+
+    <!-- 甜筒香脆华夫渐变 -->
+    <linearGradient id="waffleGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eed19d"/>
+      <stop offset="40%" stop-color="#d8a35e"/>
+      <stop offset="100%" stop-color="#a86d2a"/>
+    </linearGradient>
+
+    <!-- 冰淇淋奶油渐变 -->
+    <radialGradient id="iceCreamGrad" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#fffdf2"/>
+      <stop offset="85%" stop-color="#faedd0"/>
+      <stop offset="100%" stop-color="#eed7ad"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 背景画布与环境光晕 -->
+  <rect width="960" height="640" fill="url(#bgGrad)"/>
+  <circle cx="480" cy="340" r="280" fill="#ffffff" opacity="0.6"/>
+  <circle cx="830" cy="110" r="140" fill="#ffe4e6" opacity="0.4"/>
+  <circle cx="120" cy="480" r="160" fill="#e0f2fe" opacity="0.4"/>
+
+  <!-- 地面舞台与阴影 -->
+  <ellipse cx="480" cy="548" rx="260" ry="26" fill="#8896a6" opacity="0.24" filter="url(#softShadow)"/>
+  <ellipse cx="480" cy="546" rx="190" ry="16" fill="#667888" opacity="0.22"/>
+
+  <!-- ================= 主体：蜜雪冰城雪王 (3/4黄金透视视角，权杖外展无遮挡) ================= -->
+  <g id="snowking-character" transform="translate(430, 320)">
+
+    <!-- 1. 披风后片 (Cape Back Folds) - 位于身躯后方与左后侧随风舒展 -->
+    <g id="cape-back">
+      <!-- 披风阴影内层 -->
+      <path d="M -70,-60 C -120,-10 -150,70 -125,170 C -110,210 -80,215 -60,205 C -30,190 -10,185 20,188 C 40,190 70,185 85,170 C 115,140 120,60 90,-55 Z" fill="url(#capeFold)"/>
+      <!-- 披风主体外层流动皱褶 -->
+      <path d="M -65,-58 C -115,-5 -142,65 -120,165 C -105,200 -75,202 -55,192 C -20,175 10,172 40,176 C 65,180 80,165 92,150 C 118,110 115,30 85,-52 Z" fill="url(#capeRed)"/>
+      <!-- 披风高光亮边 -->
+      <path d="M -118,160 C -140,70 -115,-2 -65,-56" fill="none" stroke="#ff7b87" stroke-width="5" stroke-linecap="round" opacity="0.65"/>
+    </g>
+
+    <!-- 2. 下身/躯干 (Snowman Torso) - 圆滚滚大雪球 -->
+    <g id="body-torso" filter="url(#bodyShadow)">
+      <ellipse cx="0" cy="85" rx="122" ry="110" fill="url(#snowBody)"/>
+      <!-- 腹部亮色高光弧 -->
+      <ellipse cx="-28" cy="65" rx="75" ry="60" fill="#ffffff" opacity="0.55"/>
+      <!-- 底部柔和接触阴影 -->
+      <ellipse cx="0" cy="180" rx="95" ry="16" fill="#9dbcd4" opacity="0.32"/>
+    </g>
+
+    <!-- 3. 左手臂 (Left Arm) - 萌趣圆短手，自然微张保持平衡 -->
+    <g id="arm-left">
+      <path d="M -90,45 C -135,50 -155,75 -145,98 C -138,112 -118,115 -100,95 C -82,75 -75,55 -90,45 Z" fill="url(#snowBody)" filter="url(#bodyShadow)"/>
+      <circle cx="-135" cy="88" r="14" fill="#ffffff" opacity="0.6"/>
+    </g>
+
+    <!-- 4. 披风前领与金扣结 (Cape Collar & Golden Brooch) -->
+    <g id="cape-collar">
+      <!-- 披风红围领紧贴颈部 -->
+      <path d="M -68,-40 C -40,-25 40,-25 68,-40 C 72,-25 45,-10 0,-8 C -45,-10 -72,-25 -68,-40 Z" fill="#d61121"/>
+      <path d="M -62,-36 C -35,-22 35,-22 62,-36" fill="none" stroke="#ff5c6a" stroke-width="4" stroke-linecap="round"/>
+      <!-- 居中精美黄金领扣 -->
+      <circle cx="0" cy="-22" r="13" fill="url(#goldGrad)" stroke="#c27803" stroke-width="2"/>
+      <circle cx="-3" cy="-25" r="4" fill="#ffffff" opacity="0.8"/>
+      <!-- 领扣红宝石点缀 -->
+      <circle cx="0" cy="-22" r="5" fill="#ff2535"/>
+    </g>
+
+    <!-- 5. 头部 (Head) - 圆润饱满大雪人头 -->
+    <g id="head" filter="url(#bodyShadow)">
+      <ellipse cx="0" cy="-60" rx="98" ry="88" fill="url(#snowHead)"/>
+      <!-- 头部受光面柔和高光 -->
+      <ellipse cx="-22" cy="-80" rx="60" ry="45" fill="#ffffff" opacity="0.65"/>
+    </g>
+
+    <!-- 6. 面部五官 (Facial Features) - 经典活泼大眼与甜甜微笑 (3/4偏前视角，绝对无遮挡) -->
+    <g id="face">
+      <!-- 左眉毛 & 右眉毛 (萌萌短弯眉) -->
+      <path d="M -56,-102 Q -42,-114 -24,-105" fill="none" stroke="#222222" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 12,-105 Q 30,-115 48,-103" fill="none" stroke="#222222" stroke-width="5" stroke-linecap="round"/>
+
+      <!-- 左大圆眼 (Eye Left) -->
+      <g id="eye-left">
+        <ellipse cx="-38" cy="-70" rx="14" ry="18" fill="#1e2229"/>
+        <!-- 大高光圆点与小闪光点 -->
+        <circle cx="-42" cy="-76" r="6" fill="#ffffff"/>
+        <circle cx="-33" cy="-66" r="2.8" fill="#ffffff"/>
+      </g>
+
+      <!-- 右大圆眼 (Eye Right - 3/4视角稍显侧透) -->
+      <g id="eye-right">
+        <ellipse cx="26" cy="-70" rx="14" ry="18" fill="#1e2229"/>
+        <!-- 大高光圆点与小闪光点 -->
+        <circle cx="22" cy="-76" r="6" fill="#ffffff"/>
+        <circle cx="31" cy="-66" r="2.8" fill="#ffffff"/>
+      </g>
+
+      <!-- 招牌红润蜜桃腮红 (Blush Cheeks) -->
+      <ellipse cx="-65" cy="-52" rx="15" ry="9" fill="#ff7088" opacity="0.75"/>
+      <ellipse cx="48" cy="-52" rx="15" ry="9" fill="#ff7088" opacity="0.75"/>
+
+      <!-- 微笑小嘴 (Sweet Open Smile) -->
+      <g id="mouth">
+        <path d="M -18,-45 Q -4,-28 12,-45" fill="none" stroke="#222222" stroke-width="5" stroke-linecap="round"/>
+        <!-- 微张开心粉舌小弧线 -->
+        <path d="M -14,-43 Q -3,-28 8,-43 Z" fill="#ff5c73"/>
+      </g>
+    </g>
+
+    <!-- 7. 金色皇冠 (Golden Crown) - 经典三峰金冠立于头顶中央 -->
+    <g id="crown" filter="url(#bodyShadow)">
+      <!-- 皇冠底座金圈 -->
+      <ellipse cx="-4" cy="-136" rx="42" ry="10" fill="url(#goldGrad)" stroke="#b46f04" stroke-width="2.5"/>
+      <!-- 三峰皇冠主体 -->
+      <path d="M -44,-136 L -40,-178 L -18,-155 L -4,-188 L 12,-155 L 34,-176 L 36,-136 Z" fill="url(#goldGrad)" stroke="#b46f04" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- 皇冠正面高光反光面 -->
+      <path d="M -36,-138 L -34,-168 L -18,-153 L -4,-180 L 10,-153 L 26,-166 L 28,-138 Z" fill="#ffeaa5" opacity="0.45"/>
+      <!-- 皇冠尖端金珍珠圆球 (3颗) -->
+      <circle cx="-40" cy="-180" r="6" fill="url(#goldGrad)" stroke="#b46f04" stroke-width="1.5"/>
+      <circle cx="-4" cy="-191" r="7.5" fill="url(#goldGrad)" stroke="#b46f04" stroke-width="1.5"/>
+      <circle cx="34" cy="-178" r="6" fill="url(#goldGrad)" stroke="#b46f04" stroke-width="1.5"/>
+      <!-- 珍珠小高光 -->
+      <circle cx="-42" cy="-182" r="2" fill="#ffffff"/>
+      <circle cx="-6" cy="-194" r="2.5" fill="#ffffff"/>
+      <circle cx="32" cy="-180" r="2" fill="#ffffff"/>
+      <!-- 皇冠底座镶嵌红宝石 (3颗椭圆宝石) -->
+      <ellipse cx="-22" cy="-136" rx="4" ry="5" fill="#ff2535" stroke="#940815" stroke-width="1"/>
+      <ellipse cx="-4" cy="-135" rx="5" ry="6" fill="#ff2535" stroke="#940815" stroke-width="1"/>
+      <ellipse cx="14" cy="-136" rx="4" ry="5" fill="#ff2535" stroke="#940815" stroke-width="1"/>
+    </g>
+
+    <!-- 8. 右手臂 (Right Arm) - 握持权杖，向前右外侧舒展 -->
+    <g id="arm-right">
+      <path d="M 75,32 C 105,40 128,45 138,62 C 146,75 138,92 120,95 C 100,98 85,78 72,55 Z" fill="url(#snowBody)" filter="url(#bodyShadow)"/>
+      <circle cx="128" cy="72" r="14" fill="#ffffff" opacity="0.6"/>
+    </g>
+
+    <!-- 9. 冰淇淋甜筒权杖 (Ice Cream Scepter - 标志性特征，向外侧35°斜立，坚决不挡脸) -->
+    <g id="scepter" transform="translate(142, 60) rotate(16)" filter="url(#bodyShadow)">
+      <!-- 权杖手握把柄 (金色短护手) -->
+      <rect x="-8" y="2" width="16" height="35" rx="6" fill="url(#goldGrad)" stroke="#a86d2a" stroke-width="2"/>
+      <ellipse cx="0" cy="37" rx="9" ry="5" fill="url(#goldGrad)" stroke="#a86d2a" stroke-width="1.5"/>
+
+      <!-- 甜筒华夫锥身 (Waffle Cone) -->
+      <path d="M -18,-15 L 0,38 L 18,-15 Z" fill="url(#waffleGrad)" stroke="#8e5113" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- 华夫饼经典菱形交叉纹理 -->
+      <g stroke="#9c5f1c" stroke-width="1.8" opacity="0.8" stroke-linecap="round">
+        <path d="M -12,-8 L 6,24 M -6,-14 L 12,14 M 0,-15 L 14,-2 M -15,-2 L 2,32"/>
+        <path d="M 12,-8 L -6,24 M 6,-14 L -12,14 M 0,-15 L -14,-2 M 15,-2 L -2,32"/>
+      </g>
+      <!-- 甜筒顶部翻边金黄酥脆边缘 -->
+      <ellipse cx="0" cy="-16" rx="20" ry="6" fill="#f3be7a" stroke="#8e5113" stroke-width="2"/>
+
+      <!-- 旋转香草冰淇淋火炬球 (Soft-Serve Swirl Crown) -->
+      <!-- 底层圆润奶油卷 -->
+      <ellipse cx="0" cy="-28" rx="26" ry="14" fill="url(#iceCreamGrad)" stroke="#c49b62" stroke-width="2"/>
+      <!-- 中层旋转奶油卷 -->
+      <ellipse cx="2" cy="-42" rx="21" ry="12" fill="url(#iceCreamGrad)" stroke="#c49b62" stroke-width="2"/>
+      <!-- 顶层高高旋起的小尖尖 -->
+      <path d="M -13,-48 C -8,-68 12,-72 10,-82 C 9,-86 5,-86 3,-82 C -4,-68 -8,-58 -13,-48 Z" fill="url(#iceCreamGrad)" stroke="#c49b62" stroke-width="2" stroke-linejoin="round"/>
+      <!-- 冰淇淋高光线条 -->
+      <path d="M -16,-28 Q -2,-20 16,-26" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+      <path d="M -12,-42 Q 0,-35 14,-40" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+      <!-- 权杖闪烁甜蜜小火花 -->
+      <polygon points="18,-76 22,-86 32,-88 24,-94 25,-104 16,-98 8,-103 11,-93 3,-87 13,-85" fill="#ffc72c" stroke="#d97706" stroke-width="1"/>
+      <circle cx="28" cy="-56" r="3.5" fill="#ff4d5a"/>
+      <circle cx="-18" cy="-62" r="2.5" fill="#ffc72c"/>
+    </g>
+
+  </g>
+  <!-- ================= 角色绘制结束 ================= -->
+
+  <!-- 左上方标题与Slogan -->
+  <g transform="translate(64, 76)">
+    <rect x="-14" y="-36" width="360" height="92" rx="18" fill="#ffffff" opacity="0.88" filter="url(#softShadow)"/>
+    <text x="0" y="0" font-size="34" font-weight="900" font-family="'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" fill="#d91122" letter-spacing="1">雪王 · 蜜雪冰城朋友</text>
+    <text x="2" y="34" font-size="16" font-weight="600" font-family="'PingFang SC', 'Hiragino Sans GB', sans-serif" fill="#64748b" letter-spacing="0.5">你爱我，我爱你，蜜雪冰城甜蜜蜜 ♪</text>
+  </g>
+
+  <!-- 右侧与底部：设计规范与防遮挡要点标注面板 -->
+  <g transform="translate(650, 72)">
+    <rect x="0" y="0" width="250" height="230" rx="16" fill="#ffffff" opacity="0.92" filter="url(#softShadow)"/>
+    <text x="18" y="32" font-size="17" font-weight="800" fill="#1e293b">✦ 核心视觉与防遮挡规范</text>
+    <line x1="18" y1="44" x2="232" y2="44" stroke="#e2e8f0" stroke-width="1.5"/>
+
+    <text x="18" y="70" font-size="13" font-weight="700" fill="#d91122">1. 3/4 黄金视角 (约 35°~45°)</text>
+    <text x="32" y="88" font-size="12" fill="#475569">立体圆滚雪球身躯，避免扁平</text>
+
+    <text x="18" y="114" font-size="13" font-weight="700" fill="#d91122">2. 权杖外展 35° (零遮挡)</text>
+    <text x="32" y="132" font-size="12" fill="#475569">右手持甜筒外展，离脸距&gt;60px</text>
+
+    <text x="18" y="158" font-size="13" font-weight="700" fill="#d91122">3. 披风后挂自然飘逸</text>
+    <text x="32" y="176" font-size="12" fill="#475569">紧扣颈后，双侧下垂，不包胸腹</text>
+
+    <text x="18" y="202" font-size="13" font-weight="700" fill="#d91122">4. 绳圈避让下腹部</text>
+    <text x="32" y="220" font-size="12" fill="#475569">木桩绳圈位于 y=0.25，不勒面部</text>
+  </g>
+
+  <!-- 底部配色规范色卡 (Color Palette Chips) -->
+  <g transform="translate(64, 550)">
+    <rect x="-10" y="-12" width="530" height="66" rx="14" fill="#ffffff" opacity="0.9" filter="url(#softShadow)"/>
+    <!-- 色块 1：雪王红 -->
+    <rect x="6" y="4" width="30" height="30" rx="7" fill="#ff2535" stroke="#d61121" stroke-width="1.5"/>
+    <text x="44" y="18" font-size="12" font-weight="700" fill="#1e293b">雪王红 (披风/宝石)</text>
+    <text x="44" y="32" font-size="10" fill="#64748b">#FF2535</text>
+
+    <!-- 色块 2：纯净雪白 -->
+    <rect x="180" y="4" width="30" height="30" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="218" y="18" font-size="12" font-weight="700" fill="#1e293b">纯白雪体 (身躯/头)</text>
+    <text x="218" y="32" font-size="10" fill="#64748b">#FFFFFF</text>
+
+    <!-- 色块 3：王冠金 -->
+    <rect x="360" y="4" width="30" height="30" rx="7" fill="#ffc72c" stroke="#d97706" stroke-width="1.5"/>
+    <text x="398" y="18" font-size="12" font-weight="700" fill="#1e293b">王冠金 (皇冠/把柄)</text>
+    <text x="398" y="32" font-size="10" fill="#64748b">#FFC72C</text>
+  </g>
+</svg>

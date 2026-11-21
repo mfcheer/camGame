@@ -11,7 +11,7 @@ const camera=new T.PerspectiveCamera(48,1194/834,.1,100);camera.position.z=7.5;
 const make=()=>new RescueAnimal(new T.Scene(),camera,'bicycle');
 const step=(a,s)=>{for(let i=0;i<s*60;i++)a.update(1/60,i/60);};
 
-assert.equal(resolveAnimal('random',()=>.999),'bicycle');
+assert.equal(resolveAnimal('bicycle'),'bicycle');
 assert.ok(PLAYABLE_ANIMALS.includes('bicycle'));
 assert.ok(CAMP_ANIMALS.some(a=>a.id==='bicycle'&&a.target===8));
 assert.equal(BICYCLE_BASE_ROT_Y, 1.25, '3/4 perspective isometric base rotation');

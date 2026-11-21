@@ -52,7 +52,7 @@ const CHARACTER_MUSIC={
   bunny:['sine',1],cat:['triangle',.88],frog:['sine',1.12],dog:['triangle',.94],
   dragon:['sine',1.16],goldenDragon:['sine',1.24],mcqueen:['triangle',.72],
   wolf:['triangle',.92],teddy:['sine',1.28],chase:['triangle',.82],
-  bicycle:['sine',.84],modelx:['sine',.78],airplane:['sine',.78],jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96],excavator:['triangle',.82],tayo:['triangle',.86],triceratops:['triangle',.88],krashy:['sine',1.05],maiqi:['sine',1.16]
+  snowking:['sine',1.05],  bicycle:['sine',.84],modelx:['sine',.78],airplane:['sine',.78],jett:['sine',.70],peppa:['sine',.78],thomas:['triangle',.96],excavator:['triangle',.82],tayo:['triangle',.86],triceratops:['triangle',.88],krashy:['sine',1.05],maiqi:['sine',1.16]
 };
 
 export class AudioManager {
@@ -393,6 +393,7 @@ export class AudioManager {
           break;
         case 'wolf': this._playWolfSound(type); break;
         case 'chase': this._playChaseSound(type); break;
+        case 'snowking': this._playSnowKingSound(type); break;
         case 'bicycle': this._playCarFriendSound(type); break;
         case 'modelx': this._playCarFriendSound(type); break;
         case 'airplane': this._playJettSound(type); break;
@@ -441,6 +442,7 @@ export class AudioManager {
       osc.connect(gain);gain.connect(dest);osc.start(start);osc.stop(start+dur+.01);
     }
   }
+  _playSnowKingSound(type){this._playFriendNotes([520,650,780,1040],type,'sine',.075);}
   _playChaseSound(type){this._playFriendNotes([390,520,650],type,'triangle',.075);}
   _playJettSound(type){this._playFriendNotes([540,720,960],type,'sine',.085);}
   _playTeddySound(type){this._playFriendNotes([440,550,660],type,'sine',.065);}
