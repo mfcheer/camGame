@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">自行车铃铃角色设计稿</title>
+  <desc id="desc">薄荷绿卡通自行车，奶油色双轮，珊瑚红座椅，金色铃铛，前篮筐有温柔的眼睛和笑脸。</desc>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#eafaff"/><stop offset="1" stop-color="#fff9e9"/></linearGradient>
+    <linearGradient id="frame" x2=".1" y2="1"><stop stop-color="#90e8cb"/><stop offset="1" stop-color="#37b99f"/></linearGradient>
+    <linearGradient id="basket" x2="0" y2="1"><stop stop-color="#fff6d8"/><stop offset="1" stop-color="#e9c98e"/></linearGradient>
+    <filter id="shadow"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>
+  <rect width="960" height="640" fill="url(#sky)"/>
+  <circle cx="813" cy="106" r="42" fill="#fff8cf" opacity=".75"/>
+  <path d="M0 520 Q260 482 480 515 T960 508 V640 H0" fill="#d8f4d8"/>
+  <ellipse cx="479" cy="523" rx="334" ry="29" fill="#75a992" opacity=".22" filter="url(#shadow)"/>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="275" cy="441" r="112" fill="#fffaf0" stroke="#325f68" stroke-width="21"/>
+    <circle cx="275" cy="441" r="94" fill="none" stroke="#e4cfa8" stroke-width="9"/>
+    <circle cx="683" cy="441" r="112" fill="#fffaf0" stroke="#325f68" stroke-width="21"/>
+    <circle cx="683" cy="441" r="94" fill="none" stroke="#e4cfa8" stroke-width="9"/>
+    <g stroke="#b5d9cf" stroke-width="5">
+      <path d="M275 347 V535 M181 441 H369 M208 374 L342 508 M208 508 L342 374"/>
+      <path d="M683 347 V535 M589 441 H777 M616 374 L750 508 M616 508 L750 374"/>
+    </g>
+    <circle cx="275" cy="441" r="21" fill="#ffcc76" stroke="#315d65" stroke-width="7"/>
+    <circle cx="683" cy="441" r="21" fill="#ffcc76" stroke="#315d65" stroke-width="7"/>
+    <path d="M275 441 L389 438 L350 291 L275 441 M350 291 H540 L389 438 L683 441 L540 291" fill="none" stroke="#287f7c" stroke-width="29"/>
+    <path d="M275 441 L389 438 L350 291 L275 441 M350 291 H540 L389 438 L683 441 L540 291" fill="none" stroke="url(#frame)" stroke-width="21"/>
+    <path d="M636 245 L683 441" stroke="#297f7b" stroke-width="25"/>
+    <path d="M636 245 L683 441" stroke="#8de3c8" stroke-width="16"/>
+    <path d="M548 276 L634 246 Q652 242 675 247" fill="none" stroke="#2b6269" stroke-width="17"/>
+    <path d="M669 247 L700 258" stroke="#ffbca9" stroke-width="17"/>
+    <path d="M349 286 L335 244" stroke="#2f6268" stroke-width="15"/>
+    <path d="M279 239 Q318 219 382 231 Q396 238 383 252 L297 256 Q277 255 279 239Z" fill="#f58d83" stroke="#9d595c" stroke-width="7"/>
+    <circle cx="614" cy="233" r="21" fill="#ffd35d" stroke="#9e772f" stroke-width="6"/>
+    <circle cx="613" cy="228" r="8" fill="#fff7c2" opacity=".82"/>
+    <path d="M632 237 L652 245" stroke="#9e772f" stroke-width="5"/>
+    <path d="M617 275 L734 275 L715 364 Q684 383 637 361Z" fill="url(#basket)" stroke="#b88761" stroke-width="9"/>
+    <path d="M614 276 Q676 250 737 275" fill="none" stroke="#b88761" stroke-width="13"/>
+    <path d="M630 327 Q674 345 721 327 M634 350 Q676 363 716 349" fill="none" stroke="#d4ac7c" stroke-width="5" opacity=".65"/>
+    <ellipse cx="655" cy="304" rx="12" ry="16" fill="#fffdf5"/>
+    <ellipse cx="699" cy="304" rx="12" ry="16" fill="#fffdf5"/>
+    <ellipse cx="659" cy="305" rx="5" ry="8" fill="#315962"/>
+    <ellipse cx="702" cy="305" rx="5" ry="8" fill="#315962"/>
+    <path d="M642 282 Q655 273 667 284 M688 282 Q700 273 711 284" fill="none" stroke="#775d51" stroke-width="5"/>
+    <path d="M665 333 Q679 346 695 333" fill="none" stroke="#875c53" stroke-width="5"/>
+    <ellipse cx="635" cy="321" rx="10" ry="5" fill="#ef9c8e" opacity=".72"/>
+    <ellipse cx="719" cy="321" rx="10" ry="5" fill="#ef9c8e" opacity=".72"/>
+    <circle cx="389" cy="438" r="34" fill="#f7d876" stroke="#9d773e" stroke-width="8"/>
+    <path d="M389 438 L435 456 M389 438 L359 416" stroke="#2c6269" stroke-width="10"/>
+    <path d="M440 456 L467 456 M359 416 L336 416" stroke="#2c6269" stroke-width="9"/>
+  </g>
+  <text x="68" y="96" font-size="52" font-weight="800" font-family="system-ui,sans-serif" fill="#327b79">铃铃 · 自行车朋友</text>
+  <text x="70" y="137" font-size="22" font-family="system-ui,sans-serif" fill="#628783">慢慢出发，也能去很远的地方</text>
+</svg>

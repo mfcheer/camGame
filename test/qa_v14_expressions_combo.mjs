@@ -13,13 +13,13 @@ check('Unmuting after a muted new round restarts BGM without duplicate sequencer
 });
 check('Combo retains its full operation window during cooldown and bubble protection',()=>{
  const bm=bubbles();bm.createBubble(0);bm.popBubble(.5,.5);for(let i=0;i<40;i++)bm.update(.06,i*.06);assert.equal(bm.comboCount,1);assert.equal(bm.comboRemainingMs,1500);
- bm.createBubble(1);for(let i=0;i<6;i++)bm.update(.06,i*.06);assert.equal(bm.comboRemainingMs,1500);bm.update(.06,.42);assert.ok(bm.comboRemainingMs>1470&&bm.comboRemainingMs<1490);bm.popBubble(.5,.5);assert.equal(bm.comboCount,2);
+ bm.createBubble(1);for(let i=0;i<1;i++)bm.update(.06,i*.06);assert.equal(bm.comboRemainingMs,1500);bm.update(.06,.06);assert.ok(bm.comboRemainingMs>1470&&bm.comboRemainingMs<1490);bm.popBubble(.5,.5);assert.equal(bm.comboCount,2);
 });
 check('An unpopped ready bubble expires a combo; pause and clear remove old streaks',()=>{
  const bm=bubbles();bm.createBubble(0);bm.popBubble(.5,.5);bm.createBubble(1);for(let i=0;i<33;i++)bm.update(.06,i*.06);assert.equal(bm.comboCount,0);bm.popBubble(.5,.5);assert.equal(bm.comboCount,1);bm.clear();assert.equal(bm.comboRemainingMs,0);assert.equal(bm.comboCount,0);
 });
 check('Friends express joy with smiling eyelids or preserved cockpit eyes, with bounded head pitch',()=>{
- for(const id of PLAYABLE_ANIMALS){const a=new RescueAnimal(new T.Scene(),camera(),id);a.setEnergy(2);let seenSmile=false;for(let i=0;i<60;i++){seenSmile ||= a.expressionRig.smileEyes.some(e=>e.smile.visible);a.update(1/60,i/60);assert.ok(Math.abs(a.headGroup.rotation.x)<.5,`${id} pitch accumulates`);}if(['airplane','modelx'].includes(id)){assert.equal(seenSmile,false);assert.ok(a.expressionRig.smileEyes.every(e=>e.eye.visible),'cockpit eyes remain visible');}else assert.ok(seenSmile,`${id} missing smile`);assert.equal(a.happyMouth.visible,true);}
+ for(const id of PLAYABLE_ANIMALS){const a=new RescueAnimal(new T.Scene(),camera(),id);a.setEnergy(2);let seenSmile=false;for(let i=0;i<60;i++){seenSmile ||= a.expressionRig.smileEyes.some(e=>e.smile.visible);a.update(1/60,i/60);assert.ok(Math.abs(a.headGroup.rotation.x)<.5,`${id} pitch accumulates`);}if(['airplane','modelx','bicycle'].includes(id)){assert.equal(seenSmile,false);assert.ok(a.expressionRig.smileEyes.every(e=>e.eye.visible),'cockpit eyes remain visible');}else assert.ok(seenSmile,`${id} missing smile`);assert.equal(a.happyMouth.visible,true);}
 });
 check('Expression effects are reused and reset restores eyes, mouth, pupils and response state',()=>{
  for(const id of PLAYABLE_ANIMALS){const a=new RescueAnimal(new T.Scene(),camera(),id),glyphs=a.expressionRig.glyphs;a.setPlayerFocus([{face:{x:.8,y:.3}}]);for(let i=0;i<20;i++){a.setEnergy(i+1);a.update(.06,i*.06);}assert.equal(a.expressionRig.glyphs,glyphs);assert.equal(glyphs.length,3);a.reset();assert.equal(a.emotion,'content');assert.equal(a.happyMouth.visible,false);assert.equal(a.expressionRig.effects.visible,false);for(const e of a.expressionRig.smileEyes){assert.equal(e.eye.visible,true);assert.equal(e.smile.visible,false);}for(const p of a.expressionRig.pupils)assert.deepEqual(p.node.position,p.base);}

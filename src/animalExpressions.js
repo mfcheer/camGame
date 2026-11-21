@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 const FACE={
+ bicycle:{width:.055,depth:.030,top:1.05,colour:0x90e8cb},
  modelx:{width:.08,depth:.026,top:1.05,colour:0xa8d5ec},
  airplane:{width:.065,depth:.030,top:.98,colour:0x50a8dc},
  bunny:{width:.043,depth:.028,top:1.90,colour:0xe69891},
@@ -10,7 +11,7 @@ const FACE={
  goldenDragon:{width:.048,depth:.046,top:1.63,colour:0xeac166},
  teddy:{width:.043,depth:.028,top:1.34,colour:0xe69891},wolf:{width:.044,depth:.032,top:1.30,colour:0xe3ac7d},mcqueen:{width:.05,depth:.028,top:1.10,colour:0xffca48},chase:{width:.044,depth:.032,top:1.4,colour:0xffd075},jett:{width:.044,depth:.028,top:1.35,colour:0x97c8eb},peppa:{width:.043,depth:.028,top:1.4,colour:0xf2a1b3},thomas:{width:.048,depth:.028,top:1.32,colour:0x8cc5df},excavator:{width:.07,depth:.035,top:1.48,colour:0xffd66b},tayo:{width:.048,depth:.028,top:1.32,colour:0x74b9ff},triceratops:{width:.054,depth:.030,top:1.32,colour:0xf97316},krashy:{width:.046,depth:.028,top:1.30,colour:0x38bdf8},maiqi:{width:.068,depth:.042,top:1.44,colour:0xf8d53d}
 };
-const STAGE_EYES={modelx:'bright',airplane:'bright',bunny:'smile',cat:'slowBlink',frog:'bright',dog:'wink',dragon:'bright',goldenDragon:'bright',
+const STAGE_EYES={bicycle:'bright',modelx:'bright',airplane:'bright',bunny:'smile',cat:'slowBlink',frog:'bright',dog:'wink',dragon:'bright',goldenDragon:'bright',
  mcqueen:'bright',wolf:'wink',teddy:'smile',chase:'wink',jett:'bright',peppa:'smile',thomas:'bright',
  excavator:'bright',tayo:'bright',triceratops:'bright',krashy:'smile',maiqi:'smile'};
 function stroke(parent,points,r,material){const path=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const m=new THREE.Mesh(new THREE.TubeGeometry(path,18,r,6,false),material);parent.add(m);return m;}
@@ -55,7 +56,7 @@ export function createExpressionRig(model,id){
  }
  // Thomas's eyebrows are signature to the character — they lift when happy, furrow when curious.
  let brows=null;
- if(id==='thomas'||id==='airplane'||id==='modelx'){
+ if(id==='thomas'||id==='airplane'||id==='modelx'||id==='bicycle'){
   brows=[];
   for(const side of ['L','R']){const b=model.getObjectByName('Brow_'+side);if(b)brows.push({node:b,base:b.rotation.clone(),pos:b.position.clone()});}
  }
@@ -90,7 +91,7 @@ export function updateExpressionRig(animal,dt){
    const close=stageMode==='smile'||(stageMode==='wink'&&i===1)||catBlink||(glow==='finale'&&stageMode==='slowBlink');
    eye.visible=!close;smile.visible=close;eye.scale.y=stageMode==='slowBlink'&&!close?.72:1;
   }else{
-   const close=!['airplane','modelx'].includes(animal.animalId)&&happy&&smileWindow&&(closeBoth||(animal.animalId==='dog'&&variant===1&&i===1));
+   const close=!['airplane','modelx','bicycle'].includes(animal.animalId)&&happy&&smileWindow&&(closeBoth||(animal.animalId==='dog'&&variant===1&&i===1));
    eye.visible=!close;smile.visible=close;eye.scale.y=curious?1.12:happy&&!close?.90:1;
   }
  }
@@ -101,11 +102,11 @@ export function updateExpressionRig(animal,dt){
  }
  // Thomas eyebrows: lift high when happy (cheerful raised brows), furrow inward when curious.
  if(rig.brows){
-  const lift=(happy?(glow==='finale'?.16:glow?.12:(['airplane','modelx'].includes(animal.animalId)?.025:0)):curious?-.05:0)*(['airplane','modelx'].includes(animal.animalId)?.3:1);
+  const lift=(happy?(glow==='finale'?.16:glow?.12:(['airplane','modelx','bicycle'].includes(animal.animalId)?.025:0)):curious?-.05:0)*(['airplane','modelx','bicycle'].includes(animal.animalId)?.3:1);
   const inward=curious?.5:0;
   for(let i=0;i<rig.brows.length;i++){
    const b=rig.brows[i],side=i===0?-1:1;
-   if(['airplane','modelx'].includes(animal.animalId))b.node.rotation.z=b.base.z+(animal.moodWorried||0)*side*.17-(happy?.04:0)*side;
+   if(['airplane','modelx','bicycle'].includes(animal.animalId))b.node.rotation.z=b.base.z+(animal.moodWorried||0)*side*.17-(happy?.04:0)*side;
    b.node.rotation.x+=(b.base.x+(happy?.04:0)-b.node.rotation.x)*(1-Math.exp(-dt*10));
    b.node.rotation.y+=(inward*side-b.node.rotation.y)*(1-Math.exp(-dt*10));
    b.node.position.y+=(b.pos.y+lift-b.node.position.y)*(1-Math.exp(-dt*10));

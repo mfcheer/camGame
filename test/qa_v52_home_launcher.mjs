@@ -64,9 +64,10 @@ test('essential resources include camera MediaPipe assets and home screen visual
  assert.ok(urls.some(u=>u.includes('pose_landmarker_lite.task')));
  assert.ok(urls.some(u=>u.includes('bunny-preview.png')));
  assert.ok(urls.some(u=>u.includes('forest-bunny.glb')));
+ assert.ok(urls.some(u=>u.includes('bicycle-preview.png')));
  assert.ok(urls.some(u=>u.includes('modelx-preview.png')));
  assert.ok(urls.some(u=>u.includes('airplane-preview.png')));
- assert.equal(urls.filter(u=>u.includes('-preview.png')).length, 20);
+ assert.equal(urls.filter(u=>u.includes('-preview.png')).length, 21);
 });
 
 test('progress bar DOM renders at bottom and delays closing until resource download completes', () => {

@@ -9,7 +9,7 @@ import {modelxWings,modelxDance,modelxDeparture,resetModelX} from '../src/modelx
 const camera=new T.PerspectiveCamera(48,1194/834,.1,100);camera.position.z=7.5;
 const make=()=>new RescueAnimal(new T.Scene(),camera,'modelx');
 const step=(a,s)=>{for(let i=0;i<s*60;i++)a.update(1/60,i/60);};
-assert.equal(resolveAnimal('random',()=>.999),'modelx');assert.ok(PLAYABLE_ANIMALS.includes('modelx'));assert.ok(CAMP_ANIMALS.some(a=>a.id==='modelx'&&a.target===8));
+assert.equal(resolveAnimal('modelx'),'modelx');assert.ok(PLAYABLE_ANIMALS.includes('modelx'));assert.ok(CAMP_ANIMALS.some(a=>a.id==='modelx'&&a.target===8));
 for(const file of ['pearl-modelx.glb','modelx-preview.png'])assert.ok(fs.statSync('public/models/'+file).size>1000);
 const b=fs.readFileSync('public/models/pearl-modelx.glb'),gltf=JSON.parse(b.toString('utf8',20,20+b.readUInt32LE(12)).trim());
 for(const name of ['Falcon_L','Falcon_R','Panoramic_Roof','Windshield','Brow_L','Head','Happy_Mouth','Tire'])assert.ok(gltf.nodes.some(n=>n.name===name),name);

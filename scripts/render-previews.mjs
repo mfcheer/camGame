@@ -14,7 +14,7 @@ const browser = await chromium.launch({
 });
 try {
   const page = await browser.newPage({ viewport: { width: 384, height: 384 } });
-  for (const animal of (process.argv.length > 2 ? process.argv.slice(2) : ['bunny', 'cat', 'frog', 'dog', 'dragon', 'goldenDragon', 'mcqueen', 'wolf', 'teddy', 'chase', 'jett', 'peppa', 'thomas', 'excavator', 'tayo', 'triceratops', 'krashy', 'maiqi', 'airplane', 'modelx'])) {
+  for (const animal of (process.argv.length > 2 ? process.argv.slice(2) : ['bunny', 'cat', 'frog', 'dog', 'dragon', 'goldenDragon', 'mcqueen', 'wolf', 'teddy', 'chase', 'jett', 'peppa', 'thomas', 'excavator', 'tayo', 'triceratops', 'krashy', 'maiqi', 'airplane', 'modelx', 'bicycle'])) {
     await page.goto(`${process.env.PREVIEW_BASE || 'http://127.0.0.1:5175'}/scripts/model-preview.html?animal=${animal}`);
     await page.waitForFunction(() => window.previewReady);
     const png = await page.locator('canvas').evaluate(c => c.toDataURL().split(',')[1]);

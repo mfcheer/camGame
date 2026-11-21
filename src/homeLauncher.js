@@ -12,7 +12,7 @@ export const ESSENTIAL_RESOURCES = [
   // 首页视觉素材
   { url: 'icons/icon-192.png?v=20261115r2', weight: 30, label: '应用图标' },
   { url: 'models/forest-bunny.glb', weight: 1340, label: '初始伙伴模型' },
-  // 20 款动物预览图
+  // 21 款动物预览图
   { url: 'models/bunny-preview.png?v=20261114r2', weight: 50, label: '小兔预览图' },
   { url: 'models/cat-preview.png?v=20261114r2', weight: 70, label: '橘猫预览图' },
   { url: 'models/frog-preview.png?v=20261114r2', weight: 80, label: '青蛙预览图' },
@@ -32,7 +32,8 @@ export const ESSENTIAL_RESOURCES = [
   { url: 'models/krashy-preview.png?v=20261116r1', weight: 55, label: '跳跳预览图' },
   { url: 'models/modelx-preview.png', weight: 40, label: 'Model X 预览图' },
   { url: 'models/airplane-preview.png', weight: 30, label: '小飞机预览图' },
-  { url: 'models/maiqi-preview.png?v=20261116r1', weight: 60, label: '麦奇预览图' }
+  { url: 'models/maiqi-preview.png?v=20261116r1', weight: 60, label: '麦奇预览图' },
+  { url: 'models/bicycle-preview.png', weight: 40, label: '自行车预览图' }
 ];
 
 export function preloadEssentialResources({

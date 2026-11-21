@@ -1,6 +1,8 @@
 import {setFalcon} from './modelxMotion.js';
+import {setBicycleFork, setBicycleBell} from './bicycleMotion.js';
 // Each row is an action card: three readable replies using the character's own shape.
 export const ENERGY_REACTIONS = {
+ bicycle:['前轮轻转','车身轻摆','铃铛轻颤'],
  modelx:['鹰翼舒展','车身轻摆','车头轻抬'],
  airplane:['机头轻抬','左右压翼','尾舵致意'],
  bunny:['竖耳小跳','侧耳倾听','双耳点头'], cat:['歪头摆尾','双爪轻拍','低头蹭爪'],
@@ -27,6 +29,10 @@ export function applyEnergyReaction(a) {
  const arms=(l,r)=>{a.leftArm.rotation.x=l*s;a.rightArm.rotation.x=r*s;};
  const ears=(l,r)=>{a.leftEarGroup.rotation.z=l*s;a.rightEarGroup.rotation.z=r*s;};
  switch(a.animalId){
+ case 'bicycle':
+  if(v===0){a.leftArm.rotation.x=-p*Math.PI*s;a.headGroup.rotation.x=-.06*s;setBicycleBell(a,.15*s);}
+  else if(v===1)tilt(.055);
+  else{setBicycleBell(a,Math.sin(p*Math.PI*4)*.22*s);setBicycleFork(a,.14*s);}break;
  case 'modelx':
   if(v===0)setFalcon(a,.7*s);else if(v===1)tilt(.055);else a.model.rotation.x=-.06*s;break;
  case 'airplane':
@@ -48,29 +54,32 @@ export function applyEnergyReaction(a) {
   else{arms(-.8,-.8);nod(-.18);}break;
  case 'dragon':case 'jett':case 'maiqi':
   if(v===0){arms(-.45,-.45);a.model.position.y=.06*s;}
-  else if(v===1){tilt(.22);nod(.24);}
-  else{arms(0,-.95);nod(-.22);a.tailGroup.rotation.z=.35*s;}
-  if(a.animalId==='dragon')for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const w=a.model.getObjectByName(name);if(w)w.rotation.y=sign*(.18+s*(v===0?.85:v===1?.4:.1));}break;
+  else if(v===1){arms(-.85,.45);tilt(.14);}
+  else{nod(-.12);arms(-.35,-.35);}
+  break;
  case 'goldenDragon':
-  if(v===0){nod(-.30);a.model.position.y=.05*s;}
-  else if(v===1){tilt(.18);a.tailGroup.rotation.y=-.65*s;}
-  else{nod(.28);a.tailGroup.rotation.y=.6*s;}break;
+  if(v===0){nod(-.18);a.tailGroup.rotation.y=.42*s;}
+  else if(v===1){tilt(.12);a.headGroup.rotation.z=-.18*s;}
+  else{nod(.20);a.tailGroup.rotation.y=-.42*s;}break;
  case 'teddy':case 'peppa':
-  if(v===0){a.leftArm.rotation.z=-.95*s;a.rightArm.rotation.z=.95*s;}
-  else if(v===1){arms(-.9,-.9);tilt(-.14);}
-  else{arms(0,-1.1);a.headGroup.rotation.z=.24*s;}break;
- case 'mcqueen':case 'thomas':case 'tayo':
-  // Keep wheels grounded and preserve vehicle faces.
-  a.animalGroup.position.y=a.groundY;
-  if(v===0)tilt(.10);
-  else if(v===1){a.model.rotation.x=-.12*s;nod(-.16);}
-  else{a.model.rotation.x=.10*s;nod(.18);}break;
- case 'excavator':{
-  const boom=a.model.getObjectByName('Boom_Base'),elbow=a.model.getObjectByName('Boom_Elbow'),bucket=a.model.getObjectByName('Bucket');
-  boom.rotation.z=[.55,.08,-.25][v]*s;elbow.rotation.z=[-.25,.15,.60][v]*s;bucket.rotation.z=[.10,.65,-.45][v]*s;break;}
+  if(v===0){arms(-.6,-.6);a.model.position.y=.06*s;}
+  else if(v===1){arms(-.95,.3);tilt(.10);}
+  else{nod(.22);arms(-.4,-.4);}break;
+ case 'mcqueen':case 'tayo':
+  if(v===0)tilt(.07);
+  else if(v===1){a.model.position.y=.035*s;tilt(-.06);}
+  else nod(-.08);break;
+ case 'thomas':
+  if(v===0)tilt(.06);
+  else if(v===1){nod(-.10);a.model.position.y=.025*s;}
+  else nod(.12);break;
+ case 'excavator':
+  if(v===0){const b=a.model.getObjectByName('Boom_Base');if(b)b.rotation.z=.25*s;}
+  else if(v===1){const b=a.model.getObjectByName('Bucket');if(b)b.rotation.z=.3*s;}
+  else{const e=a.model.getObjectByName('Boom_Elbow');if(e)e.rotation.z=-.22*s;}break;
  case 'triceratops':
-  if(v===0)nod(.30);
-  else if(v===1){a.headGroup.rotation.z=.18*s;a.tailGroup.rotation.y=-.65*s;}
-  else{a.leftArm.rotation.x=-.45*s;a.rightArm.rotation.x=.20*s;nod(-.12);}break;
+  if(v===0)nod(-.16);
+  else if(v===1){a.tailGroup.rotation.y=.35*s;tilt(.08);}
+  else{a.leftLeg.rotation.x=.3*s;a.rightLeg.rotation.x=-.3*s;}break;
  }
 }

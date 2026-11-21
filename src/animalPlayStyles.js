@@ -19,7 +19,8 @@ export const ANIMAL_PLAY_STYLES = {
   modelx:{name:'鹰翼轻舞',motion:'arc',amplitudeX:9,amplitudeY:4,size:1.09,period:7,comboMs:2300,cooldownMs:920,jellyAt:[3],rainbowAt:[],hint:'和小白一起，轻轻碰大泡泡'},
   airplane:{name:'云朵飞行',motion:'arc',amplitudeX:10,amplitudeY:5,size:1.09,period:7,comboMs:2300,cooldownMs:920,jellyAt:[3],rainbowAt:[],hint:'和云朵一起，慢慢伸手碰大泡泡'},
   maiqi:{name:'森林小探险',motion:'drift',amplitudeX:8,amplitudeY:4,size:1.10,period:6.7,comboMs:2300,cooldownMs:920,jellyAt:[3],rainbowAt:[],hint:'麦奇的小翅膀在等你，慢慢碰大泡泡'},
-  krashy:{name:'活力弹跳',motion:'hop',amplitudeX:0,amplitudeY:18,size:1.06,period:4.0,comboMs:2300,cooldownMs:850,jellyAt:[2],rainbowAt:[4],hint:'和跳跳一起轻快弹跳找泡泡'}
+  krashy:{name:'活力弹跳',motion:'hop',amplitudeX:0,amplitudeY:18,size:1.06,period:4.0,comboMs:2300,cooldownMs:850,jellyAt:[2],rainbowAt:[4],hint:'和跳跳一起轻快弹跳找泡泡'},
+  bicycle:{name:'微风探路',motion:'drift',amplitudeX:8,amplitudeY:4,size:1.08,period:6.8,comboMs:2300,cooldownMs:920,jellyAt:[3],rainbowAt:[],hint:'和铃铃一起，慢慢伸手碰大泡泡'}
 };
 export function getAnimalPlayStyle(id) { return ANIMAL_PLAY_STYLES[id] || ANIMAL_PLAY_STYLES.bunny; }
 
