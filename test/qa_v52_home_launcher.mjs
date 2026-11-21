@@ -120,7 +120,8 @@ test('dust keeps forming through the progress interval and flowing during slow d
  const positions=t=>{f.tick(t);assert.equal(f.points.length,240);assert(f.points.flat().every(Number.isFinite));return f.points.map(p=>[...p]);};
  const distance=(a,b)=>a.reduce((sum,p,i)=>sum+Math.hypot(p[0]-b[i][0],p[1]-b[i][1]),0)/a.length;
  positions(0);notify(.5);
- const early=positions(1150),middle=positions(2500),formed=positions(4000);
+ const early=positions(1150),middle=positions(2500);
+ notify(.75);const formed=positions(4000);
  assert(distance(early,middle)>30,'formation must continue well past the old 1150ms cutoff');
  assert(distance(middle,formed)>15,'second half of loading still develops the rainbow');
  const waiting=positions(8000),flowing=positions(9000);
@@ -129,4 +130,25 @@ test('dust keeps forming through the progress interval and flowing during slow d
  notify(1);positions(9800);positions(10400);const releasing=positions(10850);
  assert(+f.overlay.style.opacity<1);assert(distance(flowing,releasing)>8);
  f.tick(11300);assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);
+});
+
+test('formation keeps substantial travel for the last quarter and waits for slow progress', () => {
+ const originalRandom=Math.random;
+ Math.random=()=>.5;
+ try {
+  const sample=(ratio,t)=>{
+   const f=fixture();
+   initHomeLauncher({minDuration:20000,resourceLoader:({onProgress})=>{onProgress(ratio);return new Promise(()=>{});}});
+   f.tick(0);f.tick(t);return [...f.points[0]];
+  };
+  // Identical particles and elapsed time isolate formation from ambient drift/breath.
+  const scattered=sample(0,3000),threeQuarters=sample(1,3000),target=sample(1,4000);
+  const travel=Math.hypot(target[0]-scattered[0],target[1]-scattered[1]);
+  assert(Math.hypot(target[0]-threeQuarters[0],target[1]-threeQuarters[1])>travel*.3,
+   'at 75% there must still be substantial formation, rather than an almost finished rainbow');
+  const slow=sample(.25,8000),full=sample(1,8000),origin=sample(0,8000);
+  const fullTravel=Math.hypot(full[0]-origin[0],full[1]-origin[1]);
+  assert(Math.hypot(slow[0]-origin[0],slow[1]-origin[1])<fullTravel*.2,
+   'a slow download must not form a completed rainbow just because four seconds passed');
+ } finally {Math.random=originalRandom;}
 });

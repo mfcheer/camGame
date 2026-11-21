@@ -236,9 +236,9 @@ export function initHomeLauncher(options = {}) {
     }
 
     ctx.clearRect(0, 0, width, height);
-    // 用整段进度展示时间完成聚拢，避免开场一秒成形后只剩等待。
-    const gather = Math.min(1, elapsed / progressDuration);
-    const ease = gather * gather * (3 - 2 * gather);
+    // 跟随实际显示进度聚拢；后半程仍保留明显位移，慢下载也不提前成形。
+    const gather = displayProgress;
+    const ease = Math.pow(gather, 1.6);
     const unit = Math.min(width * .42, height * .39, 380);
     const cx = width / 2, cy = height / 2 + 50;
     for (const p of particles) {
