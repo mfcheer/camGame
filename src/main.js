@@ -11,7 +11,7 @@ import { SceneManager } from './sceneManager.js';
 import { HotAirBalloon } from './hotAirBalloon.js';
 import { RescueAnimal } from './rescueAnimal.js';
 import {HappyPerformance} from './happyPerformance.js';
-import { BubbleManager } from './bubbleManager.js';
+import { BubbleManager, BUBBLE_SPAWN_PROTECTION_SECONDS } from './bubbleManager.js';
 import { AudioManager } from './audioManager.js';
 import { PoseDetector } from './poseDetector.js';
 import { UIManager } from './uiManager.js';
@@ -1489,7 +1489,7 @@ export class Game {
       animalSpeech:this.animalSpeech?.toJSON()||null,pendingVictory:!!this.pendingVictory,
       flowLearning:{word:this.lastPlayWord?.word||null,cue:this.wordCueRemaining>0?this.cueWord?.word:null,detail:this.wordFocus?.overlay?this.wordFocus.word?.word:null,voice:this.voiceQueue?.toJSON()||null,speechPolicy:this.speechPolicy?.toJSON()||null},
       wordLearning:{enabled:this.bubbleManager?.wordMode!==false, word:this.currentWord?.word||null, review:!!this.wordPlaybackReview, speaking:!!this.currentWord&&!this.wordAudioDone, elapsed:Math.round((this.wordElapsed||0)*10)/10},
-      bubble:bubble ? {...screen(bubble.group.position), type:bubble.type,playStyle:bubble.playStyle,motionElapsed:Math.round((bubble.motionElapsed||0)*100)/100,ease:Math.round((this.bubbleManager.roundEase||0)*100)/100,hitsReceived:bubble.hitsReceived,leftTouched:bubble.leftTouched,rightTouched:bubble.rightTouched,merging:bubble.merging,protected:bubble.spawnElapsed<.4,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
+      bubble:bubble ? {...screen(bubble.group.position), type:bubble.type,playStyle:bubble.playStyle,motionElapsed:Math.round((bubble.motionElapsed||0)*100)/100,ease:Math.round((this.bubbleManager.roundEase||0)*100)/100,hitsReceived:bubble.hitsReceived,leftTouched:bubble.leftTouched,rightTouched:bubble.rightTouched,merging:bubble.merging,protected:bubble.spawnElapsed<BUBBLE_SPAWN_PROTECTION_SECONDS,assisted:!!bubble.assisted,ownerId:bubble.ownerId}:null,
       animal:animal ? {state:animal.state,emotion:animal.emotion,reaction:animal.reactionVariant,response:animal.energyReaction,energy:animal.energyLevel,asset:animal.assetStatus,visible:animal.animalGroup.visible,...screen(animal.animalGroup.position)}:null,
       dialogue:this.dialogue?.toJSON()||null,
       friendPlay:this.friendInteraction?.toJSON() || null,

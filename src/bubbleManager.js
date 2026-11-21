@@ -9,6 +9,8 @@ import {getAnimalPlayStyle, animalTargetOffset} from './animalPlayStyles.js';
 import {PointerContrastSampler,pointerPalette} from './pointerContrast.js';
 import { WORDS_LIST, WORDS_MAP, getWordById } from './wordsConfig.js';
 
+export const BUBBLE_SPAWN_PROTECTION_SECONDS = 0.1;
+
 // Use the same CSS-pixel size for geometry and spawn clearance in either orientation.
 export function getBaseBubbleDiameter(width, height) {
   const short = Math.min(width, height), long = Math.max(width, height);
@@ -26,7 +28,7 @@ export function getBaseBubbleDiameter(width, height) {
  * 泡泡生命周期与交互管理 (v0.5.1 食指指尖交互与小动物解救)
  * 1. 每次仅存在一个大泡泡，位置严格在舒适区内，避让手部、气球与顶部 HUD
  * 2. 2.5~3px 实线彩色轮廓与外柔光圈，5 色渐进 (#FF6B81 #FFA502 #2ED573 #1E90FF #9B59B6)
- * 3. 0~320ms 弹性出场 (0.65→1.08→1.00)，400ms 出场保护期与防秒爆机制
+ * 3. 0~320ms 弹性出场 (0.65→1.08→1.00)，100ms 出场保护期与防秒爆机制
  * 4. 接近吸附加亮 (1.6x 半径内描边加亮 25%、泡泡微向手偏移至多 8px)
  * 5. 命中破裂闪圈、12~18 个星点水滴粒子爆发、能量流星弧线飞向左侧小动物领结
  * 6. 食指指尖单一交互锚点：
@@ -538,7 +540,7 @@ export class BubbleManager {
   }
 
   updatePlayMotion(b, dt) {
-    b.playableElapsed = (b.playableElapsed || 0) + (b.spawnElapsed >= .4 ? dt : 0);
+    b.playableElapsed = (b.playableElapsed || 0) + (b.spawnElapsed >= BUBBLE_SPAWN_PROTECTION_SECONDS ? dt : 0);
     const struggle = Math.max(0, (b.playableElapsed - 5) / 8, ((b.nearSeconds || 0) - 1.5) / 5);
     this.roundEase = Math.min(1, Math.max(this.roundEase, struggle));
     b.motionGain += ((1 - this.roundEase * .5) - b.motionGain) * (1 - Math.exp(-dt * 2));
@@ -1169,7 +1171,7 @@ export class BubbleManager {
     this.handFlashTimer = .16;
   }
 
-  // 碰撞检测与接近吸附加亮检测（以食指尖为单一交互锚点，含 400ms 出场保护期与防秒爆）
+  // 碰撞检测与接近吸附加亮检测（以食指尖为单一交互锚点，含 100ms 出场保护期与防秒爆）
   checkHandCollisions(trackedPlayers) {
     if (!this.activeBubble || this.activeBubble.isPopping || !trackedPlayers || trackedPlayers.length === 0) {
       this.isNearHand = false;
@@ -1182,7 +1184,7 @@ export class BubbleManager {
 
     if (this.layoutGraceSeconds > 0 || b.relocating) return false;
     const tips = this.getInteractionTips(trackedPlayers, w, h);
-    const isProtected = b.updateCount > 0 && b.spawnElapsed < .400;
+    const isProtected = b.updateCount > 0 && b.spawnElapsed < BUBBLE_SPAWN_PROTECTION_SECONDS;
     b.suppressedHands ||= new Set();
     // Either player can pop a decorative heart with one touch. The picture in
     // the middle is also a target; there is no readiness, timing or second-hit gate.
@@ -1231,7 +1233,7 @@ export class BubbleManager {
     const edgePxX = ((edgeScreenCoord.x + 1) / 2) * w;
     const radiusPx = Math.abs(edgePxX - bubblePxX) * GAME_CONFIG.gameplay.touchDistanceMultiplier;
 
-    // 出场 400ms 保护期检测（仅在游戏运行帧更新状态下生效；单元测试单帧模式下不阻塞）
+    // 出场 100ms 保护期检测（仅在游戏运行帧更新状态下生效；单元测试单帧模式下不阻塞）
 
 
     let hit = false;
@@ -1842,7 +1844,7 @@ export class BubbleManager {
       b.updateCount = (b.updateCount || 0) + 1;
       b.spawnElapsed += dt;
       if(this.comboCount>0&&!b.relocating){
-        const playableDt=Math.max(0,b.spawnElapsed-.4)-Math.max(0,b.spawnElapsed-dt-.4);
+        const playableDt=Math.max(0,b.spawnElapsed-BUBBLE_SPAWN_PROTECTION_SECONDS)-Math.max(0,b.spawnElapsed-dt-BUBBLE_SPAWN_PROTECTION_SECONDS);
         this.comboRemainingMs=Math.max(0,this.comboRemainingMs-playableDt*1000);
         if(this.comboRemainingMs<=.001)this.resetCombo();
       }

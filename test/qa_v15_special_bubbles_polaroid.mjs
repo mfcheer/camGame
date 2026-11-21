@@ -50,6 +50,27 @@ check('Q弹果冻一次触碰即破裂，提供1份能量',()=>{
  assert.equal(bm.energyProjectiles[0].energyCount,1);
 });
 
+check('四类泡泡100ms解除保护，停留不刷分，移开再碰仅记一次',()=>{
+ for(const type of ['normal','jelly','rainbow','coop_heart']){
+  const camera=new THREE.PerspectiveCamera(48,16/9,.1,100);camera.position.z=7.5;camera.updateMatrixWorld();
+  const bm=new BubbleManager(new THREE.Scene(),camera,createMockAudio(),null);
+  if(type==='coop_heart')bm.setPlayerMode('coop');
+  bm.createBubble(0,type);
+  const b=bm.activeBubble;b.updateCount=1;b.spawnElapsed=.099;
+  const touch=()=>bm.checkHandCollisions([{id:1,hands:[center(bm)]}]);
+  assert.equal(touch(),false,`${type}: 99ms仍保护`);
+  b.spawnElapsed=.1;
+  assert.equal(touch(),false,`${type}: 原地停留不自动击破`);
+  bm.checkHandCollisions([{id:1,hands:[{x:0,y:0,isIndexTip:true,observed:true}]}]);
+  assert.equal(touch(),true,`${type}: 100ms移入即破`);
+  assert.equal(bm.checkHandCollisions([{id:1,hands:[]}]),false);
+  assert.equal(bm.energyProjectiles.length,1);
+  bm.clear();bm.createBubble(0,type);
+  bm.activeBubble.updateCount=1;bm.activeBubble.spawnElapsed=.1;
+  assert.equal(touch(),true,`${type}: 100ms首次触碰即破`);
+ }
+});
+
 // 2. 彩虹流光泡泡（连击奖励、七彩旋转光晕与清脆滑音）
 check('彩虹流光泡泡：连击奖励生成、带旋转光晕并播放彩虹滑音', () => {
   const camera = new THREE.PerspectiveCamera(48, 16 / 9, 0.1, 100);
@@ -74,7 +95,7 @@ check('彩虹流光泡泡：连击奖励生成、带旋转光晕并播放彩虹�
   bm.update(0.03, 1.0);
   assert.ok(bm.activeBubble.rainbowRing.rotation.z > rotBefore, '彩虹环应动态旋转');
 
-  // 推进时间跨越 400ms 出场保护期
+  // 推进时间跨越 100ms 出场保护期
   for (let i = 0; i < 26; i++) bm.update(0.016, 1.0 + i * 0.016);
 
   // 触碰破裂

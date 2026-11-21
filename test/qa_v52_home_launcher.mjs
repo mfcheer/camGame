@@ -7,7 +7,8 @@ function fixture({seen=false,reduced=false,noCanvas=false,blockedStorage=false}=
  const listeners=new Map(),frames=new Map(),timers=new Map();let seq=0,overlay=null,removed=false,focusCount=0;
  const on=(name,cb)=>listeners.set(name,cb),off=(name)=>listeners.delete(name);
  const button={style:{},setAttribute(){},addEventListener:on,focus(){focusCount++;}};
- const ctx={setTransform(){},clearRect(){},beginPath(){},arc(){},fill(){},fillRect(){}};
+ const points=[];
+ const ctx={setTransform(){},clearRect(){points.length=0;},beginPath(){},arc(x,y){points.push([x,y]);},fill(){},fillRect(){}};
  const canvas={getContext:()=>noCanvas?null:ctx};
  const home={inert:false,querySelector:()=>button};
  const media={matches:reduced,addEventListener:on,removeEventListener:off};
@@ -19,7 +20,7 @@ function fixture({seen=false,reduced=false,noCanvas=false,blockedStorage=false}=
  globalThis.cancelAnimationFrame=id=>frames.delete(id);
  globalThis.setTimeout=cb=>{timers.set(++seq,cb);return seq;};globalThis.clearTimeout=id=>timers.delete(id);
  const tick=t=>{const [id,cb]=frames.entries().next().value;frames.delete(id);cb(t);};
- return {home,media,canvas,storage,listeners,frames,timers,tick,get overlay(){return overlay;},get removed(){return removed;}};
+ return {home,media,canvas,storage,listeners,frames,timers,tick,points,get overlay(){return overlay;},get removed(){return removed;}};
 }
 const originals=Object.fromEntries(['window','document','sessionStorage','requestAnimationFrame','cancelAnimationFrame','setTimeout','clearTimeout'].map(k=>[k,globalThis[k]]));
 test.after(()=>Object.assign(globalThis,originals));
@@ -111,4 +112,21 @@ test('late downloads reach 100 smoothly, hold, then fade; percentage never round
  f.tick(7399);assert.equal(f.overlay.style.opacity,'1');
  f.tick(7800);assert(+f.overlay.style.opacity<1);assert(!f.removed);
  f.tick(8300);assert(f.removed);assert(!f.home.inert);
+});
+
+test('dust keeps forming through the progress interval and flowing during slow downloads', () => {
+ const f=fixture();let notify;
+ initHomeLauncher({resourceLoader:({onProgress})=>{notify=onProgress;return new Promise(()=>{});}});
+ const positions=t=>{f.tick(t);assert.equal(f.points.length,240);assert(f.points.flat().every(Number.isFinite));return f.points.map(p=>[...p]);};
+ const distance=(a,b)=>a.reduce((sum,p,i)=>sum+Math.hypot(p[0]-b[i][0],p[1]-b[i][1]),0)/a.length;
+ positions(0);notify(.5);
+ const early=positions(1150),middle=positions(2500),formed=positions(4000);
+ assert(distance(early,middle)>30,'formation must continue well past the old 1150ms cutoff');
+ assert(distance(middle,formed)>15,'second half of loading still develops the rainbow');
+ const waiting=positions(8000),flowing=positions(9000);
+ assert(distance(waiting,flowing)>8,'slow downloads keep a visibly moving rainbow');
+ assert.equal(f.overlay.style.opacity,'1');
+ notify(1);positions(9800);positions(10400);const releasing=positions(10850);
+ assert(+f.overlay.style.opacity<1);assert(distance(flowing,releasing)>8);
+ f.tick(11300);assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);
 });

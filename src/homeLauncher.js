@@ -217,6 +217,7 @@ export function initHomeLauncher(options = {}) {
     const pct = displayProgress >= 1 ? 100 : Math.min(99, Math.floor(displayProgress * 100));
     updateProgressUI(pct);
 
+    let release = 0;
     if (isLoaded && displayProgress >= 1 && readyElapsed == null) {
       readyElapsed = elapsed;
     }
@@ -229,24 +230,29 @@ export function initHomeLauncher(options = {}) {
         return;
       }
       if (elapsed >= fadeStartElapsed) {
-        overlay.style.opacity = String((targetFinishElapsed - elapsed) / fadeDuration);
+        release = (elapsed - fadeStartElapsed) / fadeDuration;
+        overlay.style.opacity = String(1 - release);
       }
     }
 
     ctx.clearRect(0, 0, width, height);
-    const gather = Math.min(1, elapsed / 1150);
-    const ease = 1 - Math.pow(1 - gather, 3);
+    // 用整段进度展示时间完成聚拢，避免开场一秒成形后只剩等待。
+    const gather = Math.min(1, elapsed / progressDuration);
+    const ease = gather * gather * (3 - 2 * gather);
     const unit = Math.min(width * .42, height * .39, 380);
     const cx = width / 2, cy = height / 2 + 50;
     for (const p of particles) {
-      const r = unit * (1 - p.band * .055);
-      const tx = cx + Math.cos(p.arc) * r;
-      const ty = cy - Math.sin(p.arc) * r;
-      const drift = Math.sin(elapsed / 750 + p.phase) * 3;
+      // 下载较慢时仍沿彩虹来回流动；各色错相呼吸，避免静止闪烁。
+      const arc = p.arc + Math.sin(elapsed / 1700 + p.phase) * .14;
+      const breath = Math.sin(elapsed / 1100 + p.band * .65);
+      const r = unit * (1 - p.band * .055 + breath * .018 + release * .22);
+      const tx = cx + Math.cos(arc) * r;
+      const ty = cy - Math.sin(arc) * r;
+      const drift = Math.sin(elapsed / 950 + p.phase) * 4;
       const sx = cx + Math.cos(p.angle) * width * p.radius;
       const sy = height / 2 + Math.sin(p.angle) * height * p.radius;
-      const x = sx + (tx - sx) * ease + drift;
-      const y = sy + (ty - sy) * ease + drift;
+      const x = sx + (tx - sx) * ease + drift + Math.cos(p.angle) * release * 26;
+      const y = sy + (ty - sy) * ease + drift - release * (20 + p.size * 6);
       ctx.globalAlpha = (.55 + .3 * Math.sin(p.phase + elapsed / 1000)) * Math.min(1, elapsed / 250);
       ctx.fillStyle = COLORS[p.band];
       ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI * 2); ctx.fill();
