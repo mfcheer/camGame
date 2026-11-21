@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-const source=(await readFile(new URL('../src/homeLauncher.js',import.meta.url),'utf8')).replaceAll('import.meta.env.BASE_URL',"'/camGame/'");
-const {initHomeLauncher}=await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+const source=(await readFile(new URL('../src/homeLauncher.js',import.meta.url),'utf8')).replaceAll('import.meta.env.BASE_URL',"'/'");
+const {initHomeLauncher, ESSENTIAL_RESOURCES, preloadEssentialResources}=await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 function fixture({seen=false,reduced=false,noCanvas=false,blockedStorage=false}={}) {
  const listeners=new Map(),frames=new Map(),timers=new Map();let seq=0,overlay=null,removed=false,focusCount=0;
  const on=(name,cb)=>listeners.set(name,cb),off=(name)=>listeners.delete(name);
- const button={addEventListener:on,focus(){focusCount++;}};
+ const button={style:{},setAttribute(){},addEventListener:on,focus(){focusCount++;}};
  const ctx={setTransform(){},clearRect(){},beginPath(){},arc(){},fill(){},fillRect(){}};
  const canvas={getContext:()=>noCanvas?null:ctx};
  const home={inert:false,querySelector:()=>button};
@@ -23,27 +23,92 @@ function fixture({seen=false,reduced=false,noCanvas=false,blockedStorage=false}=
 }
 const originals=Object.fromEntries(['window','document','sessionStorage','requestAnimationFrame','cancelAnimationFrame','setTimeout','clearTimeout'].map(k=>[k,globalThis[k]]));
 test.after(()=>Object.assign(globalThis,originals));
-test('reveal follows real elapsed time, caps DPR, isolates home and frees everything at deadline',()=>{
- const f=fixture();initHomeLauncher();assert(f.home.inert);assert.equal(f.canvas.width,2388);assert.match(f.overlay.innerHTML,/\/camGame\/icons/);
- f.tick(100);f.tick(1300);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);f.tick(2300);assert(+f.overlay.style.opacity<1);f.tick(2500);
+
+test('reveal follows real elapsed time, caps DPR, isolates home and frees everything at deadline', () => {
+ const f=fixture();initHomeLauncher();assert(f.home.inert);assert.equal(f.canvas.width,2388);assert.match(f.overlay.innerHTML,/icons/);
+ f.tick(100);f.tick(1300);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);f.tick(4100);assert.equal(f.overlay.style.opacity,'1');f.tick(5000);assert(+f.overlay.style.opacity<1);f.tick(5600);
  assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);assert.equal(f.timers.size,0);assert.equal(f.listeners.has('resize'),false);assert.equal(f.canvas.width,0);assert.equal(f.storage.size,0);
 });
-test('no skip control; each new page runs despite a previous session marker, without storage access',()=>{
+
+test('no skip control; each new page runs despite a previous session marker, without storage access', () => {
  for(const options of [{seen:true},{blockedStorage:true}]){
   const f=fixture(options);initHomeLauncher();assert(f.overlay);assert.doesNotMatch(f.overlay.innerHTML,/<button|launcher-skip/);assert(!f.listeners.has('click'));assert.equal(initHomeLauncher(),null);
-  f.tick(0);f.tick(2400);assert(f.removed);assert(!f.home.inert);
+  f.tick(0);f.tick(4000);f.tick(5500);assert(f.removed);assert(!f.home.inert);
  }
 });
-test('Escape, background, page hide and changed reduced-motion all clean up without replay',()=>{
+
+test('Escape, background, page hide and changed reduced-motion all clean up without replay', () => {
  for(const name of ['keydown','visibilitychange','pagehide','change']){
   const f=fixture();initHomeLauncher();document.hidden=true;f.media.matches=true;f.listeners.get(name)({key:'Escape',preventDefault(){}});
   assert(f.removed,name);assert(!f.home.inert,name);assert.equal(f.frames.size,0);assert.equal(initHomeLauncher(),null);
  }
 });
-test('reduced motion and unavailable canvas enter home without a blocking overlay',()=>{
+
+test('reduced motion and unavailable canvas enter home without a blocking overlay', () => {
  for(const options of [{reduced:true},{noCanvas:true}]){const f=fixture(options);assert.equal(initHomeLauncher(),null);assert(!f.overlay);assert(!f.home.inert);}
 });
-test('disabled storage is harmless; resize retains timeline and failsafe frees a stalled reveal',()=>{
+
+test('disabled storage is harmless; resize retains timeline and failsafe frees a stalled reveal', () => {
  const f=fixture({blockedStorage:true});initHomeLauncher();f.tick(0);window.innerWidth=834;window.innerHeight=1194;f.listeners.get('resize')();assert.equal(f.canvas.width,1668);f.tick(1200);assert(!f.removed);
  [...f.timers.values()][0]();assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);
+});
+
+test('essential resources include camera MediaPipe assets and home screen visual thumbnails', () => {
+ assert.ok(Array.isArray(ESSENTIAL_RESOURCES));
+ const urls = ESSENTIAL_RESOURCES.map(r=>r.url);
+ assert.ok(urls.some(u=>u.includes('tracking-worker.js')));
+ assert.ok(urls.some(u=>u.includes('vision_bundle.js')));
+ assert.ok(urls.some(u=>u.includes('vision_wasm_internal.wasm')));
+ assert.ok(urls.some(u=>u.includes('hand_landmarker.task')));
+ assert.ok(urls.some(u=>u.includes('pose_landmarker_lite.task')));
+ assert.ok(urls.some(u=>u.includes('bunny-preview.png')));
+ assert.ok(urls.some(u=>u.includes('forest-bunny.glb')));
+ assert.ok(urls.some(u=>u.includes('modelx-preview.png')));
+ assert.ok(urls.some(u=>u.includes('airplane-preview.png')));
+ assert.equal(urls.filter(u=>u.includes('-preview.png')).length, 20);
+});
+
+test('progress bar DOM renders at bottom and delays closing until resource download completes', () => {
+ const f=fixture();
+ let notifyProgress=null;
+ const resourceLoader=({onProgress})=>{notifyProgress=onProgress;return new Promise(()=>{});};
+ initHomeLauncher({resourceLoader});
+ assert.match(f.overlay.innerHTML,/launcher-progress-container/);
+ assert.match(f.overlay.innerHTML,/launcher-progress-track/);
+ assert.match(f.overlay.innerHTML,/launcher-progress-bar/);
+ assert.match(f.overlay.innerHTML,/launcher-progress-text/);
+ f.tick(0);
+ f.tick(1000);
+ notifyProgress(0.5);
+ f.tick(2000);
+ assert.equal(f.overlay.style.opacity,'1');
+ assert(!f.removed);
+ f.tick(2600);
+ assert.equal(f.overlay.style.opacity,'1');
+ assert(!f.removed,'must not disappear before downloads finish even past 2400ms');
+ notifyProgress(1.0);
+ f.tick(3000);
+ f.tick(3250);
+ assert.equal(f.overlay.style.opacity,'1','downloads completing cannot start an early fade');
+ f.tick(4000);
+ f.tick(4800);
+ assert(+f.overlay.style.opacity<1,'fades after full progress and ready hold');
+ f.tick(5500);
+ assert(f.removed,'cleanly removes after fade completes');
+ assert(!f.home.inert);
+});
+
+
+test('late downloads reach 100 smoothly, hold, then fade; percentage never rounds up early', () => {
+ const f=fixture();let notify;
+ initHomeLauncher({resourceLoader:({onProgress})=>{notify=onProgress;return new Promise(()=>{});}});
+ f.tick(0);notify(.99);f.tick(4000);
+ assert.equal(f.home.querySelector().textContent,'正在准备必要资源… 99%');
+ f.tick(6000);assert.equal(f.overlay.style.opacity,'1');
+ notify(1);f.tick(6001);
+ assert.equal(f.home.querySelector().textContent,'正在准备必要资源… 99%');
+ f.tick(6800);assert.equal(f.home.querySelector().textContent,'必要资源已就绪 ✨ 100%');
+ f.tick(7399);assert.equal(f.overlay.style.opacity,'1');
+ f.tick(7800);assert(+f.overlay.style.opacity<1);assert(!f.removed);
+ f.tick(8300);assert(f.removed);assert(!f.home.inert);
 });
