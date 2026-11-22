@@ -1,6 +1,21 @@
 // Inspired by mfcheer.github.io's Canvas star-dust reveal; no media or game state.
 const COLORS = ['#ed849c', '#edac54', '#d3b844', '#66b89b', '#63aeda', '#a28acb'];
 
+export const LAUNCHER_CANDIDATE_TIPS = [
+  '🐰 小兔正在系好小跑鞋…',
+  '👑 雪王正在把甜筒火炬点亮…',
+  '🏎️ 闪电麦昆正在热身发动引擎…',
+  '🚒 汪汪队阿奇正在检查巡逻装备…',
+  '🦖 三角龙嘟嘟正大口嚼着青草…',
+  '✈️ 超级飞侠乐迪正在确认飞行航线…',
+  '🚂 托马斯小火车鸣响了快乐汽笛…',
+  '🚜 小挖掘机挖出了七彩糖果…',
+  '🚌 小巴士太友正在接小伙伴上车…',
+  '🐱 橘猫咪伸了个大大的懒腰…',
+  '🐻 泰迪熊抱紧了满满的蜂蜜罐…',
+  '🌈 彩虹精灵正在汇聚七色光芒…'
+];
+
 export const ESSENTIAL_RESOURCES = [
   // 摄像头 MediaPipe 追踪引擎组件
   { url: 'tracking-worker.js', weight: 10, label: '摄像头追踪引擎' },
@@ -114,6 +129,9 @@ export function initHomeLauncher(options = {}) {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (!home || document.getElementById('home-launcher') || reduced.matches || document.hidden) return null;
 
+  const selectedTip = options.tip || LAUNCHER_CANDIDATE_TIPS[Math.floor(Math.random() * LAUNCHER_CANDIDATE_TIPS.length)];
+  const readyText = options.readyText || '彩虹伙伴已就绪 100%';
+
   const overlay = document.createElement('section');
   overlay.id = 'home-launcher';
   overlay.setAttribute('aria-label', '欢迎来到彩虹小队');
@@ -123,11 +141,11 @@ export function initHomeLauncher(options = {}) {
       <h2>彩虹小队 · 森林大解救</h2>
       <p class="launcher-subtitle">森林朋友，在等你一起出发 ✨</p>
     </div>
-    <div class="launcher-progress-container" role="progressbar" aria-label="必要资源加载进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="launcher-progress-container" role="progressbar" aria-label="彩虹小队加载进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <div class="launcher-progress-track">
         <div class="launcher-progress-bar" style="width: 0%"></div>
       </div>
-      <div class="launcher-progress-text">正在准备必要资源… 0%</div>
+      <div class="launcher-progress-text">${selectedTip} 0%</div>
     </div>`;
   const canvas = overlay.querySelector('canvas');
   let ctx;
@@ -140,17 +158,17 @@ export function initHomeLauncher(options = {}) {
 
   let width = 0, height = 0, frame = null, start = null, disposed = false;
   const isMockEnvironment = typeof window !== 'undefined' && !window.location && !options.resourceLoader && !options.resources;
-  let targetProgress = isMockEnvironment ? 1 : 0;
+  let isHotStart = Boolean(options.isHotStart || isMockEnvironment);
+  let targetProgress = isHotStart ? 1 : 0;
   let displayProgress = 0;
   let rainbowGather = 0;
-  let isLoaded = isMockEnvironment;
+  let isLoaded = isHotStart;
   let readyElapsed = null;
   let previousElapsed = 0;
+  let pulseStartElapsed = null;
+  const pulseDuration = 400;
 
-  const minDuration = options.minDuration ?? 4500;
-  const fadeDuration = options.fadeDuration ?? 800;
-  const progressDuration = options.progressDuration ?? 2600;
-  const readyHoldDuration = options.readyHoldDuration ?? 1100;
+  const fadeDuration = options.fadeDuration ?? 450;
   const failsafeDuration = options.failsafeDuration ?? 15000;
   const abortController = typeof AbortController !== 'undefined' ? new AbortController() : null;
 
@@ -196,7 +214,7 @@ export function initHomeLauncher(options = {}) {
   function updateProgressUI(pct) {
     if (progressBar && progressBar.style) progressBar.style.width = `${pct}%`;
     if (progressText) {
-      progressText.textContent = pct >= 100 ? '必要资源已就绪 100%' : `正在准备必要资源… ${pct}%`;
+      progressText.textContent = pct >= 100 ? readyText : `${selectedTip} ${pct}%`;
     }
     if (progressContainer && typeof progressContainer.setAttribute === 'function') {
       progressContainer.setAttribute('aria-valuenow', pct);
@@ -207,6 +225,9 @@ export function initHomeLauncher(options = {}) {
     targetProgress = Math.max(targetProgress, ratio);
     if (targetProgress >= 1 && !isLoaded) {
       isLoaded = true;
+      if (previousElapsed < 120) {
+        isHotStart = true;
+      }
     }
   }
 
@@ -230,40 +251,87 @@ export function initHomeLauncher(options = {}) {
     start ??= now;
     const elapsed = now - start;
 
-    // 显示进度同时受真实下载与最短展示时间约束；晚到的资源也平滑追上。
     const dt = Math.max(0, elapsed - previousElapsed);
     previousElapsed = elapsed;
-    const timedTarget = Math.min(targetProgress, elapsed / progressDuration, 1);
-    displayProgress = Math.min(timedTarget, displayProgress + dt / 600);
+
+    const currentProgressDuration = options.progressDuration ?? (isHotStart ? 400 : 2600);
+    const holdDuration = options.readyHoldDuration ?? (isHotStart ? 350 : 650);
+
+    const timedTarget = Math.min(targetProgress, elapsed / currentProgressDuration, 1);
+    displayProgress = Math.min(timedTarget, displayProgress + dt / (isHotStart ? 300 : 600));
+
     const pct = displayProgress >= 1 ? 100 : Math.min(99, Math.floor(displayProgress * 100));
     updateProgressUI(pct);
 
     let release = 0;
     if (isLoaded && displayProgress >= 1 && readyElapsed == null) {
-      readyElapsed = elapsed;
+      readyElapsed = isHotStart ? Math.min(elapsed, currentProgressDuration) : elapsed;
+      pulseStartElapsed = readyElapsed;
     }
+
     overlay.style.opacity = '1';
     if (readyElapsed != null) {
-      const fadeStartElapsed = Math.max(minDuration - fadeDuration, readyElapsed + readyHoldDuration);
+      const minDuration = options.minDuration ?? 0;
+      const fadeStartElapsed = Math.max(minDuration - fadeDuration, readyElapsed + holdDuration);
       const targetFinishElapsed = fadeStartElapsed + fadeDuration;
       if (elapsed >= targetFinishElapsed) {
         finish();
         return;
       }
       if (elapsed >= fadeStartElapsed) {
-        release = (elapsed - fadeStartElapsed) / fadeDuration;
-        overlay.style.opacity = String(1 - release);
+        release = Math.min(1, (elapsed - fadeStartElapsed) / fadeDuration);
+        overlay.style.opacity = String(Math.max(0, 1 - release));
       }
     }
 
     ctx.clearRect(0, 0, width, height);
+
     // 彩虹粒子独立柔和追随，带有阻尼惯性与平滑缓冲，脱离与进度条的机械同频卡顿。
     const gatherLag = displayProgress - rainbowGather;
-    rainbowGather += gatherLag * (1 - Math.exp(-dt / 250));
+    rainbowGather += gatherLag * (1 - Math.exp(-dt / (isHotStart ? 120 : 250)));
     const gather = rainbowGather;
     const ease = Math.pow(gather, 1.6);
     const unit = Math.min(width * .42, height * .39, 380);
     const cx = width / 2, cy = height / 2 + 50;
+
+    // 1. 纯 Canvas 矢量彩虹实体底弧（避免 filter: blur，6 色同心圆弧，基础 Alpha 0.18，随聚拢率渐亮至 0.75）
+    const baseArcAlpha = (0.18 + (0.75 - 0.18) * ease) * Math.min(1, elapsed / 250);
+    ctx.save?.();
+    if (ctx.lineCap !== undefined) ctx.lineCap = 'round';
+    for (let b = 0; b < 6; b++) {
+      const breath = Math.sin(elapsed / 1100 + b * 0.65);
+      const r = unit * (1 - b * 0.055 + breath * 0.018 + release * 0.22);
+      ctx.strokeStyle = COLORS[b];
+      ctx.globalAlpha = baseArcAlpha;
+      ctx.lineWidth = Math.max(4, unit * 0.054);
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, Math.PI, Math.PI * 2, false);
+      ctx.stroke?.();
+    }
+    ctx.restore?.();
+
+    // 2. 100% 单次脉冲光环（耗时 0.4s，淡金色柔和光环，半径扩至 1.25 倍，Alpha 从 0.5 淡出至 0）
+    if (pulseStartElapsed != null) {
+      const pulseElapsed = elapsed - pulseStartElapsed;
+      if (pulseElapsed >= 0 && pulseElapsed <= pulseDuration) {
+        const pulseRatio = pulseElapsed / pulseDuration;
+        const pulseAlpha = 0.5 * (1 - pulseRatio);
+        const startR = unit * 0.725;
+        const endR = unit * 1.25;
+        const pulseR = startR + (endR - startR) * Math.sin(pulseRatio * Math.PI / 2);
+        ctx.save?.();
+        ctx.strokeStyle = '#ffe082';
+        ctx.globalAlpha = pulseAlpha;
+        ctx.lineWidth = Math.max(3, unit * 0.024) * (1 - pulseRatio * 0.4);
+        if (ctx.lineCap !== undefined) ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(cx, cy, pulseR, Math.PI, Math.PI * 2, false);
+        ctx.stroke?.();
+        ctx.restore?.();
+      }
+    }
+
+    // 3. 星尘彩虹微粒与 450ms 幕布舒展揭幕（粒子轻微上浮 vy < 0 与向两侧舒展初速度）
     for (const p of particles) {
       // 下载较慢时仍沿彩虹来回流动；各色错相呼吸，避免静止闪烁。
       const arc = p.arc + Math.sin(elapsed / 1700 + p.phase) * .14;
@@ -274,8 +342,13 @@ export function initHomeLauncher(options = {}) {
       const drift = Math.sin(elapsed / 950 + p.phase) * 4;
       const sx = cx + Math.cos(p.angle) * width * p.radius;
       const sy = height / 2 + Math.sin(p.angle) * height * p.radius;
-      const x = sx + (tx - sx) * ease + drift + Math.cos(p.angle) * release * 26;
-      const y = sy + (ty - sy) * ease + drift - release * (20 + p.size * 6);
+
+      // 幕布舒展：两翼向外展开，向上升腾拉开
+      const spreadX = Math.cos(arc) * release * 45;
+      const floatY = - release * (45 + p.size * 6);
+      const x = sx + (tx - sx) * ease + drift + spreadX;
+      const y = sy + (ty - sy) * ease + drift + floatY;
+
       ctx.globalAlpha = (.55 + .3 * Math.sin(p.phase + elapsed / 1000)) * Math.min(1, elapsed / 250);
       ctx.fillStyle = COLORS[p.band];
       ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI * 2); ctx.fill();

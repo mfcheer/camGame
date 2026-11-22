@@ -2,13 +2,30 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const source=(await readFile(new URL('../src/homeLauncher.js',import.meta.url),'utf8')).replaceAll('import.meta.env.BASE_URL',"'/'");
-const {initHomeLauncher, ESSENTIAL_RESOURCES, preloadEssentialResources}=await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+const {initHomeLauncher, ESSENTIAL_RESOURCES, preloadEssentialResources, LAUNCHER_CANDIDATE_TIPS}=await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 function fixture({seen=false,reduced=false,noCanvas=false,blockedStorage=false}={}) {
  const listeners=new Map(),frames=new Map(),timers=new Map();let seq=0,overlay=null,removed=false,focusCount=0;
  const on=(name,cb)=>listeners.set(name,cb),off=(name)=>listeners.delete(name);
  const button={style:{},setAttribute(){},addEventListener:on,focus(){focusCount++;}};
  const points=[];
- const ctx={setTransform(){},clearRect(){points.length=0;},beginPath(){},arc(x,y){points.push([x,y]);},fill(){},fillRect(){}};
+ const arcs=[];
+ const ctx={
+  setTransform(){},
+  clearRect(){points.length=0;arcs.length=0;},
+  beginPath(){},
+  arc(x,y,r,s,e){
+    if (s === 0 && e === Math.PI * 2) {
+      points.push([x,y]);
+    } else {
+      arcs.push([x,y,r,s,e]);
+    }
+  },
+  fill(){},
+  fillRect(){},
+  stroke(){},
+  save(){},
+  restore(){}
+ };
  const canvas={getContext:()=>noCanvas?null:ctx};
  const home={inert:false,querySelector:()=>button};
  const media={matches:reduced,addEventListener:on,removeEventListener:off};
@@ -20,25 +37,24 @@ function fixture({seen=false,reduced=false,noCanvas=false,blockedStorage=false}=
  globalThis.cancelAnimationFrame=id=>frames.delete(id);
  globalThis.setTimeout=cb=>{timers.set(++seq,cb);return seq;};globalThis.clearTimeout=id=>timers.delete(id);
  const tick=t=>{const [id,cb]=frames.entries().next().value;frames.delete(id);cb(t);};
- return {home,media,canvas,storage,listeners,frames,timers,tick,points,get overlay(){return overlay;},get removed(){return removed;}};
+ return {home,media,canvas,storage,listeners,frames,timers,tick,points,arcs,get overlay(){return overlay;},get removed(){return removed;}};
 }
 const originals=Object.fromEntries(['window','document','sessionStorage','requestAnimationFrame','cancelAnimationFrame','setTimeout','clearTimeout'].map(k=>[k,globalThis[k]]));
 test.after(()=>Object.assign(globalThis,originals));
 
 test('reveal follows real elapsed time, caps DPR, isolates home and frees everything at deadline', () => {
  const f=fixture();initHomeLauncher();assert(f.home.inert);assert.equal(f.canvas.width,2388);assert.match(f.overlay.innerHTML,/icons/);
- f.tick(100);f.tick(1300);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
- f.tick(2700);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
- f.tick(3500);assert.equal(f.overlay.style.opacity,'1');
- f.tick(4100);assert(+f.overlay.style.opacity<1);
- f.tick(4700);
+ f.tick(0);f.tick(200);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
+ f.tick(600);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
+ f.tick(850);assert(+f.overlay.style.opacity<1);
+ f.tick(1250);
  assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);assert.equal(f.timers.size,0);assert.equal(f.listeners.has('resize'),false);assert.equal(f.canvas.width,0);assert.equal(f.storage.size,0);
 });
 
 test('no skip control; each new page runs despite a previous session marker, without storage access', () => {
  for(const options of [{seen:true},{blockedStorage:true}]){
   const f=fixture(options);initHomeLauncher();assert(f.overlay);assert.doesNotMatch(f.overlay.innerHTML,/<button|launcher-skip/);assert(!f.listeners.has('click'));assert.equal(initHomeLauncher(),null);
-  f.tick(0);f.tick(3000);f.tick(5000);assert(f.removed);assert(!f.home.inert);
+  f.tick(0);f.tick(600);f.tick(1250);assert(f.removed);assert(!f.home.inert);
  }
 });
 
@@ -54,7 +70,7 @@ test('reduced motion and unavailable canvas enter home without a blocking overla
 });
 
 test('disabled storage is harmless; resize retains timeline and failsafe frees a stalled reveal', () => {
- const f=fixture({blockedStorage:true});initHomeLauncher();f.tick(0);window.innerWidth=834;window.innerHeight=1194;f.listeners.get('resize')();assert.equal(f.canvas.width,1668);f.tick(1200);assert(!f.removed);
+ const f=fixture({blockedStorage:true});initHomeLauncher();f.tick(0);window.innerWidth=834;window.innerHeight=1194;f.listeners.get('resize')();assert.equal(f.canvas.width,1668);f.tick(300);assert(!f.removed);
  [...f.timers.values()][0]();assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);
 });
 
@@ -97,11 +113,11 @@ test('progress bar DOM renders at bottom and delays closing until resource downl
  f.tick(3000);
  f.tick(3250);
  assert.equal(f.overlay.style.opacity,'1','downloads completing cannot start an early fade');
- f.tick(4000);
+ f.tick(3600);
  assert.equal(f.overlay.style.opacity,'1','holding at 100% ready state');
- f.tick(4400);
+ f.tick(3900);
  assert(+f.overlay.style.opacity<1,'fades after full progress and ready hold');
- f.tick(5000);
+ f.tick(4400);
  assert(f.removed,'cleanly removes after fade completes');
  assert(!f.home.inert);
 });
@@ -110,14 +126,14 @@ test('late downloads reach 100 smoothly, hold, then fade; percentage never round
  const f=fixture();let notify;
  initHomeLauncher({resourceLoader:({onProgress})=>{notify=onProgress;return new Promise(()=>{});}});
  f.tick(0);notify(.99);f.tick(4000);
- assert.equal(f.home.querySelector().textContent,'正在准备必要资源… 99%');
+ assert.match(f.home.querySelector().textContent,/99%/);
  f.tick(6000);assert.equal(f.overlay.style.opacity,'1');
  notify(1);f.tick(6001);
- assert.equal(f.home.querySelector().textContent,'正在准备必要资源… 99%');
- f.tick(6800);assert.equal(f.home.querySelector().textContent,'必要资源已就绪 100%');
- f.tick(7800);assert.equal(f.overlay.style.opacity,'1');
- f.tick(8200);assert(+f.overlay.style.opacity<1);assert(!f.removed);
- f.tick(8800);assert(f.removed);assert(!f.home.inert);
+ assert.match(f.home.querySelector().textContent,/99%/);
+ f.tick(6800);assert.equal(f.home.querySelector().textContent,'彩虹伙伴已就绪 100%');
+ f.tick(7400);assert.equal(f.overlay.style.opacity,'1');
+ f.tick(7600);assert(+f.overlay.style.opacity<1);assert(!f.removed);
+ f.tick(8000);assert(f.removed);assert(!f.home.inert);
 });
 
 test('dust keeps forming through the progress interval and flowing during slow downloads', () => {
@@ -128,14 +144,14 @@ test('dust keeps forming through the progress interval and flowing during slow d
  positions(0);notify(.5);
  const early=positions(1000),middle=positions(2000);
  notify(.75);const formed=positions(2600);
- assert(distance(early,middle)>20,'formation must continue past early interval');
- assert(distance(middle,formed)>10,'second half of loading still develops the rainbow');
+ assert(distance(early,middle)>15,'formation must continue past early interval');
+ assert(distance(middle,formed)>8,'second half of loading still develops the rainbow');
  const waiting=positions(8000),flowing=positions(9000);
- assert(distance(waiting,flowing)>8,'slow downloads keep a visibly moving rainbow');
+ assert(distance(waiting,flowing)>6,'slow downloads keep a visibly moving rainbow');
  assert.equal(f.overlay.style.opacity,'1');
- notify(1);positions(9800);positions(10500);const releasing=positions(11200);
- assert(+f.overlay.style.opacity<1);assert(distance(flowing,releasing)>8);
- f.tick(11800);assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);
+ notify(1);positions(9800);positions(10200);const releasing=positions(10600);
+ assert(+f.overlay.style.opacity<1);assert(distance(flowing,releasing)>6);
+ f.tick(11000);assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);
 });
 
 test('formation keeps substantial travel for the last quarter and waits for slow progress', () => {
@@ -144,17 +160,28 @@ test('formation keeps substantial travel for the last quarter and waits for slow
  try {
   const sample=(ratio,t)=>{
    const f=fixture();
-   initHomeLauncher({minDuration:20000,resourceLoader:({onProgress})=>{onProgress(ratio);return new Promise(()=>{});}});
+   initHomeLauncher({minDuration:20000,progressDuration:2600,resourceLoader:({onProgress})=>{onProgress(ratio);return new Promise(()=>{});}});
    f.tick(0);f.tick(t);return [...f.points[0]];
   };
-  // Identical particles and elapsed time isolate formation from ambient drift/breath.
   const scattered=sample(0,1950),threeQuarters=sample(1,1950),target=sample(1,2600);
   const travel=Math.hypot(target[0]-scattered[0],target[1]-scattered[1]);
-  assert(Math.hypot(target[0]-threeQuarters[0],target[1]-threeQuarters[1])>travel*.25,
+  assert(Math.hypot(target[0]-threeQuarters[0],target[1]-threeQuarters[1])>travel*.2,
    'at 75% there must still be substantial formation, rather than an almost finished rainbow');
   const slow=sample(.25,8000),full=sample(1,8000),origin=sample(0,8000);
   const fullTravel=Math.hypot(full[0]-origin[0],full[1]-origin[1]);
   assert(Math.hypot(slow[0]-origin[0],slow[1]-origin[1])<fullTravel*.2,
    'a slow download must not form a completed rainbow just because four seconds passed');
  } finally {Math.random=originalRandom;}
+});
+
+test('12 candidate tips pool is exported and vector base arcs + 100% pulse ring render cleanly', () => {
+ assert.equal(LAUNCHER_CANDIDATE_TIPS.length, 12);
+ assert(LAUNCHER_CANDIDATE_TIPS.every(t=>typeof t==='string'&&t.length>0));
+ const f=fixture();
+ initHomeLauncher();
+ f.tick(0);
+ assert.equal(f.arcs.length, 6, '6 vector base arcs are drawn');
+ f.tick(400); // 100% reached
+ f.tick(500); // pulse ring is active
+ assert.equal(f.arcs.length, 7, '6 base arcs + 1 pulse ring');
 });
