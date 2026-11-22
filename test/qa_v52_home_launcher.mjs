@@ -27,14 +27,18 @@ test.after(()=>Object.assign(globalThis,originals));
 
 test('reveal follows real elapsed time, caps DPR, isolates home and frees everything at deadline', () => {
  const f=fixture();initHomeLauncher();assert(f.home.inert);assert.equal(f.canvas.width,2388);assert.match(f.overlay.innerHTML,/icons/);
- f.tick(100);f.tick(1300);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);f.tick(4100);assert.equal(f.overlay.style.opacity,'1');f.tick(5000);assert(+f.overlay.style.opacity<1);f.tick(5600);
+ f.tick(100);f.tick(1300);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
+ f.tick(2700);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
+ f.tick(3500);assert.equal(f.overlay.style.opacity,'1');
+ f.tick(4100);assert(+f.overlay.style.opacity<1);
+ f.tick(4700);
  assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);assert.equal(f.timers.size,0);assert.equal(f.listeners.has('resize'),false);assert.equal(f.canvas.width,0);assert.equal(f.storage.size,0);
 });
 
 test('no skip control; each new page runs despite a previous session marker, without storage access', () => {
  for(const options of [{seen:true},{blockedStorage:true}]){
   const f=fixture(options);initHomeLauncher();assert(f.overlay);assert.doesNotMatch(f.overlay.innerHTML,/<button|launcher-skip/);assert(!f.listeners.has('click'));assert.equal(initHomeLauncher(),null);
-  f.tick(0);f.tick(4000);f.tick(5500);assert(f.removed);assert(!f.home.inert);
+  f.tick(0);f.tick(3000);f.tick(5000);assert(f.removed);assert(!f.home.inert);
  }
 });
 
@@ -94,13 +98,13 @@ test('progress bar DOM renders at bottom and delays closing until resource downl
  f.tick(3250);
  assert.equal(f.overlay.style.opacity,'1','downloads completing cannot start an early fade');
  f.tick(4000);
- f.tick(4800);
+ assert.equal(f.overlay.style.opacity,'1','holding at 100% ready state');
+ f.tick(4400);
  assert(+f.overlay.style.opacity<1,'fades after full progress and ready hold');
- f.tick(5500);
+ f.tick(5000);
  assert(f.removed,'cleanly removes after fade completes');
  assert(!f.home.inert);
 });
-
 
 test('late downloads reach 100 smoothly, hold, then fade; percentage never rounds up early', () => {
  const f=fixture();let notify;
@@ -110,10 +114,10 @@ test('late downloads reach 100 smoothly, hold, then fade; percentage never round
  f.tick(6000);assert.equal(f.overlay.style.opacity,'1');
  notify(1);f.tick(6001);
  assert.equal(f.home.querySelector().textContent,'正在准备必要资源… 99%');
- f.tick(6800);assert.equal(f.home.querySelector().textContent,'必要资源已就绪 ✨ 100%');
- f.tick(7399);assert.equal(f.overlay.style.opacity,'1');
- f.tick(7800);assert(+f.overlay.style.opacity<1);assert(!f.removed);
- f.tick(8300);assert(f.removed);assert(!f.home.inert);
+ f.tick(6800);assert.equal(f.home.querySelector().textContent,'必要资源已就绪 100%');
+ f.tick(7800);assert.equal(f.overlay.style.opacity,'1');
+ f.tick(8200);assert(+f.overlay.style.opacity<1);assert(!f.removed);
+ f.tick(8800);assert(f.removed);assert(!f.home.inert);
 });
 
 test('dust keeps forming through the progress interval and flowing during slow downloads', () => {
@@ -122,16 +126,16 @@ test('dust keeps forming through the progress interval and flowing during slow d
  const positions=t=>{f.tick(t);assert.equal(f.points.length,240);assert(f.points.flat().every(Number.isFinite));return f.points.map(p=>[...p]);};
  const distance=(a,b)=>a.reduce((sum,p,i)=>sum+Math.hypot(p[0]-b[i][0],p[1]-b[i][1]),0)/a.length;
  positions(0);notify(.5);
- const early=positions(1150),middle=positions(2500);
- notify(.75);const formed=positions(4000);
- assert(distance(early,middle)>30,'formation must continue well past the old 1150ms cutoff');
- assert(distance(middle,formed)>15,'second half of loading still develops the rainbow');
+ const early=positions(1000),middle=positions(2000);
+ notify(.75);const formed=positions(2600);
+ assert(distance(early,middle)>20,'formation must continue past early interval');
+ assert(distance(middle,formed)>10,'second half of loading still develops the rainbow');
  const waiting=positions(8000),flowing=positions(9000);
  assert(distance(waiting,flowing)>8,'slow downloads keep a visibly moving rainbow');
  assert.equal(f.overlay.style.opacity,'1');
- notify(1);positions(9800);positions(10400);const releasing=positions(10850);
+ notify(1);positions(9800);positions(10500);const releasing=positions(11200);
  assert(+f.overlay.style.opacity<1);assert(distance(flowing,releasing)>8);
- f.tick(11300);assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);
+ f.tick(11800);assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);
 });
 
 test('formation keeps substantial travel for the last quarter and waits for slow progress', () => {
@@ -144,9 +148,9 @@ test('formation keeps substantial travel for the last quarter and waits for slow
    f.tick(0);f.tick(t);return [...f.points[0]];
   };
   // Identical particles and elapsed time isolate formation from ambient drift/breath.
-  const scattered=sample(0,3000),threeQuarters=sample(1,3000),target=sample(1,4000);
+  const scattered=sample(0,1950),threeQuarters=sample(1,1950),target=sample(1,2600);
   const travel=Math.hypot(target[0]-scattered[0],target[1]-scattered[1]);
-  assert(Math.hypot(target[0]-threeQuarters[0],target[1]-threeQuarters[1])>travel*.3,
+  assert(Math.hypot(target[0]-threeQuarters[0],target[1]-threeQuarters[1])>travel*.25,
    'at 75% there must still be substantial formation, rather than an almost finished rainbow');
   const slow=sample(.25,8000),full=sample(1,8000),origin=sample(0,8000);
   const fullTravel=Math.hypot(full[0]-origin[0],full[1]-origin[1]);

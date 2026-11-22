@@ -147,10 +147,10 @@ export function initHomeLauncher(options = {}) {
   let readyElapsed = null;
   let previousElapsed = 0;
 
-  const minDuration = options.minDuration ?? 5500;
-  const fadeDuration = options.fadeDuration ?? 900;
-  const progressDuration = options.progressDuration ?? 4000;
-  const readyHoldDuration = options.readyHoldDuration ?? 600;
+  const minDuration = options.minDuration ?? 4500;
+  const fadeDuration = options.fadeDuration ?? 800;
+  const progressDuration = options.progressDuration ?? 2600;
+  const readyHoldDuration = options.readyHoldDuration ?? 1100;
   const failsafeDuration = options.failsafeDuration ?? 15000;
   const abortController = typeof AbortController !== 'undefined' ? new AbortController() : null;
 
@@ -196,7 +196,7 @@ export function initHomeLauncher(options = {}) {
   function updateProgressUI(pct) {
     if (progressBar && progressBar.style) progressBar.style.width = `${pct}%`;
     if (progressText) {
-      progressText.textContent = pct >= 100 ? '必要资源已就绪 ✨ 100%' : `正在准备必要资源… ${pct}%`;
+      progressText.textContent = pct >= 100 ? '必要资源已就绪 100%' : `正在准备必要资源… ${pct}%`;
     }
     if (progressContainer && typeof progressContainer.setAttribute === 'function') {
       progressContainer.setAttribute('aria-valuenow', pct);
@@ -234,7 +234,7 @@ export function initHomeLauncher(options = {}) {
     const dt = Math.max(0, elapsed - previousElapsed);
     previousElapsed = elapsed;
     const timedTarget = Math.min(targetProgress, elapsed / progressDuration, 1);
-    displayProgress = Math.min(timedTarget, displayProgress + dt / 800);
+    displayProgress = Math.min(timedTarget, displayProgress + dt / 600);
     const pct = displayProgress >= 1 ? 100 : Math.min(99, Math.floor(displayProgress * 100));
     updateProgressUI(pct);
 
@@ -259,7 +259,7 @@ export function initHomeLauncher(options = {}) {
     ctx.clearRect(0, 0, width, height);
     // 彩虹粒子独立柔和追随，带有阻尼惯性与平滑缓冲，脱离与进度条的机械同频卡顿。
     const gatherLag = displayProgress - rainbowGather;
-    rainbowGather += gatherLag * (1 - Math.exp(-dt / 320));
+    rainbowGather += gatherLag * (1 - Math.exp(-dt / 250));
     const gather = rainbowGather;
     const ease = Math.pow(gather, 1.6);
     const unit = Math.min(width * .42, height * .39, 380);
