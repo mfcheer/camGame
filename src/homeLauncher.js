@@ -64,14 +64,29 @@ export function preloadEssentialResources({
       if (signal?.aborted) break;
       const item = resources[cursor++];
       const fullUrl = `${import.meta.env.BASE_URL}${item.url.replace(/^\/+/, '')}`;
+      const itemWeight = item.weight || 1;
+      let itemCompletedWeight = 0;
       try {
         const res = await fetch(fullUrl, { signal, priority: 'high' });
         if (res.ok) {
+          const contentLength = Number(res.headers?.get?.('content-length')) || 0;
           if (res.body?.getReader) {
             const reader = res.body.getReader();
+            let receivedBytes = 0;
             while (true) {
-              const { done } = await reader.read();
+              const { done, value } = await reader.read();
               if (done) break;
+              if (value && contentLength > 0) {
+                receivedBytes += value.length;
+                const ratio = Math.min(1, receivedBytes / contentLength);
+                const currentChunkWeight = itemWeight * ratio;
+                const delta = currentChunkWeight - itemCompletedWeight;
+                if (delta > 0) {
+                  itemCompletedWeight = currentChunkWeight;
+                  loadedWeight += delta;
+                  notify(loadedWeight / totalWeight);
+                }
+              }
             }
           } else if (res.arrayBuffer) {
             await res.arrayBuffer();
@@ -80,8 +95,11 @@ export function preloadEssentialResources({
       } catch (err) {
         if (err?.name === 'AbortError') break;
       }
-      loadedWeight += (item.weight || 1);
-      notify(loadedWeight / totalWeight);
+      const remainingDelta = itemWeight - itemCompletedWeight;
+      if (remainingDelta > 0) {
+        loadedWeight += remainingDelta;
+        notify(loadedWeight / totalWeight);
+      }
     }
   };
 
@@ -124,6 +142,7 @@ export function initHomeLauncher(options = {}) {
   const isMockEnvironment = typeof window !== 'undefined' && !window.location && !options.resourceLoader && !options.resources;
   let targetProgress = isMockEnvironment ? 1 : 0;
   let displayProgress = 0;
+  let rainbowGather = 0;
   let isLoaded = isMockEnvironment;
   let readyElapsed = null;
   let previousElapsed = 0;
@@ -238,8 +257,10 @@ export function initHomeLauncher(options = {}) {
     }
 
     ctx.clearRect(0, 0, width, height);
-    // 跟随实际显示进度聚拢；后半程仍保留明显位移，慢下载也不提前成形。
-    const gather = displayProgress;
+    // 彩虹粒子独立柔和追随，带有阻尼惯性与平滑缓冲，脱离与进度条的机械同频卡顿。
+    const gatherLag = displayProgress - rainbowGather;
+    rainbowGather += gatherLag * (1 - Math.exp(-dt / 320));
+    const gather = rainbowGather;
     const ease = Math.pow(gather, 1.6);
     const unit = Math.min(width * .42, height * .39, 380);
     const cx = width / 2, cy = height / 2 + 50;
