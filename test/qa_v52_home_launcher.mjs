@@ -6,7 +6,10 @@ const {initHomeLauncher, ESSENTIAL_RESOURCES, preloadEssentialResources, LAUNCHE
 function fixture({seen=false,reduced=false,noCanvas=false,blockedStorage=false}={}) {
  const listeners=new Map(),frames=new Map(),timers=new Map();let seq=0,overlay=null,removed=false,focusCount=0;
  const on=(name,cb)=>listeners.set(name,cb),off=(name)=>listeners.delete(name);
- const button={style:{},setAttribute(){},addEventListener:on,focus(){focusCount++;}};
+ const btnClassSet=new Set();
+ const btnClassList={add:(c)=>btnClassSet.add(c),remove:(c)=>btnClassSet.delete(c),contains:(c)=>btnClassSet.has(c)};
+ const btnListeners=new Map();
+ const button={style:{},classList:btnClassList,btnClassSet,setAttribute(){},addEventListener:(n,cb)=>btnListeners.set(n,cb),removeEventListener:(n)=>btnListeners.delete(n),btnListeners,focus(){focusCount++;}};
  const points=[];
  const arcs=[];
  const ctx={
@@ -27,12 +30,15 @@ function fixture({seen=false,reduced=false,noCanvas=false,blockedStorage=false}=
   restore(){}
  };
  const canvas={getContext:()=>noCanvas?null:ctx};
- const home={inert:false,querySelector:()=>button};
+ const classListSet=new Set();
+ const classList={add:(c)=>classListSet.add(c),remove:(c)=>classListSet.delete(c),contains:(c)=>classListSet.has(c)};
+ const homeListeners=new Map();
+ const home={inert:false,classList,classListSet,querySelector:()=>button,addEventListener:(n,cb)=>homeListeners.set(n,cb),removeEventListener:(n)=>homeListeners.delete(n),homeListeners};
  const media={matches:reduced,addEventListener:on,removeEventListener:off};
  const storage=new Map(seen?[['camgame:rainbow-reveal:v1','1']]:[]);
  globalThis.sessionStorage={getItem:k=>{if(blockedStorage)throw Error('blocked');return storage.get(k);},setItem:(k,v)=>{if(blockedStorage)throw Error('blocked');storage.set(k,v);}};
  globalThis.window={innerWidth:1194,innerHeight:834,devicePixelRatio:3,matchMedia:()=>media,addEventListener:on,removeEventListener:off};
- globalThis.document={hidden:false,body:{append(el){overlay=el;}},activeElement:null,getElementById:id=>id==='start-screen'?home:removed?null:overlay,addEventListener:on,removeEventListener:off,createElement(){return {style:{},setAttribute(){},querySelector:s=>s==='canvas'?canvas:button,addEventListener:on,removeEventListener:off,contains:()=>false,remove(){removed=true;}};}};
+ globalThis.document={hidden:false,body:{append(el){overlay=el;}},activeElement:null,getElementById:id=>id==='start-screen'?home:id==='btn-start-game'?button:removed?null:overlay,addEventListener:on,removeEventListener:off,createElement(){return {style:{},setAttribute(){},querySelector:s=>s==='canvas'?canvas:button,addEventListener:on,removeEventListener:off,contains:()=>false,remove(){removed=true;}};}};
  globalThis.requestAnimationFrame=cb=>{frames.set(++seq,cb);return seq;};
  globalThis.cancelAnimationFrame=id=>frames.delete(id);
  globalThis.setTimeout=cb=>{timers.set(++seq,cb);return seq;};globalThis.clearTimeout=id=>timers.delete(id);
@@ -186,4 +192,47 @@ test('12 candidate tips pool is exported and vector base arcs + 100% pulse ring 
  f.tick(1200); // 100% reached
  f.tick(1350); // pulse ring is active
  assert.equal(f.arcs.length, 7, '6 base arcs + 1 pulse ring');
+});
+
+test('curtain reveal smoothly deploys clip-path, triggers home stage enter at 120ms offset, and bubbles jelly to start button', () => {
+ const f=fixture();
+ initHomeLauncher();
+ f.tick(0);
+ f.tick(1200); // Progress reaches 100%
+ f.tick(1750); // Holding ready before fade
+ assert.equal(f.home.classList.contains('home-stage-enter'), false);
+ assert(!f.overlay.style.clipPath);
+
+ // Enter reveal phase (fadeStartElapsed is 1800ms)
+ f.tick(1850); // revealElapsed = 50ms (< 120ms)
+ assert(+f.overlay.style.opacity < 1);
+ assert.match(f.overlay.style.clipPath, /polygon/);
+ assert.equal(f.home.classList.contains('home-stage-enter'), false);
+
+ f.tick(1950); // revealElapsed = 150ms (>= 120ms)
+ assert.equal(f.home.classList.contains('home-stage-enter'), true);
+
+ // Simulate home animationend to chain jelly onto start button
+ if (f.home.homeListeners.has('animationend')) {
+   f.home.homeListeners.get('animationend')();
+ }
+ assert.equal(f.home.classList.contains('home-stage-enter'), false);
+ const startBtn = globalThis.document.getElementById('btn-start-game');
+ assert.equal(startBtn.classList.contains('home-btn-jelly'), true);
+
+ // Simulate button animationend
+ if (startBtn.btnListeners.has('animationend')) {
+   startBtn.btnListeners.get('animationend')();
+ }
+ assert.equal(startBtn.classList.contains('home-btn-jelly'), false);
+
+ f.tick(2300); // Finish
+ assert(f.removed);
+});
+
+test('reduced-motion preference skips overlay and never triggers stage entrance animation', () => {
+ const f=fixture({reduced:true});
+ assert.equal(initHomeLauncher(), null);
+ assert.equal(f.overlay, null);
+ assert.equal(f.home.classList.contains('home-stage-enter'), false);
 });

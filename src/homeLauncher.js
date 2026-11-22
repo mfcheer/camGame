@@ -185,10 +185,17 @@ export function initHomeLauncher(options = {}) {
     canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
+  function cleanupStageClasses() {
+    home?.classList?.remove('home-stage-enter');
+    const startBtn = document.getElementById('btn-start-game');
+    startBtn?.classList?.remove('home-btn-jelly');
+  }
+
   function finish() {
     if (disposed) return;
     disposed = true;
     abortController?.abort();
+    cleanupStageClasses();
     const restoreFocus = overlay.contains(document.activeElement);
     cancelAnimationFrame(frame);
     clearTimeout(failsafe);
@@ -279,8 +286,25 @@ export function initHomeLauncher(options = {}) {
         return;
       }
       if (elapsed >= fadeStartElapsed) {
-        release = Math.min(1, (elapsed - fadeStartElapsed) / fadeDuration);
+        const revealElapsed = elapsed - fadeStartElapsed;
+        release = Math.min(1, revealElapsed / fadeDuration);
         overlay.style.opacity = String(Math.max(0, 1 - release));
+        const curtainHalf = release * 50;
+        overlay.style.clipPath = `polygon(0% 0%, ${50 - curtainHalf}% 0%, ${50 - curtainHalf}% 100%, 0% 100%, 100% 100%, ${50 + curtainHalf}% 100%, ${50 + curtainHalf}% 0%, 100% 0%)`;
+
+        if (!reduced.matches && revealElapsed >= 120 && home?.classList && !home.classList.contains('home-stage-enter')) {
+          home.classList.add('home-stage-enter');
+          home.addEventListener('animationend', () => {
+            home.classList.remove('home-stage-enter');
+            const startBtn = document.getElementById('btn-start-game');
+            if (startBtn && !reduced.matches && startBtn.classList) {
+              startBtn.classList.add('home-btn-jelly');
+              startBtn.addEventListener('animationend', () => {
+                startBtn.classList.remove('home-btn-jelly');
+              }, { once: true });
+            }
+          }, { once: true });
+        }
       }
     }
 
