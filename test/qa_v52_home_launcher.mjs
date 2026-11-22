@@ -46,15 +46,17 @@ test('reveal follows real elapsed time, caps DPR, isolates home and frees everyt
  const f=fixture();initHomeLauncher();assert(f.home.inert);assert.equal(f.canvas.width,2388);assert.match(f.overlay.innerHTML,/icons/);
  f.tick(0);f.tick(200);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
  f.tick(600);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
- f.tick(850);assert(+f.overlay.style.opacity<1);
- f.tick(1250);
+ f.tick(1200);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
+ f.tick(1750);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
+ f.tick(1950);assert(+f.overlay.style.opacity<1);assert(!f.removed);
+ f.tick(2300);
  assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);assert.equal(f.timers.size,0);assert.equal(f.listeners.has('resize'),false);assert.equal(f.canvas.width,0);assert.equal(f.storage.size,0);
 });
 
 test('no skip control; each new page runs despite a previous session marker, without storage access', () => {
  for(const options of [{seen:true},{blockedStorage:true}]){
   const f=fixture(options);initHomeLauncher();assert(f.overlay);assert.doesNotMatch(f.overlay.innerHTML,/<button|launcher-skip/);assert(!f.listeners.has('click'));assert.equal(initHomeLauncher(),null);
-  f.tick(0);f.tick(600);f.tick(1250);assert(f.removed);assert(!f.home.inert);
+  f.tick(0);f.tick(1200);f.tick(2300);assert(f.removed);assert(!f.home.inert);
  }
 });
 
@@ -181,7 +183,7 @@ test('12 candidate tips pool is exported and vector base arcs + 100% pulse ring 
  initHomeLauncher();
  f.tick(0);
  assert.equal(f.arcs.length, 6, '6 vector base arcs are drawn');
- f.tick(400); // 100% reached
- f.tick(500); // pulse ring is active
+ f.tick(1200); // 100% reached
+ f.tick(1350); // pulse ring is active
  assert.equal(f.arcs.length, 7, '6 base arcs + 1 pulse ring');
 });

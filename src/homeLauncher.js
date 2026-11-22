@@ -254,8 +254,8 @@ export function initHomeLauncher(options = {}) {
     const dt = Math.max(0, elapsed - previousElapsed);
     previousElapsed = elapsed;
 
-    const currentProgressDuration = options.progressDuration ?? (isHotStart ? 400 : 2600);
-    const holdDuration = options.readyHoldDuration ?? (isHotStart ? 350 : 650);
+    const currentProgressDuration = options.progressDuration ?? (isHotStart ? 1200 : 2600);
+    const holdDuration = options.readyHoldDuration ?? (isHotStart ? 600 : 650);
 
     const timedTarget = Math.min(targetProgress, elapsed / currentProgressDuration, 1);
     displayProgress = Math.min(timedTarget, displayProgress + dt / (isHotStart ? 300 : 600));
