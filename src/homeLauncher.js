@@ -124,6 +124,21 @@ export function preloadEssentialResources({
   });
 }
 
+function solveCubicBezier(p) {
+  if (p <= 0) return 0;
+  if (p >= 1) return 1;
+  let t = p;
+  for (let i = 0; i < 8; i++) {
+    const currentX = 0.75 * t + 0.25 * t * t * t;
+    const diff = currentX - p;
+    if (Math.abs(diff) < 1e-5) break;
+    const dxdt = 0.75 + 0.75 * t * t;
+    t -= diff / dxdt;
+  }
+  t = Math.max(0, Math.min(1, t));
+  return 1 - Math.pow(1 - t, 3);
+}
+
 export function initHomeLauncher(options = {}) {
   const home = document.getElementById('start-screen');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -168,7 +183,7 @@ export function initHomeLauncher(options = {}) {
   let pulseStartElapsed = null;
   const pulseDuration = 400;
 
-  const fadeDuration = options.fadeDuration ?? 450;
+  const slideDuration = options.slideDuration ?? options.fadeDuration ?? 360;
   const failsafeDuration = options.failsafeDuration ?? 15000;
   const abortController = typeof AbortController !== 'undefined' ? new AbortController() : null;
 
@@ -185,17 +200,11 @@ export function initHomeLauncher(options = {}) {
     canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
-  function cleanupStageClasses() {
-    home?.classList?.remove('home-stage-enter');
-    const startBtn = document.getElementById('btn-start-game');
-    startBtn?.classList?.remove('home-btn-jelly');
-  }
 
   function finish() {
     if (disposed) return;
     disposed = true;
     abortController?.abort();
-    cleanupStageClasses();
     const restoreFocus = overlay.contains(document.activeElement);
     cancelAnimationFrame(frame);
     clearTimeout(failsafe);
@@ -270,7 +279,6 @@ export function initHomeLauncher(options = {}) {
     const pct = displayProgress >= 1 ? 100 : Math.min(99, Math.floor(displayProgress * 100));
     updateProgressUI(pct);
 
-    let release = 0;
     if (isLoaded && displayProgress >= 1 && readyElapsed == null) {
       readyElapsed = isHotStart ? Math.min(elapsed, currentProgressDuration) : elapsed;
       pulseStartElapsed = readyElapsed;
@@ -279,31 +287,22 @@ export function initHomeLauncher(options = {}) {
     overlay.style.opacity = '1';
     if (readyElapsed != null) {
       const minDuration = options.minDuration ?? 0;
-      const fadeStartElapsed = Math.max(minDuration - fadeDuration, readyElapsed + holdDuration);
-      const targetFinishElapsed = fadeStartElapsed + fadeDuration;
+      const slideStartElapsed = Math.max(minDuration - slideDuration, readyElapsed + holdDuration);
+      const targetFinishElapsed = slideStartElapsed + slideDuration;
       if (elapsed >= targetFinishElapsed) {
         finish();
         return;
       }
-      if (elapsed >= fadeStartElapsed) {
-        const revealElapsed = elapsed - fadeStartElapsed;
-        release = Math.min(1, revealElapsed / fadeDuration);
-        overlay.style.opacity = String(Math.max(0, 1 - release));
-
-        if (!reduced.matches && revealElapsed >= 120 && home?.classList && !home.classList.contains('home-stage-enter')) {
-          home.classList.add('home-stage-enter');
-          home.addEventListener('animationend', () => {
-            home.classList.remove('home-stage-enter');
-            const startBtn = document.getElementById('btn-start-game');
-            if (startBtn && !reduced.matches && startBtn.classList) {
-              startBtn.classList.add('home-btn-jelly');
-              startBtn.addEventListener('animationend', () => {
-                startBtn.classList.remove('home-btn-jelly');
-              }, { once: true });
-            }
-          }, { once: true });
-        }
+      if (elapsed >= slideStartElapsed) {
+        const slideElapsed = elapsed - slideStartElapsed;
+        const progress = Math.min(1, Math.max(0, slideElapsed / slideDuration));
+        const eased = solveCubicBezier(progress);
+        overlay.style.transform = `translateY(${(-eased * 100).toFixed(2)}%)`;
+      } else {
+        overlay.style.transform = 'translateY(0%)';
       }
+    } else {
+      overlay.style.transform = 'translateY(0%)';
     }
 
     ctx.clearRect(0, 0, width, height);
@@ -353,7 +352,7 @@ export function initHomeLauncher(options = {}) {
       }
     }
 
-    // 3. 星尘彩虹微粒与 450ms 幕布舒展揭幕（粒子轻微上浮 vy < 0 与向两侧舒展初速度）
+    // 3. 星尘彩虹微粒
     for (const p of particles) {
       // 下载较慢时仍沿彩虹来回流动；各色错相呼吸，避免静止闪烁。
       const arc = p.arc + Math.sin(elapsed / 1700 + p.phase) * .14;
@@ -365,11 +364,8 @@ export function initHomeLauncher(options = {}) {
       const sx = cx + Math.cos(p.angle) * width * p.radius;
       const sy = height / 2 + Math.sin(p.angle) * height * p.radius;
 
-      // 幕布舒展：两翼向外展开，向上升腾拉开
-      const spreadX = Math.cos(arc) * release * 45;
-      const floatY = - release * (45 + p.size * 6);
-      const x = sx + (tx - sx) * ease + drift + spreadX;
-      const y = sy + (ty - sy) * ease + drift + floatY;
+      const x = sx + (tx - sx) * ease + drift;
+      const y = sy + (ty - sy) * ease + drift;
 
       ctx.globalAlpha = (.55 + .3 * Math.sin(p.phase + elapsed / 1000)) * Math.min(1, elapsed / 250);
       ctx.fillStyle = COLORS[p.band];

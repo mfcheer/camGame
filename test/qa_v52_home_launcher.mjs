@@ -50,12 +50,12 @@ test.after(()=>Object.assign(globalThis,originals));
 
 test('reveal follows real elapsed time, caps DPR, isolates home and frees everything at deadline', () => {
  const f=fixture();initHomeLauncher();assert(f.home.inert);assert.equal(f.canvas.width,2388);assert.match(f.overlay.innerHTML,/icons/);
- f.tick(0);f.tick(200);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
- f.tick(600);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
- f.tick(1200);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
- f.tick(1750);assert.equal(f.overlay.style.opacity,'1');assert(!f.removed);
- f.tick(1950);assert(+f.overlay.style.opacity<1);assert(!f.removed);
- f.tick(2300);
+ f.tick(0);f.tick(200);assert.equal(f.overlay.style.transform,'translateY(0%)');assert(!f.removed);
+ f.tick(600);assert.equal(f.overlay.style.transform,'translateY(0%)');assert(!f.removed);
+ f.tick(1200);assert.equal(f.overlay.style.transform,'translateY(0%)');assert(!f.removed);
+ f.tick(1750);assert.equal(f.overlay.style.transform,'translateY(0%)');assert(!f.removed);
+ f.tick(1950);assert.match(f.overlay.style.transform,/translateY\(-/);assert(!f.removed);
+ f.tick(2200);
  assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);assert.equal(f.timers.size,0);assert.equal(f.listeners.has('resize'),false);assert.equal(f.canvas.width,0);assert.equal(f.storage.size,0);
 });
 
@@ -112,21 +112,21 @@ test('progress bar DOM renders at bottom and delays closing until resource downl
  f.tick(1000);
  notifyProgress(0.5);
  f.tick(2000);
- assert.equal(f.overlay.style.opacity,'1');
+ assert.equal(f.overlay.style.transform,'translateY(0%)');
  assert(!f.removed);
  f.tick(2600);
- assert.equal(f.overlay.style.opacity,'1');
+ assert.equal(f.overlay.style.transform,'translateY(0%)');
  assert(!f.removed,'must not disappear before downloads finish even past 2400ms');
  notifyProgress(1.0);
  f.tick(3000);
  f.tick(3250);
- assert.equal(f.overlay.style.opacity,'1','downloads completing cannot start an early fade');
+ assert.equal(f.overlay.style.transform,'translateY(0%)','downloads completing cannot start an early slide');
  f.tick(3600);
- assert.equal(f.overlay.style.opacity,'1','holding at 100% ready state');
+ assert.equal(f.overlay.style.transform,'translateY(0%)','holding at 100% ready state');
  f.tick(3900);
- assert(+f.overlay.style.opacity<1,'fades after full progress and ready hold');
- f.tick(4400);
- assert(f.removed,'cleanly removes after fade completes');
+ assert.match(f.overlay.style.transform,/translateY\(-/,'slides up after full progress and ready hold');
+ f.tick(4100);
+ assert(f.removed,'cleanly removes after slide completes');
  assert(!f.home.inert);
 });
 
@@ -135,12 +135,12 @@ test('late downloads reach 100 smoothly, hold, then fade; percentage never round
  initHomeLauncher({resourceLoader:({onProgress})=>{notify=onProgress;return new Promise(()=>{});}});
  f.tick(0);notify(.99);f.tick(4000);
  assert.match(f.home.querySelector().textContent,/99%/);
- f.tick(6000);assert.equal(f.overlay.style.opacity,'1');
+ f.tick(6000);assert.equal(f.overlay.style.transform,'translateY(0%)');
  notify(1);f.tick(6001);
  assert.match(f.home.querySelector().textContent,/99%/);
  f.tick(6800);assert.equal(f.home.querySelector().textContent,'彩虹伙伴已就绪 100%');
- f.tick(7400);assert.equal(f.overlay.style.opacity,'1');
- f.tick(7600);assert(+f.overlay.style.opacity<1);assert(!f.removed);
+ f.tick(7400);assert.equal(f.overlay.style.transform,'translateY(0%)');
+ f.tick(7600);assert.match(f.overlay.style.transform,/translateY\(-/);assert(!f.removed);
  f.tick(8000);assert(f.removed);assert(!f.home.inert);
 });
 
@@ -156,9 +156,9 @@ test('dust keeps forming through the progress interval and flowing during slow d
  assert(distance(middle,formed)>8,'second half of loading still develops the rainbow');
  const waiting=positions(8000),flowing=positions(9000);
  assert(distance(waiting,flowing)>6,'slow downloads keep a visibly moving rainbow');
- assert.equal(f.overlay.style.opacity,'1');
+ assert.equal(f.overlay.style.transform,'translateY(0%)');
  notify(1);positions(9800);positions(10200);const releasing=positions(10600);
- assert(+f.overlay.style.opacity<1);assert(distance(flowing,releasing)>6);
+ assert.match(f.overlay.style.transform,/translateY\(-/);assert(distance(flowing,releasing)>6);
  f.tick(11000);assert(f.removed);assert(!f.home.inert);assert.equal(f.frames.size,0);
 });
 
@@ -194,40 +194,31 @@ test('12 candidate tips pool is exported and vector base arcs + 100% pulse ring 
  assert.equal(f.arcs.length, 7, '6 base arcs + 1 pulse ring');
 });
 
-test('reveal smoothly fades overlay without spotlight clip-path, triggers home stage enter at 120ms offset, and bubbles jelly to start button', () => {
+test('reveal cleanly slides overlay up without spotlight clip-path or opacity fading, while home screen stays completely static', () => {
  const f=fixture();
  initHomeLauncher();
  f.tick(0);
  f.tick(1200); // Progress reaches 100%
- f.tick(1750); // Holding ready before fade
+ f.tick(1750); // Holding ready before slide up
+ assert.equal(f.overlay.style.transform, 'translateY(0%)');
  assert.equal(f.home.classList.contains('home-stage-enter'), false);
  assert(!f.overlay.style.clipPath);
 
- // Enter reveal phase (fadeStartElapsed is 1800ms)
- f.tick(1850); // revealElapsed = 50ms (< 120ms)
- assert(+f.overlay.style.opacity < 1);
+ // Enter slide up phase (slideStartElapsed is 1800ms)
+ f.tick(1850); // slideElapsed = 50ms (< 360ms)
+ assert.match(f.overlay.style.transform, /translateY\(-/);
  assert(!f.overlay.style.clipPath, 'no spotlight clipPath applied to overlay');
+ assert.equal(f.overlay.style.opacity, '1', 'overlay remains fully opaque without cross-fade bleeding');
+ assert.equal(f.home.classList.contains('home-stage-enter'), false, 'home layer stays completely static');
+
+ f.tick(1950); // slideElapsed = 150ms
+ assert.match(f.overlay.style.transform, /translateY\(-/);
+ assert.equal(f.home.classList.contains('home-stage-enter'), false, 'home layer remains static throughout transition');
+
+ f.tick(2200); // Finish (targetFinishElapsed = 2160ms)
+ assert(f.removed, 'overlay cleanly unmounted after sliding out of view');
+ assert(!f.home.inert);
  assert.equal(f.home.classList.contains('home-stage-enter'), false);
-
- f.tick(1950); // revealElapsed = 150ms (>= 120ms)
- assert.equal(f.home.classList.contains('home-stage-enter'), true);
-
- // Simulate home animationend to chain jelly onto start button
- if (f.home.homeListeners.has('animationend')) {
-   f.home.homeListeners.get('animationend')();
- }
- assert.equal(f.home.classList.contains('home-stage-enter'), false);
- const startBtn = globalThis.document.getElementById('btn-start-game');
- assert.equal(startBtn.classList.contains('home-btn-jelly'), true);
-
- // Simulate button animationend
- if (startBtn.btnListeners.has('animationend')) {
-   startBtn.btnListeners.get('animationend')();
- }
- assert.equal(startBtn.classList.contains('home-btn-jelly'), false);
-
- f.tick(2300); // Finish
- assert(f.removed);
 });
 
 test('reduced-motion preference skips overlay and never triggers stage entrance animation', () => {
