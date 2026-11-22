@@ -289,8 +289,6 @@ export function initHomeLauncher(options = {}) {
         const revealElapsed = elapsed - fadeStartElapsed;
         release = Math.min(1, revealElapsed / fadeDuration);
         overlay.style.opacity = String(Math.max(0, 1 - release));
-        const curtainHalf = release * 50;
-        overlay.style.clipPath = `polygon(0% 0%, ${50 - curtainHalf}% 0%, ${50 - curtainHalf}% 100%, 0% 100%, 100% 100%, ${50 + curtainHalf}% 100%, ${50 + curtainHalf}% 0%, 100% 0%)`;
 
         if (!reduced.matches && revealElapsed >= 120 && home?.classList && !home.classList.contains('home-stage-enter')) {
           home.classList.add('home-stage-enter');
@@ -324,7 +322,7 @@ export function initHomeLauncher(options = {}) {
     if (ctx.lineCap !== undefined) ctx.lineCap = 'round';
     for (let b = 0; b < 6; b++) {
       const breath = Math.sin(elapsed / 1100 + b * 0.65);
-      const r = unit * (1 - b * 0.055 + breath * 0.018 + release * 0.22);
+      const r = unit * (1 - b * 0.055 + breath * 0.018);
       ctx.strokeStyle = COLORS[b];
       ctx.globalAlpha = baseArcAlpha;
       ctx.lineWidth = Math.max(4, unit * 0.054);
@@ -360,7 +358,7 @@ export function initHomeLauncher(options = {}) {
       // 下载较慢时仍沿彩虹来回流动；各色错相呼吸，避免静止闪烁。
       const arc = p.arc + Math.sin(elapsed / 1700 + p.phase) * .14;
       const breath = Math.sin(elapsed / 1100 + p.band * .65);
-      const r = unit * (1 - p.band * .055 + breath * .018 + release * .22);
+      const r = unit * (1 - p.band * .055 + breath * .018);
       const tx = cx + Math.cos(arc) * r;
       const ty = cy - Math.sin(arc) * r;
       const drift = Math.sin(elapsed / 950 + p.phase) * 4;

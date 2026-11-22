@@ -14,7 +14,7 @@
   position: fixed; inset: 0; z-index: 10000; overflow: hidden;
   background: radial-gradient(ellipse at 50% 43%, #fffdf5 0%, #edf9f5 47%, #d9edf4 100%);
   color: #325d59; isolation: isolate;
-  will-change: clip-path, opacity;
+  will-change: opacity;
   transform: translateZ(0);
 }
 #home-launcher canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
@@ -1955,8 +1955,5 @@ html, body, .card, .start-choices, .start-actions, .word-library-grid, .word-lib
   .home-btn-jelly {
     animation: none !important;
     transform: none !important;
-  }
-  #home-launcher {
-    clip-path: none !important;
   }
 }

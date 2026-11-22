@@ -194,7 +194,7 @@ test('12 candidate tips pool is exported and vector base arcs + 100% pulse ring 
  assert.equal(f.arcs.length, 7, '6 base arcs + 1 pulse ring');
 });
 
-test('curtain reveal smoothly deploys clip-path, triggers home stage enter at 120ms offset, and bubbles jelly to start button', () => {
+test('reveal smoothly fades overlay without spotlight clip-path, triggers home stage enter at 120ms offset, and bubbles jelly to start button', () => {
  const f=fixture();
  initHomeLauncher();
  f.tick(0);
@@ -206,7 +206,7 @@ test('curtain reveal smoothly deploys clip-path, triggers home stage enter at 12
  // Enter reveal phase (fadeStartElapsed is 1800ms)
  f.tick(1850); // revealElapsed = 50ms (< 120ms)
  assert(+f.overlay.style.opacity < 1);
- assert.match(f.overlay.style.clipPath, /polygon/);
+ assert(!f.overlay.style.clipPath, 'no spotlight clipPath applied to overlay');
  assert.equal(f.home.classList.contains('home-stage-enter'), false);
 
  f.tick(1950); // revealElapsed = 150ms (>= 120ms)
