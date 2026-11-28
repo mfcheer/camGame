@@ -1907,12 +1907,27 @@ html, body, .card, .start-choices, .start-actions, .word-library-grid, .word-lib
 .dialogue-scene{position:absolute;top:36%;left:calc(50% - 66px);width:132px;height:132px;border-radius:30px;background:#f4fbffeb;display:flex;align-items:center;justify-content:center;flex-direction:column;}
 .dialogue-scene img{width:92px;height:92px;}.dialogue-scene span{font-size:14px;}.dialogue-hint{outline:6px solid #ffda86;}
 .dialogue-answers{position:absolute;top:48%;left:0;width:100%;display:flex;justify-content:center;gap:clamp(24px,10vw,120px);align-items:center;}
+.dialogue-answers[aria-hidden="true"]{visibility:hidden;}
 .dialogue-bubble{pointer-events:auto;width:clamp(136px,25vw,235px);height:clamp(136px,25vw,235px);border-radius:50%;border:6px solid #e2c4ef;background:radial-gradient(circle at 32% 25%,#fffefb,#e9efffe8);box-shadow:0 7px 0 #a39bc43a,inset 0 0 20px #fff;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:12px;touch-action:none;color:#594563;font:inherit;}
 .dialogue-bubble img{width:74%;height:74%;object-fit:contain;}.dialogue-bubble span{font-size:clamp(17px,2.2vw,24px);font-weight:700;}.dialogue-bubble:disabled{opacity:1;}.dialogue-bubble.selected{margin:0;border-color:#e5bc76;transform:scale(1.06);}
 .dialogue-replay{position:absolute;bottom:5%;right:4%;width:84px;height:84px;border-radius:50%;border:3px solid #c4bbda;background:#fffaf2;pointer-events:auto;font-size:30px;color:#665079;display:flex;align-items:center;justify-content:center;flex-direction:column;touch-action:none;}.dialogue-replay span{font-size:14px;}
 .dialogue-hands{position:absolute;inset:0;pointer-events:none;}.dialogue-hands i{position:absolute;width:25px;height:25px;transform:translate(-50%,-50%);border-radius:50%;background:#fff7b1;border:3px solid #65568f;box-shadow:0 0 0 5px #fff9,0 0 18px #ffd56f;}
 @media (orientation:portrait){.dialogue-question{top:17%;left:6%;width:88%;}.dialogue-scene{top:34%;}.dialogue-answers{top:53%;gap:clamp(24px,6vw,64px);}.dialogue-bubble{width:clamp(136px,36vw,260px);height:clamp(136px,36vw,260px);}.dialogue-replay{bottom:7%;}}
+@media (min-height:600px) and (min-width:740px) and (orientation:landscape){
+  .dialogue-answers{top:43%;gap:clamp(144px,14vw,180px);}
+}
+@media (min-height:960px) and (min-width:650px) and (orientation:portrait){
+  .dialogue-answers{top:50%;}
+}
 @media (max-height:500px) and (orientation:landscape){.dialogue-question{top:18%;padding:5px 12px;gap:1px;}.dialogue-question strong{font-size:22px;}.dialogue-question small{font-size:12px;}.dialogue-scene{top:44%;width:90px;height:90px;left:calc(50% - 45px);}.dialogue-scene img{width:60px;height:60px;}.dialogue-scene span{font-size:10px;}.dialogue-answers{top:47%;}.dialogue-bubble{width:136px;height:136px;}.dialogue-replay{width:58px;height:58px;right:4%;bottom:5%;font-size:22px;}}
+@media (max-height:320px) and (orientation:landscape){
+  .dialogue-question{top:16%;padding:4px 12px;gap:0;}
+  .dialogue-question strong{font-size:19px;}
+  .dialogue-question span,.dialogue-question small{font-size:11px;line-height:1.2;}
+  .dialogue-scene{top:43%;left:50%;translate:-50% 0;width:64px;height:64px;}
+  .dialogue-scene img{width:42px;height:42px;}
+  .dialogue-bubble{width:clamp(76px,34dvh,108px);height:clamp(76px,34dvh,108px);padding:7px;}
+}
 
 /* 首页开屏在减弱动效偏好下的降级 */
 @media (prefers-reduced-motion: reduce) {
