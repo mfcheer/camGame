@@ -2,6 +2,14 @@ import * as THREE from 'three';
 
 export const SNOWKING_BASE_ROT_Y = 0.52; // 3/4 等轴透视角度 (约 30°~35°)
 
+export function setSnowKingCape(animal, lift = 0, sway = 0) {
+  const cloth = animal.model.getObjectByName('Cape_Body');
+  if (!cloth?.morphTargetInfluences) return;
+  const targets = cloth.morphTargetDictionary;
+  cloth.morphTargetInfluences[targets.lift] = THREE.MathUtils.clamp(lift, 0, 1);
+  cloth.morphTargetInfluences[targets.sway] = THREE.MathUtils.clamp(sway, -1, 1);
+}
+
 /**
  * 复位雪王各骨架节点姿态，清除动画残留
  */
@@ -21,8 +29,7 @@ export function resetSnowKing(a) {
   if (a.rightLeg) a.rightLeg.rotation.set(0, 0, 0);
 
   // 特殊部件复位
-  const cape = a.model.getObjectByName('Cape');
-  if (cape) cape.rotation.set(0.18, 0, 0);
+  setSnowKingCape(a);
 
   const crown = a.model.getObjectByName('Crown');
   if (crown) crown.rotation.set(-0.05, 0, 0);
@@ -57,11 +64,8 @@ export function snowkingWaltz(a, t, m = 1) {
   a.leftArm.rotation.z = 0.22 - waltz * 0.18;
 
   // 红色披风随动舒展
-  const cape = a.model.getObjectByName('Cape');
-  if (cape) {
-    cape.rotation.x = 0.18 + Math.sin(t * Math.PI * 6) * 0.12 * m;
-    cape.rotation.z = -waltz * 0.15;
-  }
+  const trailingSway = Math.sin(t * Math.PI * 6 - .45) * Math.sin(t * Math.PI) * m;
+  setSnowKingCape(a, Math.abs(waltz) * .30, -trailingSway * .70);
 }
 
 /**
@@ -90,10 +94,7 @@ export function snowkingTorch(a, t, m = 1) {
   }
 
   // 披风后扬
-  const cape = a.model.getObjectByName('Cape');
-  if (cape) {
-    cape.rotation.x = 0.18 + raise * 0.25;
-  }
+  setSnowKingCape(a, raise * .85);
 }
 
 /**
@@ -115,10 +116,7 @@ export function snowkingCoronation(a, t, m = 1) {
   a.leftArm.rotation.z = 0.22 + salute * 0.28;
 
   // 斗篷披风随风飘拂舒展
-  const cape = a.model.getObjectByName('Cape');
-  if (cape) {
-    cape.rotation.x = 0.18 + salute * 0.28;
-  }
+  setSnowKingCape(a, salute * .75, Math.sin(t * Math.PI * 2) * salute * .28);
 
   // 金冠尊贵微闪
   const crown = a.model.getObjectByName('Crown');

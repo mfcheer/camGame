@@ -18,9 +18,11 @@ assert.equal(SNOWKING_BASE_ROT_Y, 0.52, '3/4 perspective isometric base rotation
 
 for(const file of ['snowking.glb','snowking-preview.png'])assert.ok(fs.statSync('public/models/'+file).size>1000);
 const b=fs.readFileSync('public/models/snowking.glb'),gltf=JSON.parse(b.toString('utf8',20,20+b.readUInt32LE(12)).trim());
-for(const name of ['Torso','Head','Cape','Crown','Crown_Jewels','Scepter','Cone_Mesh','IceCream_Mesh','Brow_L','Eye_L','Happy_Mouth']) {
+for(const name of ['Torso','Head','Cape','Cape_Body','Cape_Collar','Crown','Crown_Jewels','Scepter','Cone_Mesh','IceCream_Mesh','Brow_L','Eye_L','Happy_Mouth']) {
   assert.ok(gltf.nodes.some(n=>n.name===name),`GLB node missing: ${name}`);
 }
+const exportedCape = gltf.nodes.find(n => n.name === 'Cape_Body');
+assert.deepEqual(gltf.meshes[exportedCape.mesh].extras.targetNames, ['lift', 'sway']);
 
 {
   const a0 = make();
@@ -43,13 +45,23 @@ for(const reduced of [false,true]){
   a.reset();a.setEnergy(energy);step(a,.35);
   assert.ok(a.model.getObjectByName('Eye_L').visible || a.expressionRig?.smileEyes?.[0]?.smile?.visible, 'eye or smile visible');
   const crown=a.model.getObjectByName('Crown');
-  const cape=a.model.getObjectByName('Cape');
   if(energy===1)assert.ok(crown.rotation.z!==0||a.rightArm.rotation.x<0, 'check energy 1');
-  if(energy===2)assert.ok(cape.rotation.x>0.18||Math.abs(a.model.rotation.z)>0, 'check energy 2');
+  const fabric=a.model.getObjectByName('Cape_Body');
+  if(energy===2){
+    const moving=fabric.morphTargetInfluences.slice();
+    const points=fabric.geometry.attributes.position;
+    const pin=new T.Vector3().fromBufferAttribute(points,0);
+    const hem=new T.Vector3().fromBufferAttribute(points,points.count-1);
+    assert.ok(fabric.getVertexPosition(points.count-1,new T.Vector3()).distanceTo(hem)>.005,'cape hem visibly moves');
+    assert.deepEqual(fabric.getVertexPosition(0,new T.Vector3()),pin,'cape remains attached at the shoulder');
+    a.setPaused(true);step(a,.25);assert.deepEqual(fabric.morphTargetInfluences,moving);
+    a.setPaused(false);
+  }
   if(energy===3)assert.ok(a.rightArm.rotation.x<0, 'check energy 3');
   const poseArm=a.rightArm.rotation.x;
   a.setPaused(true);step(a,1);assert.equal(a.rightArm.rotation.x,poseArm);
   a.setPaused(false);step(a,1);assert.ok(Math.abs(a.rightArm.rotation.x)<0.05);
+  assert.ok(fabric.morphTargetInfluences.every(weight=>Math.abs(weight)<1e-6),'cape returns to its rest shape after a reaction');
  }
  a.reset();a.startFriendPlay();const poses=[];
  for(const fn of [snowkingWaltz,snowkingTorch,snowkingCoronation]){

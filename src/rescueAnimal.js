@@ -1,5 +1,5 @@
 import {createSnowKingModel} from './snowkingModel.js';
-import {resetSnowKing,SNOWKING_BASE_ROT_Y} from './snowkingMotion.js';
+import {resetSnowKing,setSnowKingCape,SNOWKING_BASE_ROT_Y} from './snowkingMotion.js';
 import {createBicycleModel} from './bicycleModel.js';
 import {resetBicycle,setBicycleFork,setBicycleBell,rollBicycleWheels,BICYCLE_BASE_ROT_Y} from './bicycleMotion.js';
 import {createModelXModel} from './modelxModel.js';
@@ -184,6 +184,7 @@ export class RescueAnimal {
     if(this.animalId==='airplane')resetAirplaneMotion(this);
     if(this.animalId==='modelx')resetModelX(this);
     if(this.animalId==='bicycle')resetBicycle(this);
+    if(this.animalId==='snowking')setSnowKingCape(this);
     this.state='CHEERING';this.escapeElapsed=0;this.ropesGroup.visible=false;this.hopTimer=0;
     this.comboMoveTimer=0;this.receiveTimer=0;this.moodWorried=0;this.moodExcited=0;
     this.spawnRopeBreakParticles();
@@ -292,6 +293,7 @@ export class RescueAnimal {
     if(this.animalId==='modelx'){resetModelX(this);this.model.rotation.y=.24;}
     if(this.animalId==='snowking'){
       resetSnowKing(this);const m=this.reducedMotion?.25:1;
+      setSnowKingCape(this, pulse * .30 * motion);
       if(this.state==='TRAPPED'){
         this.model.rotation.y=SNOWKING_BASE_ROT_Y;
         this.animalGroup.position.y=this.groundY;
@@ -352,6 +354,7 @@ export class RescueAnimal {
     for(const name of ['Whisker_L','Whisker_R'])this.model.getObjectByName(name)?.rotation.set(0,0,0);
     for(const s of this.springs||[]){s.pos=s.get();s.vel=0;}
     this.model.scale.set(1,1,1);this.model.rotation.set(0,-.16,0);this.setQuadrupedPosture(0);
+    if(this.animalId==='snowking')setSnowKingCape(this);
     for(const [name,sign]of [['Wing_L',-1],['Wing_R',1]]){const wing=this.model.getObjectByName(name);if(wing)wing.rotation.y=this.animalId==='airplane'?0:sign*.18;}
     for(const c of this.ropeCoils){Object.assign(c,{loosened:false,falling:false,fallTimer:0,stage:null,slackTimer:0,taut:false});c.group.visible=true;c.group.position.set(0,0,0);c.group.rotation.z=0;c.group.scale.set(1,1,1);c.mesh.material.opacity=1;}
     for(const p of this.particles){this.scene.remove(p.mesh);p.mesh.geometry.dispose();p.mesh.material.dispose();}this.particles=[];
@@ -456,8 +459,7 @@ export class RescueAnimal {
         this.headGroup.rotation.z = Math.sin(p * Math.PI * 2) * .08 * motion;
         this.rightArm.rotation.x = -.15 - beat * .20;
         this.rightArm.rotation.z = -.38 + beat * .10;
-        const cape = this.model.getObjectByName('Cape');
-        if (cape) cape.rotation.x = .18 + Math.sin(p * Math.PI * 2) * .12 * motion;
+        setSnowKingCape(this, gesture * .28, beat * .34);
         break;
       }
       case 'bunny': // A little hop with both ears lifting in reply.
@@ -601,6 +603,7 @@ export class RescueAnimal {
       c.group.position.x=Math.sin(this.idleTime*40)*.0045;c.group.scale.setScalar(1+Math.sin(this.idleTime*34)*.012);
     }
     if(this.state==='FRIEND'){this.updateFriendPose(dt);return;}
+    if(this.animalId==='snowking')setSnowKingCape(this);
     let jump=0;
     // Every pose starts from a fresh pitch; additive reactions must not accumulate over frames.
     this.headGroup.rotation.x=0;
@@ -731,8 +734,9 @@ export class RescueAnimal {
           this.model.rotation.z=waddle;
           this.leftArm.rotation.z=.22-waddle*.4;
           this.rightArm.rotation.z=-.38-waddle*.4;
-          const cape=this.model.getObjectByName('Cape');
-          if(cape)cape.rotation.x=.18+Math.sin(p*waddleFreq*.5)*.15;
+          const motion = this.reducedMotion ? .25 : 1;
+          const movement = Math.sin(p * Math.PI) * motion;
+          setSnowKingCape(this, movement * .45, Math.sin(p * waddleFreq - .45) * movement * .50);
         }else if(['cat','dog','chase'].includes(this.animalId)) {
           this.setQuadrupedPosture(1);
           const stride=Math.sin(p*Math.PI*(this.animalId==='dog'?24:20));

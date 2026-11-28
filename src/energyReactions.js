@@ -1,5 +1,6 @@
 import {setFalcon} from './modelxMotion.js';
 import {setBicycleFork, setBicycleBell} from './bicycleMotion.js';
+import {setSnowKingCape} from './snowkingMotion.js';
 // Each row is an action card: three readable replies using the character's own shape.
 export const ENERGY_REACTIONS = {
  snowking:['权杖轻扬','萌趣摇晃','甜蜜点赞'],
@@ -37,7 +38,7 @@ export function applyEnergyReaction(a) {
     nod(-.06);
   }else if(v===1){
     tilt(Math.sin(p*Math.PI*2)*.12);
-    const cape=a.model.getObjectByName('Cape');if(cape)cape.rotation.x=.18+.22*s;
+    setSnowKingCape(a, .60 * s, Math.sin(p * Math.PI * 2) * .68 * s);
   }else{
     a.rightArm.rotation.x=-.18*s;a.rightArm.rotation.z=-.38-.15*s;
     nod(.10);

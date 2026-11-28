@@ -41,6 +41,55 @@ function curve(parent, name, points, radius, material) {
   );
 }
 
+function createCapeGeometry() {
+  const rows = 14;
+  const columns = 28;
+  const positions = [], colors = [], lift = [], sway = [], indices = [];
+  const fabric = new THREE.Color(0xf1283b);
+  const binding = new THREE.Color(0xb91f35);
+  const color = new THREE.Color();
+
+  for (let row = 0; row <= rows; row++) {
+    const length = row / rows;
+    const spread = Math.sin(length * Math.PI / 2);
+    // Leave the shoulder seam fixed. The loose fabric gains movement toward the hem.
+    const freedom = length * length;
+    for (let column = 0; column <= columns; column++) {
+      const across = 2 * column / columns - 1;
+      const edge = across * across;
+      const fold = Math.cos(across * Math.PI * 3);
+      const x = across * (0.20 + 0.24 * spread);
+      const y = -0.415 * length + edge * (0.014 + 0.027 * freedom) + fold * 0.012 * freedom;
+      const z = -0.177 - 0.23 * Math.pow(spread, 0.66) + edge * (0.105 - 0.032 * length) + fold * 0.022 * freedom;
+      positions.push(x, y, z);
+      lift.push(0, 0.052 * freedom, -0.085 * freedom);
+      sway.push(0.07 * freedom, -0.024 * across * freedom, 0.028 * across * freedom);
+
+      const trim = Math.max((Math.abs(across) - 0.90) / 0.10, (length - 0.90) / 0.10, 0);
+      color.copy(fabric).lerp(binding, trim * 0.75).multiplyScalar(1 + fold * 0.06 * length);
+      colors.push(color.r, color.g, color.b);
+      if (row < rows && column < columns) {
+        const a = row * (columns + 1) + column;
+        const b = a + columns + 1;
+        indices.push(a, a + 1, b, a + 1, b + 1, b);
+      }
+    }
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  geometry.morphTargetsRelative = true;
+  geometry.morphAttributes.position = [lift, sway].map((offsets, index) => {
+    const attribute = new THREE.Float32BufferAttribute(offsets, 3);
+    attribute.name = index === 0 ? 'lift' : 'sway';
+    return attribute;
+  });
+  return geometry;
+}
+
 /**
  * 蜜雪冰城雪王 (Snow King) 原生 3D 模型
  *
@@ -58,8 +107,8 @@ export function createSnowKingModel() {
   // 材质调色板
   const snowWhite = mat(0xffffff, 0.52);
   const snowShade = mat(0xebf2f8, 0.60);
-  const capeRed = mat(0xff2535, 0.45);
-  const capeDark = mat(0xc91221, 0.55);
+  const capeFabric = mat(0xffffff, 0.88, { vertexColors: true, side: THREE.DoubleSide });
+  const collarRed = mat(0xe52639, 0.82);
   const gold = mat(0xffc72c, 0.32, { metalness: 0.45 });
   const goldLight = mat(0xffdf6d, 0.28, { metalness: 0.5 });
   const jewelRed = mat(0xff1832, 0.15, { metalness: 0.25, roughness: 0.15 });
@@ -139,18 +188,18 @@ export function createSnowKingModel() {
   // 4. 颈部节点 (Neck)、红色大斗篷 (Cape) 与金胸针 (Brooch/Bow)
   const neck = pivot(root, 'Neck', [0, 0.48, 0]);
 
-  // 红色系带斗篷 (Cape) - 紧扣颈部后方，自然向后舒展，胸前绝不包覆
-  const cape = pivot(neck, 'Cape', [0, 0.02, -0.06]);
-  cape.rotation.x = 0.18; // 向后微扬
-  // 斗篷主片（后片）
-  const capeGeo = new THREE.CylinderGeometry(0.18, 0.36, 0.44, 20, 1, true, -Math.PI * 0.45, Math.PI * 0.90);
-  const capeMesh = mesh(capeGeo, capeRed, cape, 'Cape_Body', [0, -0.20, -0.10]);
-  capeMesh.rotation.y = Math.PI;
-  // 斗篷边缘滚边与里衬深红
-  mesh(new THREE.TorusGeometry(0.18, 0.014, 10, 24, Math.PI * 0.90), gold, cape, 'Cape_Collar', [0, 0.01, -0.05]).rotation.x = Math.PI / 2;
+  const cape = pivot(neck, 'Cape', [0, 0.02, 0]);
+  mesh(createCapeGeometry(), capeFabric, cape, 'Cape_Body');
+  const collar = pivot(cape, 'Cape_Collar');
+  for (const side of [-1, 1]) {
+    curve(collar, side < 0 ? 'Cape_Collar_L' : 'Cape_Collar_R', [
+      [side * 0.20, 0.014, -0.072], [side * 0.209, 0.006, 0.020],
+      [side * 0.172, -0.014, 0.140], [side * 0.094, -0.035, 0.213], [0, -0.044, 0.234]
+    ], 0.018, collarRed);
+  }
 
   // 金色领结胸针 (Brooch / Bow) - 挂在颈部正面，兼容骨骼
-  const bow = pivot(neck, 'Bow', [0, -0.02, 0.20]);
+  const bow = pivot(neck, 'Bow', [0, -0.024, 0.250]);
   mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.014, 16), gold, bow, 'Brooch').rotation.x = Math.PI / 2;
   mesh(new THREE.SphereGeometry(0.018, 12, 10), goldLight, bow, 'Brooch_Center', [0, 0, 0.01]);
   // 领结左右两翼
