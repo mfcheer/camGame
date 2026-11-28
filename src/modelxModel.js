@@ -1,43 +1,106 @@
 import * as THREE from 'three';
-import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
-import {mat,mesh,pivot,ellipsoid,curve} from './rabbitModel.js';
-export function createModelXModel(){
- const root=new THREE.Group();root.name='ModelX_Rig';
- const white=mat(0xf2f4f4,.3),glass=mat(0x233e52,.24),ink=mat(0x223144,.7),silver=mat(0xaec4d2,.38),rubber=mat(0x26303a,.9),lamp=mat(0xc3edff,.3);
- const body=pivot(root,'Torso',[0,.38,0]);
- mesh(new RoundedBoxGeometry(.84,.40,1.46,4,.14),white,body,'SUV_Body');
- mesh(new RoundedBoxGeometry(.68,.34,.94,4,.13),glass,body,'Panoramic_Roof',[0,.25,-.12]);
- ellipsoid(body,'White_Roof_Rail',white,[0,.385,-.20],[.35,.045,.34]);
- const head=pivot(root,'Head',[0,0,0]);
- ellipsoid(head,'Windshield',glass,[0,.66,.30],[.34,.17,.16]);
- const eyes=pivot(head,'Eyes',[0,.675,.441]);
- for(const s of [-1,1]){
-  const eye=pivot(eyes,s<0?'Eye_L':'Eye_R',[s*.135,0,0]);
-  ellipsoid(eye,'Eye_White',white,[0,0,0],[.086,.060,.022]);
-  ellipsoid(eye,'Pupil',ink,[0,0,.020],[.035,.042,.012]);
-  ellipsoid(eye,'Catchlight',white,[-.01,.016,.031],[.010,.011,.004]);
-  const brow=ellipsoid(head,s<0?'Brow_L':'Brow_R',silver,[s*.135,.762,.432],[.086,.012,.012]);brow.rotation.z=s*.07;
-  pivot(head,s<0?'Ear_L':'Ear_R',[s*.42,.56,.30]);
-  ellipsoid(body,'Mirror',white,[s*.43,.18,.29],[.09,.04,.08]);
-  const light=ellipsoid(body,'Narrow_Headlight',lamp,[s*.285,.035,.697],[.115,.025,.032]);light.rotation.z=-s*.1;
-  ellipsoid(body,'Rear_Light',mat(0xe85a61,.4),[s*.30,.045,-.704],[.10,.023,.027]);
-  // Roof hinge: lower door swings out and up, like the Model X falcon wing.
-  const door=pivot(root,s<0?'Falcon_L':'Falcon_R',[s*.27,.73,-.23]);
-  mesh(new RoundedBoxGeometry(.075,.40,.51,3,.045),white,door,'Falcon_White_Panel',[s*.12,-.25,0]);
-  mesh(new RoundedBoxGeometry(.06,.17,.47,3,.025),glass,door,'Falcon_Glass',[s*.065,-.075,0]);
-  ellipsoid(door,'Flush_Handle',silver,[s*.177,-.23,.12],[.008,.014,.055]);
-  for(const [name,z] of [[s<0?'Arm_L':'Arm_R',.45],[s<0?'Leg_L':'Leg_R',-.47]]){
-   const w=pivot(root,name,[s*.39,.16,z]);
-   const tire=mesh(new THREE.CylinderGeometry(.158,.158,.105,24),rubber,w,'Tire');tire.rotation.z=Math.PI/2;
-   const hub=mesh(new THREE.CylinderGeometry(.105,.105,.11,20),silver,w,'Alloy');hub.rotation.z=Math.PI/2;
-   for(let i=0;i<5;i++){const spoke=mesh(new THREE.BoxGeometry(.012,.14,.025),ink,w,'Spoke',[s*.058,0,0]);spoke.rotation.x=i*Math.PI/5;}
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { mat, mesh, pivot, curve } from './rabbitModel.js';
+import { vehicleEllipsoid as ellipsoid } from './vehicleModelGeometry.js';
+
+// Draw in the vehicle's side plane (forward, up), then bevel across its width.
+function sideShell(profile, width, bevel) {
+  const geometry = new THREE.ExtrudeGeometry(profile, {
+    depth: width - 2 * bevel, bevelSize: bevel, bevelThickness: bevel,
+    bevelSegments: 4, curveSegments: 12, steps: 1
+  });
+  geometry.rotateY(-Math.PI / 2);
+  geometry.translate(width / 2 - bevel, 0, 0);
+  return geometry;
+}
+
+export function createModelXModel() {
+  const root = new THREE.Group();
+  root.name = 'ModelX_Rig';
+  const pearl = mat(0xf0f4f7, .28), glass = mat(0x274358, .27);
+  const ink = mat(0x202d3d, .68), alloy = mat(0xa2b9cb, .4), rubber = mat(0x29333f, .88);
+  const lamp = mat(0xbceeff, .32), white = mat(0xffffff, .3), red = mat(0xe36169, .42);
+  const body = pivot(root, 'Torso', [0, .38, 0]);
+  const shell = new THREE.Shape();
+  shell.moveTo(-.68, -.19);
+  shell.lineTo(-.645, -.19);
+  shell.absarc(-.46, -.22, .185, Math.PI - .16, .16, true);
+  shell.lineTo(-.275, -.19);
+  shell.lineTo(.265, -.19);
+  shell.absarc(.45, -.22, .185, Math.PI - .16, .16, true);
+  shell.lineTo(.685, -.19);
+  shell.quadraticCurveTo(.735, -.17, .732, -.075);
+  shell.quadraticCurveTo(.728, .027, .64, .069);
+  shell.quadraticCurveTo(.55, .11, .37, .127);
+  shell.lineTo(-.56, .145);
+  shell.quadraticCurveTo(-.698, .13, -.707, .06);
+  shell.lineTo(-.714, -.13);
+  shell.quadraticCurveTo(-.713, -.19, -.68, -.19);
+  // The curves above form genuine cutouts, leaving daylight behind the tires.
+  mesh(sideShell(shell, .74, .025), pearl, body, 'SUV_Body');
+
+  const cabin = new THREE.Shape();
+  cabin.moveTo(-.61, .53);
+  cabin.quadraticCurveTo(-.54, .65, -.40, .721);
+  cabin.bezierCurveTo(-.28, .775, -.01, .782, .15, .74);
+  cabin.quadraticCurveTo(.23, .72, .29, .67);
+  cabin.lineTo(.46, .53);
+  cabin.closePath();
+  mesh(sideShell(cabin, .655, .060), glass, root, 'Panoramic_Roof');
+  curve(root, 'Roof_Edge', [[-.255,.754,-.40],[0,.792,-.4],[.255,.754,-.40]], .012, pearl);
+
+  const head = pivot(root, 'Head', [0, 0, 0]);
+  const windshield = ellipsoid(head, 'Windshield', glass, [0,.637,.348], [.292,.130,.051]);
+  windshield.rotation.x = -.78;
+  const eyes = pivot(head, 'Eyes', [0, .655, .386]);
+  for (const s of [-1, 1]) {
+    const eye = pivot(eyes, s < 0 ? 'Eye_L' : 'Eye_R', [s * .133, 0, 0]);
+    eye.rotation.x = -.44;
+    ellipsoid(eye, 'Eye_White', white, [0, 0, 0], [.092, .060, .025]);
+    ellipsoid(eye, 'Pupil', ink, [0, 0, .023], [.042, .044, .012]);
+    ellipsoid(eye, 'Catchlight', white, [-.011, .017, .033], [.011, .012, .004]);
+    const brow = ellipsoid(head, s < 0 ? 'Brow_L' : 'Brow_R', alloy,
+      [s * .133, .726, .324], [.080, .012, .013]);
+    brow.rotation.set(-.44, 0, s * .07);
+    pivot(head, s < 0 ? 'Ear_L' : 'Ear_R', [s * .37, .55, .27]);
+    ellipsoid(body, 'Mirror_Base', glass, [s * .373, .163, .299], [.055, .024, .035]);
+    ellipsoid(body, 'Mirror', pearl, [s * .414, .179, .297], [.048, .031, .060]);
+    curve(body, 'Headlight_Housing', [[s*.112,.042,.724],[s*.245,.049,.717],[s*.345,.077,.668]], .023, glass);
+    curve(body, 'Ice_Blue_Headlight', [[s*.132,.044,.739],[s*.247,.053,.733],[s*.345,.082,.680]], .013, lamp);
+    curve(body, 'Rear_Light', [[s*.164,.080,-.729],[s*.29,.084,-.719],[s*.353,.073,-.677]], .015, red);
+
+    const door = pivot(root, s < 0 ? 'Falcon_L' : 'Falcon_R', [s * .256, .739, -.208]);
+    const doorGlass = mesh(new RoundedBoxGeometry(.055, .205, .415, 3, .024), glass, door,
+      'Falcon_Glass', [s * .060, -.09, 0]);
+    doorGlass.rotation.z = s * .39;
+    mesh(new RoundedBoxGeometry(.058, .222, .405, 3, .023), pearl, door,
+      'Falcon_White_Panel', [s * .106, -.293, 0]);
+    curve(door, 'Door_Upper_Rail', [[s*.021,-.011,-.202],[s*.087,-.14,-.208],[s*.108,-.197,-.193]], .014, pearl);
+    ellipsoid(door, 'Flush_Handle', alloy, [s * .138, -.231, .100], [.006, .010, .038]);
+
+    for (const [name, z] of [[s < 0 ? 'Arm_L' : 'Arm_R', .45], [s < 0 ? 'Leg_L' : 'Leg_R', -.46]]) {
+      const wheel = pivot(root, name, [s * .331, .153, z]);
+      mesh(new THREE.CylinderGeometry(.153, .153, .107, 28), rubber, wheel, 'Tire').rotation.z = Math.PI / 2;
+      mesh(new THREE.CylinderGeometry(.113, .113, .012, 24), ink, wheel, 'Wheel_Dish', [s*.056,0,0]).rotation.z = Math.PI / 2;
+      mesh(new THREE.TorusGeometry(.104, .008, 8, 24), alloy, wheel, 'Alloy_Rim', [s*.065,0,0]).rotation.y = Math.PI / 2;
+      for (let i = 0; i < 5; i++) {
+        const spoke = pivot(wheel, 'Spoke', [s*.064,0,0]);
+        spoke.rotation.x = i * Math.PI * 2 / 5;
+        ellipsoid(spoke, 'Alloy_Spoke', alloy, [0,.067,0], [.006,.034,.011]);
+      }
+      ellipsoid(wheel, 'Hubcap', alloy, [s*.070,0,0], [.012,.038,.038]);
+    }
   }
- }
- const tail=pivot(root,'Tail',[0,.62,-.67]);ellipsoid(tail,'Rear_Spoiler',white,[0,0,0],[.34,.025,.08]);
- const badge=pivot(root,'Bow',[0,.46,.74]);
- curve(badge,'Tesla_Badge',[[-.035,.018,0],[0,.025,.005],[.035,.018,0]],.006,silver);
- curve(badge,'Badge_Stem',[[0,.02,0],[0,-.02,.008]],.006,silver);
- curve(head,'Smile',[[-.14,.315,.751],[0,.282,.787],[.14,.315,.751]],.009,ink);
- const happy=pivot(head,'Happy_Mouth',[0,0,0]);curve(happy,'Happy_Curve',[[-.15,.325,.753],[0,.275,.794],[.15,.325,.753]],.012,ink);happy.visible=false;
- return root;
+
+  const tail = pivot(root, 'Tail', [0, .657, -.57]);
+  mesh(new RoundedBoxGeometry(.57, .033, .12, 3, .015), pearl, tail, 'Rear_Spoiler');
+  const badge = pivot(root, 'Bow', [0, .449, .691]);
+  curve(badge, 'Hood_Badge', [[-.029,.008,0],[0,.014,.004],[.029,.008,0]], .005, alloy);
+  curve(badge, 'Badge_Stem', [[0,.01,0],[0,-.015,.016]], .005, alloy);
+  mesh(new RoundedBoxGeometry(.37, .064, .046, 4, .022), glass, body, 'Lower_Intake', [0, -.14, .712]);
+  curve(head, 'Smile', [[-.112,.325,.756],[0,.299,.761],[.112,.325,.756]], .010, ink);
+  const happy = pivot(head, 'Happy_Mouth', [0, 0, 0]);
+  curve(happy, 'Happy_Curve', [[-.13,.341,.755],[0,.290,.764],[.13,.341,.755]], .013, ink);
+  happy.visible = false;
+  return root;
 }

@@ -31,3 +31,8 @@
 - 定向模拟飞机GLB下载失败，状态进入fallback，原生模型可继续；恢复下载后重选回到glb。最终一轮记录的未捕获页面异常为空；AudioContext为running。不等于主观听感验收。
 - 截图已实际打开检查：`output/airplane/plane-landscape.png`、`plane-portrait.png`、`plane-portrait-dialogue.png`、`plane-landscape-farewell.png`、`plane-portrait-farewell.png`、`plane-action-0.png`（压翼）、`plane-taxi.png`、`plane-takeoff.png`和`plane-result.png`；构建与模块日志同目录。
 - 尚待真实摄像头、真实iPad横竖屏、实际系统后台切换、儿童辨认及声音听感；本轮没有真实摄像头或真机通过结论。未提交、推送或发布。
+
+## 2026-11-28 造型更新
+
+- 奶白圆机鼻接蓝色机身和收窄的尾锥，背部露出竖尾翼和侧窗，机翼采用后掠轮廓和金色翼尖。
+- 双引擎有进气环、后缩的风扇和金色轴心。瞳孔随泡泡和玩家移动，开心时机鼻笑口加深。头像略抬视角，突出机翼、侧窗和尾翼。

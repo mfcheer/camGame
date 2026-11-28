@@ -5,7 +5,7 @@ import {RescueAnimal} from '../src/rescueAnimal.js';
 import {HappyPerformance} from '../src/happyPerformance.js';
 import {PLAYABLE_ANIMALS,resolveAnimal} from '../src/config.js';
 import {CAMP_ANIMALS} from '../src/campManager.js';
-import {bicycleCircle,bicycleDance,bicycleDeparture,resetBicycle,BICYCLE_BASE_ROT_Y} from '../src/bicycleMotion.js';
+import {bicycleCircle,bicycleDance,bicycleDeparture,resetBicycle,setBicycleFork,BICYCLE_BASE_ROT_Y} from '../src/bicycleMotion.js';
 
 const camera=new T.PerspectiveCamera(48,1194/834,.1,100);camera.position.z=7.5;
 const make=()=>new RescueAnimal(new T.Scene(),camera,'bicycle');
@@ -20,6 +20,20 @@ for(const file of ['mint-bicycle.glb','bicycle-preview.png'])assert.ok(fs.statSy
 const b=fs.readFileSync('public/models/mint-bicycle.glb'),gltf=JSON.parse(b.toString('utf8',20,20+b.readUInt32LE(12)).trim());
 for(const name of ['Front_Fork','Bell','Front_Wheel','Rear_Wheel','Basket_Mesh','Saddle','Brow_L','Head','Happy_Mouth']) {
   assert.ok(gltf.nodes.some(n=>n.name===name),`GLB node missing: ${name}`);
+}
+
+// The export includes hidden meshes. Test the shipped wheel geometry itself,
+// since a hidden cylinder in the source used to become a solid disc in game.
+for (const name of ['Front_Wheel', 'Rear_Wheel']) {
+  const {mesh} = gltf.nodes.find(node => node.name === name);
+  const accessor = gltf.accessors[gltf.meshes[mesh].primitives[0].attributes.POSITION];
+  const view = gltf.bufferViews[accessor.bufferView];
+  const offset = 28 + b.readUInt32LE(12) + (view.byteOffset ?? 0) + (accessor.byteOffset ?? 0);
+  for (let i = 0; i < accessor.count; i++) {
+    const at = offset + i * (view.byteStride ?? 12);
+    const radius = Math.hypot(b.readFloatLE(at), b.readFloatLE(at + 4));
+    assert.ok(radius > .18 && radius < .25, `${name} must be a hollow tire in the GLB`);
+  }
 }
 
 {
@@ -38,6 +52,9 @@ for(const name of ['Front_Fork','Bell','Front_Wheel','Rear_Wheel','Basket_Mesh',
   a0.model.getObjectByName('Front_Wheel').getWorldPosition(fwWorld);
   assert.ok(basketPos.y > fwWorld.y, 'basket is elevated above front wheel axle');
   assert.ok(basketPos.z >= fwWorld.z, 'basket face extends forward clear of steering fork');
+  setBicycleFork(a0, .2);
+  const turnedAxle = a0.model.getObjectByName('Front_Wheel').getWorldPosition(new T.Vector3());
+  assert.ok(turnedAxle.distanceTo(fwWorld) > .02, 'front wheel steers with the fork');
 }
 
 for(const reduced of [false,true]){
